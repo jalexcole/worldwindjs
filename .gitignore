@@ -11,6 +11,15 @@ build/*
 !build/dist
 build/dist/*
 !build/dist/worldwind.min.js
+!build/dist/worldwind.js
+!build/dist/README.md
+!build/dist/LICENSE
+!build/dist/images
+!build/dist/images/*
+!build/dist/images/pushpins
+!build/dist/images/pushpins/*
+!build/dist/images/view
+!build/dist/images/view/*
 
 nasaworldwind-worldwind-*.tgz
 
