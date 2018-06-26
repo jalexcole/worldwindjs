@@ -6,7 +6,11 @@
 
 .idea/workspace.xml
 
-build/
+!build/
+build/*
+!build/dist
+build/dist/*
+!build/dist/worldwind.min.js
 
 nasaworldwind-worldwind-*.tgz
 
