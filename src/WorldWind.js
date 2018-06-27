@@ -140,6 +140,7 @@ define([ // PLEASE KEEP ALL THIS IN ALPHABETICAL ORDER BY MODULE NAME (not direc
         './formats/kml/features/KmlTour',
         './formats/kml/geom/KmlTrack',
         './formats/kml/controls/KmlTreeVisibility',
+        './formats/kml/KmzFile',
         './layer/LandsatRestLayer',
         './layer/Layer',
         './util/measure/LengthMeasurer',
@@ -396,6 +397,7 @@ define([ // PLEASE KEEP ALL THIS IN ALPHABETICAL ORDER BY MODULE NAME (not direc
               KmlTour,
               KmlTrack,
               KmlTreeVisibility,
+              KmzFile,
               LandsatRestLayer,
               Layer,
               LengthMeasurer,
@@ -841,6 +843,7 @@ define([ // PLEASE KEEP ALL THIS IN ALPHABETICAL ORDER BY MODULE NAME (not direc
         WorldWind['KmlControls'] = KmlControls;
         WorldWind['KmlFile'] = KmlFile;
         WorldWind['KmlTreeVisibility'] = KmlTreeVisibility;
+        WorldWind['KmzFile'] = KmzFile;
         WorldWind['LandsatRestLayer'] = LandsatRestLayer;
         WorldWind['Layer'] = Layer;
         WorldWind['LengthMeasurer'] = LengthMeasurer;
