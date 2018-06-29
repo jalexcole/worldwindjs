@@ -57388,13 +57388,16 @@ define('formats/geojson/GeoJSONParser',['../../error/ArgumentError',
         GeoJSONParser.prototype.setProj4jsAliases = function () {
             Proj4.defs([
                 [
+                    "urn:ogc:def:crs:EPSG::4326",
+                    Proj4.defs('EPSG:4326')
+                ],
+                [
                     'urn:ogc:def:crs:OGC:1.3:CRS84',
                     Proj4.defs('EPSG:4326')
                 ],
                 [
                     'urn:ogc:def:crs:EPSG::3857',
                     Proj4.defs('EPSG:3857')
-
                 ]
             ]);
         };
@@ -58012,6 +58015,65 @@ define('util/HighlightController',[
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+define('formats/kml/util/KmlAttribute',[], function () {
+    "use strict";
+
+    /**
+     * This class represents abstraction for KmlAttribute. It is possible to test its existence, retrieve value and set
+     * value.
+     * @alias KmlAttribute
+     * @param node {Node} Node on which the attribute exists
+     * @param name {String} Name of the attribute
+     * @constructor
+     */
+    var KmlAttribute = function(node, name) {
+        this.node = node;
+        this.name = name;
+    };
+
+    /**
+     * It returns value of the attribute. If the attribute doesn't exists it returns null.
+     * @returns {String|null}
+     */
+    KmlAttribute.prototype.value = function(){
+        return (this.node.attributes && this.node.attributes.getNamedItem(this.name)&&
+            this.node.attributes.getNamedItem(this.name).value) || null;
+    };
+
+    /**
+     * It returns true if there exists attribute with given name.
+     * @returns {boolean}
+     */
+    KmlAttribute.prototype.exists = function() {
+        return this.value() != null;
+    };
+
+    /**
+     * Value which should be set to the attribute. 
+     * @param value {String}
+     */
+    KmlAttribute.prototype.save = function(value) {
+        this.node.setAttribute(this.name, value);
+    };
+
+    return KmlAttribute;
+});
+/*
+ * Copyright 2003-2006, 2009, 2017, United States Government, as represented by the Administrator of the
+ * National Aeronautics and Space Administration. All rights reserved.
+ *
+ * The NASAWorldWind/WebWorldWind platform is licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 define('formats/kml/KmlElements',[], function () {
     "use strict";
 
@@ -58065,67 +58127,8 @@ define('formats/kml/KmlElements',[], function () {
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-define('formats/kml/util/Attribute',[], function () {
-    "use strict";
-
-    /**
-     * This class represents abstraction for Attribute. It is possible to test its existence, retrieve value and set
-     * value.
-     * @alias Attribute
-     * @param node {Node} Node on which the attribute exists
-     * @param name {String} Name of the attribute
-     * @constructor
-     */
-    var Attribute = function(node, name) {
-        this.node = node;
-        this.name = name;
-    };
-
-    /**
-     * It returns value of the attribute. If the attribute doesn't exists it returns null.
-     * @returns {String|null}
-     */
-    Attribute.prototype.value = function(){
-        return (this.node.attributes && this.node.attributes.getNamedItem(this.name)&&
-            this.node.attributes.getNamedItem(this.name).value) || null;
-    };
-
-    /**
-     * It returns true if there exists attribute with given name.
-     * @returns {boolean}
-     */
-    Attribute.prototype.exists = function() {
-        return this.value() != null;
-    };
-
-    /**
-     * Value which should be set to the attribute. 
-     * @param value {String}
-     */
-    Attribute.prototype.save = function(value) {
-        this.node.setAttribute(this.name, value);
-    };
-
-    return Attribute;
-});
-/*
- * Copyright 2003-2006, 2009, 2017, United States Government, as represented by the Administrator of the
- * National Aeronautics and Space Administration. All rights reserved.
- *
- * The NASAWorldWind/WebWorldWind platform is licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-define('formats/kml/util/NodeTransformers',[
-    './Attribute',
+define('formats/kml/util/KmlNodeTransformers',[
+    './KmlAttribute',
     '../KmlElements',
     '../../../geom/Position',
     '../../../util/WWUtil'
@@ -58135,9 +58138,9 @@ define('formats/kml/util/NodeTransformers',[
             WWUtil){
     /**
      * Provides ways for transforming xml nodes to KML objects.
-     * @exports NodeTransformers
+     * @exports KmlNodeTransformers
      */
-    var NodeTransformers = function(){};
+    var KmlNodeTransformers = function(){};
 
     // Primitives
     /**
@@ -58145,7 +58148,7 @@ define('formats/kml/util/NodeTransformers',[
      * @param node {Node} Node to transform
      * @returns {String} Text representation of node value.
      */
-    NodeTransformers.string = function (node) {
+    KmlNodeTransformers.string = function (node) {
         return String(getTextOfNode(node));
     };
 
@@ -58154,7 +58157,7 @@ define('formats/kml/util/NodeTransformers',[
      * @param node {Node} Node to transform
      * @returns {Number} Numeric representation of node value.
      */
-    NodeTransformers.number = function (node) {
+    KmlNodeTransformers.number = function (node) {
         return Number(getTextOfNode(node));
     };
 
@@ -58163,7 +58166,7 @@ define('formats/kml/util/NodeTransformers',[
      * @param node {Node} Node to transform
      * @returns {Boolean} Boolean representation of node value.
      */
-    NodeTransformers.boolean = function (node) {
+    KmlNodeTransformers.boolean = function (node) {
         return WWUtil.transformToBoolean(getTextOfNode(node));
     };
 
@@ -58172,7 +58175,7 @@ define('formats/kml/util/NodeTransformers',[
      * @param node {Node} Node to transform
      * @returns {Date} Date representing current node.
      */
-    NodeTransformers.date = function(node) {
+    KmlNodeTransformers.date = function(node) {
         return WWUtil.date(getTextOfNode(node));
     };
 
@@ -58200,7 +58203,7 @@ define('formats/kml/util/NodeTransformers',[
      * @param controls {Array} Array of controls.
      * @returns {KmlObject|null} KmlObject representation for the node.
      */
-    NodeTransformers.kmlObject = function (node, parent, controls) {
+    KmlNodeTransformers.kmlObject = function (node, parent, controls) {
         var nameOfElement = node.nodeName;
         var constructor = KmlElements.getKey(nameOfElement);
         if (!constructor) {
@@ -58217,7 +58220,7 @@ define('formats/kml/util/NodeTransformers',[
      * @param controls {Array} Array of controls.
      * @returns {KmlLinearRing} Transformed Linear Ring.
      */
-    NodeTransformers.linearRing = function(node, parent, controls) {
+    KmlNodeTransformers.linearRing = function(node, parent, controls) {
         var constructor = KmlElements.getKey("LinearRing");
         if (!constructor) {
             return null;
@@ -58236,7 +58239,7 @@ define('formats/kml/util/NodeTransformers',[
      * @param node {Node} Node to transform
      * @returns {Position[]} All included positions. Positions are separated by space.
      */
-    NodeTransformers.positions = function(node) {
+    KmlNodeTransformers.positions = function(node) {
         var positions = [];
         var coordinates = getTextOfNode(node).trim().replace(/\s+/g, ' ').split(' ');
         coordinates.forEach(function (pCoordinates) {
@@ -58251,13 +58254,13 @@ define('formats/kml/util/NodeTransformers',[
      * @param name {String} Name of the attribute to retrieve.
      * @returns {Function} Transformer function.
      */
-    NodeTransformers.attribute = function(name) {
+    KmlNodeTransformers.attribute = function(name) {
         return function(node) {
             return new Attribute(node, name).value();
         };
     };
     
-    return NodeTransformers;
+    return KmlNodeTransformers;
 });
 /*
  * Copyright 2003-2006, 2009, 2017, United States Government, as represented by the Administrator of the
@@ -58276,7 +58279,7 @@ define('formats/kml/util/NodeTransformers',[
  * limitations under the License.
  */
 define('formats/kml/util/KmlElementsFactory',[
-    './NodeTransformers'
+    './KmlNodeTransformers'
 ], function (NodeTransformers) {
     "use strict";
 
@@ -58381,7 +58384,7 @@ define('formats/kml/util/KmlElementsFactory',[
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-define('formats/kml/util/TreeKeyValueCache',[
+define('formats/kml/util/KmlTreeKeyValueCache',[
     '../../../util/WWUtil'
 ], function (WWUtil) {
     "use strict";
@@ -58389,11 +58392,11 @@ define('formats/kml/util/TreeKeyValueCache',[
     /**
      * Cache working on a basic principle of storing the data as a pair of key, value. Currently the values are
      * never invalidated.
-     * @alias TreeKeyValueCache
+     * @alias KmlTreeKeyValueCache
      * @constructor
      * @classdesc Represents internally used cache which stores data in a tree like structure.
      */
-    var TreeKeyValueCache = function() {
+    var KmlTreeKeyValueCache = function() {
         this.map = {};
     };
 
@@ -58403,7 +58406,7 @@ define('formats/kml/util/TreeKeyValueCache',[
      * @param key {Object} Anything that can be used as a key in JavaScript object
      * @param value {Object} The value to be stored in the cache on given level and value. Value must started with #
      */
-    TreeKeyValueCache.prototype.add = function(level, key, value){
+    KmlTreeKeyValueCache.prototype.add = function(level, key, value){
         if(!this.map[level]) {
             this.map[level] = {};
         }
@@ -58416,7 +58419,7 @@ define('formats/kml/util/TreeKeyValueCache',[
      * @param key {Object} Anything that can be used as a key in JavaScript object
      * @returns {Object|null}
      */
-    TreeKeyValueCache.prototype.value = function(level, key) {
+    KmlTreeKeyValueCache.prototype.value = function(level, key) {
         if(!this.map[level]){
             return null;
         }
@@ -58440,7 +58443,7 @@ define('formats/kml/util/TreeKeyValueCache',[
      * @param level {Object} Anything that can be used as a key in JavaScript object
      * @returns {Object|null}
      */
-    TreeKeyValueCache.prototype.level = function(level) {
+    KmlTreeKeyValueCache.prototype.level = function(level) {
         return this.map[level];
     };
 
@@ -58449,16 +58452,16 @@ define('formats/kml/util/TreeKeyValueCache',[
      * @param level {Object} Anything that can be used as a key in JavaScript object
      * @param key {Object} Anything that can be used as a key in JavaScript object
      */
-    TreeKeyValueCache.prototype.remove = function(level, key) {
+    KmlTreeKeyValueCache.prototype.remove = function(level, key) {
         delete this.map[level][key];
     };
 
-    var applicationLevelCache = new TreeKeyValueCache();
-    TreeKeyValueCache.applicationLevelCache = function() {
+    var applicationLevelCache = new KmlTreeKeyValueCache();
+    KmlTreeKeyValueCache.applicationLevelCache = function() {
         return applicationLevelCache;
     };
 
-    return TreeKeyValueCache;
+    return KmlTreeKeyValueCache;
 });
 /*
  * Copyright 2003-2006, 2009, 2017, United States Government, as represented by the Administrator of the
@@ -58477,9 +58480,9 @@ define('formats/kml/util/TreeKeyValueCache',[
  * limitations under the License.
  */
 define('formats/kml/util/KmlElementsFactoryCached',[
-    './Attribute',
+    './KmlAttribute',
     './KmlElementsFactory',
-    './TreeKeyValueCache',
+    './KmlTreeKeyValueCache',
     '../../../util/WWUtil'
 ], function (
     Attribute,
@@ -59637,7 +59640,7 @@ define('util/Promise',['./es6-promise'],
  */
 define('formats/kml/KmlObject',[
     '../../error/ArgumentError',
-    './util/Attribute',
+    './util/KmlAttribute',
     './KmlElements',
     './util/KmlElementsFactoryCached',
     '../../util/Logger',
@@ -59742,265 +59745,6 @@ define('formats/kml/KmlObject',[
     };
 
     return KmlObject;
-});
-/*
- * Copyright 2003-2006, 2009, 2017, United States Government, as represented by the Administrator of the
- * National Aeronautics and Space Administration. All rights reserved.
- *
- * The NASAWorldWind/WebWorldWind platform is licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-define('formats/kml/util/ImagePyramid',[
-    '../KmlElements',
-    '../KmlObject',
-    '../util/NodeTransformers'
-], function (KmlElements,
-             KmlObject,
-             NodeTransformers) {
-    "use strict";
-    /**
-     * Constructs an ImagePyramid. Application usually don't call this constructor. It is called by {@link KmlFile} as
-     * Objects from KmlFile are read. It is concrete implementation.
-     * @alias ImagePyramid
-     * @constructor
-     * @classdesc Contains the data associated with Kml Image Pyramid
-     * @param options {Object}
-     * @param options.objectNode {Node} Node representing the Kml Image Pyramid.
-     * @throws {ArgumentError} If either the node is null or undefined.
-     * @see https://developers.google.com/kml/documentation/kmlreference#imagepyramid
-     * @augments KmlObject
-     */
-    var ImagePyramid = function (options) {
-        KmlObject.call(this, options);
-    };
-
-    ImagePyramid.prototype = Object.create(KmlObject.prototype);
-
-    Object.defineProperties(ImagePyramid.prototype, {
-        /**
-         * Size of the tiles, in pixels. Tiles must be square, and &lt;tileSize&gt; must be a power of 2. A tile size of
-         * 256
-         * (the default) or 512 is recommended. The original image is divided into tiles of this size, at varying
-         * resolutions.
-         * @memberof ImagePyramid.prototype
-         * @readonly
-         * @type {Number}
-         */
-        kmlTileSize: {
-            get: function () {
-                return this._factory.specific(this, {name: 'tileSize', transformer: NodeTransformers.number});
-            }
-        },
-
-        /**
-         * Width in pixels of the original image.
-         * @memberof ImagePyramid.prototype
-         * @readonly
-         * @type {Number}
-         */
-        kmlMaxWidth: {
-            get: function () {
-                return this._factory.specific(this, {name: 'maxWidth', transformer: NodeTransformers.number});
-            }
-        },
-
-        /**
-         * Height in pixels of the original image.
-         * @memberof ImagePyramid.prototype
-         * @readonly
-         * @type {Number}
-         */
-        kmlMaxHeight: {
-            get: function () {
-                return this._factory.specific(this, {name: 'maxHeight', transformer: NodeTransformers.number});
-            }
-        },
-
-        /**
-         * Specifies where to begin numbering the tiles in each layer of the pyramid. A value of lowerLeft specifies
-         * that row 1, column 1 of each layer is in the bottom left corner of the grid.
-         * @memberof ImagePyramid.prototype
-         * @readonly
-         * @type {String}
-         */
-        kmlGridOrigin: {
-            get: function () {
-                return this._factory.specific(this, {name: 'gridOrigin', transformer: NodeTransformers.string});
-            }
-        }
-    });
-
-    /**
-     * @inheritDoc
-     */
-    ImagePyramid.prototype.getTagNames = function () {
-        return ['ImagePyramid'];
-    };
-
-    KmlElements.addKey(ImagePyramid.prototype.getTagNames()[0], ImagePyramid);
-
-    return ImagePyramid;
-});
-/*
- * Copyright 2003-2006, 2009, 2017, United States Government, as represented by the Administrator of the
- * National Aeronautics and Space Administration. All rights reserved.
- *
- * The NASAWorldWind/WebWorldWind platform is licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-define('formats/kml/util/HrefResolver',[
-    '../../../util/Promise',
-    '../../../util/WWUtil'
-], function (Promise,
-             WWUtil) {
-    /**
-     * It can handle the format in which is the URL present in the file and transform it to the URL available
-     * for the relevant other concepts.
-     * @param url {String} Representation of the url of the resource.
-     * @param fileCache {KmlFileCache} Cache representing potential links loaded by current KML file.
-     * @constructor
-     * @alias HrefResolver
-     */
-    var HrefResolver = function (url, fileCache) {
-        /**
-         * The url to be resolved. The result will be an URL again. It is possible to load any binary data into
-         * readable URL.
-         */
-        this._url = url;
-
-        /**
-         * File cache used to retrieve the links URL.
-         */
-        this._fileCache = fileCache;
-    };
-
-    /**
-     * It returns relevant string. Either the url directly or retrieved from cache. It means that the cache needs
-     * to resolve the URLs upfront.
-     * @private
-     * @return {String} Either external URL or internal URL representing the information.
-     */
-    HrefResolver.prototype.url = function () {
-        if (WWUtil.startsWith(this._url, 'http://') || WWUtil.startsWith(this._url, 'https://')) {
-            return this._url;
-        } else {
-            var retrieved = this._fileCache.retrieve('kmz;' + this._url);
-            if(!retrieved) {
-                retrieved = this._fileCache.retrieve('href;' + this._url);
-                // Probably relative path.
-                if(!retrieved) {
-                    return this._url;
-                } else {
-                    return retrieved;
-                }
-            } else {
-                return retrieved;
-            }
-        }
-    };
-
-    return HrefResolver;
-});
-/*
- * Copyright 2003-2006, 2009, 2017, United States Government, as represented by the Administrator of the
- * National Aeronautics and Space Administration. All rights reserved.
- *
- * The NASAWorldWind/WebWorldWind platform is licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-define('formats/kml/util/ItemIcon',[
-    './HrefResolver',
-    './../KmlElements',
-    '../KmlObject',
-    './NodeTransformers'
-], function (HrefResolver,
-             KmlElements,
-             KmlObject,
-             NodeTransformers) {
-    "use strict";
-
-    /**
-     * Constructs an ItemIcon. Application usually don't call this constructor. It is called by {@link KmlFile} as
-     * Objects from KmlFile are read. It is concrete implementation.
-     * @alias ItemIcon
-     * @constructor
-     * @classdesc Contains the data associated with Kml Item Icon
-     * @param options {Object}
-     * @param options.objectNode {Node} Node representing the Kml Item Icon.
-     * @throws {ArgumentError} If either the node is null or undefined.
-     * @see https://developers.google.com/kml/documentation/kmlreference#itemicon
-     * @augments KmlObject
-     */
-    var ItemIcon = function (options) {
-        KmlObject.call(this, options);
-    };
-
-    ItemIcon.prototype = Object.create(KmlObject.prototype);
-
-    Object.defineProperties(ItemIcon.prototype, {
-        /**
-         * Specifies the current state of the NetworkLink or Folder. Possible values are open, closed, error,
-         * fetching0, fetching1, and fetching2. These values can be combined by inserting a space between two values
-         * (no comma).
-         * @memberof ItemIcon.prototype
-         * @readonly
-         * @type {String}
-         */
-        kmlState: {
-            get: function () {
-                return this._factory.specific(this, {name: 'state', transformer: NodeTransformers.string});
-            }
-        }
-    });
-
-    /**
-     * It returns valid URL usable for remote resources.
-     * @param fileCache {KmlFileCache} Cache needed to retrieve data urls from remote locations.
-     * @returns {String} URL to use.
-     */
-    ItemIcon.prototype.kmlHref = function(fileCache) {
-        return new HrefResolver(
-            this._factory.specific(this, {name: 'href', transformer: NodeTransformers.string}), fileCache
-        ).url();
-    };
-
-    /**
-     * @inheritDoc
-     */
-    ItemIcon.prototype.getTagNames = function () {
-        return ['ItemIcon'];
-    };
-
-    KmlElements.addKey(ItemIcon.prototype.getTagNames()[0], ItemIcon);
-
-    return ItemIcon;
 });
 /*
  * Copyright 2003-2006, 2009, 2017, United States Government, as represented by the Administrator of the
@@ -60214,7 +59958,7 @@ define('formats/kml/styles/KmlSubStyle',[
 define('formats/kml/styles/KmlBalloonStyle',[
     '../KmlElements',
     './KmlSubStyle',
-    '../util/NodeTransformers'
+    '../util/KmlNodeTransformers'
 ], function (
     KmlElements,
     KmlSubStyle,
@@ -60323,7 +60067,7 @@ define('formats/kml/styles/KmlBalloonStyle',[
 define('formats/kml/KmlCamera',[
     './KmlElements',
     './KmlAbstractView',
-    './util/NodeTransformers'
+    './util/KmlNodeTransformers'
 ], function (KmlElements,
              KmlAbstractView,
              NodeTransformers) {
@@ -60477,9 +60221,67 @@ define('formats/kml/KmlCamera',[
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+define('formats/kml/util/KmlChange',[
+	'../KmlElements',
+	'../KmlObject'
+], function(KmlElements,
+			KmlObject){
+	/**
+	 * @augment KmlObject
+	 * @param options
+	 * @constructor
+	 * @alias KmlChange
+	 */
+	var KmlChange = function(options) {
+		KmlObject.call(this, options);
+	};
+
+	KmlChange.prototype = Object.create(KmlObject.prototype);
+
+	Object.defineProperties(KmlChange.prototype, {
+		/**
+		 * All shapes which should be changed with the location where they should be changed.
+		 * @memberof KmlChange.prototype
+		 * @readonly
+		 * @type {KmlObject[]}
+		 */
+		shapes: {
+			get: function(){
+				return this._factory.all(this);
+			}
+		}
+	});
+
+	/**
+	 * @inheritDoc
+	 */
+	KmlChange.prototype.getTagNames = function() {
+		return ['Change'];
+	};
+
+	KmlElements.addKey(KmlChange.prototype.getTagNames()[0], KmlChange);
+
+	return KmlChange;
+});
+/*
+ * Copyright 2003-2006, 2009, 2017, United States Government, as represented by the Administrator of the
+ * National Aeronautics and Space Administration. All rights reserved.
+ *
+ * The NASAWorldWind/WebWorldWind platform is licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 define('formats/kml/styles/KmlColorStyle',[
     './KmlSubStyle',
-    '../util/NodeTransformers'
+    '../util/KmlNodeTransformers'
 ], function (
     KmlSubStyle,
     NodeTransformers
@@ -60674,7 +60476,7 @@ define('formats/kml/styles/KmlPolyStyle',[
     '../../../util/Color',
     './KmlColorStyle',
     './../KmlElements',
-    '../util/NodeTransformers'
+    '../util/KmlNodeTransformers'
 ], function (
     Color,
     KmlColorStyle,
@@ -60767,11 +60569,80 @@ define('formats/kml/styles/KmlPolyStyle',[
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+define('formats/kml/util/KmlHrefResolver',[
+    '../../../util/Promise',
+    '../../../util/WWUtil'
+], function (Promise,
+             WWUtil) {
+    /**
+     * It can handle the format in which is the URL present in the file and transform it to the URL available
+     * for the relevant other concepts.
+     * @param url {String} Representation of the url of the resource.
+     * @param fileCache {KmlFileCache} Cache representing potential links loaded by current KML file.
+     * @constructor
+     * @alias KmlHrefResolver
+     */
+    var KmlHrefResolver = function (url, fileCache) {
+        /**
+         * The url to be resolved. The result will be an URL again. It is possible to load any binary data into
+         * readable URL.
+         */
+        this._url = url;
+
+        /**
+         * File cache used to retrieve the links URL.
+         */
+        this._fileCache = fileCache;
+    };
+
+    /**
+     * It returns relevant string. Either the url directly or retrieved from cache. It means that the cache needs
+     * to resolve the URLs upfront.
+     * @private
+     * @return {String} Either external URL or internal URL representing the information.
+     */
+    KmlHrefResolver.prototype.url = function () {
+        if (WWUtil.startsWith(this._url, 'http://') || WWUtil.startsWith(this._url, 'https://')) {
+            return this._url;
+        } else {
+            var retrieved = this._fileCache.retrieve('kmz;' + this._url);
+            if(!retrieved) {
+                retrieved = this._fileCache.retrieve('href;' + this._url);
+                // Probably relative path.
+                if(!retrieved) {
+                    return this._url;
+                } else {
+                    return retrieved;
+                }
+            } else {
+                return retrieved;
+            }
+        }
+    };
+
+    return KmlHrefResolver;
+});
+/*
+ * Copyright 2003-2006, 2009, 2017, United States Government, as represented by the Administrator of the
+ * National Aeronautics and Space Administration. All rights reserved.
+ *
+ * The NASAWorldWind/WebWorldWind platform is licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 define('formats/kml/KmlLink',[
-    './util/HrefResolver',
+    './util/KmlHrefResolver',
     './KmlElements',
     './KmlObject',
-    './util/NodeTransformers'
+    './util/KmlNodeTransformers'
 ], function (HrefResolver,
              KmlElements,
              KmlObject,
@@ -60967,7 +60838,7 @@ define('formats/kml/KmlLink',[
 define('formats/kml/KmlIcon',[
     './KmlLink',
     './KmlElements',
-    './util/NodeTransformers'
+    './util/KmlNodeTransformers'
 ], function (
     KmlLink,
     KmlElements,
@@ -61073,7 +60944,7 @@ define('formats/kml/styles/KmlIconStyle',[
     './KmlColorStyle',
     './../KmlElements',
     '../KmlIcon',
-    '../util/NodeTransformers'
+    '../util/KmlNodeTransformers'
 ], function (KmlColorStyle,
              KmlElements,
              KmlIcon,
@@ -61232,7 +61103,7 @@ define('formats/kml/styles/KmlIconStyle',[
 define('formats/kml/styles/KmlLabelStyle',[
     './KmlColorStyle',
     '../KmlElements',
-    '../util/NodeTransformers'
+    '../util/KmlNodeTransformers'
 ], function (
     KmlColorStyle,
     KmlElements,
@@ -61307,7 +61178,7 @@ define('formats/kml/styles/KmlLineStyle',[
     '../../../util/Color',
     './KmlColorStyle',
     './../KmlElements',
-    '../util/NodeTransformers'
+    '../util/KmlNodeTransformers'
 ], function (
     Color,
     KmlColorStyle,
@@ -61435,11 +61306,94 @@ define('formats/kml/styles/KmlLineStyle',[
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+define('formats/kml/util/KmlItemIcon',[
+    './KmlHrefResolver',
+    './../KmlElements',
+    '../KmlObject',
+    './KmlNodeTransformers'
+], function (HrefResolver,
+             KmlElements,
+             KmlObject,
+             NodeTransformers) {
+    "use strict";
+
+    /**
+     * Constructs an KmlItemIcon. Application usually don't call this constructor. It is called by {@link KmlFile} as
+     * Objects from KmlFile are read. It is concrete implementation.
+     * @alias KmlItemIcon
+     * @constructor
+     * @classdesc Contains the data associated with Kml Item Icon
+     * @param options {Object}
+     * @param options.objectNode {Node} Node representing the Kml Item Icon.
+     * @throws {ArgumentError} If either the node is null or undefined.
+     * @see https://developers.google.com/kml/documentation/kmlreference#itemicon
+     * @augments KmlObject
+     */
+    var KmlItemIcon = function (options) {
+        KmlObject.call(this, options);
+    };
+
+    KmlItemIcon.prototype = Object.create(KmlObject.prototype);
+
+    Object.defineProperties(KmlItemIcon.prototype, {
+        /**
+         * Specifies the current state of the NetworkLink or Folder. Possible values are open, closed, error,
+         * fetching0, fetching1, and fetching2. These values can be combined by inserting a space between two values
+         * (no comma).
+         * @memberof KmlItemIcon.prototype
+         * @readonly
+         * @type {String}
+         */
+        kmlState: {
+            get: function () {
+                return this._factory.specific(this, {name: 'state', transformer: NodeTransformers.string});
+            }
+        }
+    });
+
+    /**
+     * It returns valid URL usable for remote resources.
+     * @param fileCache {KmlFileCache} Cache needed to retrieve data urls from remote locations.
+     * @returns {String} URL to use.
+     */
+    KmlItemIcon.prototype.kmlHref = function(fileCache) {
+        return new HrefResolver(
+            this._factory.specific(this, {name: 'href', transformer: NodeTransformers.string}), fileCache
+        ).url();
+    };
+
+    /**
+     * @inheritDoc
+     */
+    KmlItemIcon.prototype.getTagNames = function () {
+        return ['ItemIcon'];
+    };
+
+    KmlElements.addKey(KmlItemIcon.prototype.getTagNames()[0], KmlItemIcon);
+
+    return KmlItemIcon;
+});
+/*
+ * Copyright 2003-2006, 2009, 2017, United States Government, as represented by the Administrator of the
+ * National Aeronautics and Space Administration. All rights reserved.
+ *
+ * The NASAWorldWind/WebWorldWind platform is licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 define('formats/kml/styles/KmlListStyle',[
-    '../util/ItemIcon',
+    '../util/KmlItemIcon',
     '../KmlElements',
     './KmlSubStyle',
-    '../util/NodeTransformers'
+    '../util/KmlNodeTransformers'
 ], function (ItemIcon,
              KmlElements,
              KmlSubStyle, 
@@ -61827,11 +61781,11 @@ define('formats/kml/styles/KmlStyle',[
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-define('formats/kml/util/Pair',[
+define('formats/kml/util/KmlPair',[
     './../KmlElements',
     '../KmlObject',
     '../styles/KmlStyleSelector',
-    './NodeTransformers'
+    './KmlNodeTransformers'
 ], function (
     KmlElements,
     KmlObject,
@@ -61841,27 +61795,27 @@ define('formats/kml/util/Pair',[
     "use strict";
 
     /**
-     * Constructs a Pair. Application usually don't call this constructor. It is called by {@link KmlFile} as
+     * Constructs a KmlPair. Application usually don't call this constructor. It is called by {@link KmlFile} as
      * Objects from KmlFile are read. It is concrete implementation.
-     * @alias Pair
+     * @alias KmlPair
      * @constructor
-     * @classdesc Contains the data associated with Kml Pair
+     * @classdesc Contains the data associated with Kml KmlPair
      * @param options {Object}
-     * @param options.objectNode {Node} Node representing the Kml Pair.
+     * @param options.objectNode {Node} Node representing the Kml KmlPair.
      * @throws {ArgumentError} If either the node is null or undefined.
      * @see https://developers.google.com/kml/documentation/kmlreference#pair
      * @augments KmlObject
      */
-    var Pair = function (options) {
+    var KmlPair = function (options) {
         KmlObject.call(this, options);
     };
 
-    Pair.prototype = Object.create(KmlObject.prototype);
+    KmlPair.prototype = Object.create(KmlObject.prototype);
 
-    Object.defineProperties(Pair.prototype, {
+    Object.defineProperties(KmlPair.prototype, {
         /**
          * Identifies the key
-         * @memberof Pair.prototype
+         * @memberof KmlPair.prototype
          * @readonly
          * @type {String}
          */
@@ -61873,7 +61827,7 @@ define('formats/kml/util/Pair',[
 
         /**
          * References the style using Url. If part of the same document start with the prefix #
-         * @memberof Pair.prototype
+         * @memberof KmlPair.prototype
          * @readonly
          * @type {String}
          */
@@ -61884,8 +61838,8 @@ define('formats/kml/util/Pair',[
         },
 
         /**
-         * Definition of styles applied to this Pair.
-         * @memberof Pair.prototype
+         * Definition of styles applied to this KmlPair.
+         * @memberof KmlPair.prototype
          * @readonly
          * @type {KmlStyle}
          */
@@ -61901,20 +61855,20 @@ define('formats/kml/util/Pair',[
     /**
      * @inheritDoc
      */
-    Pair.prototype.getTagNames = function () {
+    KmlPair.prototype.getTagNames = function () {
         return ['Pair'];
     };
 
     /**
      * @inheritDoc
      */
-    Pair.prototype.getStyle = function(styleResolver) {
+    KmlPair.prototype.getStyle = function(styleResolver) {
         return styleResolver.handleRemoteStyle(this.kmlStyleUrl, this.kmlStyleSelector);
     };
 
-    KmlElements.addKey(Pair.prototype.getTagNames()[0], Pair);
+    KmlElements.addKey(KmlPair.prototype.getTagNames()[0], KmlPair);
 
-    return Pair;
+    return KmlPair;
 });
 /*
  * Copyright 2003-2006, 2009, 2017, United States Government, as represented by the Administrator of the
@@ -61935,7 +61889,7 @@ define('formats/kml/util/Pair',[
 define('formats/kml/styles/KmlStyleMap',[
     '../KmlElements',
     './KmlSubStyle',
-    '../util/Pair',
+    '../util/KmlPair',
     '../../../util/Promise'
 ], function (KmlElements,
              KmlSubStyle,
@@ -62047,7 +62001,7 @@ define('formats/kml/styles/KmlStyleMap',[
 define('formats/kml/KmlTimeSpan',[
     './KmlElements',
     './KmlTimePrimitive',
-    './util/NodeTransformers'
+    './util/KmlNodeTransformers'
 ], function(
     KmlElements,
     KmlTimePrimitive,
@@ -62134,7 +62088,7 @@ define('formats/kml/KmlTimeSpan',[
 define('formats/kml/KmlTimeStamp',[
     './KmlElements',
     './KmlTimePrimitive',
-    './util/NodeTransformers'
+    './util/KmlNodeTransformers'
 ], function (KmlElements,
              KmlTimePrimitive,
              NodeTransformers) {
@@ -73886,25 +73840,25 @@ define('formats/kml/KmzFile',[
 
     return KmzFile;
 });
-define('formats/kml/util/RefreshListener',[], function(){
+define('formats/kml/util/KmlRefreshListener',[], function(){
 	/**
 	 * Utility class which is associated with every Kml file. It allows parts of the KML to ask for the refresh which will happen in the correct time.
 	 * Main usage is in the different modes of refresh in the NetworkLink / Link.
 	 * The refresh listener works in this fashion:
 	 * 	User, which is some of the classes supporting refreshes adds event to the Refresh listener. Event has some content and
 	 * @constructor
-	 * @alias RefreshListener
+	 * @alias KmlRefreshListener
 	 */
-	var RefreshListener = function(){
+	var KmlRefreshListener = function(){
 		this.currentActiveEvents = [];
 	};
 
 	/**
 	 * It adds event which should be scheduled later on. It is necessary to store it in a structure, which will return
 	 * what is to be scheduled in a fast manner.
-	 * @param event {RefreshListener.Event} Event which should be part of the Refresh listeners internals.
+	 * @param event {KmlRefreshListener.Event} Event which should be part of the Refresh listeners internals.
 	 */
-	RefreshListener.prototype.addEvent = function(event) {
+	KmlRefreshListener.prototype.addEvent = function(event) {
 		var self = this;
 		setTimeout(function(){
 			self.currentActiveEvents.push(event);
@@ -73913,29 +73867,29 @@ define('formats/kml/util/RefreshListener',[], function(){
 
 	/**
 	 * All events, which weren't scheduled and should still be.
-	 * @return {RefreshListener.Event[]} It returns all events which should have been scheduled by now.
+	 * @return {KmlRefreshListener.Event[]} It returns all events which should have been scheduled by now.
 	 */
-	RefreshListener.prototype.getActiveEvents = function() {
+	KmlRefreshListener.prototype.getActiveEvents = function() {
 		var activeEvents = this.currentActiveEvents.slice();
 		this.currentActiveEvents = [];
 		return activeEvents;
 	};
 
 	/**
-	 * It represents simple Event used inside of the RefreshListener.
-	 * @alias RefreshListener.Event
+	 * It represents simple Event used inside of the KmlRefreshListener.
+	 * @alias KmlRefreshListener.Event
 	 * @constructor
 	 * @param type {String} type of the event. The consumers decides whether the event is relevant for them based on this type.
 	 * @param payload {Object} Object representing payload of the event. It is possible to schedule event with some additional information
 	 * @param time {Number} Number of milliseconds before the event should occur.
 	 */
-	RefreshListener.Event = function(type, time, payload) {
+	KmlRefreshListener.Event = function(type, time, payload) {
 		this.type = type;
 		this.payload = payload;
 		this.time = time;
 	};
 
-	return RefreshListener;
+	return KmlRefreshListener;
 });
 /*
  * Copyright 2003-2006, 2009, 2017, United States Government, as represented by the Administrator of the
@@ -73953,7 +73907,7 @@ define('formats/kml/util/RefreshListener',[], function(){
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-define('formats/kml/util/RemoteFile',[
+define('formats/kml/util/KmlRemoteFile',[
     '../../../error/ArgumentError',
     '../../../util/Logger',
     '../../../util/Promise'
@@ -73964,15 +73918,15 @@ define('formats/kml/util/RemoteFile',[
 ) {
     "use strict";
     /**
-     * Creates representation of RemoteFile. In order to load an object it is necessary to run get function on created object.
+     * Creates representation of KmlRemoteFile. In order to load an object it is necessary to run get function on created object.
      * @param options {Object}
      * @param options.ajax {Boolean} If we should use plain AJAX
      * @param options.zip {Boolean} If we are downloading kmz
      * @param options.responseType {String} Optional responseType applied in specific circumstances for the kmz
      * @constructor
-     * @alias RemoteFile
+     * @alias KmlRemoteFile
      */
-    var RemoteFile = function(options) {
+    var KmlRemoteFile = function(options) {
         if(!options.ajax && !options.zip) {
             throw new ArgumentError(
                 Logger.logMessage(Logger.LEVEL_SEVERE, "RemoteDocument", "constructor",
@@ -73987,7 +73941,7 @@ define('formats/kml/util/RemoteFile',[
      * It retrieves the current file. Usually it is used only once, but it can be used multiple times.
      * @returns {Promise}
      */
-    RemoteFile.prototype.get = function() {
+    KmlRemoteFile.prototype.get = function() {
         var options = this.options;
         if(options.ajax) {
             return this.ajax(options.url, options);
@@ -74010,7 +73964,7 @@ define('formats/kml/util/RemoteFile',[
      * @param options.responseType {String} If set, rewrites default responseType.
      * @returns {Promise} Promise of the data.
      */
-    RemoteFile.prototype.ajax = function(url, options) {
+    KmlRemoteFile.prototype.ajax = function(url, options) {
         // Return promise.
         return new Promise(function (resolve, reject) {
             var xhr = new XMLHttpRequest();
@@ -74053,7 +74007,7 @@ define('formats/kml/util/RemoteFile',[
         });
     };
 
-    return RemoteFile;
+    return KmlRemoteFile;
 });
 /*
  * Copyright 2003-2006, 2009, 2017, United States Government, as represented by the Administrator of the
@@ -74071,7 +74025,7 @@ define('formats/kml/util/RemoteFile',[
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-define('formats/kml/util/StyleResolver',[
+define('formats/kml/util/KmlStyleResolver',[
     '../KmlFile',
     '../styles/KmlStyle',
     '../../../util/Logger',
@@ -74084,9 +74038,9 @@ define('formats/kml/util/StyleResolver',[
 
     /**
      * Provide functions for handling styles.
-     * @exports StyleResolver
+     * @exports KmlStyleResolver
      */
-    var StyleResolver = function (fileCache) {
+    var KmlStyleResolver = function (fileCache) {
         this._fileCache = fileCache;
     };
 
@@ -74096,13 +74050,13 @@ define('formats/kml/util/StyleResolver',[
      * @param styleSelector {KmlStyleSelector} Style to be applied. Optional.
      * @return {Promise} Promise of the style.
      */
-    StyleResolver.prototype.handleRemoteStyle = function (styleUrl, styleSelector) {
+    KmlStyleResolver.prototype.handleRemoteStyle = function (styleUrl, styleSelector) {
         if (styleUrl) {
             return this.handleStyleUrl(styleUrl);
         } else if (styleSelector) {
             return this.handleStyleSelector(styleSelector);
         } else {
-            Logger.logMessage(Logger.LEVEL_INFO, "StyleResolver", "handleRemoteStyle", "Style was null.");
+            Logger.logMessage(Logger.LEVEL_INFO, "KmlStyleResolver", "handleRemoteStyle", "Style was null.");
             return Promise.resolve(KmlStyle.default());
         }
     };
@@ -74113,7 +74067,7 @@ define('formats/kml/util/StyleResolver',[
      * @return {Promise} Promise of the style.
      * @private
      */
-    StyleResolver.prototype.handleStyleUrl = function (styleUrl) {
+    KmlStyleResolver.prototype.handleStyleUrl = function (styleUrl) {
         var self = this;
         return this.handlePromiseOfFile(styleUrl).then(function (kmlFile) {
             return kmlFile.resolveStyle(styleUrl);
@@ -74132,7 +74086,7 @@ define('formats/kml/util/StyleResolver',[
      * @returns {Promise} Promise of the resolved KmlFile
      * @private
      */
-    StyleResolver.prototype.handlePromiseOfFile = function (styleUrl) {
+    KmlStyleResolver.prototype.handlePromiseOfFile = function (styleUrl) {
         var file = this._fileCache.retrieve(styleUrl);
         if (!file) {
             // This is an issue of circular dependency again.
@@ -74152,7 +74106,7 @@ define('formats/kml/util/StyleResolver',[
      * @returns {Promise|*}
      * @private
      */
-    StyleResolver.prototype.handleStyleSelector = function (styleSelector) {
+    KmlStyleResolver.prototype.handleStyleSelector = function (styleSelector) {
         if (styleSelector.isMap) {
             return styleSelector.resolve(this);
         } else {
@@ -74165,7 +74119,7 @@ define('formats/kml/util/StyleResolver',[
         }
     };
 
-    return StyleResolver;
+    return KmlStyleResolver;
 });
 /*
  * Copyright 2003-2006, 2009, 2017, United States Government, as represented by the Administrator of the
@@ -74273,9 +74227,9 @@ define('formats/kml/KmlFile',[
     './KmzFile',
     '../../util/Logger',
     '../../util/Promise',
-    './util/RefreshListener',
-    './util/RemoteFile',
-    './util/StyleResolver',
+    './util/KmlRefreshListener',
+    './util/KmlRemoteFile',
+    './util/KmlStyleResolver',
     '../../util/XmlDocument',
     '../../util/WWUtil'
 ], function (ArgumentError,
@@ -74472,7 +74426,7 @@ define('formats/kml/KmlFile',[
 define('formats/kml/KmlLatLonAltBox',[
     './KmlElements',
     './KmlObject',
-    './util/NodeTransformers'
+    './util/KmlNodeTransformers'
 ], function (KmlElements,
              KmlObject, 
              NodeTransformers) {
@@ -74601,7 +74555,7 @@ define('formats/kml/KmlLatLonAltBox',[
 define('formats/kml/KmlLod',[
     './KmlElements',
     './KmlObject',
-    './util/NodeTransformers'
+    './util/KmlNodeTransformers'
 ], function (KmlElements,
              KmlObject, 
              NodeTransformers) {
@@ -74719,7 +74673,7 @@ define('formats/kml/KmlRegion',[
     './KmlLod',
     './KmlObject',
     './styles/KmlStyle',
-    './util/NodeTransformers',
+    './util/KmlNodeTransformers',
     '../../geom/Sector'
 ], function (BoundingBox,
              Color,
@@ -74835,7 +74789,7 @@ define('formats/kml/features/KmlFeature',[
     '../styles/KmlStyleSelector',
     '../KmlRegion',
     '../KmlTimePrimitive',
-    '../util/NodeTransformers',
+    '../util/KmlNodeTransformers',
     '../../../util/Promise'
 ], function (KmlObject,
              KmlAbstractView,
@@ -75306,40 +75260,157 @@ define('formats/kml/controls/KmlControls',['../../../util/Logger'], function (Lo
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-define('formats/kml/util/Schema',[
+define('formats/kml/util/KmlCreate',[
+	'../KmlElements',
+	'../KmlObject'
+], function(KmlElements, 
+			KmlObject){
+	/**
+	 *
+	 * @param options {Object}
+	 * @augments KmlObject
+	 * @constructor
+	 * @alias KmlCreate
+	 */
+	var KmlCreate = function(options) {
+		KmlObject.call(this, options);
+	};
+
+	KmlCreate.prototype = Object.create(KmlObject.prototype);
+	
+	Object.defineProperties(KmlCreate.prototype, {
+		/**
+		 * All shapes which should be created with the location where they should be created.
+		 * @memberof KmlCreate.prototype
+		 * @readonly
+		 * @type {KmlObject[]}
+		 */
+		shapes: {
+			get: function(){
+				return this._factory.all(this);
+			}
+		}
+	});
+
+	/**
+	 * @inheritDoc
+	 */
+	KmlCreate.prototype.getTagNames = function() {
+		return ['Create'];
+	};
+	
+	KmlElements.addKey(KmlCreate.prototype.getTagNames()[0], KmlCreate);
+
+	return KmlCreate;
+});
+/*
+ * Copyright 2003-2006, 2009, 2017, United States Government, as represented by the Administrator of the
+ * National Aeronautics and Space Administration. All rights reserved.
+ *
+ * The NASAWorldWind/WebWorldWind platform is licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+define('formats/kml/util/KmlDelete',[
+	'../KmlElements',
+	'../KmlObject'
+], function(KmlElements,
+			KmlObject){
+	/**
+	 * @augments KmlObject
+	 * @param options
+	 * @constructor
+	 * @alias KmlDelete
+	 */
+	var KmlDelete = function(options) {
+		KmlObject.call(this, options);
+	};
+
+	KmlDelete.prototype = Object.create(KmlObject.prototype);
+
+	Object.defineProperties(KmlDelete.prototype, {
+		/**
+		 * All shapes which should be deleted
+		 * @memberof KmlDelete.prototype
+		 * @readonly
+		 * @type {KmlObject[]}
+		 */
+		shapes: {
+			get: function(){
+				return this._factory.all(this);
+			}
+		}
+	});
+
+	/**
+	 * @inheritDoc
+	 */
+	KmlDelete.prototype.getTagNames = function() {
+		return ['Delete'];
+	};
+
+	KmlElements.addKey(KmlDelete.prototype.getTagNames()[0], KmlDelete);
+
+	return KmlDelete;
+});
+/*
+ * Copyright 2003-2006, 2009, 2017, United States Government, as represented by the Administrator of the
+ * National Aeronautics and Space Administration. All rights reserved.
+ *
+ * The NASAWorldWind/WebWorldWind platform is licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+define('formats/kml/util/KmlSchema',[
     './../KmlElements',
     '../KmlObject'
 ], function (KmlElements,
              KmlObject) {
     "use strict";
     /**
-     * Constructs an Schema. Application usually don't call this constructor. It is called by {@link KmlFile} as
+     * Constructs an KmlSchema. Application usually don't call this constructor. It is called by {@link KmlFile} as
      * Objects from KmlFile are read. It is concrete implementation.
-     * @alias Schema
+     * @alias KmlSchema
      * @constructor
-     * @classdesc Contains the data associated with Kml Schema
+     * @classdesc Contains the data associated with Kml KmlSchema
      * @param options {Object}
-     * @param options.objectNode {Node} Node representing the Kml Schema.
+     * @param options.objectNode {Node} Node representing the Kml KmlSchema.
      * @throws {ArgumentError} If either the node is null or undefined.
      * @see https://developers.google.com/kml/documentation/kmlreference#itemicon
      * @augments KmlObject
      */
-    var Schema = function (options) {
+    var KmlSchema = function (options) {
         KmlObject.call(this, options);
     };
 
-    Schema.prototype = Object.create(KmlObject.prototype);
+    KmlSchema.prototype = Object.create(KmlObject.prototype);
 
     /**
      * @inheritDoc
      */
-    Schema.prototype.getTagNames = function () {
+    KmlSchema.prototype.getTagNames = function () {
         return ['Schema'];
     };
 
-    KmlElements.addKey(Schema.prototype.getTagNames()[0], Schema);
+    KmlElements.addKey(KmlSchema.prototype.getTagNames()[0], KmlSchema);
 
-    return Schema;
+    return KmlSchema;
 });
 /*
  * Copyright 2003-2006, 2009, 2017, United States Government, as represented by the Administrator of the
@@ -75361,7 +75432,7 @@ define('formats/kml/features/KmlDocument',[
     './KmlContainer',
     '../KmlElements',
     './KmlFeature',
-    '../util/Schema'
+    '../util/KmlSchema'
 ], function (
     KmlContainer,
     KmlElements,
@@ -75551,7 +75622,7 @@ define('formats/kml/geom/KmlGeometry',[
 define('formats/kml/KmlLatLonBox',[
     './KmlElements',
     './KmlObject',
-    './util/NodeTransformers'
+    './util/KmlNodeTransformers'
 ], function (KmlElements,
              KmlObject,
              NodeTransformers) {
@@ -75668,7 +75739,7 @@ define('formats/kml/KmlLatLonBox',[
 define('formats/kml/KmlLatLonQuad',[
     './KmlElements',
     './KmlObject',
-    './util/NodeTransformers'
+    './util/KmlNodeTransformers'
 ], function (KmlElements,
              KmlObject,
              NodeTransformers) {
@@ -75742,7 +75813,7 @@ define('formats/kml/KmlLatLonQuad',[
 define('formats/kml/features/KmlOverlay',[
     './KmlFeature',
     './../KmlIcon',
-    '../util/NodeTransformers'
+    '../util/KmlNodeTransformers'
 ], function (KmlFeature,
              KmlIcon,
              NodeTransformers) {
@@ -75846,7 +75917,7 @@ define('formats/kml/features/KmlGroundOverlay',[
     '../KmlLatLonBox',
     '../KmlLatLonQuad',
     './KmlOverlay',
-    '../util/NodeTransformers',
+    '../util/KmlNodeTransformers',
     '../../../geom/Sector',
     '../../../shapes/SurfaceImage'
 ], function (
@@ -75973,6 +76044,113 @@ define('formats/kml/features/KmlGroundOverlay',[
     KmlElements.addKey(KmlGroundOverlay.prototype.getTagNames()[0], KmlGroundOverlay);
 
     return KmlGroundOverlay;
+});
+/*
+ * Copyright 2003-2006, 2009, 2017, United States Government, as represented by the Administrator of the
+ * National Aeronautics and Space Administration. All rights reserved.
+ *
+ * The NASAWorldWind/WebWorldWind platform is licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+define('formats/kml/util/KmlImagePyramid',[
+    '../KmlElements',
+    '../KmlObject',
+    '../util/KmlNodeTransformers'
+], function (KmlElements,
+             KmlObject,
+             KmlNodeTransformers) {
+    "use strict";
+    /**
+     * Constructs an KmlImagePyramid. Application usually don't call this constructor. It is called by {@link KmlFile} as
+     * Objects from KmlFile are read. It is concrete implementation.
+     * @alias KmlImagePyramid
+     * @constructor
+     * @classdesc Contains the data associated with Kml Image Pyramid
+     * @param options {Object}
+     * @param options.objectNode {Node} Node representing the Kml Image Pyramid.
+     * @throws {ArgumentError} If either the node is null or undefined.
+     * @see https://developers.google.com/kml/documentation/kmlreference#imagepyramid
+     * @augments KmlObject
+     */
+    var KmlImagePyramid = function (options) {
+        KmlObject.call(this, options);
+    };
+
+    KmlImagePyramid.prototype = Object.create(KmlObject.prototype);
+
+    Object.defineProperties(KmlImagePyramid.prototype, {
+        /**
+         * Size of the tiles, in pixels. Tiles must be square, and &lt;tileSize&gt; must be a power of 2. A tile size of
+         * 256
+         * (the default) or 512 is recommended. The original image is divided into tiles of this size, at varying
+         * resolutions.
+         * @memberof KmlImagePyramid.prototype
+         * @readonly
+         * @type {Number}
+         */
+        kmlTileSize: {
+            get: function () {
+                return this._factory.specific(this, {name: 'tileSize', transformer: KmlNodeTransformers.number});
+            }
+        },
+
+        /**
+         * Width in pixels of the original image.
+         * @memberof KmlImagePyramid.prototype
+         * @readonly
+         * @type {Number}
+         */
+        kmlMaxWidth: {
+            get: function () {
+                return this._factory.specific(this, {name: 'maxWidth', transformer: KmlNodeTransformers.number});
+            }
+        },
+
+        /**
+         * Height in pixels of the original image.
+         * @memberof KmlImagePyramid.prototype
+         * @readonly
+         * @type {Number}
+         */
+        kmlMaxHeight: {
+            get: function () {
+                return this._factory.specific(this, {name: 'maxHeight', transformer: KmlNodeTransformers.number});
+            }
+        },
+
+        /**
+         * Specifies where to begin numbering the tiles in each layer of the pyramid. A value of lowerLeft specifies
+         * that row 1, column 1 of each layer is in the bottom left corner of the grid.
+         * @memberof KmlImagePyramid.prototype
+         * @readonly
+         * @type {String}
+         */
+        kmlGridOrigin: {
+            get: function () {
+                return this._factory.specific(this, {name: 'gridOrigin', transformer: KmlNodeTransformers.string});
+            }
+        }
+    });
+
+    /**
+     * @inheritDoc
+     */
+    KmlImagePyramid.prototype.getTagNames = function () {
+        return ['ImagePyramid'];
+    };
+
+    KmlElements.addKey(KmlImagePyramid.prototype.getTagNames()[0], KmlImagePyramid);
+
+    return KmlImagePyramid;
 });
 /*
  * Copyright 2003-2006, 2009, 2017, United States Government, as represented by the Administrator of the
@@ -76637,7 +76815,7 @@ define('formats/kml/geom/KmlLineString',[
     './KmlGeometry',
     '../styles/KmlStyle',
     '../../../geom/Location',
-    '../util/NodeTransformers',
+    '../util/KmlNodeTransformers',
     '../../../shapes/Path',
     '../../../geom/Position',
     '../../../shapes/ShapeAttributes',
@@ -76914,7 +77092,7 @@ define('formats/kml/geom/KmlLinearRing',[
 define('formats/kml/KmlLocation',[
     './KmlElements',
     './KmlObject',
-    './util/NodeTransformers'
+    './util/KmlNodeTransformers'
 ], function (
     KmlElements,
     KmlObject, 
@@ -77008,7 +77186,7 @@ define('formats/kml/KmlLocation',[
 define('formats/kml/KmlLookAt',[
     './KmlAbstractView',
     './KmlElements',
-    './util/NodeTransformers',
+    './util/KmlNodeTransformers',
     '../../geom/Position'
 ], function (KmlAbstractView,
              KmlElements,
@@ -77277,13 +77455,65 @@ define('formats/kml/geom/KmlMultiGeometry',[
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+define('formats/kml/geom/KmlMultiTrack',[
+    './../KmlElements',
+    './KmlGeometry'
+], function (KmlElements,
+             KmlGeometry) {
+    "use strict";
+
+    /**
+     * Constructs an KmlMultiTrack. Applications usually don't call this constructor. It is called by {@link KmlFile} as
+     * objects from Kml file are read. This object is already concrete implementation.
+     * @alias KmlMultiTrack
+     * @classdesc Contains the data associated with MultiTrack node.
+     * @param options {Object}
+     * @param options.objectNode {Node} Node representing MultiTrack.
+     * @constructor
+     * @throws {ArgumentError} If the node is null or undefined.
+     * @see https://developers.google.com/kml/documentation/kmlreference#gxmultitrack
+     * @augments KmlGeometry
+     */
+    var KmlMultiTrack = function (options) {
+        KmlGeometry.call(this, options);
+    };
+
+    KmlMultiTrack.prototype = Object.create(KmlGeometry.prototype);
+
+    /**
+     * @inheritDoc
+     */
+    KmlMultiTrack.prototype.getTagNames = function () {
+        return ['gx:MultiTrack'];
+    };
+
+    KmlElements.addKey(KmlMultiTrack.prototype.getTagNames()[0], KmlMultiTrack);
+
+    return KmlMultiTrack;
+});
+/*
+ * Copyright 2003-2006, 2009, 2017, United States Government, as represented by the Administrator of the
+ * National Aeronautics and Space Administration. All rights reserved.
+ *
+ * The NASAWorldWind/WebWorldWind platform is licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 define('formats/kml/features/KmlNetworkLink',[
     './../KmlElements',
     './KmlFeature',
     '../KmlFile',
     '../KmlLink',
-    '../util/NodeTransformers',
-    '../util/RefreshListener'
+    '../util/KmlNodeTransformers',
+    '../util/KmlRefreshListener'
 ], function (KmlElements,
              KmlFeature,
              KmlFile,
@@ -77476,10 +77706,307 @@ define('formats/kml/features/KmlNetworkLink',[
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+define('formats/kml/util/KmlUpdate',[
+	'./KmlChange',
+	'./KmlCreate',
+	'./KmlDelete',
+	'../KmlElements',
+	'../KmlObject',
+	'./KmlNodeTransformers'
+], function(Change,
+			Create,
+			Delete,
+			KmlElements,
+			KmlObject,
+			NodeTransformers){
+	var KmlUpdate = function(options) {
+		KmlObject.call(this, options);
+	};
+
+	KmlUpdate.prototype = Object.create(KmlObject.prototype);
+
+	Object.defineProperties(KmlUpdate.prototype, {
+		/**
+		 * A URL that specifies the .kml or .kmz file whose data (within Google Earth) is to be modified by an <KmlUpdate> element. This KML file must already have been loaded via a <NetworkLink>. In that file, the element to be modified must already have an explicit id attribute defined for it.
+		 * @memberof KmlUpdate.prototype
+		 * @readonly
+		 * @type {String}
+		 */
+		targetHref: {
+			get: function() {
+				return this._factory.specific(this, {name: 'minRefreshPeriod', transformer: NodeTransformers.number});
+			}
+		},
+
+		/**
+		 * Modifies the values in an element that has already been loaded with a <NetworkLink>. Within the Change element, the child to be modified must include a targetId attribute that references the original element's id.
+		 This update can be considered a "sparse update": in the modified element, only the values listed in <Change> are replaced; all other values remained untouched. When <Change> is applied to a set of coordinates, the new coordinates replace the current coordinates.
+		 Children of this element are the element(s) to be modified, which are identified by the targetId attribute.
+		 * @memberof KmlUpdate.prototype
+		 * @readonly
+		 * @type {Change}
+		 */
+		Change: {
+			get: function() {
+				return this._factory.any(this, {
+					name: Change.prototype.getTagNames()
+				});
+			}
+		},
+
+		/**
+		 * Adds new elements to a Folder or Document that has already been loaded via a <NetworkLink>. The <targetHref> element in <KmlUpdate> specifies the URL of the .kml or .kmz file that contained the original Folder or Document. Within that file, the Folder or Document that is to contain the new data must already have an explicit id defined for it. This id is referenced as the targetId attribute of the Folder or Document within <Create> that contains the element to be added.
+		 Once an object has been created and loaded into Google Earth, it takes on the URL of the original parent Document of Folder. To perform subsequent updates to objects added with this KmlUpdate/Create mechanism, set <targetHref> to the URL of the original Document or Folder (not the URL of the file that loaded the intervening updates).
+		 * @memberof KmlUpdate.prototype
+		 * @readonly
+		 * @type {Create}
+		 */
+		Create: {
+			get: function() {
+				return this._factory.any(this, {
+					name: Create.prototype.getTagNames()
+				});
+			}
+		},
+
+		/**
+		 * Deletes features from a complex element that has already been loaded via a <NetworkLink>. The <targetHref> element in <KmlUpdate> specifies the .kml or .kmz file containing the data to be deleted. Within that file, the element to be deleted must already have an explicit id defined for it. The <Delete> element references this id in the targetId attribute.
+		 Child elements for <Delete>, which are the only elements that can be deleted, are Document, Folder, GroundOverlay, Placemark, and ScreenOverlay.
+		 * @memberof KmlUpdate.prototype
+		 * @readonly
+		 * @type {Delete}
+		 */
+		Delete: {
+			get: function() {
+				return this._factory.any(this, {
+					name: Delete.prototype.getTagNames()
+				});
+			}
+		}
+	});
+
+	/**
+	 * @inheritDoc
+	 */
+	KmlUpdate.prototype.getTagNames = function() {
+		return ['Update'];
+	};
+
+	KmlElements.addKey(KmlUpdate.prototype.getTagNames()[0], KmlUpdate);
+
+	return KmlUpdate;
+});
+/*
+ * Copyright 2003-2006, 2009, 2017, United States Government, as represented by the Administrator of the
+ * National Aeronautics and Space Administration. All rights reserved.
+ *
+ * The NASAWorldWind/WebWorldWind platform is licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+define('formats/kml/util/KmlNetworkLinkControl',[
+	'../KmlAbstractView',
+	'../KmlElements',
+	'../KmlObject',
+	'./KmlNodeTransformers',
+	'./KmlUpdate'
+], function (KmlAbstractView,
+			 KmlElements,
+			 KmlObject,
+			 NodeTransformers,
+			 Update) {
+	/**
+	 * Controls the behavior of files fetched by a <NetworkLink>. It is direct descendant of kml and there should always
+     * be maximum one per document.
+	 * @alias KmlNetworkLinkControl
+	 * @constructor
+	 * @augments KmlObject
+	 */
+	var KmlNetworkLinkControl = function(options) {
+		KmlObject.call(this, options);
+	};
+
+	KmlNetworkLinkControl.prototype = Object.create(KmlObject.prototype);
+
+	Object.defineProperties(KmlNetworkLinkControl.prototype, {
+		/**
+		 * Specified in seconds, <minRefreshPeriod> is the minimum allowed time between fetches of the file. This
+		 * parameter allows servers to throttle fetches of a particular file and to tailor refresh rates to the expected
+		 * rate of change to the data. For example, a user might set a link refresh to 5 seconds, but you could set your
+		 * minimum refresh period to 3600 to limit refresh updates to once every hour.
+		 * @memberof KmlNetworkLinkControl.prototype
+		 * @readonly
+		 * @type {Number}
+		 */
+		minRefreshPeriod: {
+			get: function() {
+				return this._factory.specific(this, {name: 'minRefreshPeriod', transformer: NodeTransformers.number});
+			}
+		},
+
+		/**
+		 * Specified in seconds, <maxSessionLength> is the maximum amount of time for which the client NetworkLink can
+         * remain connected. The default value of -1 indicates not to terminate the session explicitly.
+		 * @memberof KmlNetworkLinkControl.prototype
+		 * @readonly
+		 * @type {Number}
+		 */
+		maxSessionLength: {
+			get: function() {
+				return this._factory.specific(this, {name: 'maxSessionLength', transformer: NodeTransformers.number});
+			}
+		},
+
+		/**
+		 * Use this element to append a string to the URL query on the next refresh of the network link. You can use
+         * this data in your script to provide more intelligent handling on the server side, including version querying
+         * and conditional file delivery.
+		 * @memberof KmlNetworkLinkControl.prototype
+		 * @readonly
+		 * @type {String}
+		 */
+		cookie: {
+			get: function() {
+				return this._factory.specific(this, {name: 'cookie', transformer: NodeTransformers.string});
+			}
+		},
+
+		/**
+		 * You can deliver a pop-up message, such as usage guidelines for your network link. The message appears when
+         * the network link is first loaded into Google Earth, or when it is changed in the network link control.
+		 * @memberof KmlNetworkLinkControl.prototype
+		 * @readonly
+		 * @type {String}
+		 */
+		message: {
+			get: function() {
+				return this._factory.specific(this, {name: 'message', transformer: NodeTransformers.string});
+			}
+		},
+
+		/**
+		 * You can control the name of the network link from the server, so that changes made to the name on the client
+         * side are overridden by the server.
+		 * @memberof KmlNetworkLinkControl.prototype
+		 * @readonly
+		 * @type {String}
+		 */
+		linkName: {
+			get: function() {
+				return this._factory.specific(this, {name: 'linkName', transformer: NodeTransformers.string});
+			}
+		},
+
+		/**
+		 * You can control the description of the network link from the server, so that changes made to the description
+         * on the client side are overridden by the server.You can control the description of the network link from the
+         * server, so that changes made to the description on the client side are overridden by the server.
+		 * @memberof KmlNetworkLinkControl.prototype
+		 * @readonly
+		 * @type {String}
+		 */
+		linkDescription: {
+			get: function() {
+				return this._factory.specific(this, {name: 'linkDescription', transformer: NodeTransformers.string});
+			}
+		},
+
+		/**
+		 * You can control the snippet for the network link from the server, so that changes made to the snippet on the
+         * client side are overridden by the server. <linkSnippet> has a maxLines attribute, an integer that specifies
+         * the maximum number of lines to display.
+		 * @memberof KmlNetworkLinkControl.prototype
+		 * @readonly
+		 * @type {String}
+		 */
+		linkSnippet: {
+			get: function() {
+				return this._factory.specific(this, {name: 'linkSnippet', transformer: NodeTransformers.string});
+			}
+		},
+
+		/**
+		 * You can specify a date/time at which the link should be refreshed. This specification takes effect only if
+         * the <refreshMode> in <Link> has a value of onExpire. See <refreshMode>
+		 * @memberof KmlNetworkLinkControl.prototype
+		 * @readonly
+		 * @type {Date}
+		 */
+		expires: {
+			get: function() {
+				return this._factory.specific(this, {name: 'expires', transformer: NodeTransformers.date});
+			}
+		},
+
+		/**
+		 * With <Update>, you can specify any number of Change, Create, and Delete tags for a .kml file or .kmz archive
+         * that has previously been loaded with a network link. See <Update>.
+		 * @memberof KmlNetworkLinkControl.prototype
+		 * @readonly
+		 * @type {Update}
+		 */
+		Update: {
+			get: function() {
+				return this._factory.any(this, {
+					name: Update.prototype.getTagNames()
+				});
+			}
+		},
+
+		/**
+		 * Either Camera or LookAt which will be used to fly to the location whenever the
+		 * @memberof KmlNetworkLinkControl.prototype
+		 * @readonly
+		 * @type {AbstractView}
+		 */
+		AbstractView: {
+			get: function() {
+				return this._factory.any(this, {
+					name: KmlAbstractView.prototype.getTagNames()
+				});
+			}
+		}
+	});
+
+	/**
+	 * @inheritDoc
+	 */
+	KmlNetworkLinkControl.prototype.getTagNames = function() {
+		return ['NetworkLinkControl'];
+	};
+
+	KmlElements.addKey(KmlNetworkLinkControl.prototype.getTagNames()[0], KmlNetworkLinkControl);
+
+	return KmlNetworkLinkControl;
+});
+/*
+ * Copyright 2003-2006, 2009, 2017, United States Government, as represented by the Administrator of the
+ * National Aeronautics and Space Administration. All rights reserved.
+ *
+ * The NASAWorldWind/WebWorldWind platform is licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 define('formats/kml/KmlOrientation',[
     './KmlElements',
     './KmlObject',
-    './util/NodeTransformers'
+    './util/KmlNodeTransformers'
 ], function (KmlElements,
              KmlObject,
              NodeTransformers) {
@@ -77579,7 +78106,7 @@ define('formats/kml/geom/KmlPoint',[
     '../KmlElements',
     './KmlGeometry',
     '../../../geom/Location',
-    '../util/NodeTransformers',
+    '../util/KmlNodeTransformers',
     '../../../shapes/Polygon',
     '../../../geom/Position'
 ], function(
@@ -77693,18 +78220,18 @@ define('formats/kml/geom/KmlPoint',[
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-define('formats/kml/util/ViewVolume',[
+define('formats/kml/util/KmlViewVolume',[
     '../KmlElements',
     '../KmlObject',
-    './NodeTransformers'
+    './KmlNodeTransformers'
 ], function (KmlElements,
              KmlObject,
              NodeTransformers) {
     "use strict";
     /**
-     * Constructs a ViewVolume. Application usually don't call this constructor. It is called by {@link KmlFile} as
+     * Constructs a KmlViewVolume. Application usually don't call this constructor. It is called by {@link KmlFile} as
      * Objects from KmlFile are read. It is concrete implementation.
-     * @alias ViewVolume
+     * @alias KmlViewVolume
      * @constructor
      * @classdesc Contains the data associated with Kml View Volume
      * @param options {Object}
@@ -77713,16 +78240,16 @@ define('formats/kml/util/ViewVolume',[
      * @see https://developers.google.com/kml/documentation/kmlreference#viewvolume
      * @augments KmlObject
      */
-    var ViewVolume = function (options) {
+    var KmlViewVolume = function (options) {
         KmlObject.call(this, options);
     };
 
-    ViewVolume.prototype = Object.create(KmlObject.prototype);
+    KmlViewVolume.prototype = Object.create(KmlObject.prototype);
 
-    Object.defineProperties(ViewVolume.prototype, {
+    Object.defineProperties(KmlViewVolume.prototype, {
         /**
          * Angle, in degrees, between the camera's viewing direction and the left side of the view volume.
-         * @memberof ViewVolume.prototype
+         * @memberof KmlViewVolume.prototype
          * @readonly
          * @type {Number}
          */
@@ -77734,7 +78261,7 @@ define('formats/kml/util/ViewVolume',[
 
         /**
          * Angle, in degrees, between the camera's viewing direction and the right side of the view volume.
-         * @memberof ViewVolume.prototype
+         * @memberof KmlViewVolume.prototype
          * @readonly
          * @type {Number}
          */
@@ -77746,7 +78273,7 @@ define('formats/kml/util/ViewVolume',[
 
         /**
          * Angle, in degrees, between the camera's viewing direction and the bottom side of the view volume.
-         * @memberof ViewVolume.prototype
+         * @memberof KmlViewVolume.prototype
          * @readonly
          * @type {Number}
          */
@@ -77758,7 +78285,7 @@ define('formats/kml/util/ViewVolume',[
 
         /**
          * Angle, in degrees, between the camera's viewing direction and the top side of the view volume.
-         * @memberof ViewVolume.prototype
+         * @memberof KmlViewVolume.prototype
          * @readonly
          * @type {Number}
          */
@@ -77773,7 +78300,7 @@ define('formats/kml/util/ViewVolume',[
          * The field of view for a PhotoOverlay is defined by four planes, each of which is specified by an angle
          * relative to the view vector. These four planes define the top, bottom, left, and right sides of the field
          *  of view, which has the shape of a truncated pyramid, as shown here:
-         * @memberof ViewVolume.prototype
+         * @memberof KmlViewVolume.prototype
          * @readonly
          * @type {String}
          */
@@ -77787,13 +78314,13 @@ define('formats/kml/util/ViewVolume',[
     /**
      * @inheritDoc
      */
-    ViewVolume.prototype.getTagNames = function () {
+    KmlViewVolume.prototype.getTagNames = function () {
         return ['ViewVolume'];
     };
 
-    KmlElements.addKey(ViewVolume.prototype.getTagNames()[0], ViewVolume);
+    KmlElements.addKey(KmlViewVolume.prototype.getTagNames()[0], KmlViewVolume);
 
-    return ViewVolume;
+    return KmlViewVolume;
 });
 /*
  * Copyright 2003-2006, 2009, 2017, United States Government, as represented by the Administrator of the
@@ -77812,12 +78339,12 @@ define('formats/kml/util/ViewVolume',[
  * limitations under the License.
  */
 define('formats/kml/features/KmlPhotoOverlay',[
-    '../util/ImagePyramid',
+    '../util/KmlImagePyramid',
     './../KmlElements',
     './KmlOverlay',
     '../geom/KmlPoint',
-    '../util/NodeTransformers',
-    '../util/ViewVolume'
+    '../util/KmlNodeTransformers',
+    '../util/KmlViewVolume'
 ], function (ImagePyramid,
              KmlElements,
              KmlOverlay,
@@ -78121,7 +78648,7 @@ define('formats/kml/geom/KmlPolygon',[
     './KmlLinearRing',
     '../styles/KmlStyle',
     '../../../geom/Location',
-    '../util/NodeTransformers',
+    '../util/KmlNodeTransformers',
     '../../../shapes/Polygon',
     '../../../shapes/ShapeAttributes',
     '../../../shapes/SurfacePolygon'
@@ -78340,11 +78867,106 @@ define('formats/kml/geom/KmlPolygon',[
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+define('formats/kml/util/KmlScale',[
+    './../KmlElements',
+    '../KmlObject',
+    './KmlNodeTransformers'
+], function (
+    KmlElements,
+    KmlObject,
+    NodeTransformers
+) {
+    "use strict";
+
+    /**
+     * Constructs a KmlScale. Application usually don't call this constructor. It is called by {@link KmlFile} as
+     * Objects from KmlFile are read. It is concrete implementation.
+     * @alias KmlScale
+     * @constructor
+     * @classdesc Contains the data associated with Kml KmlScale
+     * @param options {Object}
+     * @param options.objectNode {Node} Node representing the Kml KmlScale
+     * @throws {ArgumentError} If either the node is null or undefined.
+     * @see https://developers.google.com/kml/documentation/kmlreference#scale
+     * @augments KmlObject
+     */
+    var KmlScale = function (options) {
+        KmlObject.call(this, options);
+    };
+
+    KmlScale.prototype = Object.create(KmlObject.prototype);
+
+    Object.defineProperties(KmlScale.prototype, {
+        /**
+         * Scales model along x axis
+         * @memberof KmlScale.prototype
+         * @readonly
+         * @type {Number}
+         */
+        kmlX: {
+            get: function() {
+                return this._factory.specific(this, {name: 'x', transformer: NodeTransformers.number});
+            }
+        },
+
+        /**
+         * Scales model along y axis
+         * @memberof KmlScale.prototype
+         * @readonly
+         * @type {Number}
+         */
+        kmlY: {
+            get: function() {
+                return this._factory.specific(this, {name: 'y', transformer: NodeTransformers.number});
+            }
+        },
+
+        /**
+         * Scales model along z axis
+         * @memberof KmlScale.prototype
+         * @readonly
+         * @type {Number}
+         */
+        kmlZ: {
+            get: function() {
+                return this._factory.specific(this, {name: 'z', transformer: NodeTransformers.number});
+            }
+        }
+    });
+
+    /**
+     * @inheritDoc
+     */
+    KmlScale.prototype.getTagNames = function () {
+        return ['Scale'];
+    };
+
+    KmlElements.addKey(KmlScale.prototype.getTagNames()[0], KmlScale);
+
+    return KmlScale;
+});
+
+/*
+ * Copyright 2003-2006, 2009, 2017, United States Government, as represented by the Administrator of the
+ * National Aeronautics and Space Administration. All rights reserved.
+ *
+ * The NASAWorldWind/WebWorldWind platform is licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 define('formats/kml/features/KmlScreenOverlay',[
     './../KmlElements',
     './KmlFeature',
     './KmlOverlay',
-    '../util/NodeTransformers',
+    '../util/KmlNodeTransformers',
     '../../../util/Offset',
     '../../../shapes/ScreenImage'
 ], function (KmlElements,
@@ -84421,101 +85043,6 @@ define('projections/ProjectionUPS',[
 
         return ProjectionUPS;
     });
-/*
- * Copyright 2003-2006, 2009, 2017, United States Government, as represented by the Administrator of the
- * National Aeronautics and Space Administration. All rights reserved.
- *
- * The NASAWorldWind/WebWorldWind platform is licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-define('formats/kml/util/Scale',[
-    './../KmlElements',
-    '../KmlObject',
-    './NodeTransformers'
-], function (
-    KmlElements,
-    KmlObject,
-    NodeTransformers
-) {
-    "use strict";
-
-    /**
-     * Constructs a Scale. Application usually don't call this constructor. It is called by {@link KmlFile} as
-     * Objects from KmlFile are read. It is concrete implementation.
-     * @alias Scale
-     * @constructor
-     * @classdesc Contains the data associated with Kml Scale
-     * @param options {Object}
-     * @param options.objectNode {Node} Node representing the Kml Scale
-     * @throws {ArgumentError} If either the node is null or undefined.
-     * @see https://developers.google.com/kml/documentation/kmlreference#scale
-     * @augments KmlObject
-     */
-    var Scale = function (options) {
-        KmlObject.call(this, options);
-    };
-
-    Scale.prototype = Object.create(KmlObject.prototype);
-
-    Object.defineProperties(Scale.prototype, {
-        /**
-         * Scales model along x axis
-         * @memberof Scale.prototype
-         * @readonly
-         * @type {Number}
-         */
-        kmlX: {
-            get: function() {
-                return this._factory.specific(this, {name: 'x', transformer: NodeTransformers.number});
-            }
-        },
-
-        /**
-         * Scales model along y axis
-         * @memberof Scale.prototype
-         * @readonly
-         * @type {Number}
-         */
-        kmlY: {
-            get: function() {
-                return this._factory.specific(this, {name: 'y', transformer: NodeTransformers.number});
-            }
-        },
-
-        /**
-         * Scales model along z axis
-         * @memberof Scale.prototype
-         * @readonly
-         * @type {Number}
-         */
-        kmlZ: {
-            get: function() {
-                return this._factory.specific(this, {name: 'z', transformer: NodeTransformers.number});
-            }
-        }
-    });
-
-    /**
-     * @inheritDoc
-     */
-    Scale.prototype.getTagNames = function () {
-        return ['Scale'];
-    };
-
-    KmlElements.addKey(Scale.prototype.getTagNames()[0], Scale);
-
-    return Scale;
-});
-
 /*
  * Copyright 2003-2006, 2009, 2017, United States Government, as represented by the Administrator of the
  * National Aeronautics and Space Administration. All rights reserved.
@@ -97445,26 +97972,34 @@ define('WorldWind',[ // PLEASE KEEP ALL THIS IN ALPHABETICAL ORDER BY MODULE NAM
         './shaders/GroundProgram',
         './util/HashMap',
         './util/HighlightController',
-        './formats/kml/util/ImagePyramid',
         './util/ImageSource',
         './render/ImageTile',
         './util/Insets',
-        './formats/kml/util/ItemIcon',
         './formats/kml/KmlAbstractView',
+        './formats/kml/util/KmlAttribute',
         './formats/kml/styles/KmlBalloonStyle',
         './formats/kml/KmlCamera',
+        './formats/kml/util/KmlChange',
         './formats/kml/styles/KmlColorStyle',
         './formats/kml/features/KmlContainer',
         './formats/kml/controls/KmlControls',
+        './formats/kml/util/KmlCreate',
+        './formats/kml/util/KmlDelete',
         './formats/kml/features/KmlDocument',
         './formats/kml/KmlElements',
+        './formats/kml/util/KmlElementsFactory',
+        './formats/kml/util/KmlElementsFactoryCached',
         './formats/kml/features/KmlFeature',
         './formats/kml/KmlFile',
+        './formats/kml/KmlFileCache',
         './formats/kml/features/KmlFolder',
         './formats/kml/geom/KmlGeometry',
         './formats/kml/features/KmlGroundOverlay',
+        './formats/kml/util/KmlHrefResolver',
         './formats/kml/KmlIcon',
         './formats/kml/styles/KmlIconStyle',
+        './formats/kml/util/KmlImagePyramid',
+        './formats/kml/util/KmlItemIcon',
         './formats/kml/styles/KmlLabelStyle',
         './formats/kml/KmlLatLonAltBox',
         './formats/kml/KmlLatLonBox',
@@ -97478,19 +98013,28 @@ define('WorldWind',[ // PLEASE KEEP ALL THIS IN ALPHABETICAL ORDER BY MODULE NAM
         './formats/kml/KmlLod',
         './formats/kml/KmlLookAt',
         './formats/kml/geom/KmlMultiGeometry',
+        './formats/kml/geom/KmlMultiTrack',
         './formats/kml/features/KmlNetworkLink',
+        './formats/kml/util/KmlNetworkLinkControl',
+        './formats/kml/util/KmlNodeTransformers',
         './formats/kml/KmlObject',
         './formats/kml/KmlOrientation',
         './formats/kml/features/KmlOverlay',
+        './formats/kml/util/KmlPair',
         './formats/kml/features/KmlPhotoOverlay',
         './formats/kml/features/KmlPlacemark',
         './formats/kml/geom/KmlPoint',
         './formats/kml/geom/KmlPolygon',
         './formats/kml/styles/KmlPolyStyle',
+        './formats/kml/util/KmlRefreshListener',
         './formats/kml/KmlRegion',
+        './formats/kml/util/KmlRemoteFile',
+        './formats/kml/util/KmlScale',
+        './formats/kml/util/KmlSchema',
         './formats/kml/features/KmlScreenOverlay',
         './formats/kml/styles/KmlStyle',
         './formats/kml/styles/KmlStyleMap',
+        './formats/kml/util/KmlStyleResolver',
         './formats/kml/styles/KmlStyleSelector',
         './formats/kml/styles/KmlSubStyle',
         './formats/kml/KmlTimePrimitive',
@@ -97498,7 +98042,10 @@ define('WorldWind',[ // PLEASE KEEP ALL THIS IN ALPHABETICAL ORDER BY MODULE NAM
         './formats/kml/KmlTimeStamp',
         './formats/kml/features/KmlTour',
         './formats/kml/geom/KmlTrack',
+        './formats/kml/util/KmlTreeKeyValueCache',
         './formats/kml/controls/KmlTreeVisibility',
+        './formats/kml/util/KmlUpdate',
+        './formats/kml/util/KmlViewVolume',
         './formats/kml/KmzFile',
         './layer/LandsatRestLayer',
         './layer/Layer',
@@ -97521,7 +98068,6 @@ define('WorldWind',[ // PLEASE KEEP ALL THIS IN ALPHABETICAL ORDER BY MODULE NAM
         './error/NotYetImplementedError',
         './util/Offset',
         './layer/OpenStreetMapImageLayer',
-        './formats/kml/util/Pair',
         './gesture/PanRecognizer',
         './shapes/Path',
         './util/PeriodicTimeSequence',
@@ -97545,8 +98091,6 @@ define('WorldWind',[ // PLEASE KEEP ALL THIS IN ALPHABETICAL ORDER BY MODULE NAM
         './layer/RenderableLayer',
         './layer/RestTiledImageLayer',
         './gesture/RotationRecognizer',
-        './formats/kml/util/Scale',
-        './formats/kml/util/Schema',
         './shapes/ScreenImage',
         './shapes/ScreenText',
         './geom/Sector',
@@ -97595,7 +98139,6 @@ define('WorldWind',[ // PLEASE KEEP ALL THIS IN ALPHABETICAL ORDER BY MODULE NAM
         './geom/Vec2',
         './geom/Vec3',
         './layer/ViewControlsLayer',
-        './formats/kml/util/ViewVolume',
         './ogc/wcs/WcsCapabilities',
         './ogc/wcs/WcsCoverage',
         './ogc/wcs/WcsCoverageDescriptions',
@@ -97702,26 +98245,34 @@ define('WorldWind',[ // PLEASE KEEP ALL THIS IN ALPHABETICAL ORDER BY MODULE NAM
               GroundProgram,
               HashMap,
               HighlightController,
-              ImagePyramid,
               ImageSource,
               ImageTile,
               Insets,
-              ItemIcon,
               KmlAbstractView,
+              KmlAttribute,
               KmlBalloonStyle,
               KmlCamera,
+              KmlChange,
               KmlColorStyle,
               KmlContainer,
               KmlControls,
+              KmlCreate,
+              KmlDelete,
               KmlDocument,
               KmlElements,
+              KmlElementsFactory,
+              KmlElementsFactoryCached,
               KmlFeature,
               KmlFile,
+              KmlFileCache,
               KmlFolder,
               KmlGeometry,
               KmlGroundOverlay,
+              KmlHrefResolver,
               KmlIcon,
               KmlIconStyle,
+              KmlImagePyramid,
+              KmlItemIcon,
               KmlLabelStyle,
               KmlLatLonAltBox,
               KmlLatLonBox,
@@ -97735,19 +98286,28 @@ define('WorldWind',[ // PLEASE KEEP ALL THIS IN ALPHABETICAL ORDER BY MODULE NAM
               KmlLod,
               KmlLookAt,
               KmlMultiGeometry,
+              KmlMultiTrack,
               KmlNetworkLink,
+              KmlNetworkLinkControl,
+              KmlNodeTransformers,
               KmlObject,
               KmlOrientation,
               KmlOverlay,
+              KmlPair,
               KmlPhotoOverlay,
               KmlPlacemark,
               KmlPoint,
               KmlPolygon,
               KmlPolyStyle,
+              KmlRefreshListener,
               KmlRegion,
+              KmlRemoteFile,
+              KmlScale,
+              KmlSchema,
               KmlScreenOverlay,
               KmlStyle,
               KmlStyleMap,
+              KmlStyleResolver,
               KmlStyleSelector,
               KmlSubStyle,
               KmlTimePrimitive,
@@ -97755,7 +98315,10 @@ define('WorldWind',[ // PLEASE KEEP ALL THIS IN ALPHABETICAL ORDER BY MODULE NAM
               KmlTimeStamp,
               KmlTour,
               KmlTrack,
+              KmlTreeKeyValueCache,
               KmlTreeVisibility,
+              KmlUpdate,
+              KmlViewVolume,
               KmzFile,
               LandsatRestLayer,
               Layer,
@@ -97778,7 +98341,6 @@ define('WorldWind',[ // PLEASE KEEP ALL THIS IN ALPHABETICAL ORDER BY MODULE NAM
               NotYetImplementedError,
               Offset,
               OpenStreetMapImageLayer,
-              Pair,
               PanRecognizer,
               Path,
               PeriodicTimeSequence,
@@ -97802,8 +98364,6 @@ define('WorldWind',[ // PLEASE KEEP ALL THIS IN ALPHABETICAL ORDER BY MODULE NAM
               RenderableLayer,
               RestTiledImageLayer,
               RotationRecognizer,
-              Scale,
-              Schema,
               ScreenImage,
               ScreenText,
               Sector,
@@ -97852,7 +98412,6 @@ define('WorldWind',[ // PLEASE KEEP ALL THIS IN ALPHABETICAL ORDER BY MODULE NAM
               Vec2,
               Vec3,
               ViewControlsLayer,
-              ViewVolume,
               WcsCapabilities,
               WcsCoverage,
               WcsCoverageDescriptions,
@@ -98200,20 +98759,30 @@ define('WorldWind',[ // PLEASE KEEP ALL THIS IN ALPHABETICAL ORDER BY MODULE NAM
         WorldWind['ImageTile'] = ImageTile;
         WorldWind['Insets'] = Insets;
         WorldWind['KmlAbstractView'] = KmlAbstractView;
+        WorldWind['KmlAttribute'] = KmlAttribute;
         WorldWind['KmlBalloonStyle'] = KmlBalloonStyle;
         WorldWind['KmlCamera'] = KmlCamera;
+        WorldWind['KmlChange'] = KmlChange;
         WorldWind['KmlColorStyle'] = KmlColorStyle;
         WorldWind['KmlContainer'] = KmlContainer;
         WorldWind['KmlControls'] = KmlControls;
+        WorldWind['KmlCreate'] = KmlCreate;
+        WorldWind['KmlDelete'] = KmlDelete;
         WorldWind['KmlDocument'] = KmlDocument;
         WorldWind['KmlElements'] = KmlElements;
+        WorldWind['KmlElementsFactory'] = KmlElementsFactory;
+        WorldWind['KmlElementsFactoryCached'] = KmlElementsFactoryCached;
         WorldWind['KmlFeature'] = KmlFeature;
         WorldWind['KmlFile'] = KmlFile;
+        WorldWind['KmlFileCache'] = KmlFileCache;
         WorldWind['KmlFolder'] = KmlFolder;
         WorldWind['KmlGeometry'] = KmlGeometry;
         WorldWind['KmlGroundOverlay'] = KmlGroundOverlay;
+        WorldWind['KmlHrefResolver'] = KmlHrefResolver;
         WorldWind['KmlIcon'] = KmlIcon;
         WorldWind['KmlIconStyle'] = KmlIconStyle;
+        WorldWind['KmlImagePyramid'] = KmlImagePyramid;
+        WorldWind['KmlItemIcon'] = KmlItemIcon;
         WorldWind['KmlLabelStyle'] = KmlLabelStyle;
         WorldWind['KmlLatLonAltBox'] = KmlLatLonAltBox;
         WorldWind['KmlLatLonBox'] = KmlLatLonBox;
@@ -98221,25 +98790,34 @@ define('WorldWind',[ // PLEASE KEEP ALL THIS IN ALPHABETICAL ORDER BY MODULE NAM
         WorldWind['KmlLinearRing'] = KmlLinearRing;
         WorldWind['KmlLineString'] = KmlLineString;
         WorldWind['KmlLineStyle'] = KmlLineStyle;
-        WorldWind['KmlLink'] = KmlLink;
         WorldWind['KmlListStyle'] = KmlListStyle;
+        WorldWind['KmlLink'] = KmlLink;
         WorldWind['KmlLocation'] = KmlLocation;
         WorldWind['KmlLod'] = KmlLod;
         WorldWind['KmlLookAt'] = KmlLookAt;
         WorldWind['KmlMultiGeometry'] = KmlMultiGeometry;
+        WorldWind['KmlMultiTrack'] = KmlMultiTrack;
         WorldWind['KmlNetworkLink'] = KmlNetworkLink;
+        WorldWind['KmlNetworkLinkControl'] = KmlNetworkLinkControl;
+        WorldWind['KmlNodeTransformers'] = KmlNodeTransformers;
         WorldWind['KmlObject'] = KmlObject;
         WorldWind['KmlOrientation'] = KmlOrientation;
         WorldWind['KmlOverlay'] = KmlOverlay;
+        WorldWind['KmlPair'] = KmlPair;
         WorldWind['KmlPhotoOverlay'] = KmlPhotoOverlay;
         WorldWind['KmlPlacemark'] = KmlPlacemark;
         WorldWind['KmlPoint'] = KmlPoint;
         WorldWind['KmlPolygon'] = KmlPolygon;
         WorldWind['KmlPolyStyle'] = KmlPolyStyle;
+        WorldWind['KmlRefreshListener'] = KmlRefreshListener;
         WorldWind['KmlRegion'] = KmlRegion;
+        WorldWind['KmlRemoteFile'] = KmlRemoteFile;
+        WorldWind['KmlScale'] = KmlScale;
+        WorldWind['KmlSchema'] = KmlSchema;
         WorldWind['KmlScreenOverlay'] = KmlScreenOverlay;
         WorldWind['KmlStyle'] = KmlStyle;
         WorldWind['KmlStyleMap'] = KmlStyleMap;
+        WorldWind['KmlStyleResolver'] = KmlStyleResolver;
         WorldWind['KmlStyleSelector'] = KmlStyleSelector;
         WorldWind['KmlSubStyle'] = KmlSubStyle;
         WorldWind['KmlTimePrimitive'] = KmlTimePrimitive;
@@ -98247,7 +98825,10 @@ define('WorldWind',[ // PLEASE KEEP ALL THIS IN ALPHABETICAL ORDER BY MODULE NAM
         WorldWind['KmlTimeStamp'] = KmlTimeStamp;
         WorldWind['KmlTour'] = KmlTour;
         WorldWind['KmlTrack'] = KmlTrack;
+        WorldWind['KmlTreeKeyValueCache'] = KmlTreeKeyValueCache;
         WorldWind['KmlTreeVisibility'] = KmlTreeVisibility;
+        WorldWind['KmlUpdate'] = KmlUpdate;
+        WorldWind['KmlViewVolume'] = KmlViewVolume;
         WorldWind['KmzFile'] = KmzFile;
         WorldWind['LandsatRestLayer'] = LandsatRestLayer;
         WorldWind['Layer'] = Layer;
@@ -98411,6 +98992,7 @@ define('WorldWind',[ // PLEASE KEEP ALL THIS IN ALPHABETICAL ORDER BY MODULE NAM
         return WorldWind;
     }
 );
+
     //Use almond's special top-level, synchronous require to trigger factory
     //functions, get the final module value, and export it as the public
     //value.
