@@ -1,8 +1,4 @@
-<img src="https://worldwind.arc.nasa.gov/img/nasa-logo.svg" height="100"/>
-
-# Web WorldWind
-
-[![Build Status](https://travis-ci.org/NASAWorldWind/WebWorldWind.svg?branch=develop)](https://travis-ci.org/NASAWorldWind/WebWorldWind)
+# worldwindjs - A Web WorldWind derivative
 
 3D virtual globe API in JavaScript for the web, developed by NASA. The European Space Agency has provided valuable
 contributions to this platform since 2015. Web WorldWind provides a geographic context, complete with terrain, and a
