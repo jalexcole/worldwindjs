@@ -87732,7 +87732,7 @@ define('WorldWind',[ // PLEASE KEEP ALL THIS IN ALPHABETICAL ORDER BY MODULE NAM
              * @default "0.9.0"
              * @constant
              */
-            VERSION: "1.0.90",
+            VERSION: "1.1.90",
 
             // PLEASE KEEP THE ENTRIES BELOW IN ALPHABETICAL ORDER
             /**

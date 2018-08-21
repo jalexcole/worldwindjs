@@ -1,4 +1,12 @@
-# worldwindjs - A Web WorldWind derivative
+# worldwindjs - a Web WorldWind derivative
+
+__worldwindjs__ is a fork of the popular [Web WorldWind](https://github.com/NASAWorldWind/WebWorldWind)
+library from NASA and ESA. This fork provides a release channel for builds based on the latest fixes
+and features from the parent's develop branch plus several library enhancements from this project.
+
+---
+
+## Web WorldWind
 
 3D virtual globe API in JavaScript for the web, developed by NASA. The European Space Agency has provided valuable
 contributions to this platform since 2015. Web WorldWind provides a geographic context, complete with terrain, and a
