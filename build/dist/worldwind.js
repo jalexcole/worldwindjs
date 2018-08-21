@@ -29226,6 +29226,13 @@ define('shaders/AtmosphereProgram',[
              * @readonly
              */
             this.scaleLocation = this.uniformLocation(gl, "scale");
+            
+            /**
+             * The WebGL location for this program's 'opacity' uniform.
+             * @type {WebGLUniformLocation}
+             * @readonly
+             */
+            this.opacityLocation = this.uniformLocation(gl, "opacity");
 
             /**
              * The WebGL location for this program's 'scaleDepth' uniform.
@@ -29397,6 +29404,20 @@ define('shaders/AtmosphereProgram',[
             gl.uniformMatrix3fv(this.texCoordMatrixLocation, false, this.scratchArray9);
         };
 
+        /**
+         * Loads the specified opacity as the value of this program's 'opacity' uniform variable.
+         * @param {WebGLRenderingContext} gl The current WebGL context.
+         * @param {Number} opacity The opacity value.
+         */
+        AtmosphereProgram.prototype.loadOpacity = function (gl, opacity) {
+            if (opacity === undefined) {
+                throw new ArgumentError(
+                    Logger.logMessage(Logger.LEVEL_SEVERE, "AtmosphereProgram", "loadOpacity",
+                        "missingOpacity"));
+            }
+            gl.uniform1f(this.opacityLocation, opacity);
+        };
+
         return AtmosphereProgram;
     });
 /*
@@ -29474,6 +29495,7 @@ define('shaders/GroundProgram',[
                     'uniform float scaleDepth;\n' + /* The scale depth (i.e. the altitude at which
                      the atmosphere's average density is found) */
                     'uniform float scaleOverScaleDepth;\n' + /* fScale / fScaleDepth */
+                    'uniform float opacity;\n' + /* The opacity of the ground texture */
 
                     'attribute vec4 vertexPoint;\n' +
                     'attribute vec2 vertexTexCoord;\n' +
@@ -29539,7 +29561,7 @@ define('shaders/GroundProgram',[
                     '    }\n' +
 
                     '    primaryColor = frontColor * (invWavelength * KrESun + KmESun);\n' +
-                    '    secondaryColor = attenuate;\n' + /* Calculate the attenuation factor for the ground */
+                    '    secondaryColor = mix(vec3(1.0, 1.0, 1.0), attenuate, opacity);\n' + /* Calculate the attenuation factor for the ground with opacity */
                     '}\n' +
 
                     'void main()\n ' +
@@ -30591,6 +30613,8 @@ define('layer/AtmosphereLayer',[
 
             program.loadLightDirection(gl, this._activeLightDirection);
 
+            program.loadOpacity(gl, this.opacity);
+            
             program.setScale(gl);
 
             // Use this layer's night image when the layer has time value defined
@@ -87708,7 +87732,7 @@ define('WorldWind',[ // PLEASE KEEP ALL THIS IN ALPHABETICAL ORDER BY MODULE NAM
              * @default "0.9.0"
              * @constant
              */
-            VERSION: "0.9.0",
+            VERSION: "1.0.90",
 
             // PLEASE KEEP THE ENTRIES BELOW IN ALPHABETICAL ORDER
             /**
