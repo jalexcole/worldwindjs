@@ -1,6 +1,6 @@
 {
   "name": "worldwindjs",
-  "version": "1.0.90",
+  "version": "1.1.90",
   "description": "An interactive globe library featuring maps, imagery and terrain plus 2D map projections using the Web WorldWind virtual globe SDK from NASA and ESA.",
   "main": "build/dist/worldwind.min.js",
   "homepage": "https://worldwind.arc.nasa.gov",
