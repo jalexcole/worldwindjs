@@ -34911,6 +34911,10 @@ define('layer/BingTiledImageLayer',[
             this.pickEnabled = true;
 
             this.detectBlankImages = true;
+            
+            // Set the detail control so the resolution is a close match 
+            // to the resolution on the Bing maps website
+            this.detailControl = 1.25;
         };
 
         // Internal use only. Intentionally not documented.
@@ -87732,7 +87736,7 @@ define('WorldWind',[ // PLEASE KEEP ALL THIS IN ALPHABETICAL ORDER BY MODULE NAM
              * @default "0.9.0"
              * @constant
              */
-            VERSION: "1.1.90",
+            VERSION: "1.2.90",
 
             // PLEASE KEEP THE ENTRIES BELOW IN ALPHABETICAL ORDER
             /**
