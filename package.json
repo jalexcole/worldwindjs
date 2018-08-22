@@ -1,6 +1,6 @@
 {
   "name": "worldwindjs",
-  "version": "1.2.90",
+  "version": "1.3.90",
   "description": "An interactive globe library featuring maps, imagery and terrain plus 2D map projections using the Web WorldWind virtual globe SDK from NASA and ESA.",
   "main": "build/dist/worldwind.min.js",
   "homepage": "https://worldwind.arc.nasa.gov",
@@ -31,22 +31,22 @@
     "build/dist/worldwind.min.js"
   ],
   "devDependencies": {
-    "grunt": "^1.0.1",
+    "grunt": "^1.0.3",
     "grunt-contrib-clean": "^1.1.0",
     "grunt-contrib-compress": "^1.4.3",
     "grunt-contrib-copy": "^1.0.0",
     "grunt-contrib-requirejs": "^1.0.0",
-    "grunt-jsdoc": "^2.2.0",
+    "grunt-jsdoc": "^2.2.1",
     "grunt-karma": "^2.0.0",
-    "jasmine-core": "^2.8.0",
-    "karma": "^1.7.1",
+    "jasmine-core": "^2.99.1",
+    "karma": "^3.0.0",
     "karma-chrome-launcher": "^2.0.0",
-    "karma-htmlfile-reporter": "^0.3.4",
-    "karma-jasmine": "^1.1.0",
+    "karma-htmlfile-reporter": "^0.3.6",
+    "karma-jasmine": "^1.1.2",
     "karma-junit-reporter": "^1.2.0",
     "karma-phantomjs-launcher": "^1.0.2",
     "karma-requirejs": "^1.1.0",
-    "recursive-readdir": "^2.2.1"
+    "recursive-readdir": "^2.2.2"
   },
   "keywords": [
     "sdk",
