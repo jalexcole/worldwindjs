@@ -1,14 +1,14 @@
-# worldwind-globe - a Web WorldWind library derivative
+# worldwindjs - an improved Web WorldWind library
 
-__worldwind-globe__ is a fork of the popular [Web WorldWind](https://github.com/NASAWorldWind/WebWorldWind)
+__worldwindjs__ is a fork of the popular [Web WorldWind](https://github.com/NASAWorldWind/WebWorldWind)
 library from NASA and ESA. This fork provides a release channel for builds based on the latest fixes
-and features from the parent's develop branch plus several library enhancements from this project.
+and features from the WebWorldWind's develop branch plus several enhancements from this project.
 
 Enhancements include:
 
-- Keyboard navigation controls for the globe
-- Improved resolution of Bing imagery
-- Translucent night-image
+- Added keyboard navigation controls to the globe
+- Improved the resolution of Bing imagery
+- Added support for a translucent night-image
 - Removed dependency vulnerabilities
 
 ---
