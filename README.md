@@ -1,14 +1,17 @@
-# worldwindjs - an improved Web WorldWind library
+# WorldWindJS - an improved Web WorldWind library
 
-__worldwindjs__ is a fork of the popular [Web WorldWind](https://github.com/NASAWorldWind/WebWorldWind)
+[![NPM](https://img.shields.io/npm/v/worldwindjs.svg)](https://www.npmjs.com/package/worldwindjs) 
+
+__WorldWindJS__ is a fork of the popular [Web WorldWind](https://github.com/NASAWorldWind/WebWorldWind)
 library from NASA and ESA. This fork provides a release channel for builds based on the latest fixes
 and features from the WebWorldWind's develop branch plus several enhancements from this project.
 
 Enhancements include:
-
-- Added keyboard navigation controls to the globe
+- 
+- A template for creating a WorldWind web app with Bootstrap and Knockout.
+- Keyboard navigation controls for the globe
 - Improved the resolution of Bing imagery
-- Added support for a translucent night-image
+- Support for a translucent night-image
 - Removed dependency vulnerabilities
 
 ---
