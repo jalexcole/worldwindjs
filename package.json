@@ -1,7 +1,7 @@
 {
   "name": "worldwindjs",
   "version": "1.4.90",
-  "description": "An interactive globe library featuring maps, imagery and terrain plus 2D map projections using the Web WorldWind virtual globe SDK from NASA and ESA.",
+  "description": "An interactive 3D globe library featuring maps, imagery and terrain plus 2D map projections using the Web WorldWind virtual globe SDK from NASA and ESA.",
   "main": "build/dist/worldwind.min.js",
   "homepage": "https://worldwind.arc.nasa.gov",
   "bugs": {
@@ -12,7 +12,7 @@
   "contributors": [
     "NASA Project Manager <patrick.hogan@nasa.gov>",
     "ESA Consortium Contact <yann.voumard@solenix.ch>",
-    "Emxsys <bruce@emxsys.com"
+    "Bruce Schubert <bruce@emxsys.com"
   ],
   "repository": {
     "type": "git",
