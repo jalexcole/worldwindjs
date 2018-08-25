@@ -1,8 +1,15 @@
-# worldwindjs - a Web WorldWind derivative
+# worldwindjs - an improved Web WorldWind library
 
 __worldwindjs__ is a fork of the popular [Web WorldWind](https://github.com/NASAWorldWind/WebWorldWind)
 library from NASA and ESA. This fork provides a release channel for builds based on the latest fixes
-and features from the parent's develop branch plus several library enhancements from this project.
+and features from the WebWorldWind's develop branch plus several enhancements from this project.
+
+Enhancements include:
+
+- Added keyboard navigation controls to the globe
+- Improved the resolution of Bing imagery
+- Added support for a translucent night-image
+- Removed dependency vulnerabilities
 
 ---
 
