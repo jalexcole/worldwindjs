@@ -1,3 +1,28 @@
+# Overview
+
+__WorldWindJS__ is a fork of the popular [Web WorldWind](https://github.com/NASAWorldWind/WebWorldWind)
+library from NASA and ESA. This fork provides a release channel for builds based on the latest fixes
+and features from the WebWorldWind develop branch integrated with several enhancements from the 
+WorldWind community. 
+
+WorldWindJS releases can be downloaded from the [GitHub](https://github.com/emxsys/worldwindjs/releases) 
+or from [npm](https://www.npmjs.com/package/worldwindjs).  Of course, you can fork or clone this
+project and build the library yourself using the instructions in the [README](https://github.com/emxsys/worldwindjs/blob/master/README.md).
+
+## Quick Start
+
+Do you want to start developing right away? 
+
+- Browse the source code for a [web-app-template](https://github.com/emxsys/worldwindjs/tree/master/apps/web-app-template)
+- View/edit a completed app in [JSFiddle](https://jsfiddle.net/emxsys/e0a2z1km/)
+
+Are you interested in building a WorldWindJS geo-browser or embedding a globe in a web page using [React](https://reactjs.org)? 
+Checkout these resources: 
+
+- [worldwind-react-globe](https://github.com/emxsys/worldwind-react-app) - A Globe component that encapsulates WorldWindJS
+- [worldwind-react-globe-bs4](https://github.com/emxsys/worldwind-react-app) - Bootstrap UI components for the Globe component
+- [worldwind-react-app](https://github.com/emxsys/worldwind-react-app) - An example geo-browser web app 
+
 # How to Build a WorldWindJS Web App
 
 This tutorial shows you how to build a [WorldWindJS](https://github.com/emxsys/worldwindjs) web app
@@ -14,18 +39,6 @@ customizable web app ready to be deployed to your site. This tutorial demonstrat
 
 This is what we will build:
 <script async src="//jsfiddle.net/emxsys/e0a2z1km/embed/result/"></script>
-
-
-## Quick Start
-
-Do you want to start developing right away? 
-
-- Download the documentation and the completed web app: [Complete Source](https://github.com/emxsys/worldwindjs/tree/master/apps/web-app-template)
-- View the completed tutorial: [Final Result](https://jsfiddle.net/emxsys/e0a2z1km/)
-
-Are you interested in building a WorldWindJS web app using [React](https://reactjs.org)? 
-Look here: [WorldWind React](https://github.com/emxsys/worldwind-react-app).
-
 
 ## Let's Begin
 
