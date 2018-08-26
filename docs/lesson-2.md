@@ -13,7 +13,7 @@ In a hurry? Here's the completed code: [Lesson 2](https://jsfiddle.net/emxsys/7x
 We will use a release of WorldWindJS library hosted on GitHub. Add this line of 
 code to the list of JavaScript scripts at the bottom of your web page:
 ```html
-<script src="https://github.com/emxsys/worldwindjs/releases/download/1.4.90/worldwind.min.js"></script>
+<script src="https://github.com/emxsys/worldwindjs/releases/download/v1.5.90/worldwind.min.js"></script>
 ```
 
 ### Create the Globe class
