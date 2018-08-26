@@ -20,7 +20,7 @@ This is what we will build:
 
 Do you want to start developing right away? 
 
-- Download the documentation and the completed web app: [Complete Source](https://github.com/emxsys/worldwind-web-app-tutorial/archive/master.zip)
+- Download the documentation and the completed web app: [Complete Source](https://github.com/emxsys/worldwindjs/tree/master/apps/web-app-template)
 - View the completed tutorial: [Final Result](https://jsfiddle.net/emxsys/e0a2z1km/)
 
 Are you interested in building a WorldWindJS web app using [React](https://reactjs.org)? 
