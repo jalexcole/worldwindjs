@@ -8,12 +8,12 @@
 
 In a hurry? Here's the completed code: [Lesson 2](https://jsfiddle.net/emxsys/7x6vcf78/)
 
-### Include the WorldWind library
+### Include the WorldWindJS library
 
-We will use the WorldWind library hosted on the NASA servers. Add this line of 
+We will use a release of WorldWindJS library hosted on GitHub. Add this line of 
 code to the list of JavaScript scripts at the bottom of your web page:
 ```html
-<script src="https://files.worldwind.arc.nasa.gov/artifactory/web/0.9.0/worldwind.min.js"></script>
+<script src="https://github.com/emxsys/worldwindjs/releases/download/1.4.90/worldwind.min.js"></script>
 ```
 
 ### Create the Globe class
