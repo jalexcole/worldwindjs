@@ -4,11 +4,11 @@
 
 __WorldWindJS__ is a fork of the popular [Web WorldWind](https://github.com/NASAWorldWind/WebWorldWind)
 library from NASA and ESA. This fork provides a release channel for builds based on the latest fixes
-and features from the WebWorldWind's develop branch plus several enhancements from this project.
+and features from the WebWorldWind's develop branch plus several enhancements from the WorldWind community.
 
 Enhancements include:
-- 
-- A template for creating a WorldWind web app with Bootstrap and Knockout.
+
+- A template for creating a geo-browser with Bootstrap and Knockout.
 - Keyboard navigation controls for the globe
 - Improved the resolution of Bing imagery
 - Support for a translucent night-image
