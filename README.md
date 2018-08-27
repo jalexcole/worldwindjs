@@ -1,4 +1,5 @@
-# WorldWindJS - an improved Web WorldWind library
+# WorldWindJS
+## A community supported and enhanced Web WorldWind library
 
 [![NPM](https://img.shields.io/npm/v/worldwindjs.svg)](https://www.npmjs.com/package/worldwindjs) 
 
@@ -6,13 +7,21 @@ __WorldWindJS__ is a fork of the popular [Web WorldWind](https://github.com/NASA
 library from NASA and ESA. This fork provides a release channel for builds based on the latest fixes
 and features from the WebWorldWind's develop branch plus several enhancements from the WorldWind community.
 
-Enhancements include:
+### Enhancements include:
 
 - A template for creating geo-browser web apps with Bootstrap and Knockout.
 - Keyboard navigation controls for the globe
 - Improved the resolution of Bing imagery
 - Support for a translucent night-image
 - Removed dependency vulnerabilities
+
+### Additional Resources
+
+- View the tutorial [How to Build a WorldWindJS Web App](https://emxsys.github.io/worldwindjs/) on the project website
+- Download __[worldwindjs](https://www.npmjs.com/package/worldwindjs)__ from npm.
+- Add a 3D globe or map to a React app using the __[worldwind-react-globe](https://www.npmjs.com/package/worldwind-react-globe)__ Globe component from npm.
+- Add a layer manager and other controls to a React-based globe using the __[worldwind-react-globe-bs4](https://www.npmjs.com/package/worldwind-react-globe-bs4)__ Bootstrap UI controls.
+- View the React-based __worldwind-react-app__ [live demo](https://emxsys.github.io/worldwind-react-app/) and [GitHub project](https://github.com/emxsys/worldwind-react-app) to see the __worldwind-react-globe__ and __worldwind-react-globe-bs4__ components in action.
 
 ---
 
