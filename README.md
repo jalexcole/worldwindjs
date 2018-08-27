@@ -16,12 +16,21 @@ and features from the WebWorldWind's develop branch plus several enhancements fr
 - Removed dependency vulnerabilities
 
 ### Additional Resources
+#### Tutorials
+- [How to Build a WorldWindJS Web App](https://emxsys.github.io/worldwindjs/) on the project website
 
-- View the tutorial [How to Build a WorldWindJS Web App](https://emxsys.github.io/worldwindjs/) on the project website
-- Download __[worldwindjs](https://www.npmjs.com/package/worldwindjs)__ from npm.
-- Add a 3D globe or map to a React app using the __[worldwind-react-globe](https://www.npmjs.com/package/worldwind-react-globe)__ Globe component from npm.
-- Add a layer manager and other controls to a React-based globe using the __[worldwind-react-globe-bs4](https://www.npmjs.com/package/worldwind-react-globe-bs4)__ Bootstrap UI controls.
-- View the React-based __worldwind-react-app__ [live demo](https://emxsys.github.io/worldwind-react-app/) and [GitHub project](https://github.com/emxsys/worldwind-react-app) to see the __worldwind-react-globe__ and __worldwind-react-globe-bs4__ components in action.
+#### Demos
+- [__worldwind-web-app__ demo](https://emxsys.github.io/worldwind-web-app/): A geo-browser built with Bootstrap and KnockoutJS.
+- [__worldwind-react-app__ demo](https://emxsys.github.io/worldwind-react-app/): A geo-browser built with React using the [worldwind-react-globe](https://github.com/emxsys/worldwind-react-globe) and [worldwind-react-globe-bs4](https://github.com/emxsys/worldwind-react-globe-bs4) components.
+
+#### Related projects
+- __[worldwind-react-globe](https://github.com/emxsys/worldwind-react-globe)__: A React-based Globe component that encapulates WorldWindJS.
+- __[worldwind-react-globe-bs4](https://github.com/emxsys/worldwind-react-globe-bs4)__: Bootstrap UI components for the Globe component including a layer manager, tools palette, placename search, and settings.
+
+#### NPM Downloads
+- [__worldwindjs__ package](https://www.npmjs.com/package/worldwindjs): This library as an npm package.
+- [__worldwind-react-globe__ package](https://www.npmjs.com/package/worldwind-react-globe): Globe component encapulating WorldWindJS.
+- [__worldwind-react-globe-bs4__ package](https://www.npmjs.com/package/worldwind-react-globe-bs4): Bootstrap UI for the Globe component.
 
 ---
 
