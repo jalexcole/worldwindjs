@@ -1,5 +1,6 @@
 
-### _Preconditions_
+___Preconditions___
+
 _To satisfy the NASAWorldWind/WebWorldWind Apache 2.0 license, changed files should contain this notice:_
 ```
 /*
