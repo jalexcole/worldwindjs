@@ -15,6 +15,19 @@ and features from WebWorldWind's develop branch plus several enhancements from t
 - Support for a translucent night-image
 - Removed dependency vulnerabilities
 
+### Migrating from NASA WebWorldWind
+
+- NPM: WorldWindJS is available from the [npm repository](https://www.npmjs.com/package/worldwindjs).
+- GitHub: The WorldWindJS project supports npm dependencies on its git repository: See [npm dependencies](https://github.com/emxsys/worldwindjs/wiki/npm-dependencies)is in the wiki. 
+- Releases: The JS libraries (production and debug) and the image resources are available in the [GitHub releases](https://github.com/emxsys/worldwindjs/releases/latest).
+
+
+#### Changes from WebWorldWind release 0.9.0
+- `NavigatorState` has been deprecated. Its properties have migrated to `DrawContext`.
+
+#### From the WebWorldWind develop branch
+- WorldWindJS is a drop in replacement for the WebWorldWind __worldwindjs__ and __worldwind.min.js__ libraries built from the WebWorldWind develop branch
+
 ### Additional Resources
 #### Tutorials
 - [How to Build a WorldWindJS Web App](https://emxsys.github.io/worldwindjs/) on the project website
