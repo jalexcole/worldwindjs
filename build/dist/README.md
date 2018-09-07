@@ -1,18 +1,49 @@
-# WorldWindJS - an improved Web WorldWind library
-
+# WorldWindJS
 [![NPM](https://img.shields.io/npm/v/worldwindjs.svg)](https://www.npmjs.com/package/worldwindjs) 
+
+## A community supported and enhanced Web WorldWind library
 
 __WorldWindJS__ is a fork of the popular [Web WorldWind](https://github.com/NASAWorldWind/WebWorldWind)
 library from NASA and ESA. This fork provides a release channel for builds based on the latest fixes
-and features from the WebWorldWind's develop branch plus several enhancements from the WorldWind community.
+and features from WebWorldWind's develop branch plus several enhancements from the WorldWind community.
 
-Enhancements include:
+### Enhancements include:
 
-- A template for creating a geo-browser with Bootstrap and Knockout.
+- A template for creating geo-browser web apps with Bootstrap and Knockout (apps/worldwind-app-template).
 - Keyboard navigation controls for the globe
 - Improved the resolution of Bing imagery
 - Support for a translucent night-image
 - Removed dependency vulnerabilities
+
+### Migrating from NASA WebWorldWind
+
+- The WorldWindJS npm package is available in the [npm repository](https://www.npmjs.com/package/worldwindjs).
+- The project supports npm dependencies on its git repository: See [npm dependencies](https://github.com/emxsys/worldwindjs/wiki/npm-dependencies)is in the wiki. 
+- The JS libraries (production and debug) and the image resources are available in the [GitHub releases](https://github.com/emxsys/worldwindjs/releases/latest).
+
+
+#### Changes from WebWorldWind release 0.9.0
+- `NavigatorState` has been deprecated. Its properties have migrated to `DrawContext`.
+
+#### From the WebWorldWind develop branch
+- WorldWindJS is a drop in replacement for the WebWorldWind __worldwindjs__ and __worldwind.min.js__ libraries built from the WebWorldWind develop branch
+
+### Additional Resources
+#### Tutorials
+- [How to Build a WorldWindJS Web App](https://emxsys.github.io/worldwindjs/) on the project website
+
+#### Demos
+- [__worldwind-web-app__ demo](https://emxsys.github.io/worldwind-web-app/): A geo-browser built with Bootstrap and KnockoutJS.
+- [__worldwind-react-app__ demo](https://emxsys.github.io/worldwind-react-app/): A geo-browser built with React using the [worldwind-react-globe](https://github.com/emxsys/worldwind-react-globe) and [worldwind-react-globe-bs4](https://github.com/emxsys/worldwind-react-globe-bs4) components.
+
+#### Related projects
+- __[worldwind-react-globe](https://github.com/emxsys/worldwind-react-globe)__: A React-based Globe component that encapulates WorldWindJS.
+- __[worldwind-react-globe-bs4](https://github.com/emxsys/worldwind-react-globe-bs4)__: Bootstrap UI components for the Globe component including a layer manager, tools palette, placename search, and settings.
+
+#### NPM Downloads
+- [__worldwindjs__ package](https://www.npmjs.com/package/worldwindjs): This library as an npm package.
+- [__worldwind-react-globe__ package](https://www.npmjs.com/package/worldwind-react-globe): Globe component encapulating WorldWindJS.
+- [__worldwind-react-globe-bs4__ package](https://www.npmjs.com/package/worldwind-react-globe-bs4): Bootstrap UI for the Globe component.
 
 ---
 

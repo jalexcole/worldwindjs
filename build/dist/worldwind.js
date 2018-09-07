@@ -27602,6 +27602,11 @@ define('geom/BoundingBox',[
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
+ * 
+ * NOTICE: This file was modified from the original NASAWorldWind/WebWorldWind distribution.
+ * NOTICE: This file contains changes made by Kyle Kauffman (Github: @kyonifer)
+ * NOTICE: This file contains changes made by Bruce Schubert (bruce@emxsys.com)
+ * 
  */
 /**
  * @exports Tile
@@ -27726,6 +27731,15 @@ define('util/Tile',[
              * @default 1
              */
             this.opacity = 1;
+            
+            /**
+             * Set minCellSize to a value greater than zero to limit the tile subdivision to a particular
+             * pixel size (typically measured in meters per pixel).
+             * @type Number
+             * @default 0.1
+             * @see mustSubdivide
+             */
+            this.minCellSize = 0.1;
 
             // Internal use only. Intentionally not documented.
             this.samplePoints = null;
@@ -27915,7 +27929,7 @@ define('util/Tile',[
                 distance = this.distanceTo(dc.eyePoint),
                 pixelSize = dc.pixelSizeAtDistance(distance);
 
-            return cellSize > Math.max(detailFactor * pixelSize, 0.5);
+          return cellSize > Math.max(detailFactor * pixelSize, this.minCellSize);
         };
 
         /**
@@ -87402,6 +87416,9 @@ define('util/WWMessage',[],
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
+ *  
+ * NOTICE: This file was modified from the original NASAWorldWind/WebWorldWind distribution.
+ * NOTICE: This file contains changes made by Bruce Schubert (bruce@emxsys.com)
  */
 define('WorldWind',[ // PLEASE KEEP ALL THIS IN ALPHABETICAL ORDER BY MODULE NAME (not directory name).
         './formats/aaigrid/AAIGridConstants',
@@ -87973,7 +87990,7 @@ define('WorldWind',[ // PLEASE KEEP ALL THIS IN ALPHABETICAL ORDER BY MODULE NAM
              * @default "0.9.0"
              * @constant
              */
-            VERSION: "1.2.90",
+            VERSION: "1.6.90",
 
             // PLEASE KEEP THE ENTRIES BELOW IN ALPHABETICAL ORDER
             /**
