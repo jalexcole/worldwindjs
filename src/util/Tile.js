@@ -16,6 +16,7 @@
  * 
  * NOTICE: This file was modified from the original NASAWorldWind/WebWorldWind distribution.
  * NOTICE: This file contains changes made by Kyle Kauffman (Github: @kyonifer)
+ * NOTICE: This file contains changes made by Bruce Schubert (bruce@emxsys.com)
  * 
  */
 /**
@@ -141,6 +142,15 @@ define([
              * @default 1
              */
             this.opacity = 1;
+            
+            /**
+             * Set minCellSize to a value greater than zero to limit the tile subdivision to a particular
+             * pixel size (typically measured in meters per pixel).
+             * @type Number
+             * @default 0.1
+             * @see mustSubdivide
+             */
+            this.minCellSize = 0.1;
 
             // Internal use only. Intentionally not documented.
             this.samplePoints = null;
@@ -330,7 +340,7 @@ define([
                 distance = this.distanceTo(dc.eyePoint),
                 pixelSize = dc.pixelSizeAtDistance(distance);
 
-            return cellSize > detailFactor * pixelSize;
+          return cellSize > Math.max(detailFactor * pixelSize, this.minCellSize);
         };
 
         /**
