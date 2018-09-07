@@ -17,9 +17,9 @@ and features from WebWorldWind's develop branch plus several enhancements from t
 
 ### Migrating from NASA WebWorldWind
 
-- NPM: WorldWindJS is available from the [npm repository](https://www.npmjs.com/package/worldwindjs).
-- GitHub: The WorldWindJS project supports npm dependencies on its git repository: See [npm dependencies](https://github.com/emxsys/worldwindjs/wiki/npm-dependencies)is in the wiki. 
-- Releases: The JS libraries (production and debug) and the image resources are available in the [GitHub releases](https://github.com/emxsys/worldwindjs/releases/latest).
+- The WorldWindJS npm package is available in the [npm repository](https://www.npmjs.com/package/worldwindjs).
+- The project supports npm dependencies on its git repository: See [npm dependencies](https://github.com/emxsys/worldwindjs/wiki/npm-dependencies)is in the wiki. 
+- The JS libraries (production and debug) and the image resources are available in the [GitHub releases](https://github.com/emxsys/worldwindjs/releases/latest).
 
 
 #### Changes from WebWorldWind release 0.9.0
