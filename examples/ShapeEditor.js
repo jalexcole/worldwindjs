@@ -47,6 +47,10 @@ requirejs(['./WorldWindShim',
             wwd.addLayer(layers[l].layer);
         }
 
+        // A layer to hold the new created surface shapes.
+        var newCreatedShapesLayer = new WorldWind.RenderableLayer("New Created Surface Shapes");
+        wwd.addLayer(newCreatedShapesLayer);
+
         // Create a layer to hold the surface shapes.
         var shapesLayer = new WorldWind.RenderableLayer("Surface Shapes");
         wwd.addLayer(shapesLayer);
@@ -125,18 +129,84 @@ requirejs(['./WorldWindShim',
         var shapeEditor = new WorldWind.ShapeEditor(wwd);
 
         document.getElementById("createCircleBtn").addEventListener("click", function(){
-            shapeEditor.create(WorldWind.SurfaceCircle, attributes).then(
-                function (shape) {
-                    shapesLayer.addRenderable(shape);
-                },
-                function (error) {
-                    if (error) {
-                        console.log("Error in shape creation: " + error);
-                    } else {
-                        console.log("No shape created.");
-                    }
-                }
-            );
+            var properties = {
+                center: null,
+                radius: 200e3,
+                attributes: attributes
+            };
+
+            shapeEditor.enableCreator(WorldWind.SurfaceCircle, properties, newCreatedShapesLayer);
+            // shapeEditor.create(WorldWind.SurfaceCircle, attributes).then(
+            //     function (shape) {
+            //         if (shape !== null) {
+            //             shapesLayer.addRenderable(shape);
+            //         } else {
+            //             console.log("No shape created - null shape returned.");
+            //         }
+            //
+            //     },
+            //     function (error) {
+            //         if (error) {
+            //             console.log("Error in shape creation: " + error);
+            //         } else {
+            //             console.log("No shape created.");
+            //         }
+            //     }
+            // );
+        });
+
+        document.getElementById("createEllipseBtn").addEventListener("click", function(){
+            var properties = {
+                majorRadius: 300e3,
+                minorRadius: 200e3,
+                heading: 0,
+                attributes: attributes
+            };
+
+            shapeEditor.enableCreator(WorldWind.SurfaceEllipse, properties, newCreatedShapesLayer);
+        });
+        //
+        // document.getElementById("createPolygonBtn").addEventListener("click", function(){
+        //     var properties = {
+        //
+        //     };
+        //
+        //     shapeEditor.enableCreator(WorldWind.SurfacePolygon, properties, newCreatedShapesLayer);
+        // });
+        //
+        // document.getElementById("createMultiPolygonBtn").addEventListener("click", function(){
+        //     var properties = {
+        //
+        //     };
+        //
+        //     shapeEditor.enableCreator(WorldWind.SurfacePolygon, properties, newCreatedShapesLayer);
+        // });
+        //
+        // document.getElementById("createPolylineBtn").addEventListener("click", function(){
+        //     var properties = {
+        //
+        //     };
+        //
+        //     shapeEditor.enableCreator(WorldWind.SurfacePolyline, properties, newCreatedShapesLayer);
+        // });
+
+        document.getElementById("createRectangleBtn").addEventListener("click", function(){
+            var properties = {
+                width: 300e3,
+                height: 200e3,
+                heading: 0,
+                attributes: attributes
+            };
+
+            shapeEditor.enableCreator(WorldWind.SurfaceRectangle, properties, newCreatedShapesLayer);
+        });
+
+        document.getElementById("createSectorBtn").addEventListener("click", function(){
+            var properties = {
+                attributes: attributes
+            };
+
+            shapeEditor.enableCreator(WorldWind.SurfaceSector, properties, newCreatedShapesLayer);
         });
 
         document.getElementById("editCircleBtn").addEventListener("click", function(){
