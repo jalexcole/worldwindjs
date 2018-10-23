@@ -30,6 +30,7 @@ define([
         '../../shapes/PlacemarkAttributes',
         './PlacemarkEditorFragment',
         '../../geom/Position',
+        '../Promise',
         '../../layer/RenderableLayer',
         '../../shapes/ShapeAttributes',
         './ShapeEditorConstants',
@@ -55,6 +56,7 @@ define([
               PlacemarkAttributes,
               PlacemarkEditorFragment,
               Position,
+              Promise,
               RenderableLayer,
               ShapeAttributes,
               ShapeEditorConstants,
@@ -140,6 +142,15 @@ define([
             this._annotationAttributes.insets = new Insets(5, 5, 5, 5);
 
             // Internal use only.
+            // Used for shape creation
+            this.creatorEnabled = false;
+            this.creatorShapeProperties = null;
+
+            // Internal use only.
+            // The layer that holds the new created shape using shape creator.
+            this.newCreatedShapeLayer = new RenderableLayer("Shape Editor Shadow Shape");
+
+
             // The annotation that displays hints during the actions on the shape.
             this.annotation = new WorldWind.Annotation(new WorldWind.Position(0, 0, 0), this._annotationAttributes);
 
@@ -320,6 +331,62 @@ define([
         });
 
         /**
+         * Creates the specified shape.
+         * @param {SurfaceShape} shape The shape that will be created.
+         * @param {ShapeAttributes} attributes The attributes of the shape that will be created.
+         * @return {Promise} The shape created if any; otherwise <code>null</code>.
+         * <code>false</code>.
+         */
+        ShapeEditor.prototype.enableCreator = function (shape, properties, layer) {
+            this.stop();
+            this.setCreatorEnabled(true);
+
+            for (var i = 0, len = this.editorFragments.length; i < len; i++) {
+                var editorFragment = this.editorFragments[i];
+                if (editorFragment.canHandle(shape)) {
+                    this.activeEditorFragment = editorFragment;
+                    this.creatorShapeProperties = properties;
+                    this.newCreatedShapeLayer = layer;
+                }
+            }
+
+        };
+        // ShapeEditor.prototype.create = function (shape, attributes) {
+        //     this.stop();
+        //     this.setArmed(true);
+        //
+        //     var fragments = this.editorFragments;
+        //     var newShape = null;
+        //
+        //     return new Promise(function(resolve, reject) {
+        //         // Look for a fragment that can create the specified shape
+        //         for (var i = 0, len = fragments.length; i < len; i++) {
+        //             var editorFragment = fragments[i];
+        //             if (editorFragment.canHandle(shape)) {
+        //                 newShape = editorFragment.createShape(shape, currentPosition, attributes);
+        //                 // this.activeEditorFragment = editorFragment;
+        //             }
+        //         }
+        //
+        //         return newShape;
+        //
+        //         // If we have a fragment for this shape, accept the shape and start the creation
+        //         // if (this.activeEditorFragment != null) {
+        //         //     var currentPosition = this.wwd.getReferencePosition();
+        //         //     console.dir(currentPosition);
+        //         //
+        //         //     this._shape = this.activeEditorFragment.createShape(shape, currentPosition, attributes);
+        //         //     this._shape.highlighted = true;
+        //         //     this._shape.setAttributes(attributes);
+        //         //
+        //         //     return this._shape;
+        //         // } else {
+        //         //     return null;
+        //         // }
+        //     });
+        // };
+
+        /**
          * Edits the specified shape. Currently, only surface shapes are supported.
          * @param {SurfaceShape} shape The shape to edit.
          * @param {Boolean} move true to enable move action on shape, false to disable move action on shape.
@@ -365,6 +432,8 @@ define([
             this.removeControlElements();
 
             this.activeEditorFragment = null;
+            this.creatorShapeProperties = null;
+            this.newCreatedShapeLayer = null;
 
             this._allowMove = false;
             this._allowReshape = false;
@@ -380,6 +449,27 @@ define([
 
             return currentShape;
         };
+
+        /**
+         * Identifies whether the shape editor create mode is armed.
+         * @return true if armed, false if not armed.
+         */
+        ShapeEditor.prototype.isCreatorEnabled = function() {
+            return this.creatorEnabled;
+        }
+
+        /**
+         * Arms and disarms the shape editor create mode. When armed, editor monitors user input and builds the
+         * shape in response to user actions. When disarmed, the shape editor ignores all user input for creation of a
+         * new shape.
+         *
+         * @param armed true to arm the shape editor create mode, false to disarm it.
+         */
+        ShapeEditor.prototype.setCreatorEnabled = function(creatorEnabled) {
+            if (this.creatorEnabled != creatorEnabled) {
+                this.creatorEnabled = creatorEnabled;
+            }
+        }
 
         // Internal use only.
         // Called by {@link ShapeEditor#edit} to initialize the control elements used for editing.
@@ -441,7 +531,7 @@ define([
         // Internal use only.
         // Dispatches the events relevant to the shape editor.
         ShapeEditor.prototype.onGestureEvent = function (event) {
-            if(this._shape === null) {
+            if(this._shape === null && !this.isCreatorEnabled()) {
                 return;
             }
 
@@ -470,6 +560,35 @@ define([
             var mousePoint = this._worldWindow.canvasCoordinates(x, y);
             var pickList = this._worldWindow.pick(mousePoint);
             var terrainObject = pickList.terrainObject();
+
+            if (terrainObject && this.isCreatorEnabled() && this.activeEditorFragment !== null && this._shape === null) {
+
+                if (this.activeEditorFragment.isRegularShape()) {
+                    this.creatorShapeProperties.center = terrainObject.position;
+                    this.creatorShapeProperties._boundaries = [
+                        {
+                            latitude: terrainObject.position.latitude - 1,
+                            longitude: terrainObject.position.longitude - 1
+                        },
+                        {
+                            latitude: terrainObject.position.latitude + 1,
+                            longitude: terrainObject.position.longitude - 1
+                        },
+                        {
+                            latitude: terrainObject.position.latitude + 1,
+                            longitude: terrainObject.position.longitude + 1
+                        }
+                    ];
+                } else {
+
+                }
+
+                this._shape = this.activeEditorFragment.createShadowShape(this.creatorShapeProperties);
+
+                this.newCreatedShapeLayer.addRenderable(this._shape);
+                this.edit(this._shape);
+                event.preventDefault();
+            }
 
             if (this._click0Time && !this._click1Time) {
                 this._clicked1X = x;
@@ -514,6 +633,7 @@ define([
                     }
                 }, this._longPressDelay
             );
+
 
             for (var p = 0, len = pickList.objects.length; p < len; p++) {
                 var object = pickList.objects[p];
@@ -587,8 +707,13 @@ define([
             var mousePoint = this._worldWindow.canvasCoordinates(event.clientX, event.clientY);
             var terrainObject = this._worldWindow.pickTerrain(mousePoint).terrainObject();
 
-            // The editor provides vertex insertion and removal for SurfacePolygon and SurfacePolyline.
-            // Double clicking when the cursor is over a control point will remove it.
+            if (this.isCreatorEnabled() && this.activeEditorFragment.isRegularShape()) {
+                this.setCreatorEnabled(false);
+            }
+
+            // The editor provides vertex insertion and removal for SurfacePolygon and
+            // SurfacePolyline. Shift-clicking when the cursor is over the shape inserts a control point near the position
+            // of the cursor. Ctrl-clicking when the cursor is over a control point removes that particular control point.
             if (this.actionType) {
                 if (this._click0Time && this._click1Time) {
                     if (this._click1Time <= this._clickDelay) {
