@@ -13,6 +13,9 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
+ * 
+ * NOTICE: This file was modified from the original NASAWorldWind/WebWorldWind distribution.
+ * NOTICE: This file contains changes made by Bruce Schubert <bruce@emxsys.com>.
  */
 /**
  * @exports WorldWindow
@@ -28,6 +31,7 @@ define([
         './globe/Globe2D',
         './util/GoToAnimator',
         './cache/GpuResourceCache',
+        './util/KeyboardControls',
         './geom/Line',
         './util/Logger',
         './navigate/LookAtNavigator',
@@ -53,6 +57,7 @@ define([
               Globe2D,
               GoToAnimator,
               GpuResourceCache,
+              KeyboardControls,
               Line,
               Logger,
               LookAtNavigator,
@@ -180,6 +185,12 @@ define([
              * @default [BasicWorldWindowController]{@link BasicWorldWindowController}
              */
             this.worldWindowController = new BasicWorldWindowController(this);
+
+            /**
+             * The controller used to manipulate the globe with the keyboard.
+             * @type {KeyboardController}
+             */
+            this.keyboardControls = new KeyboardControls(this);
 
             /**
              * The vertical exaggeration to apply to the terrain.

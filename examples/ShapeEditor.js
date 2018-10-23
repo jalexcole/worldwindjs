@@ -121,6 +121,23 @@ requirejs(['./WorldWindShim',
         sectorShape.highlightAttributes = highlightAttributes;
         shapesLayer.addRenderable(sectorShape);
 
+        // Create a placemark.
+        var placemark = new WorldWind.Placemark(new WorldWind.Position(41, -95, 0), false, null);
+        placemark.altitudeMode = WorldWind.CLAMP_TO_GROUND;
+
+        var placemarkAttributes = new WorldWind.PlacemarkAttributes(null);
+        placemarkAttributes.imageColor = WorldWind.Color.WHITE;
+        placemarkAttributes.imageScale = 20;
+
+        var highlightPlacemarkAttributes = new WorldWind.PlacemarkAttributes(null);
+        highlightPlacemarkAttributes.imageColor = WorldWind.Color.RED;
+        highlightPlacemarkAttributes.imageScale = 20;
+
+        placemark.attributes = placemarkAttributes;
+        placemark.highlightAttributes = highlightPlacemarkAttributes;
+
+        shapesLayer.addRenderable(placemark);
+
         wwd.goTo(new WorldWind.Position(40.42, -104.60, 2417000));
 
         // Create a layer manager for controlling layer visibility.
@@ -212,49 +229,56 @@ requirejs(['./WorldWindShim',
         document.getElementById("editCircleBtn").addEventListener("click", function(){
             var shape = shapeEditor.stop();
             if (shape !== circleShape) {
-                shapeEditor.edit(circleShape);
+                shapeEditor.edit(circleShape, true, true, true, true);
             }
         });
 
         document.getElementById("editEllipseBtn").addEventListener("click", function(){
             var shape = shapeEditor.stop();
             if (shape !== ellipseShape) {
-                shapeEditor.edit(ellipseShape);
+                shapeEditor.edit(ellipseShape, false, true, false, true);
+            }
+        });
+
+        document.getElementById("editPlacemarkBtn").addEventListener("click", function(){
+            var shape = shapeEditor.stop();
+            if (shape !== placemark) {
+                shapeEditor.edit(placemark, true, true, true, true);
             }
         });
 
         document.getElementById("editPolygonBtn").addEventListener("click", function(){
             var shape = shapeEditor.stop();
             if (shape !== polygonShape) {
-                shapeEditor.edit(polygonShape);
+                shapeEditor.edit(polygonShape, true, false, true, true);
             }
         });
 
         document.getElementById("editMultiPolygonBtn").addEventListener("click", function(){
             var shape = shapeEditor.stop();
             if (shape !== multiPolygonShape) {
-                shapeEditor.edit(multiPolygonShape);
+                shapeEditor.edit(multiPolygonShape, true, true, true, true);
             }
         });
 
         document.getElementById("editPolylineBtn").addEventListener("click", function(){
             var shape = shapeEditor.stop();
             if (shape !== polylineShape) {
-                shapeEditor.edit(polylineShape);
+                shapeEditor.edit(polylineShape, true, true, true, true);
             }
         });
 
         document.getElementById("editRectangleBtn").addEventListener("click", function(){
             var shape = shapeEditor.stop();
             if (shape !== rectangleShape) {
-                shapeEditor.edit(rectangleShape);
+                shapeEditor.edit(rectangleShape, true, false, false, true);
             }
         });
 
         document.getElementById("editSectorBtn").addEventListener("click", function(){
             var shape = shapeEditor.stop();
             if (shape !== sectorShape) {
-                shapeEditor.edit(sectorShape);
+                shapeEditor.edit(sectorShape, true, true, true, true);
             }
         });
     }

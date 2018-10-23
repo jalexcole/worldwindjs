@@ -13,6 +13,9 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
+ * 
+ * NOTICE: This file was modified from the original NASAWorldWind/WebWorldWind distribution.
+ * NOTICE: This file contains changes made by Bruce Schubert <bruce@emxsys.com>.
  */
 /**
  * @exports AtmosphereLayer
@@ -220,6 +223,8 @@ define([
 
             program.loadLightDirection(gl, this._activeLightDirection);
 
+            program.loadOpacity(gl, this.opacity);
+            
             program.setScale(gl);
 
             // Use this layer's night image when the layer has time value defined

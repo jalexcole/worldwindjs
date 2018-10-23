@@ -13,6 +13,9 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
+ * 
+ * NOTICE: This file was modified from the original NASAWorldWind/WebWorldWind distribution.
+ * NOTICE: This file contains changes made by Bruce Schubert <bruce@emxsys.com>.
  */
 /**
  * @exports AtmosphereProgram
@@ -151,6 +154,13 @@ define([
              * @readonly
              */
             this.scaleLocation = this.uniformLocation(gl, "scale");
+            
+            /**
+             * The WebGL location for this program's 'opacity' uniform.
+             * @type {WebGLUniformLocation}
+             * @readonly
+             */
+            this.opacityLocation = this.uniformLocation(gl, "opacity");
 
             /**
              * The WebGL location for this program's 'scaleDepth' uniform.
@@ -320,6 +330,20 @@ define([
 
             matrix.columnMajorComponents(this.scratchArray9);
             gl.uniformMatrix3fv(this.texCoordMatrixLocation, false, this.scratchArray9);
+        };
+
+        /**
+         * Loads the specified opacity as the value of this program's 'opacity' uniform variable.
+         * @param {WebGLRenderingContext} gl The current WebGL context.
+         * @param {Number} opacity The opacity value.
+         */
+        AtmosphereProgram.prototype.loadOpacity = function (gl, opacity) {
+            if (opacity === undefined) {
+                throw new ArgumentError(
+                    Logger.logMessage(Logger.LEVEL_SEVERE, "AtmosphereProgram", "loadOpacity",
+                        "missingOpacity"));
+            }
+            gl.uniform1f(this.opacityLocation, opacity);
         };
 
         return AtmosphereProgram;

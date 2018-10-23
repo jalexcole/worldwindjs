@@ -28,6 +28,7 @@ define([
         '../Logger',
         '../../shapes/Placemark',
         '../../shapes/PlacemarkAttributes',
+        './PlacemarkEditorFragment',
         '../../geom/Position',
         '../Promise',
         '../../layer/RenderableLayer',
@@ -53,6 +54,7 @@ define([
               Logger,
               Placemark,
               PlacemarkAttributes,
+              PlacemarkEditorFragment,
               Position,
               Promise,
               RenderableLayer,
@@ -105,6 +107,13 @@ define([
             // Documented in defineProperties below.
             this._shape = null;
 
+            // Internal use only.
+            // Flags indicating whether the specific action is allowed or not.
+            this._allowMove = false;
+            this._allowReshape = false;
+            this._allowRotate = false;
+            this._allowManageControlPoint = false;
+
             // Documented in defineProperties below.
             this._moveControlPointAttributes = new PlacemarkAttributes(null);
             this._moveControlPointAttributes.imageColor = WorldWind.Color.BLUE;
@@ -147,6 +156,7 @@ define([
 
             //Internal use only. Intentionally not documented.
             this.editorFragments = [
+                new PlacemarkEditorFragment(),
                 new SurfaceCircleEditorFragment(),
                 new SurfaceEllipseEditorFragment(),
                 new SurfacePolygonEditorFragment(),
@@ -215,6 +225,24 @@ define([
             // Internal use only.
             // The original highlight attributes of the shape in order to restore them after the action.
             this.originalHighlightAttributes = new ShapeAttributes(null);
+            this.originalPlacemarkHighlightAttributes = new PlacemarkAttributes(null);
+
+            // Internal use only.
+            // counters used to detect double click (time measured in ms)
+            this._clicked0X = null;
+            this._clicked0Y = null;
+            this._clicked1X = null;
+            this._clicked1Y = null;
+            this._click0Time = 0;
+            this._click1Time = 0;
+            this._dbclickTimeout = 0;
+            this._clickDelay = 500;
+
+            // Internal use only.
+            // counters used to detect long press event (time measured in ms)
+            this._longPressTimeout = 0;
+            this._longPressDelay = 1500;
+
 
             this._worldWindow.worldWindowController.addGestureListener(this);
         };
@@ -361,11 +389,21 @@ define([
         /**
          * Edits the specified shape. Currently, only surface shapes are supported.
          * @param {SurfaceShape} shape The shape to edit.
+         * @param {Boolean} move true to enable move action on shape, false to disable move action on shape.
+         * @param {Boolean} reshape true to enable reshape action on shape, false to disable reshape action on shape.
+         * @param {Boolean} rotate true to enable rotate action on shape, false to disable rotate action on shape.
+         * @param {Boolean} manageControlPoint true to enable the action to manage the control points of the shape,
+         * false to disable it.
          * @return {Boolean} <code>true</code> if the editor could start the edition of the specified shape; otherwise
          * <code>false</code>.
          */
-        ShapeEditor.prototype.edit = function (shape) {
+        ShapeEditor.prototype.edit = function (shape, move, reshape, rotate, manageControlPoint) {
             this.stop();
+
+            this._allowMove = move;
+            this._allowReshape = reshape;
+            this._allowRotate = rotate;
+            this._allowManageControlPoint = manageControlPoint;
 
             // Look for a fragment that can handle the specified shape
             for (var i = 0, len = this.editorFragments.length; i < len; i++) {
@@ -396,6 +434,11 @@ define([
             this.activeEditorFragment = null;
             this.creatorShapeProperties = null;
             this.newCreatedShapeLayer = null;
+
+            this._allowMove = false;
+            this._allowReshape = false;
+            this._allowRotate = false;
+            this._allowManageControlPoint = false;
 
             var currentShape = this._shape;
             this._shape = null;
@@ -547,6 +590,51 @@ define([
                 event.preventDefault();
             }
 
+            if (this._click0Time && !this._click1Time) {
+                this._clicked1X = x;
+                this._clicked1Y = y;
+                this._click1Time = Date.now() - this._click0Time;
+            } else {
+                this._clicked0X = x;
+                this._clicked0Y = y;
+                this._click0Time = Date.now();
+                this._click1Time = 0;
+                clearTimeout(this._dbclickTimeout);
+                this._dbclickTimeout = setTimeout(function () {
+                        this._click0Time = 0;
+                    }, this._clickDelay
+                );
+            }
+
+            var allowVertex = terrainObject
+                && this.actionStartX === this.actionCurrentX
+                && this.actionStartY === this.actionCurrentY
+                && this._allowManageControlPoint;
+
+            // counter for long-press detection
+            clearTimeout(this._longPressTimeout);
+
+            var context = this;
+
+
+            // The editor provides vertex insertion and removal for SurfacePolygon and SurfacePolyline.
+            // Long press when the cursor is over the shape inserts a control point near the position
+            // of the cursor.
+            this._longPressTimeout = setTimeout(function () {
+                    if (allowVertex) {
+                        context.activeEditorFragment.addNewVertex(
+                            context._shape,
+                            context._worldWindow.globe,
+                            terrainObject.position
+                        );
+
+                        context.updateControlElements();
+                        context._worldWindow.redraw();
+                    }
+                }, this._longPressDelay
+            );
+
+
             for (var p = 0, len = pickList.objects.length; p < len; p++) {
                 var object = pickList.objects[p];
 
@@ -554,12 +642,12 @@ define([
                     var userObject = object.userObject;
 
                     if (userObject === this._shape) {
-                        this.beginAction(terrainObject.position, event.ctrlKey);
+                        this.beginAction(terrainObject.position, this._allowManageControlPoint);
                         event.preventDefault();
                         break;
 
                     } else if (this.controlPointsLayer.renderables.indexOf(userObject) !== -1) {
-                        this.beginAction(terrainObject.position, event.ctrlKey, userObject);
+                        this.beginAction(terrainObject.position, this._allowManageControlPoint, userObject);
                         event.preventDefault();
                         break;
                     }
@@ -570,6 +658,21 @@ define([
         // Internal use only.
         // Updates the current action if any.
         ShapeEditor.prototype.handleMouseMove = function (event) {
+
+            if (this._click0Time && !this._click1Time) {
+                this._clicked1X = event.clientX;
+                this._clicked1Y = event.clientY;
+            }
+
+            if (!(this._clicked0X === this._clicked1X
+                    && this._clicked0Y === this._clicked1Y)) {
+                clearTimeout(this._dbclickTimeout);
+                this._click0Time = 0;
+                this._click1Time = 0;
+            }
+
+            clearTimeout(this._longPressTimeout);
+
             if (this.actionType) {
 
                 var mousePoint = this._worldWindow.canvasCoordinates(event.clientX, event.clientY);
@@ -577,9 +680,20 @@ define([
 
                 if (terrainObject) {
                     if (this.actionType === ShapeEditorConstants.DRAG) {
-                        this.drag(event.clientX, event.clientY);
+                        if (this._allowMove) {
+                            this.drag(event.clientX, event.clientY);
+                        } else {
+                            Logger.logMessage(Logger.LEVEL_INFO, "ShapeEditor", "handleMouseMove",
+                                "Disabled action for selected shape.");
+                        }
                     } else {
-                        this.reshape(terrainObject.position);
+                        if (this._allowReshape || this._allowRotate) {
+                            this.actionSecondaryBehavior = false;
+                            this.reshape(terrainObject.position);
+                        } else {
+                            Logger.logMessage(Logger.LEVEL_INFO, "ShapeEditor", "handleMouseMove",
+                                "Disabled action for selected shape.");
+                        }
                     }
 
                     event.preventDefault();
@@ -593,7 +707,6 @@ define([
             var mousePoint = this._worldWindow.canvasCoordinates(event.clientX, event.clientY);
             var terrainObject = this._worldWindow.pickTerrain(mousePoint).terrainObject();
 
-
             if (this.isCreatorEnabled() && this.activeEditorFragment.isRegularShape()) {
                 this.setCreatorEnabled(false);
             }
@@ -602,28 +715,24 @@ define([
             // SurfacePolyline. Shift-clicking when the cursor is over the shape inserts a control point near the position
             // of the cursor. Ctrl-clicking when the cursor is over a control point removes that particular control point.
             if (this.actionType) {
-                if (this.actionControlPoint
-                    && terrainObject
-                    && event.ctrlKey) {
-                        this.reshape(terrainObject.position);
+                if (this._click0Time && this._click1Time) {
+                    if (this._click1Time <= this._clickDelay) {
+                        if (this.actionControlPoint
+                            && terrainObject
+                            && this._allowManageControlPoint) {
+                            this.actionSecondaryBehavior = true;
+                            this.reshape(terrainObject.position);
+                        }
+                    }
+                    clearTimeout(this._dbclickTimeout);
+                    this._click0Time = 0;
+                    this._click1Time = 0;
                 }
 
                 this.endAction();
             }
 
-            if (terrainObject
-                && this.actionStartX === this.actionCurrentX
-                && this.actionStartY === this.actionCurrentY
-                && event.shiftKey) {
-                this.activeEditorFragment.addNewVertex(
-                    this._shape,
-                    this._worldWindow.globe,
-                    terrainObject.position
-                );
-
-                this.updateControlElements();
-                this._worldWindow.redraw();
-            }
+            clearTimeout(this._longPressTimeout);
         };
 
         // Internal use only.
@@ -634,20 +743,40 @@ define([
             } else {
                 this.actionType = ShapeEditorConstants.DRAG;
             }
+
             this.actionControlPoint = controlPoint;
             this.actionControlPosition = initialPosition;
             this.actionSecondaryBehavior = alternateAction;
 
-            // Place a shadow shape at the original location of the shape
-            this.originalHighlightAttributes = this._shape.highlightAttributes;
+            var editingAttributes = null;
 
-            var editingAttributes = new ShapeAttributes(this.originalHighlightAttributes);
-            editingAttributes.interiorColor.alpha = editingAttributes.interiorColor.alpha * 0.7;
-            editingAttributes.outlineColor.alpha = editingAttributes.outlineColor.alpha * 0.7;
+            // Place a shadow shape at the original location of the shape
+            if (this.activeEditorFragment instanceof PlacemarkEditorFragment) {
+                this.originalHighlightAttributes = null;
+                this.originalPlacemarkHighlightAttributes = this._shape.highlightAttributes;
+
+                editingAttributes = new PlacemarkAttributes(this.originalPlacemarkHighlightAttributes);
+                editingAttributes.imageColor.alpha = editingAttributes.imageColor.alpha * 0.7;
+            } else {
+                this.originalHighlightAttributes = this._shape.highlightAttributes;
+                this.originalPlacemarkHighlightAttributes = null;
+
+                editingAttributes = new ShapeAttributes(this.originalHighlightAttributes);
+                editingAttributes.interiorColor.alpha = editingAttributes.interiorColor.alpha * 0.7;
+                editingAttributes.outlineColor.alpha = editingAttributes.outlineColor.alpha * 0.7;
+            }
+
             this._shape.highlightAttributes = editingAttributes;
 
             var shadowShape = this.activeEditorFragment.createShadowShape(this._shape);
-            shadowShape.highlightAttributes = new ShapeAttributes(this.originalHighlightAttributes);
+
+            if (this.activeEditorFragment instanceof PlacemarkEditorFragment) {
+                shadowShape.altitudeMode = WorldWind.CLAMP_TO_GROUND;
+                shadowShape.highlightAttributes = new PlacemarkAttributes(this.originalHighlightAttributes);
+            } else {
+                shadowShape.highlightAttributes = new ShapeAttributes(this.originalHighlightAttributes);
+            }
+
             shadowShape.highlighted = true;
 
             this.shadowShapeLayer.addRenderable(shadowShape);
@@ -659,7 +788,11 @@ define([
         ShapeEditor.prototype.endAction = function () {
             this.shadowShapeLayer.removeAllRenderables();
 
-            this._shape.highlightAttributes = this.originalHighlightAttributes;
+            if (this.activeEditorFragment instanceof PlacemarkEditorFragment) {
+                this._shape.highlightAttributes = this.originalPlacemarkHighlightAttributes;
+            } else {
+                this._shape.highlightAttributes = this.originalHighlightAttributes;
+            }
 
             this.hideAnnotation();
 
@@ -672,21 +805,27 @@ define([
 
         // Internal use only.
         ShapeEditor.prototype.reshape = function (newPosition) {
-            this.activeEditorFragment.reshape(
-                this._shape,
-                this._worldWindow.globe,
-                this.actionControlPoint,
-                newPosition,
-                this.actionControlPosition,
-                this.actionSecondaryBehavior
-            );
+            var purpose = this.actionControlPoint.userProperties.purpose;
 
-            this.actionControlPosition = newPosition;
+            if ((purpose === ShapeEditorConstants.ROTATION && this._allowRotate) ||
+                (purpose !== ShapeEditorConstants.ROTATION && this._allowReshape) ||
+                (purpose === ShapeEditorConstants.LOCATION && this._allowManageControlPoint && this.actionSecondaryBehavior)) {
+                this.activeEditorFragment.reshape(
+                    this._shape,
+                    this._worldWindow.globe,
+                    this.actionControlPoint,
+                    newPosition,
+                    this.actionControlPosition,
+                    this.actionSecondaryBehavior
+                );
 
-            this.updateControlElements();
-            this.updateAnnotation(this.actionControlPoint);
+                this.actionControlPosition = newPosition;
 
-            this._worldWindow.redraw();
+                this.updateControlElements();
+                this.updateAnnotation(this.actionControlPoint);
+
+                this._worldWindow.redraw();
+            }
         };
 
         // Internal use only.

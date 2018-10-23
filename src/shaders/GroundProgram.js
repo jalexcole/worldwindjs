@@ -13,6 +13,9 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
+ * 
+ * NOTICE: This file was modified from the original NASAWorldWind/WebWorldWind distribution.
+ * NOTICE: This file contains changes made by Bruce Schubert <bruce@emxsys.com>.
  */
 /**
  * @exports GroundProgram
@@ -73,6 +76,7 @@ define([
                     'uniform float scaleDepth;\n' + /* The scale depth (i.e. the altitude at which
                      the atmosphere's average density is found) */
                     'uniform float scaleOverScaleDepth;\n' + /* fScale / fScaleDepth */
+                    'uniform float opacity;\n' + /* The opacity of the ground texture */
 
                     'attribute vec4 vertexPoint;\n' +
                     'attribute vec2 vertexTexCoord;\n' +
@@ -138,7 +142,7 @@ define([
                     '    }\n' +
 
                     '    primaryColor = frontColor * (invWavelength * KrESun + KmESun);\n' +
-                    '    secondaryColor = attenuate;\n' + /* Calculate the attenuation factor for the ground */
+                    '    secondaryColor = mix(vec3(1.0, 1.0, 1.0), attenuate, opacity);\n' + /* Calculate the attenuation factor for the ground with opacity */
                     '}\n' +
 
                     'void main()\n ' +

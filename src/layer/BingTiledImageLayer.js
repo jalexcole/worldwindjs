@@ -13,6 +13,9 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
+ * 
+ * NOTICE: This file was modified from the original NASAWorldWind/WebWorldWind distribution.
+ * NOTICE: This file contains changes made by Bruce Schubert <bruce@emxsys.com>.
  */
 /**
  * @exports BingTiledImageLayer
@@ -59,6 +62,10 @@ define([
             this.pickEnabled = true;
 
             this.detectBlankImages = true;
+            
+            // Set the detail control so the resolution is a close match 
+            // to the resolution on the Bing maps website
+            this.detailControl = 1.25;
         };
 
         // Internal use only. Intentionally not documented.
