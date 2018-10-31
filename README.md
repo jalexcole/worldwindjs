@@ -1,3 +1,5 @@
+![Emxsys](docs/emxsys_logo.png)
+
 # WorldWindJS
 [![NPM](https://img.shields.io/npm/v/worldwindjs.svg)](https://www.npmjs.com/package/worldwindjs) 
 
