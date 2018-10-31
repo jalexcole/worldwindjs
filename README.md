@@ -2,10 +2,20 @@
 [![NPM](https://img.shields.io/npm/v/worldwindjs.svg)](https://www.npmjs.com/package/worldwindjs) 
 
 ## A community supported and enhanced Web WorldWind library
+___Note: This is personal project and is not the official Web WorldWind library from NASA___
 
 __WorldWindJS__ is a fork of the popular [Web WorldWind](https://github.com/NASAWorldWind/WebWorldWind)
 library from NASA and ESA. This fork provides a release channel for builds based on the latest fixes
 and features from WebWorldWind's develop branch plus several enhancements from the WorldWind community.
+
+This fork exists to support the development of several personal projects, including:
+
+- [Explorer](https://worldwind.earth/explorer) - the WorldWind Explorer
+- [WMT v2.0](https://worldwind.earth/wildfire) -  Wildfire Management Tool v2.0 _under development_
+- [Bible Atlas](https://viewer.earth/bible) - _under development_
+- [worldwind-react-globe](https://github.com/emxsys/worldwind-react-globe) - A React component for Web WorldWind
+- [worldwind-react-globe-bs4](https://github.com/emxsys/worldwind-react-globe-bs4) - React Bootstrap4 UI components for Web WorldWind
+- [worldwind-react-app](https://github.com/emxsys/worldwind-react-app) - A geo-browser web app using Web WorldWind with React and Bootstrap 4 
 
 Show your support for this project by giving it a [star](https://github.com/emxsys/worldwindjs/stargazers)!
 
