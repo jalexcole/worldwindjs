@@ -19,7 +19,7 @@ This fork exists to support the development of several personal projects, includ
 - [worldwind-react-globe-bs4](https://emxsys.github.io/worldwind-react-globe-bs4/) - React Bootstrap4 UI components for Web WorldWind
 - [worldwind-react-app](https://emxsys.github.io/worldwind-react-app/) - A geo-browser web app using Web WorldWind with React and Bootstrap 4 
 
-Show your support for this project by giving it a [star](https://github.com/emxsys/worldwindjs/stargazers)!
+WorldWindJS made available in the spirit of the NASA motto: _For the benefit of all._  Show your support for this project by giving it a [star](https://github.com/emxsys/worldwindjs/stargazers)!
 
 ### Enhancements include:
 
