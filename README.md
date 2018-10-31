@@ -8,7 +8,7 @@ ___Note: This is personal project and is not the official Web WorldWind library 
 
 __WorldWindJS__ is a fork of the popular [Web WorldWind](https://github.com/NASAWorldWind/WebWorldWind)
 library from NASA and ESA. This fork provides a release channel for builds based on the latest fixes
-and features from WebWorldWind's develop branch plus several enhancements from the WorldWind community.
+and features from WebWorldWind's develop branch plus several "cherry-picked" enhancements from the WorldWind community.
 
 This fork exists to support the development of several personal projects, including:
 
