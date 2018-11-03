@@ -40,8 +40,8 @@ WorldWindJS is made available in the spirit of the NASA motto: _For the benefit 
 #### Changes from WebWorldWind release 0.9.0
 - `NavigatorState` has been deprecated. Its properties have migrated to `DrawContext`.
 
-#### From the WebWorldWind develop branch
-- WorldWindJS is a drop in replacement for the WebWorldWind __worldwindjs__ and __worldwind.min.js__ libraries built from the WebWorldWind develop branch
+#### Changes from the WebWorldWind develop branch
+- WorldWindJS is a drop in replacement for WebWorldWind's __worldwind.js__ and __worldwind.min.js__ libraries built from the WebWorldWind develop branch. There are no changes to the API other than additions.
 
 ### Additional Resources
 #### Tutorials
