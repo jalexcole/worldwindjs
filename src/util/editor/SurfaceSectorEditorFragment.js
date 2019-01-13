@@ -69,19 +69,24 @@ define([
         // Internal use only.
         SurfaceSectorEditorFragment.prototype.initializeControlElements = function (shape,
                                                                                     controlPoints,
+                                                                                    shadowControlPoints,
                                                                                     accessories,
                                                                                     resizeControlPointAttributes) {
 
-            this.createControlPoint(controlPoints, resizeControlPointAttributes, ShapeEditorConstants.MIN_CORNER);
-            this.createControlPoint(controlPoints, resizeControlPointAttributes, ShapeEditorConstants.MAX_CORNER);
+            if (resizeControlPointAttributes) {
+                this.createControlPoint(controlPoints, resizeControlPointAttributes, ShapeEditorConstants.MIN_CORNER);
+                this.createControlPoint(controlPoints, resizeControlPointAttributes, ShapeEditorConstants.MAX_CORNER);
+            }
         };
 
         // Internal use only.
         SurfaceSectorEditorFragment.prototype.updateControlElements = function (shape,
                                                                                 globe,
                                                                                 controlPoints) {
-            controlPoints[0].position = new Location(shape._sector.minLatitude, shape._sector.minLongitude);
-            controlPoints[1].position = new Location(shape._sector.maxLatitude, shape._sector.maxLongitude);
+            if (controlPoints.length > 0) {
+                controlPoints[0].position = new Location(shape._sector.minLatitude, shape._sector.minLongitude);
+                controlPoints[1].position = new Location(shape._sector.maxLatitude, shape._sector.maxLongitude);
+            }
         };
 
         // Internal use only.
