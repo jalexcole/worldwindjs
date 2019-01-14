@@ -8,7 +8,7 @@ ___Note: This is personal project and is not the official Web WorldWind library 
 
 __WorldWindJS__ is a fork of the popular [Web WorldWind](https://github.com/NASAWorldWind/WebWorldWind)
 library from NASA (with contributions from ESA). This fork provides a release channel for builds based on the latest fixes
-and features from WebWorldWind's develop branch plus several "cherry-picked" enhancements from the WorldWind community.
+and features from WebWorldWind's [develop branch](https://github.com/NASAWorldWind/WebWorldWind/commits/develop) plus several "cherry-picked" enhancements from the WorldWind community.
 
 This fork exists to support the development of several personal projects, including:
 
@@ -28,6 +28,7 @@ WorldWindJS is made available in the spirit of the NASA motto: _For the benefit 
 - Improved the resolution of Bing imagery
 - Support for a translucent night-image
 - Removed dependency vulnerabilities
+- Fixed WMTS tile geo-registration 
 
 ### Migrating from NASA WebWorldWind
 
@@ -39,6 +40,8 @@ WorldWindJS is made available in the spirit of the NASA motto: _For the benefit 
 
 #### Changes from WebWorldWind release 0.9.0
 - `NavigatorState` has been deprecated. Its properties have migrated to `DrawContext`.
+- Added the `HeatMap` from the WorldWind `NASAWorldWind/feature/heatmap` branch.
+- Added the `ShapeEditor` from the WorldWind `NASAWorldWind/enhancement/shape_editor_refactoring` branch.
 
 #### Changes from the WebWorldWind develop branch
 - WorldWindJS is a drop in replacement for WebWorldWind's __worldwind.js__ and __worldwind.min.js__ libraries built from the WebWorldWind develop branch. There are no changes to the API other than additions.
@@ -93,6 +96,10 @@ Web WorldWind release provides many simple examples showing how to use all of We
 - `npm run test` runs WorldWind's unit tests
 
 - `npm run test:watch` automatically runs WorldWind's unit tests when source code changes
+
+- `npm version <newversioo>` changes the version number in package.json
+
+- `npm publish` publishes the build to npm
 
 ## License
 
