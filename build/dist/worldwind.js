@@ -47080,6 +47080,56 @@ define('shapes/SurfaceShape',[
                     newLocations.push(new Location(newPos.latitude, newPos.longitude));
                 }
             } else {
+                // Euler method
+
+                // var xVecOld = new Vec3(0, oldPoint[1], oldPoint[2]);
+                // var yVecOld =  new Vec3(oldPoint[0], 0, oldPoint[2]);
+                // var zVecOld =  new Vec3(oldPoint[0], oldPoint[1], 0);
+                // var xVecNew = new Vec3(0, newPoint[1], newPoint[2]);
+                // var yVecNew =  new Vec3(newPoint[0], 0, newPoint[2]);
+                // var zVecNew =  new Vec3(newPoint[0], newPoint[1], 0);
+                //
+                //
+                // var alpha = Math.acos(xVecOld.dot(xVecNew) / (xVecOld.magnitude() * xVecNew.magnitude()));
+                // var beta = Math.acos(yVecOld.dot(yVecNew) / (yVecOld.magnitude() * yVecNew.magnitude()));
+                // var gama = Math.acos(zVecOld.dot(zVecNew) / (zVecOld.magnitude() * zVecNew.magnitude()));
+                //
+                // var alpha = Math.atan2()
+                //
+                // var crossX = xVecOld.cross(xVecNew);
+                // var crossY = yVecOld.cross(yVecNew);
+                // var crossZ = zVecOld.cross(zVecNew);
+                //
+                // if(new Vec3(1, 0, 0).dot(crossX) < 0){
+                //      alpha = -alpha;
+                // }
+                //
+                // if(new Vec3(0, 1, 0).dot(crossY) < 0){
+                //     beta = -beta;
+                // }
+                //
+                // if(new Vec3(0, 0, 1).dot(crossZ) < 0){
+                //     gama = -gama;
+                // }
+                //
+                // for (var i = 0, len = locations.length; i < len; i++) {
+                //     globe.computePointFromLocation(locations[i].latitude, locations[i].longitude, result);
+                //     var newX = result[0] * Math.cos(beta) * Math.cos(gama) +
+                //                result[1] * (Math.cos(beta) * (-Math.sin(gama))) +
+                //                result[2] * Math.sin(beta);
+                //
+                //     var newY = result[0] * ((-Math.sin(alpha)) * (-Math.sin(beta)) * (Math.cos(gama)) + Math.cos(alpha) * Math.sin(gama)) +
+                //                result[1] * ( (-Math.sin(alpha)) * (-Math.sin(beta)) * (-Math.sin(gama)) + Math.cos(alpha) * Math.cos(gama) ) +
+                //                result[2] * Math.sin(alpha) * Math.cos(beta);
+                //
+                //     var newZ = result[0] * (Math.cos(alpha) * (-Math.sin(beta)) * Math.cos(gama) + Math.sin(alpha) * Math.sin(gama)) +
+                //                result[1] * (Math.cos(alpha) * (-Math.sin(beta)) * (-Math.sin(gama)) + Math.sin(alpha) * Math.cos(gama)) +
+                //                result[2] * Math.cos(alpha) * Math.cos(beta);
+                //
+                //     globe.computePositionFromPoint(newX, newY, newZ, newPos);
+                //     newLocations.push(new Location(newPos.latitude, newPos.longitude));
+                // }
+
                 var delta_lat = newLocation.latitude - oldLocation.latitude;
                 var delta_long = newLocation.longitude - oldLocation.longitude;
                 var max = -90;
@@ -47116,8 +47166,8 @@ define('shapes/SurfaceShape',[
                     newLocations.push(new Location(new_lat, new_long));
                 }
 
-                if (max > 87) {
-                    var delta = max - 87;
+                if (max > 90) {
+                    var delta = max - 90;
                     for (var i = 0, len = newLocations.length; i < len; i++) {
                         newLocations[i].latitude -= delta;
                     }
@@ -74514,13 +74564,17 @@ define('util/editor/BaseSurfaceEditorFragment',[
          * rotate the shape.
          * @param {PlacemarkAttributes} moveControlPointAttributes The attributes to use for control points that move
          * the boundaries of the shape.
+         * @param {PlacemarkAttributes} shadowControlPointAttributes The attributes to use for control points that will
+         * mark the middle of one segment.
          */
         BaseSurfaceEditorFragment.prototype.initializeControlElements = function (shape,
                                                                                   controlPoints,
+                                                                                  shadowControlPoints,
                                                                                   accessories,
                                                                                   resizeControlPointAttributes,
                                                                                   rotateControlPointAttributes,
-                                                                                  moveControlPointAttributes) {
+                                                                                  moveControlPointAttributes,
+                                                                                  shadowControlPointAttributes) {
             throw new UnsupportedOperationError(Logger.logMessage(
                 Logger.LEVEL_SEVERE,
                 "BaseSurfaceEditorFragment",
@@ -74540,6 +74594,7 @@ define('util/editor/BaseSurfaceEditorFragment',[
         BaseSurfaceEditorFragment.prototype.updateControlElements = function (shape,
                                                                               globe,
                                                                               controlPoints,
+                                                                              shadowControlPoints,
                                                                               accessories) {
             throw new UnsupportedOperationError(Logger.logMessage(
                 Logger.LEVEL_SEVERE,
@@ -74813,6 +74868,39 @@ define('util/editor/BaseSurfaceEditorFragment',[
             }
         };
 
+        // Computes the location for a shadow control point for two given locations.
+        BaseSurfaceEditorFragment.prototype.computeShadowPointLocations = function (shape,
+                                                                                   shadowControlPoint,
+                                                                                   startLocation,
+                                                                                   endLocation) {
+            var segmentAzimuth = null;
+            var segmentDistance = null;
+
+            if (shape.pathType === WorldWind.LINEAR) {
+                shadowControlPoint.position = new Location(
+                    (startLocation.latitude + endLocation.latitude)/2,
+                    (startLocation.longitude + endLocation.longitude)/2
+                );
+            } else if (shape.pathType === WorldWind.RHUMB_LINE) {
+                if (segmentAzimuth == null) {
+                    segmentAzimuth = Location.rhumbAzimuth(startLocation, endLocation);
+                    segmentDistance = Location.rhumbDistance(startLocation, endLocation);
+                }
+                shadowControlPoint.position = Location.rhumbLocation(startLocation, segmentAzimuth, 0.5 * segmentDistance,
+                    shadowControlPoint.position);
+            } else {
+                // Great Circle
+                if (segmentAzimuth == null) {
+                    segmentAzimuth = Location.greatCircleAzimuth(startLocation, endLocation); //degrees
+                    segmentDistance = Location.greatCircleDistance(startLocation, endLocation); //radians
+                }
+                //Location, degrees, radians, Location
+                shadowControlPoint.position = Location.greatCircleLocation(startLocation, segmentAzimuth, 0.5 * segmentDistance,
+                    shadowControlPoint.position);
+            }
+
+        }
+
         return BaseSurfaceEditorFragment;
     }
 );
@@ -74864,7 +74952,10 @@ define('util/editor/ShapeEditorConstants',[],
             MIN_CORNER: "min_corner",
 
             // Indicates the corner with max latitude for a surface sector
-            MAX_CORNER: "max_corner"
+            MAX_CORNER: "max_corner",
+
+            // Indicates a control point that marks the middle of a segment.
+            SHADOW: "shadow"
         };
 
         return ShapeEditorConstants;
@@ -74923,12 +75014,17 @@ define('util/editor/PlacemarkEditorFragment',[
         // Internal use only.
         PlacemarkEditorFragment.prototype.initializeControlElements = function (shape,
                                                                                 controlPoints,
+                                                                                shadowControlPoints,
                                                                                 accessories,
                                                                                 resizeControlPointAttributes,
                                                                                 rotateControlPointAttributes,
                                                                                 moveControlPointAttributes) {
 
-            this.createControlPoint(controlPoints, moveControlPointAttributes, ShapeEditorConstants.DRAG);
+            if (moveControlPointAttributes) {
+                // we will use the same Placemark as control point
+                shape.userProperties.purpose = ShapeEditorConstants.DRAG;
+                controlPoints.push(shape);
+            }
         };
 
         // Internal use only.
@@ -75256,48 +75352,67 @@ define('util/editor/SurfaceEllipseEditorFragment',[
         // Internal use only.
         SurfaceEllipseEditorFragment.prototype.initializeControlElements = function (shape,
                                                                                      controlPoints,
+                                                                                     shadowControlPoints,
                                                                                      accessories,
                                                                                      resizeControlPointAttributes,
                                                                                      rotateControlPointAttributes) {
 
-            this.createControlPoint(controlPoints, resizeControlPointAttributes, ShapeEditorConstants.WIDTH);
-            this.createControlPoint(controlPoints, resizeControlPointAttributes, ShapeEditorConstants.HEIGHT);
-            this.createControlPoint(controlPoints, rotateControlPointAttributes, ShapeEditorConstants.ROTATION);
+            if (resizeControlPointAttributes) {
+                this.createControlPoint(controlPoints, resizeControlPointAttributes, ShapeEditorConstants.WIDTH);
+                this.createControlPoint(controlPoints, resizeControlPointAttributes, ShapeEditorConstants.HEIGHT);
+            }
 
-            this.createRotationAccessory(accessories, rotateControlPointAttributes);
+            if (rotateControlPointAttributes) {
+                this.createControlPoint(controlPoints, rotateControlPointAttributes, ShapeEditorConstants.ROTATION);
+
+                this.createRotationAccessory(accessories, rotateControlPointAttributes);
+            }
         };
 
         // Internal use only.
         SurfaceEllipseEditorFragment.prototype.updateControlElements = function (shape,
                                                                                  globe,
                                                                                  controlPoints,
+                                                                                 shadowControlPoints,
                                                                                  accessories) {
-            Location.greatCircleLocation(
-                shape.center,
-                90 + shape.heading,
-                shape.majorRadius / globe.equatorialRadius,
-                controlPoints[0].position
-            );
+            var length = controlPoints.length;
 
-            Location.greatCircleLocation(
-                shape.center,
-                shape.heading,
-                shape.minorRadius / globe.equatorialRadius,
-                controlPoints[1].position
-            );
+            if (length > 0) {
+                for (var i = 0; i < length; i++) {
+                    if (controlPoints[i].userProperties.purpose === ShapeEditorConstants.WIDTH) {
+                        Location.greatCircleLocation(
+                            shape.center,
+                            90 + shape.heading,
+                            shape.majorRadius / globe.equatorialRadius,
+                            controlPoints[i].position
+                        );
+                        controlPoints[i].userProperties.size = shape.majorRadius;
+                    }
 
-            Location.greatCircleLocation(
-                shape.center,
-                shape.heading,
-                1.6 * shape.minorRadius / globe.equatorialRadius,
-                controlPoints[2].position
-            );
+                    if (controlPoints[i].userProperties.purpose === ShapeEditorConstants.HEIGHT) {
+                        Location.greatCircleLocation(
+                            shape.center,
+                            shape.heading,
+                            shape.minorRadius / globe.equatorialRadius,
+                            controlPoints[i].position
+                        );
+                        controlPoints[i].userProperties.size = shape.minorRadius;
+                    }
 
-            controlPoints[0].userProperties.size = shape.majorRadius;
-            controlPoints[1].userProperties.size = shape.minorRadius;
-            controlPoints[2].userProperties.rotation = shape.heading;
+                    if (controlPoints[i].userProperties.purpose === ShapeEditorConstants.ROTATION) {
+                        Location.greatCircleLocation(
+                            shape.center,
+                            shape.heading,
+                            1.6 * shape.minorRadius / globe.equatorialRadius,
+                            controlPoints[i].position
+                        );
 
-            this.updateRotationAccessory(shape.center, controlPoints[2].position, accessories);
+                        controlPoints[i].userProperties.rotation = shape.heading;
+
+                        this.updateRotationAccessory(shape.center, controlPoints[i].position, accessories);
+                    }
+                }
+            }
         };
 
         // Internal use only.
@@ -75584,22 +75699,26 @@ define('util/editor/SurfaceCircleEditorFragment',[
         // Internal use only.
         SurfaceCircleEditorFragment.prototype.initializeControlElements = function (shape,
                                                                                     controlPoints,
+                                                                                    shadowControlPoints,
                                                                                     accessories,
                                                                                     resizeControlPointAttributes) {
-
-            this.createControlPoint(controlPoints, resizeControlPointAttributes, ShapeEditorConstants.RADIUS);
+            if (resizeControlPointAttributes) {
+                this.createControlPoint(controlPoints, resizeControlPointAttributes, ShapeEditorConstants.RADIUS);
+            }
         };
 
         // Internal use only.
         SurfaceCircleEditorFragment.prototype.updateControlElements = function (shape, globe, controlPoints) {
-            Location.greatCircleLocation(
-                shape.center,
-                90,
-                shape.radius / globe.equatorialRadius,
-                controlPoints[0].position
-            );
+            if (controlPoints.length > 0) {
+                Location.greatCircleLocation(
+                    shape.center,
+                    90,
+                    shape.radius / globe.equatorialRadius,
+                    controlPoints[0].position
+                );
 
-            controlPoints[0].userProperties.size = shape.radius;
+                controlPoints[0].userProperties.size = shape.radius;
+            }
         };
 
         // Internal use only.
@@ -75662,6 +75781,7 @@ define('util/editor/SurfacePolygonEditorFragment',[
         var SurfacePolygonEditorFragment = function () {
             this.currentHeading = 0;
             this.moveControlPointAttributes = null;
+            this.shadowControlPointAttributes = null;
         };
 
         SurfacePolygonEditorFragment.prototype = Object.create(BaseSurfaceEditorFragment.prototype);
@@ -75692,72 +75812,135 @@ define('util/editor/SurfacePolygonEditorFragment',[
         // Internal use only.
         SurfacePolygonEditorFragment.prototype.initializeControlElements = function (shape,
                                                                                      controlPoints,
+                                                                                     shadowControlPoints,
                                                                                      accessories,
                                                                                      resizeControlPointAttributes,
                                                                                      rotateControlPointAttributes,
-                                                                                     moveControlPointAttributes) {
+                                                                                     moveControlPointAttributes,
+                                                                                     shadowControlPointAttributes) {
             this.currentHeading = 0;
-            this.moveControlPointAttributes = moveControlPointAttributes;
 
-            var locations = this.getLocations(shape);
+            if (moveControlPointAttributes) {
+                this.moveControlPointAttributes = moveControlPointAttributes;
+                this.shadowControlPointAttributes = shadowControlPointAttributes;
 
-            for (var i = 0, len = locations.length; i < len; i++) {
-                this.createControlPoint(
-                    controlPoints,
-                    moveControlPointAttributes,
-                    ShapeEditorConstants.LOCATION,
-                    i
-                );
+                var locations = this.getLocations(shape);
+
+                for (var i = 0, len = locations.length; i < len; i++) {
+                    this.createControlPoint(
+                        controlPoints,
+                        moveControlPointAttributes,
+                        ShapeEditorConstants.LOCATION,
+                        i
+                    );
+                }
             }
 
-            this.createControlPoint(controlPoints, rotateControlPointAttributes, ShapeEditorConstants.ROTATION);
+            if (rotateControlPointAttributes) {
+                this.createControlPoint(controlPoints, rotateControlPointAttributes, ShapeEditorConstants.ROTATION);
 
-            this.createRotationAccessory(accessories, rotateControlPointAttributes);
+                this.createRotationAccessory(accessories, rotateControlPointAttributes);
+            }
+
+            if (shadowControlPointAttributes) {
+                for (var i = 0, len = locations.length - 1; i < len; i++) {
+                    this.createControlPoint(
+                        shadowControlPoints,
+                        shadowControlPointAttributes,
+                        ShapeEditorConstants.SHADOW,
+                        i
+                    );
+                }
+            }
         };
 
         // Internal use only.
         SurfacePolygonEditorFragment.prototype.updateControlElements = function (shape,
                                                                                  globe,
                                                                                  controlPoints,
+                                                                                 shadowControlPoints,
                                                                                  accessories) {
             var locations = this.getLocations(shape);
-
-            var rotationControlPoint = controlPoints.pop();
-
-            var lenControlPoints = controlPoints.length;
             var lenLocations = locations.length;
+            var lenControlPoints = controlPoints.length;
+            var locationControlPoints = [];
+            var rotationControlPoint = null;
+
+            if (lenControlPoints > 0) {
+                for (var i = lenControlPoints - 1; i > -1; i--) {
+                    if (controlPoints[i].userProperties.purpose === ShapeEditorConstants.ROTATION) {
+                        rotationControlPoint = controlPoints[i];
+
+                        var polygonCenter = this.getCenterFromLocations(globe, locations);
+                        var polygonRadius = 1.2 * this.getAverageDistance(globe, polygonCenter, locations);
+
+                        Location.greatCircleLocation(
+                            polygonCenter,
+                            this.currentHeading,
+                            polygonRadius,
+                            rotationControlPoint.position
+                        );
+
+                        rotationControlPoint.userProperties.rotation = this.currentHeading;
+
+                        this.updateRotationAccessory(polygonCenter, rotationControlPoint.position, accessories);
+                    }
+
+                    if (controlPoints[i].userProperties.purpose === ShapeEditorConstants.LOCATION) {
+                        locationControlPoints.push(controlPoints[i]);
+                    }
+
+                    controlPoints.pop();
+                }
+            }
+
+            locationControlPoints.reverse();
+            var lenLocationControlPoints = locationControlPoints.length;
 
             for (var i = 0; i < lenLocations; i++) {
-                if (i >= lenControlPoints) {
+                if (i >= lenLocationControlPoints) {
                     this.createControlPoint(
-                        controlPoints,
+                        locationControlPoints,
                         this.moveControlPointAttributes,
                         ShapeEditorConstants.LOCATION,
                         i
                     );
                 }
-                controlPoints[i].position = locations[i];
+                locationControlPoints[i].position = locations[i];
             }
 
-            if (lenControlPoints > lenLocations) {
-                controlPoints.splice(lenLocations, lenControlPoints - lenLocations)
+            if (locationControlPoints.length > lenLocations) {
+                locationControlPoints.splice(lenLocations, locationControlPoints.length - lenLocations)
             }
 
-            var polygonCenter = this.getCenterFromLocations(globe, locations);
-            var polygonRadius = 1.2 * this.getAverageDistance(globe, polygonCenter, locations);
+            for (var i = 0; i < locationControlPoints.length; i++) {
+                controlPoints.push(locationControlPoints[i]);
+            }
 
-            Location.greatCircleLocation(
-                polygonCenter,
-                this.currentHeading,
-                polygonRadius,
-                rotationControlPoint.position
-            );
+            for (var i = 0; i < lenLocations - 1; i++) {
+                this.createControlPoint(
+                    controlPoints,
+                    this.shadowControlPointAttributes,
+                    ShapeEditorConstants.SHADOW,
+                    lenLocations + i
+                );
 
-            rotationControlPoint.userProperties.rotation = this.currentHeading;
+                this.computeShadowPointLocations(shape, controlPoints[lenLocations + i], locations[i], locations[i + 1]);
+
+                if (i == lenLocations - 2) {
+                    this.createControlPoint(
+                        controlPoints,
+                        this.shadowControlPointAttributes,
+                        ShapeEditorConstants.SHADOW,
+                        lenLocations + i + 1
+                    );
+
+                    this.computeShadowPointLocations(shape, controlPoints[lenLocations + i + 1], locations[i + 1], locations[0]);
+                }
+            }
+
 
             controlPoints.push(rotationControlPoint);
-
-            this.updateRotationAccessory(polygonCenter, rotationControlPoint.position, accessories);
         };
 
         // Internal use only.
@@ -75993,6 +76176,7 @@ define('util/editor/SurfacePolylineEditorFragment',[
         var SurfacePolylineEditorFragment = function () {
             this.currentHeading = 0;
             this.moveControlPointAttributes = null;
+            this.shadowControlPointAttributes = null;
         };
 
         SurfacePolylineEditorFragment.prototype = Object.create(BaseSurfaceEditorFragment.prototype);
@@ -76023,72 +76207,121 @@ define('util/editor/SurfacePolylineEditorFragment',[
         // Internal use only.
         SurfacePolylineEditorFragment.prototype.initializeControlElements = function (shape,
                                                                                       controlPoints,
+                                                                                      shadowControlPoints,
                                                                                       accessories,
                                                                                       resizeControlPointAttributes,
                                                                                       rotateControlPointAttributes,
-                                                                                      moveControlPointAttributes) {
+                                                                                      moveControlPointAttributes,
+                                                                                      shadowControlPointAttributes) {
             this.currentHeading = 0;
-            this.moveControlPointAttributes = moveControlPointAttributes;
 
-            var locations = shape.boundaries;
+            if (moveControlPointAttributes) {
+                this.moveControlPointAttributes = moveControlPointAttributes;
+                this.shadowControlPointAttributes = shadowControlPointAttributes;
 
-            for (var i = 0, len = locations.length; i < len; i++) {
-                this.createControlPoint(
-                    controlPoints,
-                    moveControlPointAttributes,
-                    ShapeEditorConstants.LOCATION,
-                    i
-                );
+                var locations = shape.boundaries;
+
+                for (var i = 0, len = locations.length; i < len; i++) {
+                    this.createControlPoint(
+                        controlPoints,
+                        moveControlPointAttributes,
+                        ShapeEditorConstants.LOCATION,
+                        i
+                    );
+                }
             }
 
-            this.createControlPoint(controlPoints, rotateControlPointAttributes, ShapeEditorConstants.ROTATION);
+            if (rotateControlPointAttributes) {
+                this.createControlPoint(controlPoints, rotateControlPointAttributes, ShapeEditorConstants.ROTATION);
 
-            this.createRotationAccessory(accessories, rotateControlPointAttributes);
+                this.createRotationAccessory(accessories, rotateControlPointAttributes);
+            }
+
+            // if (shadowControlPointAttributes) {
+            //     for (var i = 0, len = locations.length - 1; i < len; i++) {
+            //         this.createControlPoint(
+            //             shadowControlPoints,
+            //             shadowControlPointAttributes,
+            //             ShapeEditorConstants.SHADOW,
+            //             i
+            //         );
+            //     }
+            // }
         };
 
         // Internal use only.
         SurfacePolylineEditorFragment.prototype.updateControlElements = function (shape,
                                                                                   globe,
                                                                                   controlPoints,
+                                                                                  shadowControlPoints,
                                                                                   accessories) {
             var locations = shape.boundaries;
-
-            var rotationControlPoint = controlPoints.pop();
-
-            var lenControlPoints = controlPoints.length;
             var lenLocations = locations.length;
+            var lenControlPoints = controlPoints.length;
+            var locationControlPoints = [];
+            var rotationControlPoint = null;
+
+
+            for (var i = lenControlPoints - 1; i > -1; i--) {
+                if (controlPoints[i].userProperties.purpose === ShapeEditorConstants.ROTATION) {
+                    rotationControlPoint = controlPoints[i];
+
+                    var polygonCenter = this.getCenterFromLocations(globe, locations);
+                    var polygonRadius = 1.2 * this.getAverageDistance(globe, polygonCenter, locations);
+
+                    Location.greatCircleLocation(
+                        polygonCenter,
+                        this.currentHeading,
+                        polygonRadius,
+                        rotationControlPoint.position
+                    );
+
+                    rotationControlPoint.userProperties.rotation = this.currentHeading;
+
+                    this.updateRotationAccessory(polygonCenter, rotationControlPoint.position, accessories);
+                }
+
+                if (controlPoints[i].userProperties.purpose === ShapeEditorConstants.LOCATION) {
+                    locationControlPoints.push(controlPoints[i]);
+                }
+                controlPoints.pop();
+            }
+
+            locationControlPoints.reverse();
+            var lenLocationControlPoints = locationControlPoints.length;
 
             for (var i = 0; i < lenLocations; i++) {
-                if (i >= lenControlPoints) {
+                if (i >= lenLocationControlPoints) {
                     this.createControlPoint(
-                        controlPoints,
+                        locationControlPoints,
                         this.moveControlPointAttributes,
                         ShapeEditorConstants.LOCATION,
                         i
                     );
                 }
-                controlPoints[i].position = locations[i];
+                locationControlPoints[i].position = locations[i];
             }
 
-            if (lenControlPoints > lenLocations) {
-                controlPoints.splice(lenLocations, lenControlPoints - lenLocations)
+            if (locationControlPoints.length > lenLocations) {
+                locationControlPoints.splice(lenLocations, locationControlPoints.length - lenLocations);
             }
 
-            var polygonCenter = this.getCenterFromLocations(globe, locations);
-            var polygonRadius = 1.2 * this.getAverageDistance(globe, polygonCenter, locations);
+            for (var i = 0; i < locationControlPoints.length; i++) {
+                controlPoints.push(locationControlPoints[i]);
+            }
 
-            Location.greatCircleLocation(
-                polygonCenter,
-                this.currentHeading,
-                polygonRadius,
-                rotationControlPoint.position
-            );
+            for (var i = 0; i < lenLocations - 1; i++) {
+                this.createControlPoint(
+                    shadowControlPoints,
+                    this.shadowControlPointAttributes,
+                    ShapeEditorConstants.SHADOW,
+                    lenLocations + i
+                );
 
-            rotationControlPoint.userProperties.rotation = this.currentHeading;
+                this.computeShadowPointLocations(shape, shadowControlPoints[i], locations[i], locations[i + 1]);
+            }
 
             controlPoints.push(rotationControlPoint);
-
-            this.updateRotationAccessory(polygonCenter, rotationControlPoint.position, accessories);
         };
 
         // Internal use only.
@@ -76461,48 +76694,69 @@ define('util/editor/SurfaceRectangleEditorFragment',[
         // Internal use only.
         SurfaceRectangleEditorFragment.prototype.initializeControlElements = function (shape,
                                                                                        controlPoints,
+                                                                                       shadowControlPoints,
                                                                                        accessories,
                                                                                        resizeControlPointAttributes,
                                                                                        rotateControlPointAttributes) {
 
-            this.createControlPoint(controlPoints, resizeControlPointAttributes, ShapeEditorConstants.WIDTH);
-            this.createControlPoint(controlPoints, resizeControlPointAttributes, ShapeEditorConstants.HEIGHT);
-            this.createControlPoint(controlPoints, rotateControlPointAttributes, ShapeEditorConstants.ROTATION);
+            if (resizeControlPointAttributes) {
+                this.createControlPoint(controlPoints, resizeControlPointAttributes, ShapeEditorConstants.WIDTH);
+                this.createControlPoint(controlPoints, resizeControlPointAttributes, ShapeEditorConstants.HEIGHT);
+            }
 
-            this.createRotationAccessory(accessories, rotateControlPointAttributes);
+            if (rotateControlPointAttributes) {
+                this.createControlPoint(controlPoints, rotateControlPointAttributes, ShapeEditorConstants.ROTATION);
+
+                this.createRotationAccessory(accessories, rotateControlPointAttributes);
+            }
         };
 
         // Internal use only.
         SurfaceRectangleEditorFragment.prototype.updateControlElements = function (shape,
                                                                                    globe,
                                                                                    controlPoints,
+                                                                                   shadowControlPoints,
                                                                                    accessories) {
-            Location.greatCircleLocation(
-                shape.center,
-                90 + shape.heading,
-                0.5 * shape.width / globe.equatorialRadius,
-                controlPoints[0].position
-            );
+            var length = controlPoints.length;
 
-            Location.greatCircleLocation(
-                shape.center,
-                shape.heading,
-                0.5 * shape.height / globe.equatorialRadius,
-                controlPoints[1].position
-            );
+            if (length > 0) {
+                for (var i = 0; i < length; i++) {
+                    if (controlPoints[i].userProperties.purpose === ShapeEditorConstants.WIDTH) {
+                        Location.greatCircleLocation(
+                            shape.center,
+                            90 + shape.heading,
+                            0.5 * shape.width / globe.equatorialRadius,
+                            controlPoints[i].position
+                        );
 
-            Location.greatCircleLocation(
-                shape.center,
-                shape.heading,
-                0.8 * shape.height / globe.equatorialRadius,
-                controlPoints[2].position
-            );
+                        controlPoints[i].userProperties.size = shape.width;
+                    }
 
-            controlPoints[0].userProperties.size = shape.width;
-            controlPoints[1].userProperties.size = shape.height;
-            controlPoints[2].userProperties.rotation = shape.heading;
+                    if (controlPoints[i].userProperties.purpose === ShapeEditorConstants.HEIGHT) {
+                        Location.greatCircleLocation(
+                            shape.center,
+                            shape.heading,
+                            0.5 * shape.height / globe.equatorialRadius,
+                            controlPoints[i].position
+                        );
 
-            this.updateRotationAccessory(shape.center, controlPoints[2].position, accessories);
+                        controlPoints[i].userProperties.size = shape.height;
+                    }
+
+                    if (controlPoints[i].userProperties.purpose === ShapeEditorConstants.ROTATION) {
+                        Location.greatCircleLocation(
+                            shape.center,
+                            shape.heading,
+                            0.8 * shape.height / globe.equatorialRadius,
+                            controlPoints[i].position
+                        );
+
+                        controlPoints[i].userProperties.rotation = shape.heading;
+
+                        this.updateRotationAccessory(shape.center, controlPoints[i].position, accessories);
+                    }
+                }
+            }
         };
 
         // Internal use only.
@@ -76751,19 +77005,24 @@ define('util/editor/SurfaceSectorEditorFragment',[
         // Internal use only.
         SurfaceSectorEditorFragment.prototype.initializeControlElements = function (shape,
                                                                                     controlPoints,
+                                                                                    shadowControlPoints,
                                                                                     accessories,
                                                                                     resizeControlPointAttributes) {
 
-            this.createControlPoint(controlPoints, resizeControlPointAttributes, ShapeEditorConstants.MIN_CORNER);
-            this.createControlPoint(controlPoints, resizeControlPointAttributes, ShapeEditorConstants.MAX_CORNER);
+            if (resizeControlPointAttributes) {
+                this.createControlPoint(controlPoints, resizeControlPointAttributes, ShapeEditorConstants.MIN_CORNER);
+                this.createControlPoint(controlPoints, resizeControlPointAttributes, ShapeEditorConstants.MAX_CORNER);
+            }
         };
 
         // Internal use only.
         SurfaceSectorEditorFragment.prototype.updateControlElements = function (shape,
                                                                                 globe,
                                                                                 controlPoints) {
-            controlPoints[0].position = new Location(shape._sector.minLatitude, shape._sector.minLongitude);
-            controlPoints[1].position = new Location(shape._sector.maxLatitude, shape._sector.maxLongitude);
+            if (controlPoints.length > 0) {
+                controlPoints[0].position = new Location(shape._sector.minLatitude, shape._sector.minLongitude);
+                controlPoints[1].position = new Location(shape._sector.maxLatitude, shape._sector.maxLongitude);
+            }
         };
 
         // Internal use only.
@@ -76904,25 +77163,31 @@ define('util/editor/ShapeEditor',[
 
             // Internal use only.
             // Flags indicating whether the specific action is allowed or not.
-            this._allowMove = false;
-            this._allowReshape = false;
-            this._allowRotate = false;
-            this._allowManageControlPoint = false;
+            this._allowMove = true;
+            this._allowReshape = true;
+            this._allowRotate = true;
+            this._allowManageControlPoint = true;
 
             // Documented in defineProperties below.
             this._moveControlPointAttributes = new PlacemarkAttributes(null);
-            this._moveControlPointAttributes.imageColor = WorldWind.Color.BLUE;
-            this._moveControlPointAttributes.imageScale = 6;
+            this._moveControlPointAttributes.imageSource = WorldWind.configuration.baseUrl + "images/blue-dot.png";
+            this._moveControlPointAttributes.imageScale = 0.15;
+
+            // Documented in defineProperties below.
+            this._shadowControlPointAttributes = new PlacemarkAttributes(null);
+            this._shadowControlPointAttributes.imageSource = WorldWind.configuration.baseUrl + "images/gray-dot.png";
+            this._shadowControlPointAttributes.imageScale = 0.15;
 
             // Documented in defineProperties below.
             this._resizeControlPointAttributes = new PlacemarkAttributes(null);
-            this._resizeControlPointAttributes.imageColor = WorldWind.Color.CYAN;
-            this._resizeControlPointAttributes.imageScale = 6;
+            this._resizeControlPointAttributes.imageSource = WorldWind.configuration.baseUrl + "images/yellow-dot.png";
+            this._resizeControlPointAttributes.imageScale = 0.15;
 
             // Documented in defineProperties below.
             this._rotateControlPointAttributes = new PlacemarkAttributes(null);
             this._rotateControlPointAttributes.imageColor = WorldWind.Color.GREEN;
-            this._rotateControlPointAttributes.imageScale = 6;
+            this._rotateControlPointAttributes.imageSource = WorldWind.configuration.baseUrl + "images/green-dot.png";
+            this._rotateControlPointAttributes.imageScale = 0.15;
 
             // Documented in defineProperties below.
             this._annotationAttributes = new AnnotationAttributes(null);
@@ -76965,6 +77230,10 @@ define('util/editor/ShapeEditor',[
             this.controlPointsLayer = new RenderableLayer("Shape Editor Control Points");
 
             // Internal use only.
+            // The layer that holds the shadow control points created by the editor fragment.
+            this.shadowControlPointsLayer = new RenderableLayer("Shape Editor Shadow Control Points");
+
+            // Internal use only.
             // The layers that holds the additional accessories created by the editor fragment.
             this.accessoriesLayer = new RenderableLayer("Shape Editor Accessories");
             this.accessoriesLayer.pickEnabled = false;
@@ -77002,14 +77271,6 @@ define('util/editor/ShapeEditor',[
             this.actionSecondaryBehavior = false;
 
             // Internal use only.
-            // The client X position at the start of the action.
-            this.actionStartX = null;
-
-            //Internal use only.
-            // The client Y position at the start of the action.
-            this.actionStartY = null;
-
-            // Internal use only.
             // The current client X position for the action.
             this.actionCurrentX = null;
 
@@ -77032,12 +77293,6 @@ define('util/editor/ShapeEditor',[
             this._click1Time = 0;
             this._dbclickTimeout = 0;
             this._clickDelay = 500;
-
-            // Internal use only.
-            // counters used to detect long press event (time measured in ms)
-            this._longPressTimeout = 0;
-            this._longPressDelay = 1500;
-
 
             this._worldWindow.worldWindowController.addGestureListener(this);
         };
@@ -77078,6 +77333,20 @@ define('util/editor/ShapeEditor',[
                 },
                 set: function (value) {
                     this._moveControlPointAttributes = value;
+                }
+            },
+
+            /**
+             * Attributes used for the shadow control points used to mask the middle of a segment.
+             * @memberof ShapeEditor.prototype
+             * @type {PlacemarkAttributes}
+             */
+            shadowControlPointAttributes: {
+                get: function () {
+                    return this._shadowControlPointAttributes;
+                },
+                set: function (value) {
+                    this._shadowControlPointAttributes = value;
                 }
             },
 
@@ -77230,10 +77499,10 @@ define('util/editor/ShapeEditor',[
             this.creatorShapeProperties = null;
             this.newCreatedShapeLayer = null;
 
-            this._allowMove = false;
-            this._allowReshape = false;
-            this._allowRotate = false;
-            this._allowManageControlPoint = false;
+            this._allowMove = true;
+            this._allowReshape = true;
+            this._allowRotate = true;
+            this._allowManageControlPoint = true;
 
             var currentShape = this._shape;
             this._shape = null;
@@ -77269,6 +77538,27 @@ define('util/editor/ShapeEditor',[
         // Internal use only.
         // Called by {@link ShapeEditor#edit} to initialize the control elements used for editing.
         ShapeEditor.prototype.initializeControlElements = function () {
+            var moveControlAttributes = this._moveControlPointAttributes;
+            var resizeControlAttributes = this._resizeControlPointAttributes;
+            var rotateControlAttributes = this._rotateControlPointAttributes;
+            var shadowControlAttributes = this._shadowControlPointAttributes;
+
+            if (!this._allowMove) {
+                moveControlAttributes = null;
+            }
+
+            if (!this._allowReshape) {
+                resizeControlAttributes = null;
+            }
+
+            if (!this._allowRotate) {
+                rotateControlAttributes = null;
+            }
+
+            if (!this._allowManageControlPoint) {
+                shadowControlAttributes = null;
+            }
+
             if (this._worldWindow.indexOfLayer(this.shadowShapeLayer) == -1) {
                 this._worldWindow.insertLayer(0, this.shadowShapeLayer);
             }
@@ -77276,6 +77566,11 @@ define('util/editor/ShapeEditor',[
             if (this._worldWindow.indexOfLayer(this.controlPointsLayer) == -1) {
                 this._worldWindow.addLayer(this.controlPointsLayer);
             }
+
+            if (this._worldWindow.indexOfLayer(this.shadowControlPointsLayer) == -1) {
+                this._worldWindow.addLayer(this.shadowControlPointsLayer);
+            }
+
 
             if (this._worldWindow.indexOfLayer(this.accessoriesLayer) == -1) {
                 this._worldWindow.addLayer(this.accessoriesLayer);
@@ -77288,10 +77583,12 @@ define('util/editor/ShapeEditor',[
             this.activeEditorFragment.initializeControlElements(
                 this._shape,
                 this.controlPointsLayer.renderables,
+                this.shadowControlPointsLayer.renderables,
                 this.accessoriesLayer.renderables,
-                this._resizeControlPointAttributes,
-                this._rotateControlPointAttributes,
-                this._moveControlPointAttributes
+                resizeControlAttributes,
+                rotateControlAttributes,
+                moveControlAttributes,
+                shadowControlAttributes
             );
 
             this.updateControlElements();
@@ -77302,6 +77599,9 @@ define('util/editor/ShapeEditor',[
         ShapeEditor.prototype.removeControlElements = function () {
             this._worldWindow.removeLayer(this.controlPointsLayer);
             this.controlPointsLayer.removeAllRenderables();
+
+            this._worldWindow.removeLayer(this.shadowControlPointsLayer);
+            this.shadowControlPointsLayer.removeAllRenderables();
 
             this._worldWindow.removeLayer(this.accessoriesLayer);
             this.accessoriesLayer.removeAllRenderables();
@@ -77319,6 +77619,7 @@ define('util/editor/ShapeEditor',[
                 this._shape,
                 this._worldWindow.globe,
                 this.controlPointsLayer.renderables,
+                this.shadowControlPointsLayer.renderables,
                 this.accessoriesLayer.renderables
             );
         };
@@ -77347,13 +77648,14 @@ define('util/editor/ShapeEditor',[
             var x = event.clientX,
                 y = event.clientY;
 
-            this.actionStartX = x;
-            this.actionStartY = y;
             this.actionCurrentX = x;
             this.actionCurrentY = y;
 
             var mousePoint = this._worldWindow.canvasCoordinates(x, y);
+            var tmpOutlineWidth = this._shape.highlightAttributes.outlineWidth;
+            this._shape.highlightAttributes.outlineWidth = 5;
             var pickList = this._worldWindow.pick(mousePoint);
+            this._shape.highlightAttributes.outlineWidth = tmpOutlineWidth;
             var terrainObject = pickList.terrainObject();
 
             if (terrainObject && this.isCreatorEnabled() && this.activeEditorFragment !== null && this._shape === null) {
@@ -77401,35 +77703,6 @@ define('util/editor/ShapeEditor',[
                 );
             }
 
-            var allowVertex = terrainObject
-                && this.actionStartX === this.actionCurrentX
-                && this.actionStartY === this.actionCurrentY
-                && this._allowManageControlPoint;
-
-            // counter for long-press detection
-            clearTimeout(this._longPressTimeout);
-
-            var context = this;
-
-
-            // The editor provides vertex insertion and removal for SurfacePolygon and SurfacePolyline.
-            // Long press when the cursor is over the shape inserts a control point near the position
-            // of the cursor.
-            this._longPressTimeout = setTimeout(function () {
-                    if (allowVertex) {
-                        context.activeEditorFragment.addNewVertex(
-                            context._shape,
-                            context._worldWindow.globe,
-                            terrainObject.position
-                        );
-
-                        context.updateControlElements();
-                        context._worldWindow.redraw();
-                    }
-                }, this._longPressDelay
-            );
-
-
             for (var p = 0, len = pickList.objects.length; p < len; p++) {
                 var object = pickList.objects[p];
 
@@ -77442,6 +77715,10 @@ define('util/editor/ShapeEditor',[
                         break;
 
                     } else if (this.controlPointsLayer.renderables.indexOf(userObject) !== -1) {
+                        this.beginAction(terrainObject.position, this._allowManageControlPoint, userObject);
+                        event.preventDefault();
+                        break;
+                    } else if (this.shadowControlPointsLayer.renderables.indexOf(userObject) !== -1) {
                         this.beginAction(terrainObject.position, this._allowManageControlPoint, userObject);
                         event.preventDefault();
                         break;
@@ -77465,8 +77742,6 @@ define('util/editor/ShapeEditor',[
                 this._click0Time = 0;
                 this._click1Time = 0;
             }
-
-            clearTimeout(this._longPressTimeout);
 
             if (this.actionType) {
 
@@ -77502,17 +77777,15 @@ define('util/editor/ShapeEditor',[
             var mousePoint = this._worldWindow.canvasCoordinates(event.clientX, event.clientY);
             var terrainObject = this._worldWindow.pickTerrain(mousePoint).terrainObject();
 
-            if (this.isCreatorEnabled() && this.activeEditorFragment.isRegularShape()) {
-                this.setCreatorEnabled(false);
-            }
-
-            // The editor provides vertex insertion and removal for SurfacePolygon and
-            // SurfacePolyline. Shift-clicking when the cursor is over the shape inserts a control point near the position
-            // of the cursor. Ctrl-clicking when the cursor is over a control point removes that particular control point.
+            // The editor provides vertex insertion and removal for SurfacePolygon and SurfacePolyline.
+            // Double click when the cursor is over a control point will remove it.
+            // Single click when the cursor is over a shadow control point will add it.
+            console.dir(this.actionType)
             if (this.actionType) {
                 if (this._click0Time && this._click1Time) {
                     if (this._click1Time <= this._clickDelay) {
                         if (this.actionControlPoint
+                            && this.actionType == 'location'
                             && terrainObject
                             && this._allowManageControlPoint) {
                             this.actionSecondaryBehavior = true;
@@ -77522,12 +77795,22 @@ define('util/editor/ShapeEditor',[
                     clearTimeout(this._dbclickTimeout);
                     this._click0Time = 0;
                     this._click1Time = 0;
+
+                } else {
+                    if (this.actionType == 'shadow' && this._allowManageControlPoint) {
+                        this.activeEditorFragment.addNewVertex(
+                            this._shape,
+                            this._worldWindow.globe,
+                            terrainObject.position
+                        );
+
+                        this.updateControlElements();
+                        this._worldWindow.redraw();
+                    }
                 }
 
                 this.endAction();
             }
-
-            clearTimeout(this._longPressTimeout);
         };
 
         // Internal use only.
@@ -77567,7 +77850,7 @@ define('util/editor/ShapeEditor',[
 
             if (this.activeEditorFragment instanceof PlacemarkEditorFragment) {
                 shadowShape.altitudeMode = WorldWind.CLAMP_TO_GROUND;
-                shadowShape.highlightAttributes = new PlacemarkAttributes(this.originalHighlightAttributes);
+                shadowShape.highlightAttributes = new PlacemarkAttributes(this.originalPlacemarkHighlightAttributes);
             } else {
                 shadowShape.highlightAttributes = new ShapeAttributes(this.originalHighlightAttributes);
             }
@@ -77604,7 +77887,8 @@ define('util/editor/ShapeEditor',[
 
             if ((purpose === ShapeEditorConstants.ROTATION && this._allowRotate) ||
                 (purpose !== ShapeEditorConstants.ROTATION && this._allowReshape) ||
-                (purpose === ShapeEditorConstants.LOCATION && this._allowManageControlPoint && this.actionSecondaryBehavior)) {
+                (purpose === ShapeEditorConstants.LOCATION && this._allowManageControlPoint && this.actionSecondaryBehavior) ||
+                (purpose === ShapeEditorConstants.SHADOW && this._allowManageControlPoint && this.actionSecondaryBehavior)) {
                 this.activeEditorFragment.reshape(
                     this._shape,
                     this._worldWindow.globe,
@@ -77734,6 +78018,7 @@ define('util/editor/ShapeEditor',[
         return ShapeEditor;
     }
 );
+
 /*
  * Copyright 2003-2006, 2009, 2017, United States Government, as represented by the Administrator of the
  * National Aeronautics and Space Administration. All rights reserved.
