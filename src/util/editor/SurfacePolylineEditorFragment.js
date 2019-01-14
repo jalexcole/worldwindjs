@@ -98,16 +98,16 @@ define([
                 this.createRotationAccessory(accessories, rotateControlPointAttributes);
             }
 
-            // if (shadowControlPointAttributes) {
-            //     for (var i = 0, len = locations.length - 1; i < len; i++) {
-            //         this.createControlPoint(
-            //             shadowControlPoints,
-            //             shadowControlPointAttributes,
-            //             ShapeEditorConstants.SHADOW,
-            //             i
-            //         );
-            //     }
-            // }
+            if (shadowControlPointAttributes) {
+                for (var i = 0, len = locations.length - 1; i < len; i++) {
+                    this.createControlPoint(
+                        shadowControlPoints,
+                        shadowControlPointAttributes,
+                        ShapeEditorConstants.SHADOW,
+                        i
+                    );
+                }
+            }
         };
 
         // Internal use only.
@@ -140,11 +140,10 @@ define([
                     rotationControlPoint.userProperties.rotation = this.currentHeading;
 
                     this.updateRotationAccessory(polygonCenter, rotationControlPoint.position, accessories);
-                }
-
-                if (controlPoints[i].userProperties.purpose === ShapeEditorConstants.LOCATION) {
+                } else {
                     locationControlPoints.push(controlPoints[i]);
                 }
+
                 controlPoints.pop();
             }
 
@@ -171,12 +170,12 @@ define([
                 controlPoints.push(locationControlPoints[i]);
             }
 
-            for (var i = 0; i < lenLocations - 1; i++) {
+            for (var i = 0; i < controlPoints.length - 1; i++) {
                 this.createControlPoint(
                     shadowControlPoints,
                     this.shadowControlPointAttributes,
                     ShapeEditorConstants.SHADOW,
-                    lenLocations + i
+                    i
                 );
 
                 this.computeShadowPointLocations(shape, shadowControlPoints[i], locations[i], locations[i + 1]);
