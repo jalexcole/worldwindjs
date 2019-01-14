@@ -247,7 +247,7 @@ requirejs(['./WorldWindShim',
         document.getElementById("editEllipseBtn").addEventListener("click", function(){
             var shape = shapeEditor.stop();
             if (shape !== ellipseShape) {
-                shapeEditor.edit(ellipseShape, false, true, false, true);
+                shapeEditor.edit(ellipseShape, true, true, true, true);
             }
         });
 
@@ -261,14 +261,14 @@ requirejs(['./WorldWindShim',
         document.getElementById("editPolygonBtn").addEventListener("click", function(){
             var shape = shapeEditor.stop();
             if (shape !== polygonShape) {
-                shapeEditor.edit(polygonShape, true, false, true, true);
+                shapeEditor.edit(polygonShape, true, true, true, true);
             }
         });
 
         document.getElementById("editMultiPolygonBtn").addEventListener("click", function(){
             var shape = shapeEditor.stop();
             if (shape !== multiPolygonShape) {
-                shapeEditor.edit(multiPolygonShape, false, true, true, true);
+                shapeEditor.edit(multiPolygonShape, true, true, true, true);
             }
         });
 
@@ -282,7 +282,7 @@ requirejs(['./WorldWindShim',
         document.getElementById("editRectangleBtn").addEventListener("click", function(){
             var shape = shapeEditor.stop();
             if (shape !== rectangleShape) {
-                shapeEditor.edit(rectangleShape, true, false, false, true);
+                shapeEditor.edit(rectangleShape, true, true, true, true);
             }
         });
 
