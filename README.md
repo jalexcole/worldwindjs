@@ -20,7 +20,7 @@ This fork exists to support the development of several personal projects, includ
 - [worldwind-react-globe-bs4](https://emxsys.github.io/worldwind-react-globe-bs4/) - React Bootstrap4 UI components for Web WorldWind
 - [worldwind-react-app](https://emxsys.github.io/worldwind-react-app/) - A geo-browser web app using Web WorldWind with React and Bootstrap 4 
 
-WorldWindJS is made available in the spirit of the NASA motto: _For the benefit of all._  Show your support for this project by giving it a [star](https://github.com/emxsys/worldwindjs/stargazers)!
+WorldWindJS is made available in the spirit of the NASA motto: _For the benefit of all._  Show your support for this project by giving it a [star](https://github.com/worldwindearth/worldwindjs/stargazers)!
 
 ### Enhancements include:
 
@@ -34,9 +34,9 @@ WorldWindJS is made available in the spirit of the NASA motto: _For the benefit 
 ### Migrating from NASA WebWorldWind
 
 - The WorldWindJS npm package is available in the [npm repository](https://www.npmjs.com/package/worldwindjs).
-- WorldWindJS is available on the __unpkg__ and __jsDelivr__ CDNs. See [CDN providers](https://github.com/emxsys/worldwindjs/wiki/CDN-providers) in the wiki for examples.
-- The project supports npm dependencies on its git repository: See [npm dependencies](https://github.com/emxsys/worldwindjs/wiki/npm-dependencies) in the wiki for examples. 
-- The JS libraries (production and debug) and the image resources are available in the [GitHub releases](https://github.com/emxsys/worldwindjs/releases/latest).
+- WorldWindJS is available on the __unpkg__ and __jsDelivr__ CDNs. See [CDN providers](https://github.com/worldwindearth/worldwindjs/wiki/CDN-providers) in the wiki for examples.
+- The project supports npm dependencies on its git repository: See [npm dependencies](https://github.com/worldwindearth/worldwindjs/wiki/npm-dependencies) in the wiki for examples. 
+- The JS libraries (production and debug) and the image resources are available in the [GitHub releases](https://github.com/worldwindearth/worldwindjs/releases/latest).
 
 
 #### Changes from WebWorldWind release 0.9.0
@@ -49,7 +49,7 @@ WorldWindJS is made available in the spirit of the NASA motto: _For the benefit 
 
 ### Additional Resources
 #### Tutorials
-- [How to Build a WorldWindJS Web App](https://emxsys.github.io/worldwindjs/) on the project website
+- [How to Build a WorldWindJS Web App](https://worldwindearth.github.io/worldwindjs/) on the project website
 
 #### Demos
 - [__worldwind-web-app__ demo](https://emxsys.github.io/worldwind-web-app/): A geo-browser built with Bootstrap and KnockoutJS.
