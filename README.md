@@ -52,7 +52,7 @@ WorldWindJS is made available in the spirit of the NASA motto: _For the benefit 
 - [How to Build a WorldWindJS Web App](https://worldwindearth.github.io/worldwindjs/) on the project website
 
 #### Demos
-- [__worldwind-web-app__ demo](https://emxsys.github.io/worldwind-web-app/): A geo-browser built with Bootstrap and KnockoutJS.
+- [__worldwind-web-app__ demo](https://worldwindearth.github.io/worldwind-web-app/): A geo-browser built with Bootstrap and KnockoutJS.
 - [__worldwind-react-app__ demo](https://emxsys.github.io/worldwind-react-app/): A geo-browser built with React using the [worldwind-react-globe](https://github.com/emxsys/worldwind-react-globe) and [worldwind-react-globe-bs4](https://github.com/emxsys/worldwind-react-globe-bs4) components.
 
 #### Related projects
