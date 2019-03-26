@@ -1,5 +1,4 @@
 # Overview
-___Note: WorldWindJS is not the official Web WorldWind library from NASA___
 
 [__WorldWindJS__](https://github.com/emxsys/worldwindjs) is a fork of the popular [Web WorldWind](https://github.com/NASAWorldWind/WebWorldWind)
 library from NASA (with contributions from ESA). This fork provides a release channel for builds based on the latest fixes
