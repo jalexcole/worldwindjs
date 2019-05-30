@@ -55,7 +55,7 @@ module.exports = function (grunt) {
                         endFile: 'tools/wrap.end'
                     }
                 }
-            },
+            }
         },
 
         karma: {
@@ -68,8 +68,8 @@ module.exports = function (grunt) {
                     outputDir: 'build/test-results'
                 },
                 htmlReporter: {
-                    outputFile: 'build/test-results/report.html',
-                },
+                    outputFile: 'build/test-results/report.html'
+                }
             }
         },
 
@@ -103,12 +103,14 @@ module.exports = function (grunt) {
         zip: {
             images: {
                 src: ['images/**'],
-                dest: 'build/dist/images.zip'
+                dest: 'build/dist/images.zip',
+                compression: 'DEFLATE'
             },
             dist: {
                 cwd: 'build/dist',
                 src: ['build/dist/**'],
-                dest: 'build/WebWorldWind-Distribution-<%= pkg.version %>.zip'
+                dest: 'build/WebWorldWind-Distribution-<%= pkg.version %>.zip',
+                compression: 'DEFLATE'
             }
         }
     });
