@@ -505,7 +505,7 @@ define([
         };
 
         /**
-         * Gets the active attributes for the current distance to the camera and highlighted state.
+         * Set the placemark attributes for the current distance to the camera and highlighted state.
          *
          * @param {DrawContext} dc The current render context
          * @param {Placemark} placemark The placemark needing a level of detail selection
