@@ -25,6 +25,7 @@ define([
         '../geom/Position',
         '../geom/Rectangle',
         '../render/Texture',
+        '../error/UnsupportedOperationError',
         '../geom/Vec3',
         '../util/WWMath'
     ],
@@ -35,6 +36,7 @@ define([
               Position,
               Rectangle,
               Texture,
+              UnsupportedOperationError,
               Vec3,
               WWMath) {
         "use strict";
@@ -1098,6 +1100,39 @@ define([
         };
 
         /**
+         * Returns this viewing matrix's heading angle in degrees. The roll argument enables the caller to disambiguate
+         * heading and roll when the two rotation axes for heading and roll are parallel, causing gimbal lock.
+         * <p>
+         * The result of this method is undefined if this matrix is not a viewing matrix.
+         *
+         * @param {Number} roll the viewing matrix's roll angle in degrees, or 0 if the roll angle is unknown
+         *
+         * @return {Number} the extracted heading angle in degrees
+         */
+        Matrix.prototype.extractHeading = function (roll) {
+            var rad = roll * Angle.DEGREES_TO_RADIANS;
+            var cr = Math.cos(rad);
+            var sr = Math.sin(rad);
+
+            var ch = (cr * this[0]) - (sr * this[4]);
+            var sh = (sr * this[5]) - (cr * this[1]);
+            return Math.atan2(sh, ch) * Angle.RADIANS_TO_DEGREES;
+        };
+
+        /**
+         * Returns this viewing matrix's tilt angle in degrees.
+         * <p>
+         * The result of this method is undefined if this matrix is not a viewing matrix.
+         *
+         * @return {Number} the extracted heading angle in degrees
+         */
+        Matrix.prototype.extractTilt = function () {
+            var ct = this[10];
+            var st = Math.sqrt(this[2] * this[2] + this[6] * this[6]);
+            return Math.atan2(st, ct) * Angle.RADIANS_TO_DEGREES;
+        };
+
+        /**
          * Returns this viewing matrix's forward vector.
          * <p>
          * This method assumes that this matrix represents a viewing matrix. If this does not represent a viewing matrix the
@@ -1517,7 +1552,7 @@ define([
          */
         Matrix.ludcmp = function (A, index) {
             var TINY = 1.0e-20,
-                vv = [], /* new double[4]; */
+                vv = [], /* new var[4]; */
                 d = 1.0,
                 temp,
                 i,
@@ -1596,6 +1631,47 @@ define([
         };
 
         /**
+         * Inverts this orthonormal transform matrix in place. This matrix's upper 3x3 is transposed, then its fourth column
+         * is transformed by the transposed upper 3x3 and negated.
+         * <p/>
+         * The result of this method is undefined if this matrix's values are not consistent with those of an orthonormal
+         * transform.
+         *
+         * @returns {Matrix} this matrix, inverted
+         */
+        Matrix.prototype.invertOrthonormal = function () {
+
+            // This is assumed to contain matrix 3D transformation matrix. The upper 3x3 is transposed, the translation
+            // components are multiplied by the transposed-upper-3x3 and negated.
+
+            var tmp = this[1];
+            this[1] = this[4];
+            this[4] = tmp;
+
+            tmp = this[2];
+            this[2] = this[8];
+            this[8] = tmp;
+
+            tmp = this[6];
+            this[6] = this[9];
+            this[9] = tmp;
+
+            var x = this[3],
+                y = this[7],
+                z = this[11];
+            this[3] = -(this[0] * x) - (this[1] * y) - (this[2] * z);
+            this[7] = -(this[4] * x) - (this[5] * y) - (this[6] * z);
+            this[11] = -(this[8] * x) - (this[9] * y) - (this[10] * z);
+
+            this[12] = 0;
+            this[13] = 0;
+            this[14] = 0;
+            this[15] = 1;
+
+            return this;
+        };
+
+        /**
          * Inverts the specified matrix and stores the result in this matrix.
          * <p>
          * The specified matrix is assumed to represent an orthonormal transform matrix. This matrix's upper 3x3 is
@@ -1613,6 +1689,11 @@ define([
             if (!matrix) {
                 throw new ArgumentError(
                     Logger.logMessage(Logger.LEVEL_SEVERE, "Matrix", "invertOrthonormalMatrix", "missingMatrix"));
+            }
+
+            if (this === matrix) {
+                throw new UnsupportedOperationError(
+                    Logger.logMessage(Logger.LEVEL_SEVERE, "Matrix", "invertOrthonormalMatrix", "unsupportedInPlaceInversion"));
             }
 
             // 'a' is assumed to contain a 3D transformation matrix.

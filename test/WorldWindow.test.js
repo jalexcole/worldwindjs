@@ -50,7 +50,7 @@ define([
     var wwd = new MockWorldWindow();
     wwd.globe = mockGlobe;
     wwd.drawContext = dc;
-    wwd.navigator = new LookAtNavigator();
+    wwd.navigator = new LookAtNavigator(wwd);
     wwd.worldWindowController = new BasicWorldWindowController(wwd);
     wwd.viewport = viewport;
     wwd.depthBits = 24;

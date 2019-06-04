@@ -23,6 +23,7 @@ define([
         '../util/Color',
         '../util/Font',
         '../util/Logger',
+        '../LookAt',
         '../geom/Matrix',
         '../pick/PickedObject',
         '../shapes/PlacemarkAttributes',
@@ -36,6 +37,7 @@ define([
               Color,
               Font,
               Logger,
+              LookAt,
               Matrix,
               PickedObject,
               PlacemarkAttributes,
@@ -278,6 +280,14 @@ define([
 
             // Internal use only. Intentionally not documented.
             this.depthOffset = -0.003;
+
+            /**
+             * Internal use only.
+             * A temp variable used to hold the current view as a look at during calculations. Using an object level temp property
+             * negates the need for ad-hoc allocations and reduces load on the garbage collector.
+             * @ignore
+             */
+            this.scratchLookAt = new LookAt();
         };
 
         // Internal use only. Intentionally not documented.
@@ -712,9 +722,10 @@ define([
             // Compute and specify the MVP matrix.
             Placemark.matrix.copy(dc.screenProjection);
             Placemark.matrix.multiplyMatrix(this.imageTransform);
+            dc.camera.getAsLookAt(this.scratchLookAt);
 
             var actualRotation = this.imageRotationReference === WorldWind.RELATIVE_TO_GLOBE ?
-                dc.navigator.heading - this.imageRotation : -this.imageRotation;
+                this.scratchLookAt.heading - this.imageRotation : -this.imageRotation;
             Placemark.matrix.multiplyByTranslation(0.5, 0.5, 0);
             Placemark.matrix.multiplyByRotation(0, 0, 1, actualRotation);
             Placemark.matrix.multiplyByTranslation(-0.5, -0.5, 0);
@@ -722,7 +733,7 @@ define([
             // Perform the tilt before applying the rotation so that the image tilts back from its base into
             // the view volume.
             var actualTilt = this.imageTiltReference === WorldWind.RELATIVE_TO_GLOBE ?
-                dc.navigator.tilt + this.imageTilt : this.imageTilt;
+                this.scratchLookAt.tilt + this.imageTilt : this.imageTilt;
             Placemark.matrix.multiplyByRotation(-1, 0, 0, actualTilt);
 
             program.loadModelviewProjection(gl, Placemark.matrix);

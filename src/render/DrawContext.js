@@ -363,8 +363,15 @@ define([
             // Intentionally not documented.
             this.pixelScale = 1;
 
-            // TODO: replace with camera in the next phase of navigator refactoring
+            // Intentionally not documented.
             this.navigator = null;
+
+            /**
+             * The viewing point as a camera.
+             * @type {Camera}
+             * @readonly
+             */
+            this.camera = null;
 
             /**
              * The model-view matrix. The model-view matrix transforms points from model coordinates to eye
