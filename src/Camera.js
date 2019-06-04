@@ -251,7 +251,7 @@ define([
             origin.multiplyByLocalCoordinateTransform(originPoint, globe);
             modelview.multiplyMatrix(origin);
 
-            result.lookAtPosition.copy(originPos);
+            result.position.copy(originPos);
             result.range = -modelview[11];
             result.heading = modelview.extractHeading(this.roll); // disambiguate heading and roll
             result.tilt = modelview.extractTilt();

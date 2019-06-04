@@ -117,8 +117,8 @@ define([
 
             // Capture the start position and start time.
             this.startPosition = new Position(
-                this.lookAt.lookAtPosition.latitude,
-                this.lookAt.lookAtPosition.longitude,
+                this.lookAt.position.latitude,
+                this.lookAt.position.longitude,
                 this.lookAt.range);
             this.startTime = Date.now();
 
@@ -206,8 +206,8 @@ define([
             // This is the timer callback function. It invokes the range animator and the pan animator.
 
             var currentPosition = new Position(
-                this.lookAt.lookAtPosition.latitude,
-                this.lookAt.lookAtPosition.longitude,
+                this.lookAt.position.latitude,
+                this.lookAt.position.longitude,
                 this.lookAt.range);
 
             var continueAnimation = this.updateRange(currentPosition);
@@ -267,8 +267,8 @@ define([
                     new Location(0, 0)),
                 locationReached = false;
 
-            this.lookAt.lookAtPosition.latitude = nextLocation.latitude;
-            this.lookAt.lookAtPosition.longitude = nextLocation.longitude;
+            this.lookAt.position.latitude = nextLocation.latitude;
+            this.lookAt.position.longitude = nextLocation.longitude;
             this.wwd.camera.setFromLookAt(this.lookAt);
 
             // We're done if we're within a meter of the desired location.

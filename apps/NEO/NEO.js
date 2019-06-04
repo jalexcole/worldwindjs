@@ -51,8 +51,8 @@ define(['../../src/WorldWind',
 
             // Start the view pointing to a longitude within the current time zone.
             var lookAt = new WorldWind.LookAt();
-            lookAt.lookAtPosition.latitude = 30;
-            lookAt.lookAtPosition.longitude = -(180 / 12) * ((new Date()).getTimezoneOffset() / 60);
+            lookAt.position.latitude = 30;
+            lookAt.position.longitude = -(180 / 12) * ((new Date()).getTimezoneOffset() / 60);
             this.wwd.camera.setFromLookAt(lookAt);
 
             this.timeSeriesPlayer = new TimeSeriesPlayer(this.wwd);

@@ -128,7 +128,7 @@ requirejs(['./WorldWindShim',
                     altitudeSlider.slider("enable");
                 } else {
                     camera.getAsLookAt(lookAt);
-                    pos = lookAt.lookAtPosition;
+                    pos = lookAt.position;
                     view = lookAt;
                     rangeSlider.slider("enable");
                     altitudeSlider.slider("disable");
@@ -139,7 +139,7 @@ requirejs(['./WorldWindShim',
                     view = camera;
                 } else {
                     camera.getAsLookAt(lookAt);
-                    pos = lookAt.lookAtPosition;
+                    pos = lookAt.position;
                     view = lookAt;
                 }
                 pos.latitude = latitudeSlider.slider("value");
@@ -164,7 +164,7 @@ requirejs(['./WorldWindShim',
                 pos = camera.position;
                 view = camera;
             } else {
-                pos = lookAt.lookAtPosition;
+                pos = lookAt.position;
                 view = lookAt;
             }
             updateControls(pos, view);

@@ -70,8 +70,8 @@ define(['../../src/WorldWind',
 
                 // Start the view pointing to Paris
                 var lookAt = new WorldWind.LookAt();
-                lookAt.lookAtPosition.latitude = 48.86;
-                lookAt.lookAtPosition.longitude = 2.37;
+                lookAt.position.latitude = 48.86;
+                lookAt.position.longitude = 2.37;
                 lookAt.range = 5e4;
                 this.wwd.camera.setFromLookAt(lookAt);
 

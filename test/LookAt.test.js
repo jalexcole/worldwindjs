@@ -28,7 +28,7 @@ define([
         describe("View calculations", function () {
             it("Correctly calculates viewing matrix", function () {
                 var lookAt = new LookAt();
-                lookAt.lookAtPosition = new Position(30, -90, 0);
+                lookAt.position = new Position(30, -90, 0);
                 lookAt.range = 1.131761199603698E7;
                 var result = Matrix.fromIdentity();
                 lookAt.computeViewingTransform(wwd.globe, result);
@@ -64,9 +64,9 @@ define([
                 expect(l1.equals(l2)).toBe(false);
                 l2.roll = l1.roll;
                 expect(l1.equals(l2)).toBe(true);
-                l2.lookAtPosition.latitude = l1.lookAtPosition.latitude + 1;
+                l2.position.latitude = l1.position.latitude + 1;
                 expect(l1.equals(l2)).toBe(false);
-                l2.lookAtPosition.latitude = l1.lookAtPosition.latitude;
+                l2.position.latitude = l1.position.latitude;
                 expect(l1.equals(l2)).toBe(true);
             });
 
@@ -84,7 +84,7 @@ define([
                 l2.heading = l1.heading + 1;
                 l2.tilt = l1.tilt + 1;
                 l2.roll = l1.roll + 1;
-                l2.lookAtPosition.latitude = l1.lookAtPosition.latitude + 1;
+                l2.position.latitude = l1.position.latitude + 1;
                 l1.copy(l2);
                 expect(l1.equals(l2)).toBe(true);
             });
@@ -94,7 +94,7 @@ define([
                 l1.heading = l1.heading + 1;
                 l1.tilt = l1.tilt + 1;
                 l1.roll = l1.roll + 1;
-                l1.lookAtPosition.latitude = l1.lookAtPosition.latitude + 1;
+                l1.position.latitude = l1.position.latitude + 1;
                 var l2 = l1.clone();
                 expect(l1.equals(l2)).toBe(true);
             });

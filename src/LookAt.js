@@ -33,7 +33,7 @@ define([
              * The geographic position at the center of the viewport.
              * @type {Location}
              */
-            this.lookAtPosition = new Position(30, -110, 0);
+            this.position = new Position(30, -110, 0);
 
             /**
              * Look at heading, in degrees clockwise from north.
@@ -81,7 +81,7 @@ define([
             }
 
             modelview.setToIdentity();
-            modelview.multiplyByLookAtModelview(this.lookAtPosition, this.range, this.heading, this.tilt, this.roll, globe);
+            modelview.multiplyByLookAtModelview(this.position, this.range, this.heading, this.tilt, this.roll, globe);
 
             return modelview;
         };
@@ -95,7 +95,7 @@ define([
          */
         LookAt.prototype.equals = function (otherLookAt) {
             if (otherLookAt) {
-                return this.lookAtPosition.equals(otherLookAt.lookAtPosition) &&
+                return this.position.equals(otherLookAt.position) &&
                     this.heading === otherLookAt.heading &&
                     this.tilt === otherLookAt.tilt &&
                     this.roll === otherLookAt.roll &&
@@ -128,7 +128,7 @@ define([
                     Logger.logMessage(Logger.LEVEL_SEVERE, "LookAt", "copy", "missingObject"));
             }
 
-            this.lookAtPosition.copy(copyObject.lookAtPosition);
+            this.position.copy(copyObject.position);
             this.heading = copyObject.heading;
             this.tilt = copyObject.tilt;
             this.roll = copyObject.roll;
@@ -142,7 +142,7 @@ define([
          * @returns {String}
          */
         LookAt.prototype.toString = function () {
-            return this.lookAtPosition.toString() + "," + this.heading + "\u00b0," + this.tilt + "\u00b0," + this.roll + "\u00b0";
+            return this.position.toString() + "," + this.heading + "\u00b0," + this.tilt + "\u00b0," + this.roll + "\u00b0";
         };
 
         return LookAt;

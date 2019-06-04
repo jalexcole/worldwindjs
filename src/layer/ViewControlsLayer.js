@@ -699,16 +699,16 @@ define([
                             dy = thisLayer.panControlCenter[1]
                                 - (thisLayer.wwd.viewport.height - thisLayer.currentEventPoint[1]),
                             lookAt = thisLayer.lookAt,
-                            oldLat = lookAt.lookAtPosition.latitude,
-                            oldLon = lookAt.lookAtPosition.longitude,
+                            oldLat = lookAt.position.latitude,
+                            oldLon = lookAt.position.longitude,
                             // Scale the increment by a constant and the relative distance of the eye to the surface.
                             scale = thisLayer.panIncrement
                                 * (lookAt.range / thisLayer.wwd.globe.radiusAt(oldLat, oldLon)),
                             heading = lookAt.heading + (Math.atan2(dx, dy) * Angle.RADIANS_TO_DEGREES),
                             distance = scale * Math.sqrt(dx * dx + dy * dy);
 
-                        Location.greatCircleLocation(lookAt.lookAtPosition, heading, -distance,
-                            lookAt.lookAtPosition);
+                        Location.greatCircleLocation(lookAt.position, heading, -distance,
+                            lookAt.position);
                         thisLayer.wwd.camera.setFromLookAt(lookAt);
                         thisLayer.wwd.redraw();
                         setTimeout(setLookAtLocation, 50);

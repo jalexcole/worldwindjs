@@ -56,7 +56,7 @@ requirejs(['../src/WorldWind',
 
         // Start out zoomed to the AOI
         var lookAt = new WorldWind.LookAt();
-        lookAt.lookAtPosition = new WorldWind.Position(44.2, -94.12, 0);
+        lookAt.position = new WorldWind.Position(44.2, -94.12, 0);
         lookAt.range = 625000;
         wwd.camera.setFromLookAt(lookAt);
 

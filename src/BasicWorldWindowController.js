@@ -237,8 +237,8 @@ define([
                 var sinHeading = Math.sin(lookAt.heading * Angle.DEGREES_TO_RADIANS),
                     cosHeading = Math.cos(lookAt.heading * Angle.DEGREES_TO_RADIANS);
 
-                lookAt.lookAtPosition.latitude += forwardDegrees * cosHeading - sideDegrees * sinHeading;
-                lookAt.lookAtPosition.longitude += forwardDegrees * sinHeading + sideDegrees * cosHeading;
+                lookAt.position.latitude += forwardDegrees * cosHeading - sideDegrees * sinHeading;
+                lookAt.position.longitude += forwardDegrees * sinHeading + sideDegrees * cosHeading;
                 this.lastPoint.set(tx, ty);
                 this.applyLookAtLimits(lookAt);
                 this.wwd.camera.setFromLookAt(lookAt);
@@ -297,7 +297,7 @@ define([
                 // Convert the transformed modelview matrix to a set of view properties, then apply those
                 // properties to this view.
                 var params = modelview.extractViewingParameters(origin, lookAt.roll, globe, {});
-                lookAt.lookAtPosition.copy(params.origin);
+                lookAt.position.copy(params.origin);
                 lookAt.range = params.range;
                 lookAt.heading = params.heading;
                 lookAt.tilt = params.tilt;
@@ -428,8 +428,8 @@ define([
          */
         BasicWorldWindowController.prototype.applyLookAtLimits = function (lookAt) {
             // Clamp latitude to between -90 and +90, and normalize longitude to between -180 and +180.
-            lookAt.lookAtPosition.latitude = WWMath.clamp(lookAt.lookAtPosition.latitude, -90, 90);
-            lookAt.lookAtPosition.longitude = Angle.normalizedDegreesLongitude(lookAt.lookAtPosition.longitude);
+            lookAt.position.latitude = WWMath.clamp(lookAt.position.latitude, -90, 90);
+            lookAt.position.longitude = Angle.normalizedDegreesLongitude(lookAt.position.longitude);
 
             // Clamp range to values greater than 1 in order to prevent degenerating to a first-person lookAt when
             // range is zero.

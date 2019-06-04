@@ -64,18 +64,18 @@ define([
             lookAtLocation: {
                 get: function () {
                     this.wwd.camera.getAsLookAt(this.scratchLookAt);
-                    this.scratchLookAtPositionProxy.position.copy(this.scratchLookAt.lookAtPosition);
+                    this.scratchLookAtPositionProxy.position.copy(this.scratchLookAt.position);
                     return this.scratchLookAtPositionProxy;
                 },
                 set: function (value) {
                     var lookAt = this.wwd.camera.getAsLookAt(this.scratchLookAt);
-                    lookAt.lookAtPosition.latitude = value.latitude;
-                    lookAt.lookAtPosition.longitude = value.longitude;
+                    lookAt.position.latitude = value.latitude;
+                    lookAt.position.longitude = value.longitude;
                     if (value.altitude) {
-                        lookAt.lookAtPosition.altitude = value.altitude;
+                        lookAt.position.altitude = value.altitude;
                     }
                     else {
-                        lookAt.lookAtPosition.altitude = 0;
+                        lookAt.position.altitude = 0;
                     }
                     this.wwd.camera.setFromLookAt(lookAt);
                 }

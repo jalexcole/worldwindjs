@@ -89,7 +89,7 @@ define([
             //     var camera = wwd.camera;
             //     var lookAt = new LookAt();
             //     lookAt.range = 1.131761199603698E7;
-            //     lookAt.lookAtPosition = new Position(30, -90, 0);
+            //     lookAt.position = new Position(30, -90, 0);
             //     camera.setFromLookAt(lookAt);
             //     expect(camera.position.latitude).toBeCloseTo(30.0, 6);
             //     expect(camera.position.longitude).toBeCloseTo(-90.0, 6);
@@ -106,7 +106,7 @@ define([
             //     lookAt.tilt = 5;
             //     lookAt.roll = 5;
             //     lookAt.heading = 15;
-            //     lookAt.lookAtPosition = new Position(30, -90, 0);
+            //     lookAt.position = new Position(30, -90, 0);
             //     camera.setFromLookAt(lookAt);
             //     expect(camera.position.latitude).toBeCloseTo(26.90254740059172, 6);
             //     expect(camera.position.longitude).toBeCloseTo(-90.92754733364956, 6);

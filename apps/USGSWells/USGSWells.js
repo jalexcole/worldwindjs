@@ -75,8 +75,8 @@ define(['../../src/WorldWind',
 
             // Start the view pointing to a location near the well data.
             var lookAt = new WorldWind.LookAt();
-            lookAt.lookAtPosition.latitude = 33.0977;
-            lookAt.lookAtPosition.longitude = -117.0119;
+            lookAt.position.latitude = 33.0977;
+            lookAt.position.longitude = -117.0119;
             lookAt.range = 1400;
             lookAt.heading = 90;
             lookAt.tilt = 60;
