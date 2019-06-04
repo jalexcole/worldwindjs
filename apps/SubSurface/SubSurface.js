@@ -53,8 +53,10 @@ define(['../../src/WorldWind',
             this.wwd.subsurfaceMode = true;
 
             // Start the view pointing to a longitude within the current time zone.
-            this.wwd.navigator.lookAtLocation.latitude = 30;
-            this.wwd.navigator.lookAtLocation.longitude = -(180 / 12) * ((new Date()).getTimezoneOffset() / 60);
+            var lookAt = new WorldWind.LookAt();
+            lookAt.lookAtPosition.latitude = 30;
+            lookAt.lookAtPosition.longitude = -(180 / 12) * ((new Date()).getTimezoneOffset() / 60);
+            this.wwd.camera.setFromLookAt(lookAt);
 
             this.goToBox = new GoToBox(this.wwd);
             this.layersPanel = new LayersPanel(this.wwd);
