@@ -128,19 +128,7 @@ define([
             }
 
             modelview.setToIdentity();
-            // modelview.multiplyByFirstPersonModelview(this.position, this.heading, this.tilt, this.roll, this.wwd.globe);
-
-            // TODO interpret altitude mode other than absolute
-            // Transform by the local cartesian transform at the camera's position.
-            this.wwd.globe.projection.geographicToCartesianTransform(this.wwd.globe, this.position.latitude, this.position.longitude, this.position.altitude, modelview);
-
-            // Transform by the heading, tilt and roll.
-            modelview.multiplyByRotation(0, 0, 1, -this.heading); // rotate clockwise about the Z axis
-            modelview.multiplyByRotation(1, 0, 0, this.tilt); // rotate counter-clockwise about the X axis
-            modelview.multiplyByRotation(0, 0, 1, this.roll); // rotate counter-clockwise about the Z axis (again)
-
-            // Make the transform a viewing matrix.
-            modelview.invertOrthonormal();
+            modelview.multiplyByFirstPersonModelview(this.position, this.heading, this.tilt, this.roll, this.wwd.globe);
 
             return modelview;
         };
