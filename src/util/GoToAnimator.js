@@ -20,7 +20,7 @@
 define([
         '../geom/Location',
         '../util/Logger',
-        '../LookAt',
+        '../geom/LookAt',
         '../geom/Position',
         '../geom/Vec3'
     ],

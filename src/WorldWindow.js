@@ -23,7 +23,7 @@
 define([
         './error/ArgumentError',
         './BasicWorldWindowController',
-        './Camera',
+        './geom/Camera',
         './render/DrawContext',
         './globe/EarthElevationModel',
         './util/FrameStatistics',

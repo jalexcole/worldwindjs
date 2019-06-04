@@ -19,7 +19,7 @@
  */
 define(['../error/ArgumentError',
         '../util/Logger',
-        '../LookAt'
+        '../geom/LookAt'
     ],
     function (ArgumentError,
               Logger,

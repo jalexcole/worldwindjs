@@ -17,14 +17,14 @@
  * @exports Camera
  */
 define([
-        './error/ArgumentError',
-        './geom/Line',
-        './util/Logger',
-        './LookAt',
-        './geom/Matrix',
-        './geom/Position',
-        './geom/Vec3',
-        './util/WWMath'
+        '../error/ArgumentError',
+        '../geom/Line',
+        '../util/Logger',
+        '../geom/LookAt',
+        '../geom/Matrix',
+        '../geom/Position',
+        '../geom/Vec3',
+        '../util/WWMath'
     ],
     function (ArgumentError,
               Line,

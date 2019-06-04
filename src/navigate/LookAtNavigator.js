@@ -19,7 +19,7 @@
  */
 define([
         '../geom/Location',
-        '../LookAt',
+        '../geom/LookAt',
         '../navigate/LookAtPositionProxy',
         '../navigate/Navigator'
     ],

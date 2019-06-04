@@ -20,7 +20,7 @@
 define([
         '../error/ArgumentError',
         '../util/Logger',
-        '../LookAt',
+        '../geom/LookAt',
         '../util/Offset',
         '../shapes/ScreenImage'
     ],

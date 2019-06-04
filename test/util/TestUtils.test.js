@@ -18,7 +18,7 @@
  */
 define([
         'src/BasicWorldWindowController',
-        'src/Camera',
+        'src/geom/Camera',
         'src/render/DrawContext',
         'src/globe/EarthElevationModel',
         'src/globe/Globe',

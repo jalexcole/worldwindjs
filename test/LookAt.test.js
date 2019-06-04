@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 define([
-    'src/LookAt',
+    'src/geom/LookAt',
     'src/geom/Matrix',
     'src/geom/Position',
     'test/util/TestUtils.test'

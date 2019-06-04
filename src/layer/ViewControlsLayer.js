@@ -23,7 +23,7 @@ define([
         '../layer/Layer',
         '../geom/Location',
         '../util/Logger',
-        '../LookAt',
+        '../geom/LookAt',
         '../util/Offset',
         '../shapes/ScreenImage',
         '../geom/Vec2'

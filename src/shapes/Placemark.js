@@ -23,7 +23,7 @@ define([
         '../util/Color',
         '../util/Font',
         '../util/Logger',
-        '../LookAt',
+        '../geom/LookAt',
         '../geom/Matrix',
         '../pick/PickedObject',
         '../shapes/PlacemarkAttributes',

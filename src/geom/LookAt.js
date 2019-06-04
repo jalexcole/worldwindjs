@@ -17,10 +17,10 @@
  * @exports LookAt
  */
 define([
-        './error/ArgumentError',
-        './util/Logger',
-        './geom/Matrix',
-        './geom/Position'
+        '../error/ArgumentError',
+        '../util/Logger',
+        '../geom/Matrix',
+        '../geom/Position'
     ],
     function (ArgumentError,
               Logger,

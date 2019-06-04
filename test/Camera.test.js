@@ -15,12 +15,12 @@
  */
 define([
     'src/BasicWorldWindowController',
-    'src/Camera',
+    'src/geom/Camera',
     'src/render/DrawContext',
     'src/globe/EarthElevationModel',
     'src/globe/Globe',
     'src/globe/Globe2D',
-    'src/LookAt',
+    'src/geom/LookAt',
     'src/geom/Matrix',
     'src/navigate/LookAtNavigator',
     'src/geom/Position',
