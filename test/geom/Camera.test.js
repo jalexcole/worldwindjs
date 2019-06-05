@@ -22,11 +22,10 @@ define([
     'src/globe/Globe2D',
     'src/geom/LookAt',
     'src/geom/Matrix',
-    'src/navigate/LookAtNavigator',
     'src/geom/Position',
     'src/geom/Rectangle',
     'test/util/TestUtils.test'
-], function (BasicWorldWindowController, Camera, DrawContext, EarthElevationModel, Globe, Globe2D, LookAt, Matrix, LookAtNavigator, Position, Rectangle, TestUtils) {
+], function (BasicWorldWindowController, Camera, DrawContext, EarthElevationModel, Globe, Globe2D, LookAt, Matrix, Position, Rectangle, TestUtils) {
     "use strict";
 
     var wwd = TestUtils.getMockWwd();
