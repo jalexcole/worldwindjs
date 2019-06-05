@@ -726,7 +726,7 @@ define([
                 // Prevent the near clip plane from intersecting the terrain.
                 var distanceToSurface = eyePos.altitude - this.globe.elevationAtLocation(eyePos.latitude, eyePos.longitude) * this.verticalExaggeration;
                 if (distanceToSurface > 0) {
-                    var maxNearDistance = WWMath.perspectiveNearDistance(viewport.width, viewport.height, fieldOfView, distanceToSurface);
+                    var maxNearDistance = WWMath.perspectiveNearDistance(fieldOfView, distanceToSurface);
                     if (nearDistance > maxNearDistance) {
                         nearDistance = maxNearDistance;
                     }
@@ -773,6 +773,7 @@ define([
             dc.modelviewProjection.setToIdentity();
             dc.modelviewProjection.setToMultiply(dc.projection, dc.modelview);
 
+            // Compute the inverse of the modelview, projection, and modelview-projection matrices.
             var modelviewInv = Matrix.fromIdentity();
             modelviewInv.invertOrthonormalMatrix(dc.modelview);
 

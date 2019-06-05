@@ -339,7 +339,6 @@ define([
 
             if (state === WorldWind.BEGAN) {
                 this.gestureDidBegin();
-                // this.beginRange = lookAt.range;
             } else if (state === WorldWind.CHANGED) {
                 if (scale !== 0) {
                     // Apply the change in pinch scale to this view's range, relative to the range when the gesture
@@ -381,7 +380,6 @@ define([
 
             if (state === WorldWind.BEGAN) {
                 this.gestureDidBegin();
-                // this.beginTilt = lookAt.tilt;
             } else if (state === WorldWind.CHANGED) {
                 // Compute the gesture translation from screen coordinates to degrees. Use the canvas dimensions as a
                 // metric for converting the translation to a fraction of an angle.

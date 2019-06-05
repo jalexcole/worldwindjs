@@ -588,8 +588,6 @@ define([
              * Matrix.setToPerspectiveProjection. The given distance should specify the smallest distance between the
              * eye and the object being viewed, but may be an approximation if an exact distance is not required.
              *
-             * @param {Number} viewportWidth The viewport width, in screen coordinates.
-             * @param {Number} viewportHeight The viewport height, in screen coordinates.
              * @param {Number} fovyDegrees The camera vertical field of view.
              * @param {Number} distanceToSurface The distance from the perspective eye point to the nearest object, in
              * meters.
@@ -597,17 +595,7 @@ define([
              * @throws {ArgumentError} If the specified width or height is less than or equal to zero, or if the
              * specified distance is negative.
              */
-            perspectiveNearDistance: function (viewportWidth, viewportHeight, fovyDegrees, distanceToSurface) {
-                if (viewportWidth <= 0) {
-                    throw new ArgumentError(Logger.logMessage(Logger.LEVEL_SEVERE, "WWMath", "perspectiveNearDistance",
-                        "invalidWidth"));
-                }
-
-                if (viewportHeight <= 0) {
-                    throw new ArgumentError(Logger.logMessage(Logger.LEVEL_SEVERE, "WWMath", "perspectiveNearDistance",
-                        "invalidHeight"));
-                }
-
+            perspectiveNearDistance: function (fovyDegrees, distanceToSurface) {
                 if (fovyDegrees <= 0 || fovyDegrees >= 180) {
                     throw new ArgumentError(Logger.logMessage(Logger.LEVEL_SEVERE, "WWMath", "perspectiveNearDistance",
                         "invalidFieldOfView"));

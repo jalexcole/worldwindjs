@@ -749,7 +749,7 @@ define([
                 var farDistance = 600;
                 matrix.setToPerspectiveProjection(viewportWidth, viewportHeight, fieldOfView, nearDistance, farDistance);
 
-                // FOV based approach gives another result then old viewport
+                // FOV based approach gives another test result then old perspectiveFrustumRectangle based calculation
                 expect(matrix[0]).toEqual(1.931370849898476);
                 expect(matrix[1]).toEqual(0);
                 expect(matrix[2]).toEqual(0);

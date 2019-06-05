@@ -20,13 +20,11 @@
 define([
         '../error/ArgumentError',
         '../util/Logger',
-        '../geom/LookAt',
         '../util/Offset',
         '../shapes/ScreenImage'
     ],
     function (ArgumentError,
               Logger,
-              LookAt,
               Offset,
               ScreenImage) {
         "use strict";
@@ -65,7 +63,6 @@ define([
              * @default 0.15
              */
             this.size = 0.15;
-
         };
 
         Compass.prototype = Object.create(ScreenImage.prototype);
