@@ -49,9 +49,6 @@ define([
              * @ignore
              */
             this.scratchLookAtPositionProxy = new LookAtPositionProxy(this);
-
-            // Development testing only. Set this to false to suppress default navigator limits on 2D globes.
-            this.enable2DLimits = true;
         };
 
         LookAtNavigator.prototype = Object.create(Navigator.prototype);

@@ -684,9 +684,9 @@ define([
 
             // Start an operation on left button down or touch start.
             if (this.isPointerDown(e) || this.isTouchStart(e)) {
-                this.wwd.camera.getAsLookAt(this.lookAt);
                 this.activeControl = control;
                 this.activeOperation = this.handlePan;
+                this.wwd.camera.getAsLookAt(this.lookAt);
                 e.preventDefault();
 
                 if (this.isTouchStart(e)) {
@@ -730,9 +730,9 @@ define([
 
             // Start an operation on left button down or touch start.
             if (this.isPointerDown(e) || this.isTouchStart(e)) {
-                this.wwd.camera.getAsLookAt(this.lookAt);
                 this.activeControl = control;
                 this.activeOperation = this.handleZoom;
+                this.wwd.camera.getAsLookAt(this.lookAt);
                 e.preventDefault();
 
                 if (this.isTouchStart(e)) {
@@ -768,9 +768,9 @@ define([
 
             // Start an operation on left button down or touch start.
             if (this.isPointerDown(e) || this.isTouchStart(e)) {
-                this.wwd.camera.getAsLookAt(this.lookAt);
                 this.activeControl = control;
                 this.activeOperation = this.handleHeading;
+                this.wwd.camera.getAsLookAt(this.lookAt);
                 e.preventDefault();
 
                 if (this.isTouchStart(e)) {
@@ -805,9 +805,9 @@ define([
 
             // Start an operation on left button down or touch start.
             if (this.isPointerDown(e) || this.isTouchStart(e)) {
-                this.wwd.camera.getAsLookAt(this.lookAt);
                 this.activeControl = control;
                 this.activeOperation = this.handleTilt;
+                this.wwd.camera.getAsLookAt(this.lookAt);
                 e.preventDefault();
 
                 if (this.isTouchStart(e)) {
