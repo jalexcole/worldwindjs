@@ -230,6 +230,7 @@ define([
             }
 
             var globe = this.wwd.globe,
+                viewport = this.wwd.viewport,
                 forwardRay = this.scratchRay,
                 modelview = this.scratchModelview,
                 originPoint = this.scratchPoint,
@@ -237,16 +238,25 @@ define([
                 origin = this.scratchOrigin;
 
             this.computeViewingTransform(modelview);
-            modelview.extractEyePoint(forwardRay.origin);
-            modelview.extractForwardVector(forwardRay.direction);
 
-            if (!globe.intersectsLine(forwardRay, originPoint)) {
+            // Pick terrain located behind the viewport center point
+            var terrainObject = this.wwd.pick([viewport.width / 2, viewport.height / 2]).terrainObject();
+            if (terrainObject) {
+                // Use picked terrain position including approximate rendered altitude
+                originPos.copy(terrainObject.position);
+                globe.computePointFromPosition(originPos.latitude, originPos.longitude, originPos.altitude, originPoint);
+            } else {
+                // Center is outside the globe - use point on horizon
+                modelview.extractEyePoint(forwardRay.origin);
+                modelview.extractForwardVector(forwardRay.direction);
+
                 var globeRadius = WWMath.max(globe.equatorialRadius, globe.polarRadius);
                 var horizon = WWMath.horizonDistanceForGlobeRadius(globeRadius, this.position.altitude);
                 forwardRay.pointAt(horizon, originPoint);
+
+                globe.computePositionFromPoint(originPoint[0], originPoint[1], originPoint[2], originPos);
             }
 
-            globe.computePositionFromPoint(originPoint[0], originPoint[1], originPoint[2], originPos);
             origin.setToIdentity();
             origin.multiplyByLocalCoordinateTransform(originPoint, globe);
             modelview.multiplyMatrix(origin);
