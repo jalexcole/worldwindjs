@@ -943,12 +943,13 @@ define([
          *
          * @param {Number} viewportWidth The viewport width, in screen coordinates.
          * @param {Number} viewportHeight The viewport height, in screen coordinates.
+         * @param {Number} fovyDegrees The camera vertical field of view.
          * @param {Number} nearDistance The near clip plane distance, in model coordinates.
          * @param {Number} farDistance The far clip plane distance, in model coordinates.
          * @throws {ArgumentError} If the specified width or height is less than or equal to zero, if the near and far
          * distances are equal, or if either the near or far distance are less than or equal to zero.
          */
-        Matrix.prototype.setToPerspectiveProjection = function (viewportWidth, viewportHeight, nearDistance, farDistance) {
+        Matrix.prototype.setToPerspectiveProjection = function (viewportWidth, viewportHeight, fovyDegrees, nearDistance, farDistance) {
             if (viewportWidth <= 0) {
                 throw new ArgumentError(Logger.logMessage(Logger.LEVEL_SEVERE, "Matrix", "setToPerspectiveProjection",
                     "invalidWidth"));
@@ -957,6 +958,11 @@ define([
             if (viewportHeight <= 0) {
                 throw new ArgumentError(Logger.logMessage(Logger.LEVEL_SEVERE, "Matrix", "setToPerspectiveProjection",
                     "invalidHeight"));
+            }
+
+            if (fovyDegrees <= 0 || fovyDegrees >= 180) {
+                throw new ArgumentError(Logger.logMessage(Logger.LEVEL_SEVERE, "Matrix", "setToPerspectiveProjection",
+                    "invalidFieldOfView"));
             }
 
             if (nearDistance === farDistance) {
@@ -969,24 +975,23 @@ define([
                     "Near or far distance is less than or equal to zero."));
             }
 
-            // Compute the dimensions of the viewport rectangle at the near distance.
-            var nearRect = WWMath.perspectiveFrustumRectangle(viewportWidth, viewportHeight, nearDistance),
-                left = nearRect.getMinX(),
-                right = nearRect.getMaxX(),
-                bottom = nearRect.getMinY(),
-                top = nearRect.getMaxY();
+            // Compute the dimensions of the near rectangle given the specified parameters.
+            var aspect = viewportWidth / viewportHeight,
+                tanfovy_2 = Math.tan(fovyDegrees * 0.5 / 180.0 * Math.PI),
+                nearHeight = 2 * nearDistance * tanfovy_2,
+                nearWidth = nearHeight * aspect;
 
             // Taken from Mathematics for 3D Game Programming and Computer Graphics, Second Edition, equation 4.52.
 
             // Row 1
-            this[0] = 2 * nearDistance / (right - left);
+            this[0] = 2 * nearDistance / nearWidth;
             this[1] = 0;
-            this[2] = (right + left) / (right - left);
+            this[2] = 0;
             this[3] = 0;
             // Row 2
             this[4] = 0;
-            this[5] = 2 * nearDistance / (top - bottom);
-            this[6] = (top + bottom) / (top - bottom);
+            this[5] = 2 * nearDistance / nearHeight;
+            this[6] = 0;
             this[7] = 0;
             // Row 3
             this[8] = 0;

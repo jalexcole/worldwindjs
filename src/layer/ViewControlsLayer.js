@@ -153,9 +153,9 @@ define([
             /**
              * The incremental amount to narrow or widen the field of view each cycle, in degrees.
              * @type {Number}
-             * @default 0.1
+             * @default 0.5
              */
-            this.fieldOfViewIncrement = 0.1;
+            this.fieldOfViewIncrement = 0.5;
 
             /**
              * The scale factor governing the pan speed. Increased values cause faster panning.
@@ -684,7 +684,9 @@ define([
 
             // Start an operation on left button down or touch start.
             if (this.isPointerDown(e) || this.isTouchStart(e)) {
-                this.operationDidBegin(control, this.handlePan);
+                this.wwd.camera.getAsLookAt(this.lookAt);
+                this.activeControl = control;
+                this.activeOperation = this.handlePan;
                 e.preventDefault();
 
                 if (this.isTouchStart(e)) {
@@ -728,7 +730,9 @@ define([
 
             // Start an operation on left button down or touch start.
             if (this.isPointerDown(e) || this.isTouchStart(e)) {
-                this.operationDidBegin(control, this.handleZoom);
+                this.wwd.camera.getAsLookAt(this.lookAt);
+                this.activeControl = control;
+                this.activeOperation = this.handleZoom;
                 e.preventDefault();
 
                 if (this.isTouchStart(e)) {
@@ -764,7 +768,9 @@ define([
 
             // Start an operation on left button down or touch start.
             if (this.isPointerDown(e) || this.isTouchStart(e)) {
-                this.operationDidBegin(control, this.handleHeading);
+                this.wwd.camera.getAsLookAt(this.lookAt);
+                this.activeControl = control;
+                this.activeOperation = this.handleHeading;
                 e.preventDefault();
 
                 if (this.isTouchStart(e)) {
@@ -799,7 +805,9 @@ define([
 
             // Start an operation on left button down or touch start.
             if (this.isPointerDown(e) || this.isTouchStart(e)) {
-                this.operationDidBegin(control, this.handleTilt);
+                this.wwd.camera.getAsLookAt(this.lookAt);
+                this.activeControl = control;
+                this.activeOperation = this.handleTilt;
                 e.preventDefault();
 
                 if (this.isTouchStart(e)) {
@@ -837,7 +845,8 @@ define([
 
             // Start an operation on left button down or touch start.
             if (this.isPointerDown(e) || this.isTouchStart(e)) {
-                this.operationDidBegin(control, this.handleExaggeration);
+                this.activeControl = control;
+                this.activeOperation = this.handleExaggeration;
                 e.preventDefault();
 
                 if (this.isTouchStart(e)) {
@@ -867,10 +876,7 @@ define([
         };
 
         // Intentionally not documented.
-        // TODO: This method references non-existent navigator properties
         ViewControlsLayer.prototype.handleFov = function (e, control) {
-            throw new UnsupportedOperationError(
-                Logger.logMessage(Logger.LEVEL_SEVERE, "ViewControlsLayer", "handleFov", "brokenMethod"));
             var handled = false;
 
             // Start an operation on left button down or touch start.
@@ -888,11 +894,11 @@ define([
                 var setFov = function () {
                     if (thisLayer.activeControl) {
                         if (thisLayer.activeControl === thisLayer.fovWideControl) {
-                            thisLayer.wwd.navigator.fieldOfView =
-                                Math.max(90, thisLayer.wwd.navigator.fieldOfView + thisLayer.fieldOfViewIncrement);
+                            thisLayer.wwd.camera.fieldOfView =
+                                Math.min(90, thisLayer.wwd.camera.fieldOfView + thisLayer.fieldOfViewIncrement);
                         } else if (thisLayer.activeControl === thisLayer.fovNarrowControl) {
-                            thisLayer.wwd.navigator.fieldOfView =
-                                Math.min(0, thisLayer.wwd.navigator.fieldOfView - thisLayer.fieldOfViewIncrement);
+                            thisLayer.wwd.camera.fieldOfView =
+                                Math.max(0, thisLayer.wwd.camera.fieldOfView - thisLayer.fieldOfViewIncrement);
                         }
                         thisLayer.wwd.redraw();
                         setTimeout(setFov, 50);
@@ -929,17 +935,6 @@ define([
             } else {
                 this.highlightedControl = null;
             }
-        };
-
-        /**
-         * Internal use only.
-         * Initializes properties as appropriate for starting a new operation.
-         * @ignore
-         */
-        ViewControlsLayer.prototype.operationDidBegin = function (control, operation) {
-            this.wwd.camera.getAsLookAt(this.lookAt);
-            this.activeControl = control;
-            this.activeOperation = operation;
         };
 
         return ViewControlsLayer;

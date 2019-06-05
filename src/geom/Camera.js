@@ -76,6 +76,13 @@ define([
             this.roll = 0;
 
             /**
+             * Camera vertical field of view, in degrees
+             * @type {Number}
+             * @default 45
+             */
+            this.fieldOfView = 45;
+
+            /**
              * Internal use only.
              * A temp variable used to hold model view matrices during calculations. Using an object level temp property
              * negates the need for ad-hoc allocations and reduces load on the garbage collector.

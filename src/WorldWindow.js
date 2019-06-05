@@ -701,10 +701,9 @@ define([
             this.camera.computeViewingTransform(modelview);
 
             if (projection) {
-                projection.setToIdentity();
                 var globeRadius = WWMath.max(this.globe.equatorialRadius, this.globe.polarRadius),
-                    eyePoint = modelview.extractEyePoint(new Vec3(0, 0, 0)),
-                    eyePos = this.globe.computePositionFromPoint(eyePoint[0], eyePoint[1], eyePoint[2], new Position(0, 0, 0)),
+                    eyePos = this.camera.position,
+                    fieldOfView = this.camera.fieldOfView,
                     eyeHorizon = WWMath.horizonDistanceForGlobeRadius(globeRadius, eyePos.altitude),
                     atmosphereHorizon = WWMath.horizonDistanceForGlobeRadius(globeRadius, 160000),
                     viewport = this.viewport;
@@ -724,9 +723,9 @@ define([
                 var nearDistance = WWMath.perspectiveNearDistanceForFarDistance(farDistance, 10, this.depthBits);
 
                 // Prevent the near clip plane from intersecting the terrain.
-                var distanceToSurface = eyePos.altitude - this.globe.elevationAtLocation(eyePos.latitude, eyePos.longitude);
+                var distanceToSurface = eyePos.altitude - this.globe.elevationAtLocation(eyePos.latitude, eyePos.longitude) * this.verticalExaggeration;
                 if (distanceToSurface > 0) {
-                    var maxNearDistance = WWMath.perspectiveNearDistance(viewport.width, viewport.height, distanceToSurface);
+                    var maxNearDistance = WWMath.perspectiveNearDistance(viewport.width, viewport.height, fieldOfView, distanceToSurface);
                     if (nearDistance > maxNearDistance) {
                         nearDistance = maxNearDistance;
                     }
@@ -738,45 +737,9 @@ define([
 
                 // Compute the current projection matrix based on this camera's perspective properties and the current
                 // WebGL viewport.
-                projection.setToPerspectiveProjection(viewport.width, viewport.height, nearDistance, farDistance);
+                projection.setToIdentity();
+                projection.setToPerspectiveProjection(viewport.width, viewport.height, fieldOfView, nearDistance, farDistance);
             }
-        };
-
-        // Internal. Intentionally not documented.
-        WorldWindow.prototype.computePixelMetrics = function (projection) {
-            var projectionInv = Matrix.fromIdentity();
-            projectionInv.invertMatrix(projection);
-
-            // Compute the eye coordinate rectangles carved out of the frustum by the near and far clipping planes, and
-            // the distance between those planes and the eye point along the -Z axis. The rectangles are determined by
-            // transforming the bottom-left and top-right points of the frustum from clip coordinates to eye
-            // coordinates.
-            var nbl = new Vec3(-1, -1, -1),
-                ntr = new Vec3(+1, +1, -1),
-                fbl = new Vec3(-1, -1, +1),
-                ftr = new Vec3(+1, +1, +1);
-            // Convert each frustum corner from clip coordinates to eye coordinates by multiplying by the inverse
-            // projection matrix.
-            nbl.multiplyByMatrix(projectionInv);
-            ntr.multiplyByMatrix(projectionInv);
-            fbl.multiplyByMatrix(projectionInv);
-            ftr.multiplyByMatrix(projectionInv);
-
-            var nrRectWidth = WWMath.fabs(ntr[0] - nbl[0]),
-                frRectWidth = WWMath.fabs(ftr[0] - fbl[0]),
-                nrDistance = -nbl[2],
-                frDistance = -fbl[2];
-
-            // Compute the scale and offset used to determine the width of a pixel on a rectangle carved out of the
-            // frustum at a distance along the -Z axis in eye coordinates. These values are found by computing the scale
-            // and offset of a frustum rectangle at a given distance, then dividing each by the viewport width.
-            var frustumWidthScale = (frRectWidth - nrRectWidth) / (frDistance - nrDistance),
-                frustumWidthOffset = nrRectWidth - frustumWidthScale * nrDistance;
-
-            return {
-                pixelSizeFactor: frustumWidthScale / this.viewport.width,
-                pixelSizeOffset: frustumWidthOffset / this.viewport.height
-            };
         };
 
         /**
@@ -793,9 +756,9 @@ define([
          * coordinates per pixel.
          */
         WorldWindow.prototype.pixelSizeAtDistance = function (distance) {
-            this.computeViewingTransform(this.scratchProjection, this.scratchModelview);
-            var pixelMetrics = this.computePixelMetrics(this.scratchProjection);
-            return pixelMetrics.pixelSizeFactor * distance + pixelMetrics.pixelSizeOffset;
+            var tanfovy_2 = Math.tan(this.camera.fieldOfView * 0.5 / 180.0 * Math.PI);
+            var frustumHeight = 2 * distance * tanfovy_2;
+            return frustumHeight / this.viewport.height;
         };
 
         // Internal. Intentionally not documented.
@@ -808,10 +771,6 @@ define([
 
             dc.modelviewProjection.setToIdentity();
             dc.modelviewProjection.setToMultiply(dc.projection, dc.modelview);
-
-            var pixelMetrics = this.computePixelMetrics(dc.projection);
-            dc.pixelSizeFactor = pixelMetrics.pixelSizeFactor;
-            dc.pixelSizeOffset = pixelMetrics.pixelSizeOffset;
 
             var modelviewInv = Matrix.fromIdentity();
             modelviewInv.invertOrthonormalMatrix(dc.modelview);
