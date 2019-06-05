@@ -204,6 +204,8 @@ define([
             }
 
             var globe = this.wwd.globe,
+                ve = this.wwd.verticalExaggeration,
+                ray = this.scratchRay,
                 originPoint = this.scratchPoint,
                 modelview = this.scratchModelview,
                 origin = this.scratchOrigin;
@@ -211,7 +213,7 @@ define([
             lookAt.computeViewingTransform(globe, modelview);
             modelview.extractEyePoint(originPoint);
 
-            globe.projection.cartesianToGeographic(globe, originPoint[0], originPoint[1], originPoint[2], Vec3.ZERO, this.position);
+            globe.computePositionFromPoint(originPoint[0], originPoint[1], originPoint[2], this.position);
             origin.setToIdentity();
             origin.multiplyByLocalCoordinateTransform(originPoint, globe);
             modelview.multiplyMatrix(origin);
@@ -219,6 +221,25 @@ define([
             this.heading = modelview.extractHeading(lookAt.roll); // disambiguate heading and roll
             this.tilt = modelview.extractTilt();
             this.roll = lookAt.roll; // roll passes straight through
+
+            // Check if camera altitude is not under the surface and correct tilt
+            var elevation = globe.elevationAtLocation(this.position.latitude, this.position.longitude) * ve + 10.0; // 10m above surface
+            if(elevation > this.position.altitude) {
+                // Set camera altitude above the surface
+                this.position.altitude = elevation;
+                // Compute new camera point
+                globe.computePointFromPosition(this.position.latitude, this.position.longitude, this.position.altitude, originPoint);
+                // Compute look at point
+                globe.computePointFromPosition(lookAt.position.latitude, lookAt.position.longitude, lookAt.position.altitude, ray.origin);
+                // Compute normal to globe in look at point
+                globe.surfaceNormalAtLocation(lookAt.position.latitude, lookAt.position.longitude, ray.direction);
+                // Calculate tilt angle between new camera point and look at point
+                originPoint.subtract(ray.origin).normalize();
+                var dot = ray.direction.dot(originPoint);
+                if (dot >= -1 || dot <= 1) {
+                    this.tilt = Math.acos(dot) / Math.PI * 180;
+                }
+            }
 
             return this;
         };
