@@ -66,13 +66,6 @@ define([
              */
             this.size = 0.15;
 
-            /**
-             * Internal use only.
-             * A temp variable used to hold the current view as a look at during calculations. Using an object level temp property
-             * negates the need for ad-hoc allocations and reduces load on the garbage collector.
-             * @ignore
-             */
-            this.scratchLookAt = new LookAt();
         };
 
         Compass.prototype = Object.create(ScreenImage.prototype);
@@ -82,10 +75,9 @@ define([
          * @param {DrawContext} dc The current draw context.
          */
         Compass.prototype.render = function (dc) {
-            dc.camera.getAsLookAt(this.scratchLookAt);
             // Capture the camera's heading and tilt and apply it to the compass' screen image.
-            this.imageRotation = this.scratchLookAt.heading;
-            this.imageTilt = this.scratchLookAt.tilt;
+            this.imageRotation = dc.camera.heading;
+            this.imageTilt = dc.camera.tilt;
 
             var t = this.getActiveTexture(dc);
             if (t) {
