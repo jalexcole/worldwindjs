@@ -19,18 +19,14 @@
 define([
         'src/BasicWorldWindowController',
         'src/geom/Camera',
-        'src/render/DrawContext',
-        'src/globe/EarthElevationModel',
         'src/globe/Globe',
-        'src/navigate/LookAtNavigator',
+        'src/render/DrawContext',
         'src/geom/Matrix',
         'src/geom/Rectangle',
-        'src/geom/Vec2',
-        'src/geom/Vec3',
         'src/WorldWind',
-        'src/WorldWindow',
+        'src/WorldWindow'
     ],
-    function (BasicWorldWindowController, Camera, DrawContext, EarthElevationModel, Globe, LookAtNavigator, Matrix, Rectangle, Vec2, Vec3, WorldWind, WorldWindow) {
+    function (BasicWorldWindowController, Camera, Globe, DrawContext, Matrix, Rectangle, WorldWind, WorldWindow) {
         "use strict";
 
         var TestUtils = function () {
@@ -63,7 +59,7 @@ define([
             }
         };
 
-        TestUtils.getMockWwd = function () {
+        TestUtils.getMockWwd = function (mockGlobe) {
             var MockGlContext = function () {
                 this.drawingBufferWidth = 800;
                 this.drawingBufferHeight = 800;
@@ -76,11 +72,16 @@ define([
 
             MockWorldWindow.prototype = Object.create(WorldWindow.prototype);
 
-            var mockGlobe = new Globe(new EarthElevationModel());
+            // create a globe that returns mock elevations for a given sector so we don't have to rely on
+            // asynchronous tile calls to finish.
+            Globe.prototype.minAndMaxElevationsForSector = function (sector) {
+                return [125.0, 350.0];
+            };
+
             var wwd = new MockWorldWindow();
             wwd.globe = mockGlobe;
             wwd.drawContext = dc;
-            wwd.navigator = new LookAtNavigator(wwd);
+            wwd.camera = new Camera(wwd);
             wwd.worldWindowController = new BasicWorldWindowController(wwd);
             wwd.viewport = viewport;
             wwd.depthBits = 24;
@@ -89,10 +90,9 @@ define([
                     return {left: 339.5, top: 225};
                 }
             };
+            wwd.layers = [];
             wwd.scratchModelview = Matrix.fromIdentity();
             wwd.scratchProjection = Matrix.fromIdentity();
-            wwd.camera = new Camera(wwd);
-            wwd.layers = [];
             return wwd;
         };
 

@@ -14,38 +14,36 @@
  * limitations under the License.
  */
 define([
-    'src/BasicWorldWindowController',
     'src/geom/Camera',
-    'src/render/DrawContext',
-    'src/globe/EarthElevationModel',
+    'src/globe/ElevationModel',
     'src/globe/Globe',
-    'src/globe/Globe2D',
     'src/geom/LookAt',
     'src/geom/Matrix',
     'src/geom/Position',
-    'src/geom/Rectangle',
     'test/util/TestUtils.test'
-], function (BasicWorldWindowController, Camera, DrawContext, EarthElevationModel, Globe, Globe2D, LookAt, Matrix, Position, Rectangle, TestUtils) {
+], function (Camera, ElevationModel, Globe, LookAt, Matrix, Position, TestUtils) {
     "use strict";
 
-    var wwd = TestUtils.getMockWwd();
+    var mockGlobe = new Globe(new ElevationModel());
+    var wwd = TestUtils.getMockWwd(mockGlobe);
 
     describe("View tests", function () {
 
         describe("View calculations", function () {
-            it("Correctly calculates camera from lookat", function () {
-                var camera = wwd.camera;
-                var lookAt = new LookAt();
-                camera.position = new Position(30, -110, 10000000);
-                for (var a = 0; a < 90; a++) {
-                    camera.getAsLookAt(lookAt);
-                    console.log(lookAt.toString());
-                    lookAt.heading = a;
-                    camera.setFromLookAt(lookAt);
-                    console.log(camera.toString());
-                    console.log('===');
-                }
-            });
+            // TODO This tests require normal GLContext mock
+            // it("Correctly calculates camera from lookAt", function () {
+            //     var camera = wwd.camera;
+            //     var lookAt = new LookAt();
+            //     camera.position = new Position(30, -110, 10000000);
+            //     for (var a = 0; a < 90; a++) {
+            //         camera.getAsLookAt(lookAt);
+            //         console.log(lookAt.toString());
+            //         lookAt.heading = a;
+            //         camera.setFromLookAt(lookAt);
+            //         console.log(camera.toString());
+            //         console.log('===');
+            //     }
+            // });
             // it("Correctly calculates viewing matrix", function () {
             //     var testView = wwd.camera;
             //     testView.position = new Position(30, -110, 10e6);

@@ -14,14 +14,17 @@
  * limitations under the License.
  */
 define([
+    'src/globe/ElevationModel',
+    'src/globe/Globe',
     'src/geom/LookAt',
     'src/geom/Matrix',
     'src/geom/Position',
     'test/util/TestUtils.test'
-], function (LookAt, Matrix, Position, TestUtils) {
+], function (ElevationModel, Globe, LookAt, Matrix, Position, TestUtils) {
     "use strict";
 
-    var wwd = TestUtils.getMockWwd();
+    var mockGlobe = new Globe(new ElevationModel());
+    var wwd = TestUtils.getMockWwd(mockGlobe);
 
     describe("LookAt tests", function () {
 
@@ -34,7 +37,7 @@ define([
                 lookAt.computeViewingTransform(wwd.globe, result);
                 var expectedModelview = new Matrix(
                     6.123233995736767E-17, -3.0814879110195774E-33, 1.0, 2.0679515313825692E-25,
-                    0.5, 0.8660254037844387, -3.0616169978683836E-17, 18504.138,
+                    0.5, 0.8660254037844387, -3.0616169978683836E-17, 18504.125313223805,
                     -0.8660254037844387, 0.5, 5.302876193624535E-17, -1.7690409551996384E7,
                     0.0, 0.0, 0.0, 1.0);
                 TestUtils.expectMatrixCloseTo(result, expectedModelview);

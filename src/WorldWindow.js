@@ -180,6 +180,7 @@ define([
             /**
              * The deprecated navigator that can be used to manipulate the globe. See the {@link Camera} and {@link LookAt}
              * classes for replacement functionality.
+             * @deprecated
              * @type {LookAtNavigator}
              * @default [LookAtNavigator]{@link LookAtNavigator}
              */
