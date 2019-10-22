@@ -23,6 +23,7 @@ define([
         '../layer/Layer',
         '../geom/Location',
         '../util/Logger',
+        '../geom/LookAt',
         '../util/Offset',
         '../shapes/ScreenImage',
         '../geom/Vec2'
@@ -32,6 +33,7 @@ define([
               Layer,
               Location,
               Logger,
+              LookAt,
               Offset,
               ScreenImage,
               Vec2) {
@@ -151,9 +153,9 @@ define([
             /**
              * The incremental amount to narrow or widen the field of view each cycle, in degrees.
              * @type {Number}
-             * @default 0.1
+             * @default 0.5
              */
-            this.fieldOfViewIncrement = 0.1;
+            this.fieldOfViewIncrement = 0.5;
 
             /**
              * The scale factor governing the pan speed. Increased values cause faster panning.
@@ -221,6 +223,13 @@ define([
 
             // Establish event handlers.
             this.wwd.worldWindowController.addGestureListener(this);
+
+            /**
+             * Internal use only.
+             * The current state of the viewing parameters during an operation as a look at view.
+             * @ignore
+             */
+            this.lookAt = new LookAt();
         };
 
         ViewControlsLayer.prototype = Object.create(Layer.prototype);
@@ -550,9 +559,11 @@ define([
                 this.activeOperation = null;
                 e.preventDefault();
             } else {
+                var requestRedraw = false;
                 // Perform the active operation, or determine it and then perform it.
                 if (this.activeOperation) {
                     handled = this.activeOperation.call(this, e, null);
+                    requestRedraw = true;
                     e.preventDefault();
                 } else {
                     topObject = this.pickControl(e);
@@ -560,13 +571,16 @@ define([
                         var operation = this.determineOperation(e, topObject);
                         if (operation) {
                             handled = operation.call(this, e, topObject);
+                            requestRedraw = true;
                         }
                     }
                 }
 
                 // Determine and display the new highlight state.
-                this.handleHighlight(e, topObject);
-                this.wwd.redraw();
+                var highlighted = this.handleHighlight(e, topObject);
+                if (requestRedraw || highlighted) {
+                    this.wwd.redraw();
+                }
             }
 
             return handled;
@@ -672,6 +686,7 @@ define([
             if (this.isPointerDown(e) || this.isTouchStart(e)) {
                 this.activeControl = control;
                 this.activeOperation = this.handlePan;
+                this.wwd.camera.getAsLookAt(this.lookAt);
                 e.preventDefault();
 
                 if (this.isTouchStart(e)) {
@@ -685,16 +700,18 @@ define([
                         var dx = thisLayer.panControlCenter[0] - thisLayer.currentEventPoint[0],
                             dy = thisLayer.panControlCenter[1]
                                 - (thisLayer.wwd.viewport.height - thisLayer.currentEventPoint[1]),
-                            oldLat = thisLayer.wwd.navigator.lookAtLocation.latitude,
-                            oldLon = thisLayer.wwd.navigator.lookAtLocation.longitude,
+                            lookAt = thisLayer.lookAt,
+                            oldLat = lookAt.position.latitude,
+                            oldLon = lookAt.position.longitude,
                             // Scale the increment by a constant and the relative distance of the eye to the surface.
                             scale = thisLayer.panIncrement
-                                * (thisLayer.wwd.navigator.range / thisLayer.wwd.globe.radiusAt(oldLat, oldLon)),
-                            heading = thisLayer.wwd.navigator.heading + (Math.atan2(dx, dy) * Angle.RADIANS_TO_DEGREES),
+                                * (lookAt.range / thisLayer.wwd.globe.radiusAt(oldLat, oldLon)),
+                            heading = lookAt.heading + (Math.atan2(dx, dy) * Angle.RADIANS_TO_DEGREES),
                             distance = scale * Math.sqrt(dx * dx + dy * dy);
 
-                        Location.greatCircleLocation(thisLayer.wwd.navigator.lookAtLocation, heading, -distance,
-                            thisLayer.wwd.navigator.lookAtLocation);
+                        Location.greatCircleLocation(lookAt.position, heading, -distance,
+                            lookAt.position);
+                        thisLayer.wwd.camera.setFromLookAt(lookAt);
                         thisLayer.wwd.redraw();
                         setTimeout(setLookAtLocation, 50);
                     }
@@ -715,6 +732,7 @@ define([
             if (this.isPointerDown(e) || this.isTouchStart(e)) {
                 this.activeControl = control;
                 this.activeOperation = this.handleZoom;
+                this.wwd.camera.getAsLookAt(this.lookAt);
                 e.preventDefault();
 
                 if (this.isTouchStart(e)) {
@@ -725,11 +743,13 @@ define([
                 var thisLayer = this; // capture 'this' for use in the function
                 var setRange = function () {
                     if (thisLayer.activeControl) {
+                        var lookAt = thisLayer.lookAt;
                         if (thisLayer.activeControl === thisLayer.zoomInControl) {
-                            thisLayer.wwd.navigator.range *= (1 - thisLayer.zoomIncrement);
+                            lookAt.range *= (1 - thisLayer.zoomIncrement);
                         } else if (thisLayer.activeControl === thisLayer.zoomOutControl) {
-                            thisLayer.wwd.navigator.range *= (1 + thisLayer.zoomIncrement);
+                            lookAt.range *= (1 + thisLayer.zoomIncrement);
                         }
+                        thisLayer.wwd.camera.setFromLookAt(lookAt);
                         thisLayer.wwd.redraw();
                         setTimeout(setRange, 50);
                     }
@@ -750,6 +770,7 @@ define([
             if (this.isPointerDown(e) || this.isTouchStart(e)) {
                 this.activeControl = control;
                 this.activeOperation = this.handleHeading;
+                this.wwd.camera.getAsLookAt(this.lookAt);
                 e.preventDefault();
 
                 if (this.isTouchStart(e)) {
@@ -758,18 +779,20 @@ define([
 
                 // This function is called by the timer to perform the operation.
                 var thisLayer = this; // capture 'this' for use in the function
-                var setRange = function () {
+                var setHeading = function () {
+                    var lookAt = thisLayer.lookAt;
                     if (thisLayer.activeControl) {
                         if (thisLayer.activeControl === thisLayer.headingLeftControl) {
-                            thisLayer.wwd.navigator.heading += thisLayer.headingIncrement;
+                            lookAt.heading += thisLayer.headingIncrement;
                         } else if (thisLayer.activeControl === thisLayer.headingRightControl) {
-                            thisLayer.wwd.navigator.heading -= thisLayer.headingIncrement;
+                            lookAt.heading -= thisLayer.headingIncrement;
                         }
+                        thisLayer.wwd.camera.setFromLookAt(lookAt);
                         thisLayer.wwd.redraw();
-                        setTimeout(setRange, 50);
+                        setTimeout(setHeading, 50);
                     }
                 };
-                setTimeout(setRange, 50);
+                setTimeout(setHeading, 50);
                 handled = true;
             }
 
@@ -784,6 +807,7 @@ define([
             if (this.isPointerDown(e) || this.isTouchStart(e)) {
                 this.activeControl = control;
                 this.activeOperation = this.handleTilt;
+                this.wwd.camera.getAsLookAt(this.lookAt);
                 e.preventDefault();
 
                 if (this.isTouchStart(e)) {
@@ -792,20 +816,22 @@ define([
 
                 // This function is called by the timer to perform the operation.
                 var thisLayer = this; // capture 'this' for use in the function
-                var setRange = function () {
+                var setTilt = function () {
                     if (thisLayer.activeControl) {
+                        var lookAt = thisLayer.lookAt;
                         if (thisLayer.activeControl === thisLayer.tiltUpControl) {
-                            thisLayer.wwd.navigator.tilt =
-                                Math.max(0, thisLayer.wwd.navigator.tilt - thisLayer.tiltIncrement);
+                            lookAt.tilt =
+                                Math.max(0, lookAt.tilt - thisLayer.tiltIncrement);
                         } else if (thisLayer.activeControl === thisLayer.tiltDownControl) {
-                            thisLayer.wwd.navigator.tilt =
-                                Math.min(90, thisLayer.wwd.navigator.tilt + thisLayer.tiltIncrement);
+                            lookAt.tilt =
+                                Math.min(90, lookAt.tilt + thisLayer.tiltIncrement);
                         }
+                        thisLayer.wwd.camera.setFromLookAt(lookAt);
                         thisLayer.wwd.redraw();
-                        setTimeout(setRange, 50);
+                        setTimeout(setTilt, 50);
                     }
                 };
-                setTimeout(setRange, 50);
+                setTimeout(setTilt, 50);
 
                 handled = true;
             }
@@ -865,20 +891,20 @@ define([
 
                 // This function is called by the timer to perform the operation.
                 var thisLayer = this; // capture 'this' for use in the function
-                var setRange = function () {
+                var setFov = function () {
                     if (thisLayer.activeControl) {
                         if (thisLayer.activeControl === thisLayer.fovWideControl) {
-                            thisLayer.wwd.navigator.fieldOfView =
-                                Math.max(90, thisLayer.wwd.navigator.fieldOfView + thisLayer.fieldOfViewIncrement);
+                            thisLayer.wwd.camera.fieldOfView =
+                                Math.min(90, thisLayer.wwd.camera.fieldOfView + thisLayer.fieldOfViewIncrement);
                         } else if (thisLayer.activeControl === thisLayer.fovNarrowControl) {
-                            thisLayer.wwd.navigator.fieldOfView =
-                                Math.min(0, thisLayer.wwd.navigator.fieldOfView - thisLayer.fieldOfViewIncrement);
+                            thisLayer.wwd.camera.fieldOfView =
+                                Math.max(0, thisLayer.wwd.camera.fieldOfView - thisLayer.fieldOfViewIncrement);
                         }
                         thisLayer.wwd.redraw();
-                        setTimeout(setRange, 50);
+                        setTimeout(setFov, 50);
                     }
                 };
-                setTimeout(setRange, 50);
+                setTimeout(setFov, 50);
                 handled = true;
             }
 
@@ -890,10 +916,14 @@ define([
             if (this.activeControl) {
                 // Highlight the active control.
                 this.highlight(this.activeControl, true);
+                return true;
             } else if (topObject && this.isControl(topObject)) {
                 // Highlight the control under the cursor or finger.
                 this.highlight(topObject, true);
+                return true;
             }
+
+            return false;
         };
 
         // Intentionally not documented. Sets the highlight state of a control.
