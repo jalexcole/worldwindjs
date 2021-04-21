@@ -601,7 +601,7 @@ define(['../../error/ArgumentError',
                     false,
                     configuration && configuration.attributes ? configuration.attributes : null);
 
-                placemark.altitudeMode = WorldWind.RELATIVE_TO_GROUND;
+                placemark.altitudeMode = WorldWind.ABSOLUTE;
                 if (configuration && configuration.altitudeMode) {
                     placemark.altitudeMode = configuration.altitudeMode;
                 }
@@ -676,7 +676,7 @@ define(['../../error/ArgumentError',
                         position,
                         false,
                         configuration && configuration.attributes ? configuration.attributes : null);
-                    placemark.altitudeMode = WorldWind.RELATIVE_TO_GROUND;
+                    placemark.altitudeMode = WorldWind.ABSOLUTE;
                     if (configuration && configuration.altitudeMode) {
                         placemark.altitudeMode = configuration.altitudeMode;
                     }
