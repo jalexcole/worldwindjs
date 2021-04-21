@@ -882,6 +882,10 @@ define(['../../error/ArgumentError',
                     shape = new Polygon(
                         pBoundaries,
                         configuration && configuration.attributes ? configuration.attributes : null);
+                    shape.altitudeMode = WorldWind.ABSOLUTE;
+                    if (configuration && configuration.altitudeMode) {
+                        shape.altitudeMode = configuration.altitudeMode;
+                    }
                     if (configuration.highlightAttributes) {
                         shape.highlightAttributes = configuration.highlightAttributes;
                     }
