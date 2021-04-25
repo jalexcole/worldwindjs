@@ -860,7 +860,6 @@ define(['../../error/ArgumentError',
             if (!this.crs || this.crs.isCRSSupported()) {
                 var lBoundaries = [];
                 var pBoundaries = [];
-                var is3d = false;
                 for (var boundariesIndex = 0, boundaries = geometry.coordinates;
                      boundariesIndex < boundaries.length; boundariesIndex++) {
                     var locations = [];
@@ -870,11 +869,8 @@ define(['../../error/ArgumentError',
                          positionIndex < points.length; positionIndex++) {
                         var longitude = points[positionIndex][0],
                             latitude = points[positionIndex][1],
-                            altitude = points[positionIndex][2];
-                        if (altitude === undefined)
-                          altitude = 0;
-                        else
-                          is3d = true;
+                            altitude = points[positionIndex][2] ? points[positionIndex][2] : 0;
+
                         var reprojectedCoordinate = this.getReprojectedIfRequired(
                             latitude,
                             longitude,
@@ -890,22 +886,23 @@ define(['../../error/ArgumentError',
 
                     var shape;
 
-                    if (is3d === true)
+                    if (configuration && configuration.altitudeMode == WorldWind.CLAMP_TO_GROUND)
                       {
-                      shape = new Polygon(
-                          pBoundaries,
-                          configuration && configuration.attributes ? configuration.attributes : null);
+                      shape = new SurfacePolygon(
+                        lBoundaries,
+                        configuration && configuration.attributes ? configuration.attributes : null);
+                      shape.altitudeMode = WorldWind.CLAMP_TO_GROUND;
                       }
                     else
                       {
-                      shape = new SurfacePolygon(
-                          lBoundaries,
-                          configuration && configuration.attributes ? configuration.attributes : null);
-                      };
-                    shape.altitudeMode = WorldWind.ABSOLUTE;
-                    if (configuration && configuration.altitudeMode) {
+                      shape = new Polygon(
+                        pBoundaries,
+                        configuration && configuration.attributes ? configuration.attributes : null);
+                      if (configuration && configuration.altitudeMode)
                         shape.altitudeMode = configuration.altitudeMode;
-                    }
+                      else
+                        shape.altitudeMode = WorldWind.ABSOLUTE;
+                      };
                     if (configuration.highlightAttributes) {
                         shape.highlightAttributes = configuration.highlightAttributes;
                     }
@@ -914,7 +911,8 @@ define(['../../error/ArgumentError',
                     }
                     if (configuration && configuration.userProperties) {
                         shape.userProperties = configuration.userProperties;
-                    }                    layer.addRenderable(shape);
+                    }
+                    layer.addRenderable(shape);
             }
         };
 
