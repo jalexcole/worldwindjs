@@ -858,30 +858,50 @@ define(['../../error/ArgumentError',
             var configuration = this.shapeConfigurationCallback(geometry, properties);
 
             if (!this.crs || this.crs.isCRSSupported()) {
+                var lBoundaries = [];
                 var pBoundaries = [];
+                var is3d = false;
                 for (var boundariesIndex = 0, boundaries = geometry.coordinates;
                      boundariesIndex < boundaries.length; boundariesIndex++) {
+                    var locations = [];
                     var positions = [];
 
                     for (var positionIndex = 0, points = boundaries[boundariesIndex];
                          positionIndex < points.length; positionIndex++) {
                         var longitude = points[positionIndex][0],
                             latitude = points[positionIndex][1],
-                            altitude = points[positionIndex][2] ?  points[positionIndex][2] : 0;
+                            altitude = points[positionIndex][2];
+                        if (altitude === undefined)
+                          altitude = 0;
+                        else
+                          is3d = true;
                         var reprojectedCoordinate = this.getReprojectedIfRequired(
                             latitude,
                             longitude,
                             this.crs);
+                        var loc = new Location(reprojectedCoordinate[1], reprojectedCoordinate[0]);
                         var position = new Position(reprojectedCoordinate[1], reprojectedCoordinate[0], altitude);
+                        locations.push(loc);
                         positions.push(position);
                     }
+                    lBoundaries.push(locations);
                     pBoundaries.push(positions);
                 }
 
                     var shape;
-                    shape = new Polygon(
-                        pBoundaries,
-                        configuration && configuration.attributes ? configuration.attributes : null);
+
+                    if (is3d === true)
+                      {
+                      shape = new Polygon(
+                          pBoundaries,
+                          configuration && configuration.attributes ? configuration.attributes : null);
+                      }
+                    else
+                      {
+                      shape = new SurfacePolygon(
+                          lBoundaries,
+                          configuration && configuration.attributes ? configuration.attributes : null);
+                      };
                     shape.altitudeMode = WorldWind.ABSOLUTE;
                     if (configuration && configuration.altitudeMode) {
                         shape.altitudeMode = configuration.altitudeMode;
