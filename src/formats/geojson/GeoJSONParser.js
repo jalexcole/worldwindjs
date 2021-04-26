@@ -44,6 +44,7 @@ define(['../../error/ArgumentError',
         './GeoJSONGeometryPolygon',
         '../../geom/Location',
         '../../util/Logger',
+        //'../../shapes/Path',
         '../../shapes/Placemark',
         '../../shapes/PlacemarkAttributes',
         '../../shapes/Polygon',
@@ -743,17 +744,33 @@ define(['../../error/ArgumentError',
                 var positions = [];
                 for (var pointsIndex = 0, points = geometry.coordinates; pointsIndex < points.length; pointsIndex++) {
                     var longitude = points[pointsIndex][0],
-                        latitude = points[pointsIndex][1];
-                    //altitude = points[pointsIndex][2] ?  points[pointsIndex][2] : 0,
+                        latitude = points[pointsIndex][1],
+                        altitude = points[pointsIndex][2] ?  points[pointsIndex][2] : 0;
                     var reprojectedCoordinate = this.getReprojectedIfRequired(
                         latitude,
                         longitude,
                         this.crs);
-                    var position = new Location(reprojectedCoordinate[1], reprojectedCoordinate[0]);
+                    var position = new Position(reprojectedCoordinate[1], reprojectedCoordinate[0], altitude);
                     positions.push(position);
                 }
 
                 var shape;
+/*
+                if (configuration && configuration.altitudeMode == WorldWind.CLAMP_TO_GROUND) {
+                  shape = new SurfacePolyline(
+                    positions,
+                    configuration && configuration.attributes ? configuration.attributes : null);
+                } else {
+                  shape = new Path(
+                    positions,
+                    configuration && configuration.attributes ? configuration.attributes : null);
+                  if (configuration && configuration.altitudeMode) {
+                    shape.altitudeMode = configuration.altitudeMode;
+                  } else {
+                    shape.altitudeMode = WorldWind.ABSOLUTE;
+                  }
+                }
+*/
                 shape = new SurfacePolyline(
                     positions,
                     configuration && configuration.attributes ? configuration.attributes : null);
