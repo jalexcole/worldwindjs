@@ -601,9 +601,10 @@ define(['../../error/ArgumentError',
                     false,
                     configuration && configuration.attributes ? configuration.attributes : null);
 
-                placemark.altitudeMode = WorldWind.RELATIVE_TO_GROUND;
                 if (configuration && configuration.altitudeMode) {
                     placemark.altitudeMode = configuration.altitudeMode;
+                } else {
+                    placemark.altitudeMode = WorldWind.ABSOLUTE;
                 }
                 if (configuration && configuration.name){
                     placemark.label = configuration.name;
@@ -676,9 +677,10 @@ define(['../../error/ArgumentError',
                         position,
                         false,
                         configuration && configuration.attributes ? configuration.attributes : null);
-                    placemark.altitudeMode = WorldWind.RELATIVE_TO_GROUND;
                     if (configuration && configuration.altitudeMode) {
                         placemark.altitudeMode = configuration.altitudeMode;
+                    } else {
+                        placemark.altitudeMode = WorldWind.ABSOLUTE;
                     }
                     if (configuration && configuration.name){
                         placemark.label = configuration.name;
@@ -866,22 +868,34 @@ define(['../../error/ArgumentError',
                     for (var positionIndex = 0, points = boundaries[boundariesIndex];
                          positionIndex < points.length; positionIndex++) {
                         var longitude = points[positionIndex][0],
-                            latitude = points[positionIndex][1];
-                        //altitude = points[positionIndex][2] ?  points[positionIndex][2] : 0,
+                            latitude = points[positionIndex][1],
+                            altitude = points[positionIndex][2] ? points[positionIndex][2] : 0;
+
                         var reprojectedCoordinate = this.getReprojectedIfRequired(
                             latitude,
                             longitude,
                             this.crs);
-                        var position = new Location(reprojectedCoordinate[1], reprojectedCoordinate[0]);
+                        var position = new Position(reprojectedCoordinate[1], reprojectedCoordinate[0], altitude);
                         positions.push(position);
                     }
                     pBoundaries.push(positions);
                 }
 
                     var shape;
-                    shape = new SurfacePolygon(
+                    if (configuration && configuration.altitudeMode == WorldWind.CLAMP_TO_GROUND) {
+                      shape = new SurfacePolygon(
                         pBoundaries,
                         configuration && configuration.attributes ? configuration.attributes : null);
+                    } else {
+                      shape = new Polygon(
+                        pBoundaries,
+                        configuration && configuration.attributes ? configuration.attributes : null);
+                      if (configuration && configuration.altitudeMode) {
+                        shape.altitudeMode = configuration.altitudeMode;
+                      } else {
+                        shape.altitudeMode = WorldWind.ABSOLUTE;
+                      }
+                    }
                     if (configuration.highlightAttributes) {
                         shape.highlightAttributes = configuration.highlightAttributes;
                     }
@@ -890,7 +904,8 @@ define(['../../error/ArgumentError',
                     }
                     if (configuration && configuration.userProperties) {
                         shape.userProperties = configuration.userProperties;
-                    }                    layer.addRenderable(shape);
+                    }
+                    layer.addRenderable(shape);
             }
         };
 
