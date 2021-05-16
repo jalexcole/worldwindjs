@@ -44,7 +44,7 @@ define(['../../error/ArgumentError',
         './GeoJSONGeometryPolygon',
         '../../geom/Location',
         '../../util/Logger',
-        //'../../shapes/Path',
+        '../../shapes/Path',
         '../../shapes/Placemark',
         '../../shapes/PlacemarkAttributes',
         '../../shapes/Polygon',
@@ -71,6 +71,7 @@ define(['../../error/ArgumentError',
               GeoJSONGeometryPolygon,
               Location,
               Logger,
+              Path,
               Placemark,
               PlacemarkAttributes,
               Polygon,
@@ -755,7 +756,6 @@ define(['../../error/ArgumentError',
                 }
 
                 var shape;
-/*
                 if (configuration && configuration.altitudeMode == WorldWind.CLAMP_TO_GROUND) {
                   shape = new SurfacePolyline(
                     positions,
@@ -769,19 +769,6 @@ define(['../../error/ArgumentError',
                   } else {
                     shape.altitudeMode = WorldWind.ABSOLUTE;
                   }
-                }
-*/
-                shape = new SurfacePolyline(
-                    positions,
-                    configuration && configuration.attributes ? configuration.attributes : null);
-                if (configuration.highlightAttributes) {
-                    shape.highlightAttributes = configuration.highlightAttributes;
-                }
-                if (configuration && configuration.pickDelegate) {
-                    shape.pickDelegate = configuration.pickDelegate;
-                }
-                if (configuration && configuration.userProperties) {
-                    shape.userProperties = configuration.userProperties;
                 }
                 layer.addRenderable(shape);
             }
