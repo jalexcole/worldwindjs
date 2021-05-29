@@ -238,10 +238,12 @@ define([
          * @param {String|ImageSource} imageSource The image source, either a {@link ImageSource} or a String
          * giving the URL of the image.
          * @param {GLenum} wrapMode Optional. Specifies the wrap mode of the texture. Defaults to gl.CLAMP_TO_EDGE
+         * @param {Number} initialWidth Optional. Specifies the desired initial width of the image.
+         * @param {Number} initialHeight Optional. Specifies the desired initial height of the image.
          * @returns {Texture} The {@link Texture} created for the image if the specified image source is an
          * {@link ImageSource}, otherwise null.
          */
-        GpuResourceCache.prototype.retrieveTexture = function (gl, imageSource, wrapMode) {
+        GpuResourceCache.prototype.retrieveTexture = function (gl, imageSource, wrapMode, initialWidth, initialHeight) {
             if (!imageSource) {
                 return null;
             }
@@ -261,6 +263,24 @@ define([
 
             image.onload = function () {
                 Logger.log(Logger.LEVEL_INFO, "Image retrieval succeeded: " + imageSource);
+
+                // Process initialWidth and initialHeight if specified
+                var hasInitialWidth = typeof(initialWidth) === "number" && initialWidth > 0;
+                var hasInitialHeight = typeof(initialHeight) === "number" && initialHeight > 0;
+                if (image.width || image.height) {
+                    // If source image has dimensions, then resize it proportionally to fit initial size restrictions
+                    var ratioW = hasInitialWidth ? image.width / initialWidth : 0;
+                    var ratioH = hasInitialHeight ? image.height / initialHeight : 0;
+                    var ratio = ratioH > ratioW ?  ratioH : ratioW;
+                    if (ratio > 0) {
+                        image.width = image.width / ratio;
+                        image.height = image.height / ratio;
+                    }
+                } else if (hasInitialWidth && hasInitialHeight) {
+                    // If source image has no dimensions (e.g. SVG image), then set initial size of image
+                    image.width = initialWidth;
+                    image.height = initialHeight;
+                }
 
                 var texture = new Texture(gl, image, wrapMode);
 

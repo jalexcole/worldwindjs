@@ -58,6 +58,8 @@ define([
             this._imageColor = attributes ? attributes._imageColor.clone() : Color.WHITE.clone();
             this._imageOffset = attributes ? attributes._imageOffset
                 : new Offset(WorldWind.OFFSET_FRACTION, 0.5, WorldWind.OFFSET_FRACTION, 0.5);
+            this._imageInitialWidth = attributes ?  attributes._imageInitialWidth : null;
+            this._imageInitialHeight = attributes ?  attributes._imageInitialHeight : null;
             this._imageScale = attributes ? attributes._imageScale : 1;
             this._imageSource = attributes ? attributes._imageSource : null;
             this._depthTest = attributes ? attributes._depthTest : true;
@@ -85,6 +87,8 @@ define([
         PlacemarkAttributes.prototype.computeStateKey = function () {
             return "ic " + this._imageColor.toHexString(true)
                 + " io " + this._imageOffset.toString()
+                + " iiw " + this._imageInitialWidth
+                + " iih " + this._imageInitialHeight
                 + " is " + this._imageScale
                 + " ip " + this._imageSource
                 + " dt " + this._depthTest
@@ -144,6 +148,38 @@ define([
                 },
                 set: function (value) {
                     this._imageOffset = value;
+                    this.stateKeyInvalid = true;
+                }
+            },
+
+            /**
+             * The initial image width.
+             * @type {Number}
+             * @default null
+             * @memberof PlacemarkAttributes.prototype
+             */
+            imageInitialWidth: {
+                get: function () {
+                    return this._imageInitialWidth;
+                },
+                set: function (value) {
+                    this._imageInitialWidth = value;
+                    this.stateKeyInvalid = true;
+                }
+            },
+
+            /**
+             * The initial image height.
+             * @type {Number}
+             * @default null
+             * @memberof PlacemarkAttributes.prototype
+             */
+            imageInitialHeight: {
+                get: function () {
+                    return this._imageInitialHeight;
+                },
+                set: function (value) {
+                    this._imageInitialHeight = value;
                     this.stateKeyInvalid = true;
                 }
             },

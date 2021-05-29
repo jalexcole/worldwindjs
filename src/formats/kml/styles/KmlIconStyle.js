@@ -152,6 +152,9 @@ define([
         style = style || {};
         var shapeOptions = options || {};
 
+        // Set initial image size to 32x32 like Google Earth
+        shapeOptions._imageInitialWidth = 32;
+        shapeOptions._imageInitialHeight = 32;
         shapeOptions._imageScale = style.kmlScale || 1;
         shapeOptions._imageSource = style.kmlIcon && style.kmlIcon.kmlHref(fileCache) || null;
 
