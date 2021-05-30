@@ -26,11 +26,13 @@
  * PDF found in code  directory.
  */
 define([
+    '../../../util/Color',
     './KmlColorStyle',
     './../KmlElements',
     '../KmlIcon',
     '../util/KmlNodeTransformers'
-], function (KmlColorStyle,
+], function (Color,
+             KmlColorStyle,
              KmlElements,
              KmlIcon,
              NodeTransformers) {
@@ -157,6 +159,8 @@ define([
         shapeOptions._imageInitialHeight = 32;
         shapeOptions._imageScale = style.kmlScale || 1;
         shapeOptions._imageSource = style.kmlIcon && style.kmlIcon.kmlHref(fileCache) || null;
+        shapeOptions._imageColor = style.kmlColor && Color.colorFromKmlHex(style.kmlColor) || Color.WHITE;
+        shapeOptions._imageColorMode = style.kmlColorMode || "normal";
 
         return shapeOptions;
     };
