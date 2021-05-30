@@ -131,7 +131,6 @@ define([
         placemarkAttributes.imageOffset = new Offset(
             WorldWind.OFFSET_FRACTION, 0.3,
             WorldWind.OFFSET_FRACTION, 0.0);
-        placemarkAttributes.imageColor = Color.WHITE;
         placemarkAttributes.labelAttributes = new TextAttributes(KmlStyle.textAttributes({
             _offset: new Offset(
                 WorldWind.OFFSET_FRACTION, 0.5,
@@ -167,3 +166,4 @@ define([
 
     return KmlPlacemark;
 });
+
