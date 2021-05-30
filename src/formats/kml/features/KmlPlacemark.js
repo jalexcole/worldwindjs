@@ -152,6 +152,8 @@ define([
         this._renderable.label = this.kmlName || '';
         this._renderable.altitudeMode = this.kmlAltitudeMode || WorldWind.RELATIVE_TO_GROUND;
         this._renderable.enableLeaderLinePicking = true;
+        this._renderable.imageRotation = this.style.normal.kmlIconStyle.kmlHeading || 0;
+        this._renderable.imageRotationReference = WorldWind.RELATIVE_TO_GLOBE;
     };
 
     /**
