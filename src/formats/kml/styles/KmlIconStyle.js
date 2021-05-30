@@ -155,7 +155,7 @@ define([
         var shapeOptions = options || {};
 
         shapeOptions._imageColor = style.kmlColor && Color.colorFromKmlHex(style.kmlColor) || Color.WHITE;
-        shapeOptions._imageColorMode = style.kmlColorMode && style.kmlColorMode || "normal";
+        shapeOptions._imageColorMode = style.kmlColorMode || "normal";
         // Set initial image size to 32x32 like Google Earth
         shapeOptions._imageInitialWidth = 32;
         shapeOptions._imageInitialHeight = 32;
