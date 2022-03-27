@@ -286,10 +286,10 @@ define([
 
             // Internal use only. Intentionally not documented.
             this.layer = null;
-
-            // Internal use only. Intentionally not documented.
-            this.depthOffset = -0.003;
         };
+
+        // Internal use only. Intentionally not documented.
+        Placemark.defaultDepthOffset = -0.03;
 
         // Internal use only. Intentionally not documented.
         Placemark.screenPoint = new Vec3(0, 0, 0); // scratch variable
@@ -447,12 +447,19 @@ define([
                     this.altitudeMode, this.groundPoint);
             }
 
+            // Compute a screen depth offset appropriate for the current viewing parameters.
+            var depthOffset = 0;
+            var absTilt = Math.abs( dc.camera.tilt );
+            if (this.eyeDistance < dc.horizonDistance && absTilt <= 90) {
+                depthOffset = ( 1 - absTilt / 90 ) * Placemark.defaultDepthOffset;
+            }
+
             // Compute the placemark's screen point in the OpenGL coordinate system of the WorldWindow by projecting its model
             // coordinate point onto the viewport. Apply a depth offset in order to cause the placemark to appear above nearby
             // terrain. When a placemark is displayed near the terrain portions of its geometry are often behind the terrain,
             // yet as a screen element the placemark is expected to be visible. We adjust its depth values rather than moving
             // the placemark itself to avoid obscuring its actual position.
-            if (!dc.projectWithDepth(this.placePoint, this.depthOffset, Placemark.screenPoint)) {
+            if (!dc.projectWithDepth(this.placePoint, depthOffset, Placemark.screenPoint)) {
                 return null;
             }
 
