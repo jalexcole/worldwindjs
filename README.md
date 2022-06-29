@@ -68,23 +68,27 @@ WorldWindJS is made available in the spirit of the NASA motto: _For the benefit 
 
 ## Web WorldWind
 
-3D virtual globe API in JavaScript for the web, developed by NASA. The European Space Agency has provided valuable
-contributions to this platform since 2015. Web WorldWind provides a geographic context, complete with terrain, and a
+Web WorldWind is a 3D planetary globe engine built in JavaScript for the web, developed by NASA. The European Space Agency has provided valuable
+contributions to this platform since 2015. Web WorldWind provides a geographic context complete with terrain, and a
 collection for shapes for displaying and interacting with geographic or geo-located information in 3D and 2D in any
 modern web browser. High-resolution terrain and imagery is retrieved from remote servers automatically as needed, while
-enabling developers to include their own custom terrain and imagery.
+enabling developers to include their own custom terrain, imagery, 3D shapes, and position markings.
 
-[worldwind.arc.nasa.gov](https://worldwind.arc.nasa.gov) has setup instructions, developers guides, API documentation and more.
+The project's website, [worldwind.arc.nasa.gov](https://worldwind.arc.nasa.gov) has setup instructions, developer guides, API documentation and more.
 
 ## Get Started
 
 The Web WorldWind [Developer's Guide](https://worldwind.arc.nasa.gov/web) has a complete description of Web WorldWind's
-functionality. You'll also find there links to many Web WorldWind resources, including a user guide. For novices on WorldWind, 
-A [Get Started](https://worldwind.arc.nasa.gov/web/get-started/) tutorial is the place to go. The latest Web WorldWind release 
-provides many simple [examples](https://github.com/NASAWorldWind/WebWorldWind/tree/develop/examples) showing how to use all of
- Web WorldWind's functionality.
+functionality. In there, you will find many Web WorldWind resources, including a user guide and documentation for every module file. 
+For complete beginners on WorldWind, the [Get Started](https://worldwind.arc.nasa.gov/web/get-started/) tutorial is the place to go.
+
+The latest Web WorldWind release provides many simple [examples](https://github.com/NASAWorldWind/WebWorldWind/tree/develop/examples) showing
+how to use most of Web WorldWind's functionality, as well as more involved small [applications](https://github.com/NASAWorldWind/WebWorldWind/tree/develop/apps)
+for reference on how to use Web WorldWind in domain-focused GIS development. 
 
 ## Building
+
+[![Build Status](https://travis-ci.com/NASAWorldWind/WebWorldWind.svg?branch=develop)](https://travis-ci.com/NASAWorldWind/WebWorldWind)
 
 [Install NodeJS](https://nodejs.org). The build is known to work with Node.js 12.18.0 LTS.
 
@@ -104,7 +108,7 @@ provides many simple [examples](https://github.com/NASAWorldWind/WebWorldWind/tr
 
 ## License
 
-Copyright 2003-2006, 2009, 2017, 2020 United States Government, as represented
+Copyright 2003-2006, 2009, 2017, 2020, 2022 United States Government, as represented
 by the Administrator of the National Aeronautics and Space Administration.
 All rights reserved.
 
@@ -121,11 +125,10 @@ specific language governing permissions and limitations under the License.
 NASAWorldWind/WebWorldWind also contains the following 3rd party Open Source
 software:
 
-   ES6-Promise – under MIT License
-   libtess.js – SGI Free Software License B
-   Proj4 – under MIT License
-   JSZip – under MIT License
+- ES6-Promise – under MIT License
+- libtess.js – SGI Free Software License B
+- Proj4 – under MIT License
+- JSZip – under MIT License
 
 A complete listing of 3rd Party software notices and licenses included in
-WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
-PDF found in code  directory.
+WebWorldWind can be found in the Web WorldWind 3rd-party notices and licenses PDF file found in its code directory.
