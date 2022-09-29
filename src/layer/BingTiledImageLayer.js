@@ -31,13 +31,11 @@
 define([
         '../util/Color',
         '../shapes/ScreenImage',
-        '../layer/MercatorTiledImageLayer',
-        '../WorldWind'
+        '../layer/MercatorTiledImageLayer'
     ],
     function (Color,
               ScreenImage,
-              MercatorTiledImageLayer,
-              WorldWind) {
+              MercatorTiledImageLayer) {
         "use strict";
 
         /**
