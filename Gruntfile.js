@@ -47,6 +47,7 @@ module.exports = function (grunt) {
                     baseUrl: 'src',
                     name: '../tools/almond',
                     include: ['WorldWind'],
+                    optimize: 'uglify2',
                     out: 'build/dist/worldwind.min.js',
                     wrap: {
                         startFile: 'tools/wrap.start',
