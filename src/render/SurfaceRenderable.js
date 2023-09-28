@@ -25,52 +25,55 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
+import Logger from "../util/Logger";
+import UnsupportedOperationError from "../error/UnsupportedOperationError";
+
 /**
- * @exports SurfaceRenderable
+ * Applications must not call this constructor. It is an interface class and is not meant to be instantiated
+ * directly.
+ * @alias SurfaceRenderable
+ * @constructor
+ * @classdesc Represents a surface renderable.
+ * This is an interface class and is not meant to be instantiated directly.
  */
-define(['../util/Logger',
-        '../error/UnsupportedOperationError'
-    ],
-    function (Logger,
-              UnsupportedOperationError) {
-        "use strict";
+var SurfaceRenderable = function () {
+  /**
+   * This surface renderable's display name.
+   * @type {String}
+   * @default Renderable
+   */
+  this.displayName = "Renderable";
 
-        /**
-         * Applications must not call this constructor. It is an interface class and is not meant to be instantiated
-         * directly.
-         * @alias SurfaceRenderable
-         * @constructor
-         * @classdesc Represents a surface renderable.
-         * This is an interface class and is not meant to be instantiated directly.
-         */
-        var SurfaceRenderable = function () {
+  /**
+   * Indicates whether this surface renderable is enabled.
+   * @type {Boolean}
+   * @default true
+   */
+  this.enabled = true;
 
-            /**
-             * This surface renderable's display name.
-             * @type {String}
-             * @default Renderable
-             */
-            this.displayName = "Renderable";
+  throw new UnsupportedOperationError(
+    Logger.logMessage(
+      Logger.LEVEL_SEVERE,
+      "SurfaceRenderable",
+      "constructor",
+      "abstractInvocation"
+    )
+  );
+};
 
-            /**
-             * Indicates whether this surface renderable is enabled.
-             * @type {Boolean}
-             * @default true
-             */
-            this.enabled = true;
+/**
+ * Renders this surface renderable.
+ * @param {DrawContext} dc The current draw context.
+ */
+SurfaceRenderable.prototype.renderSurface = function (dc) {
+  throw new UnsupportedOperationError(
+    Logger.logMessage(
+      Logger.LEVEL_SEVERE,
+      "SurfaceRenderable",
+      "renderSurface",
+      "abstractInvocation"
+    )
+  );
+};
 
-            throw new UnsupportedOperationError(
-                Logger.logMessage(Logger.LEVEL_SEVERE, "SurfaceRenderable", "constructor", "abstractInvocation"));
-        };
-
-        /**
-         * Renders this surface renderable.
-         * @param {DrawContext} dc The current draw context.
-         */
-        SurfaceRenderable.prototype.renderSurface = function (dc) {
-            throw new UnsupportedOperationError(
-                Logger.logMessage(Logger.LEVEL_SEVERE, "SurfaceRenderable", "renderSurface", "abstractInvocation"));
-        };
-
-        return SurfaceRenderable;
-    });
+export default SurfaceRenderable;

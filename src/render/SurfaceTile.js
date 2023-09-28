@@ -25,22 +25,12 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
-/**
- * @exports SurfaceTile
- */
-define([
-        '../error/ArgumentError',
-        '../util/Logger',
-        '../geom/Matrix',
-        '../geom/Sector',
-        '../error/UnsupportedOperationError'
-    ],
-    function (ArgumentError,
-              Logger,
-              Matrix,
-              Sector,
-              UnsupportedOperationError) {
-        "use strict";
+import ArgumentError from "../error/ArgumentError";
+import Logger from "../util/Logger";
+import Matrix from "../geom/Matrix";
+import Sector from "../geom/Sector";
+import UnsupportedOperationError from "../error/UnsupportedOperationError";
+
 
         /**
          * Constructs a surface tile for a specified sector.
@@ -87,5 +77,4 @@ define([
                 Logger.logMessage(Logger.LEVEL_SEVERE, "SurfaceTile", "applyInternalTransform", "abstractInvocation"));
         };
 
-        return SurfaceTile;
-    });
+        export default SurfaceTile;

@@ -25,22 +25,13 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
-/**
- * @exports ProjectionEquirectangular
- */
-define([
-        '../geom/Angle',
-        '../error/ArgumentError',
-        '../projections/GeographicProjection',
-        '../util/Logger',
-        '../geom/Vec3'
-    ],
-    function (Angle,
-              ArgumentError,
-              GeographicProjection,
-              Logger,
-              Vec3) {
-        "use strict";
+import Angle from "../geom/Angle";
+import ArgumentError from "../error/ArgumentError";
+import GeographicProjection from "./GeographicProjection";
+import Logger from "../util/Logger";
+import Vec3 from "../geom/Vec3";
+
+
 
         /**
          * Constructs an Equirectangular geographic projection, also known as Equidistant Cylindrical, Plate Carree and
@@ -174,5 +165,4 @@ define([
             return result;
         };
 
-        return ProjectionEquirectangular;
-    });
+        export default ProjectionEquirectangular;

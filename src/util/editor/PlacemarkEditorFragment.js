@@ -14,20 +14,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/**
- * @exports PlacemarkEditorFragment
- */
-define([
-        './BaseSurfaceEditorFragment',
-        '../../geom/Location',
-        './ShapeEditorConstants',
-        '../../shapes/Placemark'
-    ],
-    function (BaseSurfaceEditorFragment,
-              Location,
-              ShapeEditorConstants,
-              Placemark) {
-        "use strict";
+import BaseSurfaceEditorFragment from "./BaseSurfaceEditorFragment";
+import Location from "../../geom/Location";
+import ShapeEditorConstants from "./ShapeEditorConstants";
+import Placemark from "../../shapes/Placemark";
+
 
         // Internal use only.
         var PlacemarkEditorFragment = function () {};
@@ -79,6 +70,4 @@ define([
             return false;
         };
 
-        return PlacemarkEditorFragment;
-    }
-);
+        export default PlacemarkEditorFragment;

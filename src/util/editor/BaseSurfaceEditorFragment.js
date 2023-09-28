@@ -14,32 +14,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/**
- * @exports BaseSurfaceEditorFragment
- */
-define([
-        '../../geom/Angle',
-        '../../geom/Line',
-        '../../geom/Location',
-        '../Logger',
-        '../../shapes/Path',
-        '../../shapes/Placemark',
-        '../../geom/Position',
-        '../../shapes/ShapeAttributes',
-        '../../error/UnsupportedOperationError',
-        '../../geom/Vec3'
-    ],
-    function (Angle,
-              Line,
-              Location,
-              Logger,
-              Path,
-              Placemark,
-              Position,
-              ShapeAttributes,
-              UnsupportedOperationError,
-              Vec3) {
-        "use strict";
+import Angle from "../../geom/Angle";
+import Line from "../../geom/Line";
+import Location from "../../geom/Location";
+import Logger from "../Logger";
+import Path from "../../shapes/Path";
+import Placemark from "../../shapes/Placemark";
+import UnsupportedOperationError from "../../error/UnsupportedOperationError";
+import Vec3 from "../../geom/Vec3";
+
 
         // Internal use only.
         var BaseSurfaceEditorFragment = function () {};
@@ -446,6 +429,4 @@ define([
 
         }
 
-        return BaseSurfaceEditorFragment;
-    }
-);
+        export default BaseSurfaceEditorFragment;

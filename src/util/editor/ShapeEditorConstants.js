@@ -14,9 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-define([],
-    function () {
-        'use strict';
+
 
         /**
          * Provides constants for the ShapeEditor.
@@ -52,5 +50,4 @@ define([],
             SHADOW: "shadow"
         };
 
-        return ShapeEditorConstants;
-    });
+        export default ShapeEditorConstants;

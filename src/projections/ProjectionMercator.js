@@ -25,195 +25,276 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
+import Angle from "../geom/Angle";
+import ArgumentError from "../error/ArgumentError";
+import GeographicProjection from "./GeographicProjection";
+import Logger from "../util/Logger";
+import Sector from "../geom/Sector";
+import Vec3 from "../geom/Vec3";
+import WWMath from "../util/WWMath";
+
 /**
- * @exports ProjectionMercator
+ * Constructs a Mercator geographic projection.
+ * @alias ProjectionMercator
+ * @constructor
+ * @augments GeographicProjection
+ * @classdesc Represents a Mercator geographic projection.
  */
-define([
-        '../geom/Angle',
-        '../error/ArgumentError',
-        '../projections/GeographicProjection',
-        '../util/Logger',
-        '../geom/Sector',
-        '../geom/Vec3',
-        '../util/WWMath'
-    ],
-    function (Angle,
-              ArgumentError,
-              GeographicProjection,
-              Logger,
-              Sector,
-              Vec3,
-              WWMath) {
-        "use strict";
+var ProjectionMercator = function () {
+  GeographicProjection.call(
+    this,
+    "Mercator",
+    true,
+    new Sector(-78, 78, -180, 180)
+  );
+};
 
-        /**
-         * Constructs a Mercator geographic projection.
-         * @alias ProjectionMercator
-         * @constructor
-         * @augments GeographicProjection
-         * @classdesc Represents a Mercator geographic projection.
-         */
-        var ProjectionMercator = function () {
+ProjectionMercator.prototype = Object.create(GeographicProjection.prototype);
 
-            GeographicProjection.call(this, "Mercator", true, new Sector(-78, 78, -180, 180));
-        };
+// Documented in base class.
+ProjectionMercator.prototype.geographicToCartesian = function (
+  globe,
+  latitude,
+  longitude,
+  elevation,
+  offset,
+  result
+) {
+  if (!globe) {
+    throw new ArgumentError(
+      Logger.logMessage(
+        Logger.LEVEL_SEVERE,
+        "ProjectionMercator",
+        "geographicToCartesian",
+        "missingGlobe"
+      )
+    );
+  }
 
-        ProjectionMercator.prototype = Object.create(GeographicProjection.prototype);
+  if (!result) {
+    throw new ArgumentError(
+      Logger.logMessage(
+        Logger.LEVEL_SEVERE,
+        "ProjectionMercator",
+        "geographicToCartesian",
+        "missingResult"
+      )
+    );
+  }
 
-        // Documented in base class.
-        ProjectionMercator.prototype.geographicToCartesian = function (globe, latitude, longitude, elevation, offset,
-                                                                       result) {
-            if (!globe) {
-                throw new ArgumentError(Logger.logMessage(Logger.LEVEL_SEVERE, "ProjectionMercator",
-                    "geographicToCartesian", "missingGlobe"));
-            }
+  if (latitude > this.projectionLimits.maxLatitude) {
+    latitude = this.projectionLimits.maxLatitude;
+  }
+  if (latitude < this.projectionLimits.minLatitude) {
+    latitude = this.projectionLimits.minLatitude;
+  }
 
-            if (!result) {
-                throw new ArgumentError(Logger.logMessage(Logger.LEVEL_SEVERE, "ProjectionMercator",
-                    "geographicToCartesian", "missingResult"));
-            }
+  // See "Map Projections: A Working Manual", page 44 for the source of the below formulas.
 
-            if (latitude > this.projectionLimits.maxLatitude) {
-                latitude = this.projectionLimits.maxLatitude;
-            }
-            if (latitude < this.projectionLimits.minLatitude) {
-                latitude = this.projectionLimits.minLatitude;
-            }
+  var ecc = Math.sqrt(globe.eccentricitySquared),
+    sinLat = Math.sin(latitude * Angle.DEGREES_TO_RADIANS),
+    s =
+      ((1 + sinLat) / (1 - sinLat)) *
+      Math.pow((1 - ecc * sinLat) / (1 + ecc * sinLat), ecc);
 
-            // See "Map Projections: A Working Manual", page 44 for the source of the below formulas.
+  result[0] =
+    globe.equatorialRadius * longitude * Angle.DEGREES_TO_RADIANS +
+    (offset ? offset[0] : 0);
+  result[1] = 0.5 * globe.equatorialRadius * Math.log(s);
+  result[2] = elevation;
 
-            var ecc = Math.sqrt(globe.eccentricitySquared),
-                sinLat = Math.sin(latitude * Angle.DEGREES_TO_RADIANS),
-                s = ((1 + sinLat) / (1 - sinLat)) * Math.pow((1 - ecc * sinLat) / (1 + ecc * sinLat), ecc);
+  return result;
+};
 
-            result[0] = globe.equatorialRadius * longitude * Angle.DEGREES_TO_RADIANS + (offset ? offset[0] : 0);
-            result[1] = 0.5 * globe.equatorialRadius * Math.log(s);
-            result[2] = elevation;
+Object.defineProperties(ProjectionMercator.prototype, {
+  /**
+   * A string identifying this projection's current state. Used to compare states during rendering to
+   * determine whether globe-state dependent cached values must be updated. Applications typically do not
+   * interact with this property.
+   * @memberof ProjectionMercator.prototype
+   * @readonly
+   * @type {String}
+   */
+  stateKey: {
+    get: function () {
+      return "projection mercator ";
+    },
+  },
+});
 
-            return result;
-        };
+// Documented in base class.
+ProjectionMercator.prototype.geographicToCartesianGrid = function (
+  globe,
+  sector,
+  numLat,
+  numLon,
+  elevations,
+  referencePoint,
+  offset,
+  result
+) {
+  if (!globe) {
+    throw new ArgumentError(
+      Logger.logMessage(
+        Logger.LEVEL_SEVERE,
+        "ProjectionMercator",
+        "geographicToCartesianGrid",
+        "missingGlobe"
+      )
+    );
+  }
 
-        Object.defineProperties(ProjectionMercator.prototype, {
-            /**
-             * A string identifying this projection's current state. Used to compare states during rendering to
-             * determine whether globe-state dependent cached values must be updated. Applications typically do not
-             * interact with this property.
-             * @memberof ProjectionMercator.prototype
-             * @readonly
-             * @type {String}
-             */
-            stateKey: {
-                get: function () {
-                    return "projection mercator ";
-                }
-            }
-        });
+  if (!sector) {
+    throw new ArgumentError(
+      Logger.logMessage(
+        Logger.LEVEL_SEVERE,
+        "ProjectionMercator",
+        "geographicToCartesianGrid",
+        "missingSector"
+      )
+    );
+  }
 
-        // Documented in base class.
-        ProjectionMercator.prototype.geographicToCartesianGrid = function (globe, sector, numLat, numLon, elevations,
-                                                                           referencePoint, offset, result) {
-            if (!globe) {
-                throw new ArgumentError(Logger.logMessage(Logger.LEVEL_SEVERE, "ProjectionMercator",
-                    "geographicToCartesianGrid", "missingGlobe"));
-            }
+  if (!elevations || elevations.length < numLat * numLon) {
+    throw new ArgumentError(
+      Logger.logMessage(
+        Logger.LEVEL_SEVERE,
+        "ProjectionMercator",
+        "geographicToCartesianGrid",
+        "The specified elevations array is null, undefined or insufficient length"
+      )
+    );
+  }
 
-            if (!sector) {
-                throw new ArgumentError(Logger.logMessage(Logger.LEVEL_SEVERE, "ProjectionMercator",
-                    "geographicToCartesianGrid", "missingSector"));
-            }
+  if (!result) {
+    throw new ArgumentError(
+      Logger.logMessage(
+        Logger.LEVEL_SEVERE,
+        "ProjectionMercator",
+        "geographicToCartesianGrid",
+        "missingResult"
+      )
+    );
+  }
 
-            if (!elevations || elevations.length < numLat * numLon) {
-                throw new ArgumentError(Logger.logMessage(Logger.LEVEL_SEVERE, "ProjectionMercator",
-                    "geographicToCartesianGrid",
-                    "The specified elevations array is null, undefined or insufficient length"));
-            }
+  var eqr = globe.equatorialRadius,
+    ecc = Math.sqrt(globe.eccentricitySquared),
+    minLat = sector.minLatitude * Angle.DEGREES_TO_RADIANS,
+    maxLat = sector.maxLatitude * Angle.DEGREES_TO_RADIANS,
+    minLon = sector.minLongitude * Angle.DEGREES_TO_RADIANS,
+    maxLon = sector.maxLongitude * Angle.DEGREES_TO_RADIANS,
+    deltaLat = (maxLat - minLat) / (numLat > 1 ? numLat - 1 : 1),
+    deltaLon = (maxLon - minLon) / (numLon > 1 ? numLon - 1 : 1),
+    minLatLimit = this.projectionLimits.minLatitude * Angle.DEGREES_TO_RADIANS,
+    maxLatLimit = this.projectionLimits.maxLatitude * Angle.DEGREES_TO_RADIANS,
+    refCenter = referencePoint ? referencePoint : new Vec3(0, 0, 0),
+    offsetX = offset ? offset[0] : 0,
+    latIndex,
+    lonIndex,
+    elevIndex = 0,
+    resultIndex = 0,
+    lat,
+    lon,
+    clampedLat,
+    sinLat,
+    s,
+    y;
 
-            if (!result) {
-                throw new ArgumentError(Logger.logMessage(Logger.LEVEL_SEVERE, "ProjectionMercator",
-                    "geographicToCartesianGrid", "missingResult"));
-            }
+  // Iterate over the latitude and longitude coordinates in the specified sector, computing the Cartesian point
+  // corresponding to each latitude and longitude.
+  for (
+    latIndex = 0, lat = minLat;
+    latIndex < numLat;
+    latIndex++, lat += deltaLat
+  ) {
+    if (latIndex === numLat - 1) {
+      lat = maxLat; // explicitly set the last lat to the max latitude to ensure alignment
+    }
 
-            var eqr = globe.equatorialRadius,
-                ecc = Math.sqrt(globe.eccentricitySquared),
-                minLat = sector.minLatitude * Angle.DEGREES_TO_RADIANS,
-                maxLat = sector.maxLatitude * Angle.DEGREES_TO_RADIANS,
-                minLon = sector.minLongitude * Angle.DEGREES_TO_RADIANS,
-                maxLon = sector.maxLongitude * Angle.DEGREES_TO_RADIANS,
-                deltaLat = (maxLat - minLat) / (numLat > 1 ? numLat - 1 : 1),
-                deltaLon = (maxLon - minLon) / (numLon > 1 ? numLon - 1 : 1),
-                minLatLimit = this.projectionLimits.minLatitude * Angle.DEGREES_TO_RADIANS,
-                maxLatLimit = this.projectionLimits.maxLatitude * Angle.DEGREES_TO_RADIANS,
-                refCenter = referencePoint ? referencePoint : new Vec3(0, 0, 0),
-                offsetX = offset ? offset[0] : 0,
-                latIndex, lonIndex,
-                elevIndex = 0, resultIndex = 0,
-                lat, lon, clampedLat, sinLat, s, y;
+    // Latitude is constant for each row. Values that are a function of latitude can be computed once per row.
+    clampedLat = WWMath.clamp(lat, minLatLimit, maxLatLimit);
+    sinLat = Math.sin(clampedLat);
+    s =
+      ((1 + sinLat) / (1 - sinLat)) *
+      Math.pow((1 - ecc * sinLat) / (1 + ecc * sinLat), ecc);
+    y = eqr * Math.log(s) * 0.5 - refCenter[1];
 
-            // Iterate over the latitude and longitude coordinates in the specified sector, computing the Cartesian point
-            // corresponding to each latitude and longitude.
-            for (latIndex = 0, lat = minLat; latIndex < numLat; latIndex++, lat += deltaLat) {
-                if (latIndex === numLat - 1) {
-                    lat = maxLat; // explicitly set the last lat to the max latitude to ensure alignment
-                }
+    for (
+      lonIndex = 0, lon = minLon;
+      lonIndex < numLon;
+      lonIndex++, lon += deltaLon
+    ) {
+      if (lonIndex === numLon - 1) {
+        lon = maxLon; // explicitly set the last lon to the max longitude to ensure alignment
+      }
 
-                // Latitude is constant for each row. Values that are a function of latitude can be computed once per row.
-                clampedLat = WWMath.clamp(lat, minLatLimit, maxLatLimit);
-                sinLat = Math.sin(clampedLat);
-                s = ((1 + sinLat) / (1 - sinLat)) * Math.pow((1 - ecc * sinLat) / (1 + ecc * sinLat), ecc);
-                y = eqr * Math.log(s) * 0.5 - refCenter[1];
+      result[resultIndex++] = eqr * lon - refCenter[0] + offsetX;
+      result[resultIndex++] = y;
+      result[resultIndex++] = elevations[elevIndex++] - refCenter[2];
+    }
+  }
 
-                for (lonIndex = 0, lon = minLon; lonIndex < numLon; lonIndex++, lon += deltaLon) {
-                    if (lonIndex === numLon - 1) {
-                        lon = maxLon; // explicitly set the last lon to the max longitude to ensure alignment
-                    }
+  return result;
+};
 
-                    result[resultIndex++] = eqr * lon - refCenter[0] + offsetX;
-                    result[resultIndex++] = y;
-                    result[resultIndex++] = elevations[elevIndex++] - refCenter[2];
-                }
-            }
+// Documented in base class.
+ProjectionMercator.prototype.cartesianToGeographic = function (
+  globe,
+  x,
+  y,
+  z,
+  offset,
+  result
+) {
+  if (!globe) {
+    throw new ArgumentError(
+      Logger.logMessage(
+        Logger.LEVEL_SEVERE,
+        "ProjectionMercator",
+        "cartesianToGeographic",
+        "missingGlobe"
+      )
+    );
+  }
 
-            return result;
-        };
+  if (!result) {
+    throw new ArgumentError(
+      Logger.logMessage(
+        Logger.LEVEL_SEVERE,
+        "ProjectionMercator",
+        "cartesianToGeographic",
+        "missingResult"
+      )
+    );
+  }
 
-        // Documented in base class.
-        ProjectionMercator.prototype.cartesianToGeographic = function (globe, x, y, z, offset, result) {
-            if (!globe) {
-                throw new ArgumentError(Logger.logMessage(Logger.LEVEL_SEVERE, "ProjectionMercator",
-                    "cartesianToGeographic", "missingGlobe"));
-            }
+  // See "Map Projections: A Working Manual", pages 45 and 19 for the source of the below formulas.
 
-            if (!result) {
-                throw new ArgumentError(Logger.logMessage(Logger.LEVEL_SEVERE, "ProjectionMercator",
-                    "cartesianToGeographic", "missingResult"));
-            }
+  var ecc2 = globe.eccentricitySquared,
+    ecc4 = ecc2 * ecc2,
+    ecc6 = ecc4 * ecc2,
+    ecc8 = ecc6 * ecc2,
+    t = Math.pow(Math.E, -y / globe.equatorialRadius),
+    A = Math.PI / 2 - 2 * Math.atan(t),
+    B = ecc2 / 2 + (5 * ecc4) / 24 + ecc6 / 12 + (13 * ecc8) / 360,
+    C = (7 * ecc4) / 48 + (29 * ecc6) / 240 + (811 * ecc8) / 11520,
+    D = (7 * ecc6) / 120 + (81 * ecc8) / 1120,
+    E = (4279 * ecc8) / 161280,
+    Ap = A - C + E,
+    Bp = B - 3 * D,
+    Cp = 2 * C - 8 * E,
+    Dp = 4 * D,
+    Ep = 8 * E,
+    s2p = Math.sin(2 * A),
+    lat = Ap + s2p * (Bp + s2p * (Cp + s2p * (Dp + Ep * s2p)));
 
-            // See "Map Projections: A Working Manual", pages 45 and 19 for the source of the below formulas.
+  result.latitude = lat * Angle.RADIANS_TO_DEGREES;
+  result.longitude =
+    ((x - (offset ? offset[0] : 0)) / globe.equatorialRadius) *
+    Angle.RADIANS_TO_DEGREES;
+  result.altitude = z;
 
-            var ecc2 = globe.eccentricitySquared,
-                ecc4 = ecc2 * ecc2,
-                ecc6 = ecc4 * ecc2,
-                ecc8 = ecc6 * ecc2,
-                t = Math.pow(Math.E, - y / globe.equatorialRadius),
-                A = Math.PI / 2 - 2 * Math.atan(t),
-                B = ecc2 / 2 + 5 * ecc4 / 24 + ecc6 / 12 + 13 * ecc8 / 360,
-                C = 7 * ecc4 / 48 + 29 * ecc6 / 240 + 811 * ecc8 / 11520,
-                D = 7 * ecc6 / 120 + 81 * ecc8 / 1120,
-                E = 4279 * ecc8 / 161280,
-                Ap = A - C + E,
-                Bp = B - 3 * D,
-                Cp = 2 * C - 8 * E,
-                Dp = 4 * D,
-                Ep = 8 * E,
-                s2p = Math.sin(2 * A),
-                lat = Ap + s2p * (Bp + s2p * (Cp + s2p * (Dp + Ep * s2p)));
+  return result;
+};
 
-            result.latitude = lat * Angle.RADIANS_TO_DEGREES;
-            result.longitude = ((x - (offset ? offset[0] : 0)) / globe.equatorialRadius) * Angle.RADIANS_TO_DEGREES;
-            result.altitude = z;
-
-            return result;
-        };
-
-        return ProjectionMercator;
-    });
+export default ProjectionMercator;
