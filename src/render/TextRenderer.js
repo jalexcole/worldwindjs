@@ -25,28 +25,16 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
-/**
- * @exports TextRenderer
- */
-define([
-        '../error/ArgumentError',
-        '../shaders/BasicTextureProgram',
-        '../util/Color',
-        '../util/Font',
-        '../util/Logger',
-        '../geom/Matrix',
-        '../render/Texture',
-        '../geom/Vec2'
-    ],
-    function (ArgumentError,
-              BasicTextureProgram,
-              Color,
-              Font,
-              Logger,
-              Matrix,
-              Texture,
-              Vec2) {
-        "use strict";
+
+import ArgumentError from "../error/ArgumentError";
+import BasicTextureProgram from "../shaders/BasicTextureProgram";
+import Color from "../util/Color";
+import Font from "../util/Font";
+import Logger from "../util/Logger";
+import Matrix from "../geom/Matrix";
+import Texture from "./Texture";
+import Vec2 from "../geom/Vec2";
+
 
         /**
          * Constructs a TextRenderer instance.
@@ -325,5 +313,4 @@ define([
             return wrappedText;
         };
 
-        return TextRenderer;
-    });
+        export default TextRenderer;

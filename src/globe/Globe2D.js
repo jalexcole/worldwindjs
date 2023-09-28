@@ -25,32 +25,24 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
+
+import ElevationModel from "./ElevationModel";
+import Globe from "./Globe";
+import ProjectionEquirectangular from "../projections/ProjectionEquirectangular";
+
 /**
- * @exports Globe2D
+ * Constructs a 2D globe with a default {@link ElevationModel} and
+ * [equirectangular projection]{@link ProjectionEquirectangular}.
+ * @alias Globe2D
+ * @constructor
+ * @augments Globe
+ * @classdesc Represents a 2D flat globe with a configurable projection.
+ * The default rectangular projection scrolls longitudinally.
  */
-define(['../globe/ElevationModel',
-        '../globe/Globe',
-        '../projections/ProjectionEquirectangular'
-    ],
-    function (ElevationModel,
-              Globe,
-              ProjectionEquirectangular) {
-        "use strict";
+var Globe2D = function () {
+  Globe.call(this, new ElevationModel(), new ProjectionEquirectangular());
+};
 
-        /**
-         * Constructs a 2D globe with a default {@link ElevationModel} and
-         * [equirectangular projection]{@link ProjectionEquirectangular}.
-         * @alias Globe2D
-         * @constructor
-         * @augments Globe
-         * @classdesc Represents a 2D flat globe with a configurable projection.
-         * The default rectangular projection scrolls longitudinally.
-         */
-        var Globe2D = function () {
-            Globe.call(this, new ElevationModel(), new ProjectionEquirectangular());
-        };
+Globe2D.prototype = Object.create(Globe.prototype);
 
-        Globe2D.prototype = Object.create(Globe.prototype);
-
-        return Globe2D;
-    });
+export default Globe2D;

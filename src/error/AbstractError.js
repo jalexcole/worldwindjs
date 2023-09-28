@@ -25,41 +25,34 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
+
 /**
- * @exports AbstractError
+ * Constructs an error with a specified name and message.
+ * @alias AbstractError
+ * @constructor
+ * @abstract
+ * @classdesc Provides an abstract base class for error classes. This class is not meant to be instantiated
+ * directly but used only by subclasses.
+ * @param {String} name The error's name.
+ * @param {String} message The message.
  */
-define(function () {
-    "use strict";
+var AbstractError = function (name, message) {
+  this.name = name;
+  this.message = message;
+};
 
-    /**
-     * Constructs an error with a specified name and message.
-     * @alias AbstractError
-     * @constructor
-     * @abstract
-     * @classdesc Provides an abstract base class for error classes. This class is not meant to be instantiated
-     * directly but used only by subclasses.
-     * @param {String} name The error's name.
-     * @param {String} message The message.
-     */
-    var AbstractError = function (name, message) {
-        this.name = name;
-        this.message = message;
-    };
+/**
+ * Returns the message and stack trace associated with this error.
+ * @returns {String} The message and stack trace associated with this error.
+ */
+AbstractError.prototype.toString = function () {
+  var str = this.name + ": " + this.message;
 
-    /**
-     * Returns the message and stack trace associated with this error.
-     * @returns {String} The message and stack trace associated with this error.
-     */
-    AbstractError.prototype.toString = function () {
-        var str = this.name + ': ' + this.message;
+  if (this.stack) {
+    str += "\n" + this.stack.toString();
+  }
 
-        if (this.stack) {
-            str += '\n' + this.stack.toString();
-        }
+  return str;
+};
 
-        return str;
-    };
-
-    return AbstractError;
-
-});
+export default AbstractError;

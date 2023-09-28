@@ -25,19 +25,11 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
-/**
- * @exports GeoJSONCRS
- */
-define(['../../error/ArgumentError',
-        './GeoJSONConstants',
-        '../../util/Logger',
-        '../../util/proj4-src'
-    ],
-    function (ArgumentError,
-              GeoJSONConstants,
-              Logger,
-              Proj4){
-        "use strict";
+import ArgumentError from "../../error/ArgumentError";
+import GeoJSONConstants from "./GeoJSONConstants";
+import Logger from "../../util/Logger";
+import proc4j from "proj4";
+
 
         /**
          * Constructs a GeoJSON CRS object. Applications typically do not call this constructor. It is called by
@@ -215,6 +207,4 @@ define(['../../error/ArgumentError',
             }
         };
 
-        return GeoJSONCRS;
-    }
-);
+        export default GeoJSONCRS;

@@ -25,123 +25,141 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
+import ArgumentError from "../../error/ArgumentError";
+import Logger from "../../util/Logger";
+import WcsUrlBuilder from "../../ogc/wcs/WcsUrlBuilder";
+
 /**
- * @exports WcsCoverage
+ * A simple object representation of a Web Coverage Service coverage. Provides utility methods and properties
+ * for use in common WCS Coverage operations.
+ * @param {String} coverageId the name or id of the coverage
+ * @param {WebCoverageService} webCoverageService the WebCoverageService providing the coverage
+ * @constructor
  */
-define([
-        '../../error/ArgumentError',
-        '../../util/Logger',
-        '../../ogc/wcs/WcsUrlBuilder'
-    ],
-    function (ArgumentError,
-              Logger,
-              WcsUrlBuilder) {
-        "use strict";
+var WcsCoverage = function (coverageId, webCoverageService) {
+  if (!coverageId) {
+    throw new ArgumentError(
+      Logger.logMessage(
+        Logger.LEVEL_SEVERE,
+        "WcsCoverage",
+        "constructor",
+        "missingId"
+      )
+    );
+  }
 
-        /**
-         * A simple object representation of a Web Coverage Service coverage. Provides utility methods and properties
-         * for use in common WCS Coverage operations.
-         * @param {String} coverageId the name or id of the coverage
-         * @param {WebCoverageService} webCoverageService the WebCoverageService providing the coverage
-         * @constructor
-         */
-        var WcsCoverage = function (coverageId, webCoverageService) {
-            if (!coverageId) {
-                throw new ArgumentError(
-                    Logger.logMessage(Logger.LEVEL_SEVERE, "WcsCoverage", "constructor", "missingId"));
-            }
+  if (!webCoverageService) {
+    throw new ArgumentError(
+      Logger.logMessage(
+        Logger.LEVEL_SEVERE,
+        "WcsCoverage",
+        "constructor",
+        "missingWebCoverageService"
+      )
+    );
+  }
 
-            if (!webCoverageService) {
-                throw new ArgumentError(
-                    Logger.logMessage(Logger.LEVEL_SEVERE, "WcsCoverage", "constructor", "missingWebCoverageService"));
-            }
+  /**
+   * The Web Coverage Service Coverages id or name as assigned by the providing service.
+   * @type {String}
+   */
+  this.coverageId = coverageId;
 
-            /**
-             * The Web Coverage Service Coverages id or name as assigned by the providing service.
-             * @type {String}
-             */
-            this.coverageId = coverageId;
+  /**
+   * The WebCoverageService responsible for managing this Coverage and Web Coverage Service.
+   * @type {WebCoverageService}
+   */
+  this.service = webCoverageService;
 
-            /**
-             * The WebCoverageService responsible for managing this Coverage and Web Coverage Service.
-             * @type {WebCoverageService}
-             */
-            this.service = webCoverageService;
+  /**
+   * The Sector representing the bounds of the coverage.
+   * @type {Sector}
+   */
+  this.sector = this.service.coverageDescriptions.getSector(this.coverageId);
 
-            /**
-             * The Sector representing the bounds of the coverage.
-             * @type {Sector}
-             */
-            this.sector = this.service.coverageDescriptions.getSector(this.coverageId);
+  /**
+   * The resolution of the coverage, in degrees.
+   * @type {Number}
+   */
+  this.resolution = this.service.coverageDescriptions.getResolution(
+    this.coverageId
+  );
 
-            /**
-             * The resolution of the coverage, in degrees.
-             * @type {Number}
-             */
-            this.resolution = this.service.coverageDescriptions.getResolution(this.coverageId);
+  /**
+   * A configuration object for use by TiledElevationCoverage.
+   * @type {{}}
+   */
+  this.elevationConfig = this.createElevationConfig();
+};
 
-            /**
-             * A configuration object for use by TiledElevationCoverage.
-             * @type {{}}
-             */
-            this.elevationConfig = this.createElevationConfig();
-        };
+/**
+ * Preferred formats used for fuzzy comparison to available formats.
+ * @type {string[]}
+ */
+WcsCoverage.PREFERRED_FORMATS = {
+  GeoTIFF: true,
+  "image/tiff": true,
+  TIFF: true,
+};
 
-        /**
-         * Preferred formats used for fuzzy comparison to available formats.
-         * @type {string[]}
-         */
-        WcsCoverage.PREFERRED_FORMATS = {
-            "GeoTIFF" : true,
-            "image/tiff": true,
-            "TIFF": true
-        };
+/**
+ * The default data format.
+ * @type {string}
+ */
+WcsCoverage.DEFAULT_FORMAT = "image/tiff";
 
-        /**
-         * The default data format.
-         * @type {string}
-         */
-        WcsCoverage.DEFAULT_FORMAT = "image/tiff";
+// Internal use only
+WcsCoverage.prototype.createElevationConfig = function () {
+  return {
+    resolution: this.resolution,
+    coverageSector: this.sector,
+    retrievalImageFormat: this.determineFormatFromService(),
+    urlBuilder: new WcsUrlBuilder(this.coverageId, this.service),
+  };
+};
 
-        // Internal use only
-        WcsCoverage.prototype.createElevationConfig = function () {
-            return {
-                resolution: this.resolution,
-                coverageSector: this.sector,
-                retrievalImageFormat: this.determineFormatFromService(),
-                urlBuilder: new WcsUrlBuilder(this.coverageId, this.service)
-            };
-        };
+// Internal use only
+WcsCoverage.prototype.determineFormatFromService = function () {
+  var version = this.service.capabilities.version,
+    availableFormats,
+    format,
+    coverageDescription,
+    i,
+    len;
 
-        // Internal use only
-        WcsCoverage.prototype.determineFormatFromService = function () {
-            var version = this.service.capabilities.version, availableFormats, format, coverageDescription, i, len;
+  // find the service supported format identifiers
+  if (version === "1.0.0") {
+    // find the associated coverage description
+    for (
+      i = 0, len = this.service.coverageDescriptions.coverages.length;
+      i < len;
+      i++
+    ) {
+      if (
+        this.coverageId === this.service.coverageDescriptions.coverages[i].name
+      ) {
+        availableFormats =
+          this.service.coverageDescriptions.coverages[i].supportedFormats
+            .formats;
+        break;
+      }
+    }
+  } else if (version === "2.0.1" || version === "2.0.0") {
+    availableFormats =
+      this.service.capabilities.serviceMetadata.formatsSupported;
+  }
 
-            // find the service supported format identifiers
-            if (version === "1.0.0") {
-                // find the associated coverage description
-                for (i = 0, len = this.service.coverageDescriptions.coverages.length; i < len; i++) {
-                    if (this.coverageId === this.service.coverageDescriptions.coverages[i].name) {
-                        availableFormats = this.service.coverageDescriptions.coverages[i].supportedFormats.formats;
-                        break;
-                    }
-                }
-            } else if (version === "2.0.1" || version === "2.0.0") {
-                availableFormats = this.service.capabilities.serviceMetadata.formatsSupported;
-            }
+  if (!availableFormats) {
+    return WcsCoverage.DEFAULT_FORMAT;
+  }
 
-            if (!availableFormats) {
-                return WcsCoverage.DEFAULT_FORMAT;
-            }
+  for (i = 0, len = availableFormats.length; i < len; i++) {
+    if (WcsCoverage.PREFERRED_FORMATS.hasOwnProperty(availableFormats[i])) {
+      return availableFormats[i];
+    }
+  }
 
-            for (i = 0, len = availableFormats.length; i < len; i++) {
-                if (WcsCoverage.PREFERRED_FORMATS.hasOwnProperty(availableFormats[i])) {
-                    return availableFormats[i];
-                }
-            }
+  return WcsCoverage.DEFAULT_FORMAT;
+};
 
-            return WcsCoverage.DEFAULT_FORMAT;
-        };
-
-        return WcsCoverage;
-    });
+export default WcsCoverage;

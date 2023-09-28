@@ -25,6 +25,15 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
+
+import Angle from "../../geom/Angle";
+import ArgumentError from "../../error/ArgumentError";
+import Location from "../../geom/Location";
+import Logger from "../Logger";
+import MeasurerUtils from "./MeasurerUtils";
+import Sector from "../../geom/Sector";
+import Vec3 from "../../geom/Vec3";
+
 /**
  * @exports AreaMeasurer
  */

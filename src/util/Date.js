@@ -25,8 +25,7 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
-define([], function () {
-    "use strict";
+
     /**
      * Descendant of Date.
      * @param dateInFormat {String} Any format of date accepted by the Date constructor.
@@ -72,5 +71,4 @@ define([], function () {
         }
     };
 
-    return DateWW;
-});
+    export default DateWW;

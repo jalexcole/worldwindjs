@@ -25,12 +25,7 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
-/**
- * @exports NotYetImplementedError
- */
-define(['../error/AbstractError'],
-    function (AbstractError) {
-        "use strict";
+import AbstractError from "./AbstractError";
 
         /**
          * Constructs a not-yet-implemented error with a specified message.
@@ -55,5 +50,4 @@ define(['../error/AbstractError'],
 
         NotYetImplementedError.prototype = Object.create(AbstractError.prototype);
 
-        return NotYetImplementedError;
-    });
+        export default NotYetImplementedError;

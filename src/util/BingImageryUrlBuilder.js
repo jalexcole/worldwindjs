@@ -25,18 +25,10 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
-/**
- * @exports BingImageryUrlBuilder
- */
-define([
-        '../error/ArgumentError',
-        '../util/Logger',
-        '../util/WWUtil'
-    ],
-    function (ArgumentError,
-              Logger,
-              WWUtil) {
-        "use strict";
+import ArgumentError from "../error/ArgumentError";
+import Logger from "./Logger";
+import WWUtil from "./WWUtil";
+
 
         /**
          * Constructs a URL builder for Bing imagery.
@@ -174,5 +166,5 @@ define([
             return key;
         };
 
-        return BingImageryUrlBuilder;
-    });
+        export default BingImageryUrlBuilder;
+    

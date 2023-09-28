@@ -25,61 +25,57 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
+import ArgumentError from "../../error/ArgumentError";
+import Logger from "../../util/Logger";
+import OwsDescription from "./OwsDescription";
+
 /**
- * @exports OwsServiceIdentification
+ * Constructs an OWS Service Identification instance from an XML DOM.
+ * @alias OwsServiceIdentification
+ * @constructor
+ * @classdesc Represents an OWS Service Identification section of an OGC capabilities document.
+ * This object holds as properties all the fields specified in the OWS Service Identification.
+ * Fields can be accessed as properties named according to their document names converted to camel case.
+ * For example, "serviceType" and "title".
+ * Note that fields with multiple possible values are returned as arrays, such as "titles" and "abstracts".
+ * @param {Element} element An XML DOM element representing the OWS Service Identification section.
+ * @throws {ArgumentError} If the specified XML DOM element is null or undefined.
  */
-define([
-        '../../error/ArgumentError',
-        '../../util/Logger',
-        '../../ogc/ows/OwsDescription'
-    ],
-    function (ArgumentError,
-              Logger,
-              OwsDescription) {
-        "use strict";
+var OwsServiceIdentification = function (element) {
+  if (!element) {
+    throw new ArgumentError(
+      Logger.logMessage(
+        Logger.LEVEL_SEVERE,
+        "OwsServiceIdentification",
+        "constructor",
+        "missingDomElement"
+      )
+    );
+  }
 
-        /**
-         * Constructs an OWS Service Identification instance from an XML DOM.
-         * @alias OwsServiceIdentification
-         * @constructor
-         * @classdesc Represents an OWS Service Identification section of an OGC capabilities document.
-         * This object holds as properties all the fields specified in the OWS Service Identification.
-         * Fields can be accessed as properties named according to their document names converted to camel case.
-         * For example, "serviceType" and "title".
-         * Note that fields with multiple possible values are returned as arrays, such as "titles" and "abstracts".
-         * @param {Element} element An XML DOM element representing the OWS Service Identification section.
-         * @throws {ArgumentError} If the specified XML DOM element is null or undefined.
-         */
-        var OwsServiceIdentification = function (element) {
-            if (!element) {
-                throw new ArgumentError(
-                    Logger.logMessage(Logger.LEVEL_SEVERE, "OwsServiceIdentification", "constructor", "missingDomElement"));
-            }
+  OwsDescription.call(this, element);
 
-            OwsDescription.call(this, element);
+  var children = element.children || element.childNodes;
+  for (var c = 0; c < children.length; c++) {
+    var child = children[c];
 
-            var children = element.children || element.childNodes;
-            for (var c = 0; c < children.length; c++) {
-                var child = children[c];
+    if (child.localName === "ServiceType") {
+      this.serviceType = child.textContent;
+    } else if (child.localName === "ServiceTypeVersion") {
+      this.serviceTypeVersions = this.serviceTypeVersions || [];
+      this.serviceTypeVersions.push(child.textContent);
+    } else if (child.localName === "Profile") {
+      this.profile = this.profile || [];
+      this.profile.push(child.textContent);
+    } else if (child.localName === "Fees") {
+      this.fees = child.textContent;
+    } else if (child.localName === "AccessConstraints") {
+      this.accessConstraints = this.accessConstraints || [];
+      this.accessConstraints.push(child.textContent);
+    }
+  }
+};
 
-                if (child.localName === "ServiceType") {
-                    this.serviceType = child.textContent;
-                } else if (child.localName === "ServiceTypeVersion") {
-                    this.serviceTypeVersions = this.serviceTypeVersions || [];
-                    this.serviceTypeVersions.push(child.textContent);
-                } else if (child.localName === "Profile") {
-                    this.profile = this.profile || [];
-                    this.profile.push(child.textContent);
-                } else if (child.localName === "Fees") {
-                    this.fees = child.textContent;
-                } else if (child.localName === "AccessConstraints") {
-                    this.accessConstraints = this.accessConstraints || [];
-                    this.accessConstraints.push(child.textContent);
-                }
-            }
-        };
+OwsServiceIdentification.prototype = Object.create(OwsDescription.prototype);
 
-        OwsServiceIdentification.prototype = Object.create(OwsDescription.prototype);
-
-        return OwsServiceIdentification;
-    });
+export default OwsServiceIdentification;

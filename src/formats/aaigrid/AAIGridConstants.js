@@ -25,9 +25,7 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
-define([],
-    function () {
-        'use strict';
+
 
         /**
          * Provides constants for the AAIGridReader.
@@ -42,5 +40,4 @@ define([],
             NO_DATA_VALUE: 'NODATA_value'
         };
 
-        return AAIGridConstants;
-    });
+        export default AAIGridConstants;

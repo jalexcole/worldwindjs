@@ -25,18 +25,10 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
-/**
- * @exports GeoTiffUtil
- */
-define([
-        '../../error/ArgumentError',
-        '../../util/Logger',
-        './TiffConstants'
-    ],
-    function (ArgumentError,
-              Logger,
-              TiffConstants) {
-        "use strict";
+import ArgumentError from "../../error/ArgumentError";
+import Logger from "../../util/Logger";
+import TiffConstants from "./TiffConstants";
+
 
         var GeoTiffUtil = {
 
@@ -129,6 +121,4 @@ define([
             }
         };
 
-        return GeoTiffUtil;
-    }
-);
+        export default GeoTiffUtil;

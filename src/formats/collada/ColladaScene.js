@@ -25,37 +25,20 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
-/**
- * @exports ColladaScene
- */
 
-define([
-        '../../error/ArgumentError',
-        '../../shaders/BasicTextureProgram',
-        '../../util/Color',
-        '../../globe/Globe',
-        '../../geom/Line',
-        '../../util/Logger',
-        '../../geom/Matrix',
-        '../../geom/Position',
-        '../../pick/PickedObject',
-        '../../render/Renderable',
-        '../../geom/Vec3',
-        '../../util/WWMath'
-    ],
-    function (ArgumentError,
-              BasicTextureProgram,
-              Color,
-              Globe,
-              Line,
-              Logger,
-              Matrix,
-              Position,
-              PickedObject,
-              Renderable,
-              Vec3,
-              WWMath) {
-        "use strict";
+import ArgumentError from "../../error/ArgumentError";
+import BasicTextureProgram from "../../shaders/BasicTextureProgram";
+import Color from "../../util/Color";
+import Globe from "../../globe/Globe";
+import Line from "../../geom/Line";
+import Logger from "../../util/Logger";
+import Matrix from "../../geom/Matrix";
+import Position from "../../geom/Position";
+import PickedObject from "../../pick/PickedObject";
+import Renderable from "../../render/Renderable";
+import Vec3 from "../../geom/Vec3";
+import WWMath from "../../util/WWMath";
+
 
         /**
          * Constructs a collada scene
@@ -1123,6 +1106,5 @@ define([
             return draw;
         };
 
-        return ColladaScene;
+        export default ColladaScene;
 
-    });

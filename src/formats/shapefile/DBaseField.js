@@ -25,6 +25,8 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
+import ArgumentError from "../../error/ArgumentError";
+import ByteBuffer from "../../util/ByteBuffer";
 /**
  * @exports DBaseField
  */

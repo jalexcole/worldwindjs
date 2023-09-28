@@ -25,20 +25,12 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
-/**
- * @exports GebcoElevationCoverage
- */
-define([
-        '../geom/Location',
-        '../geom/Sector',
-        '../globe/TiledElevationCoverage',
-        '../util/WmsUrlBuilder'
-    ],
-    function (Location,
-              Sector,
-              TiledElevationCoverage,
-              WmsUrlBuilder) {
-        "use strict";
+
+import Location from "../geom/Location";
+import Sector from "../geom/Sector";
+import TiledElevationCoverage from "../TiledElevationCoverage";
+import WmsUrlBuilder from "../util/WmsUrlBuilder";
+
 
         /**
          * Constructs an Earth elevation coverage using GEBCO data.
@@ -62,5 +54,4 @@ define([
 
         GebcoElevationCoverage.prototype = Object.create(TiledElevationCoverage.prototype);
 
-        return GebcoElevationCoverage;
-    });
+        export default GebcoElevationCoverage;

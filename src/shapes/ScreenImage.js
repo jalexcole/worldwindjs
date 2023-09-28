@@ -25,6 +25,7 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
+
 /**
  * @exports ScreenImage
  */

@@ -25,18 +25,9 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
-/**
- * @exports WmsCapabilities
- */
-define([
-        '../../error/ArgumentError',
-        '../../util/Logger',
-        '../../ogc/wms/WmsLayerCapabilities'
-    ],
-    function (ArgumentError,
-              Logger,
-              WmsLayerCapabilities) {
-        "use strict";
+import ArgumentError from "../../error/ArgumentError";
+import Logger from "../../util/Logger";
+import WmsLayerCapabilities from "../wms/WmsLayerCapabilities";
 
         /**
          * Constructs an WMS Capabilities instance from an XML DOM.
@@ -344,5 +335,4 @@ define([
             return exception;
         };
 
-        return WmsCapabilities;
-    });
+        export default WmsCapabilities;

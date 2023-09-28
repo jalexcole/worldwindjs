@@ -25,17 +25,8 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
-define(['../../../util/Logger'], function (Logger) {
-    "use strict";
-    /**
-     * Every control used by the KML should inherit from this class. It contains common functionality and basically
-     * serves as a reference to what needs to be implemented in the descendants.
-     * @alias KmlControls
-     * @constructor
-     */
-    var KmlControls = function() {
+import Logger from "../../../util/Logger";
 
-    };
 
     /**
      * Controls added to the KML document will be notified by the update of the Kml document. Hook is method which is
@@ -47,5 +38,4 @@ define(['../../../util/Logger'], function (Logger) {
             " method.");
     };
 
-    return KmlControls;
-});
+    export default KmlControls;

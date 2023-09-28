@@ -25,22 +25,14 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
-/**
- * @exports EarthRestElevationCoverage
- */
-define([
-        '../util/LevelSet',
-        '../geom/Location',
-        '../geom/Sector',
-        '../util/LevelRowColumnUrlBuilder',
-        '../globe/TiledElevationCoverage'
-    ],
-    function (LevelSet,
-              Location,
-              Sector,
-              LevelRowColumnUrlBuilder,
-              TiledElevationCoverage) {
-        "use strict";
+
+import LevelSet from "../util/LevelSet";
+import Location from "../geom/Location";
+import Sector from "../geom/Sector";
+import LevelRowColumnUrlBuilder from "../util/LevelRowColumnUrlBuilder";
+import TiledElevationCoverage from "./TiledElevationCoverage";
+
+
 
         /**
          * Constructs an elevation coverage for Earth using a REST interface to retrieve the elevations from the server.
@@ -74,5 +66,4 @@ define([
 
         EarthRestElevationCoverage.prototype = Object.create(TiledElevationCoverage.prototype);
 
-        return EarthRestElevationCoverage;
-    });
+        export default EarthRestElevationCoverage;

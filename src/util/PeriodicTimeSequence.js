@@ -25,16 +25,9 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
-/**
- * @exports PeriodicTimeSequence
- */
-define([
-        '../error/ArgumentError',
-        '../util/Logger'
-    ],
-    function (ArgumentError,
-              Logger) {
-        "use strict";
+import ArgumentError from "../error/ArgumentError";
+import Logger from "./Logger";
+
 
         /**
          * Constructs a time sequence from an ISO 8601 string.
@@ -328,6 +321,4 @@ define([
             return duration;
         };
 
-        return PeriodicTimeSequence;
-    })
-;
+        export default PeriodicTimeSequence;

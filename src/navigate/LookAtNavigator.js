@@ -25,20 +25,11 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
-/**
- * @exports LookAtNavigator
- */
-define([
-        '../geom/Location',
-        '../geom/LookAt',
-        '../navigate/LookAtPositionProxy',
-        '../navigate/Navigator'
-    ],
-    function (Location,
-              LookAt,
-              LookAtPositionProxy,
-              Navigator) {
-        "use strict";
+import Location from "../geom/Location";
+import LookAt from "../geom/LookAt";
+import LookAtPositionProxy from "./LookAtPositionProxy";
+import Navigator from "./Navigator";
+
 
         /**
          * Constructs a look-at navigator.
@@ -106,5 +97,4 @@ define([
             }
         });
 
-        return LookAtNavigator;
-    });
+        export default LookAtNavigator;

@@ -25,14 +25,9 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
+import Location from "../../geom/Location";
+import Position from "../../geom/Position";
 
-define([
-        '../../geom/Location',
-        '../../geom/Position'
-    ],
-    function (Location,
-              Position) {
-        'use strict';
 
         /**
          * Provides utilities for Measurements.
@@ -199,6 +194,6 @@ define([
 
         };
 
-        return MeasurerUtils;
+        export default MeasurerUtils;
 
-    });
+    

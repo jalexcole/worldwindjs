@@ -25,44 +25,41 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
+
+import Location from "../geom/Location";
+import Sector from "../geom/Sector";
+import TiledElevationCoverage from "./TiledElevationCoverage";
+import WmsUrlBuilder from "../util/WmsUrlBuilder";
+
 /**
- * @exports UsgsNedElevationCoverage
+ * Constructs an Earth elevation coverage using USGS NED data.
+ * @alias UsgsNedElevationCoverage
+ * @constructor
+ * @augments TiledElevationCoverage
+ * @classdesc Provides elevations for Earth. Elevations are drawn from the NASA WorldWind elevation service.
  */
-define([
-        '../geom/Location',
-        '../geom/Sector',
-        '../globe/TiledElevationCoverage',
-        '../util/WmsUrlBuilder'
-    ],
-    function (Location,
-              Sector,
-              TiledElevationCoverage,
-              WmsUrlBuilder) {
-        "use strict";
+var UsgsNedElevationCoverage = function () {
+  // CONUS Extent: (-124.848974, 24.396308) - (-66.885444, 49.384358)
+  // TODO: Expand this extent to cover HI when the server NO_DATA value issue is resolved.
+  TiledElevationCoverage.call(this, {
+    coverageSector: new Sector(24.396308, 49.384358, -124.848974, -66.885444),
+    resolution: 0.000092592592593,
+    retrievalImageFormat: "application/bil16",
+    minElevation: -11000,
+    maxElevation: 8850,
+    urlBuilder: new WmsUrlBuilder(
+      "https://worldwind26.arc.nasa.gov/elev",
+      "USGS-NED",
+      "",
+      "1.3.0"
+    ),
+  });
 
-        /**
-         * Constructs an Earth elevation coverage using USGS NED data.
-         * @alias UsgsNedElevationCoverage
-         * @constructor
-         * @augments TiledElevationCoverage
-         * @classdesc Provides elevations for Earth. Elevations are drawn from the NASA WorldWind elevation service.
-         */
-        var UsgsNedElevationCoverage = function () {
-            // CONUS Extent: (-124.848974, 24.396308) - (-66.885444, 49.384358)
-            // TODO: Expand this extent to cover HI when the server NO_DATA value issue is resolved.
-            TiledElevationCoverage.call(this, {
-                coverageSector: new Sector(24.396308, 49.384358, -124.848974, -66.885444),
-                resolution: 0.000092592592593,
-                retrievalImageFormat: "application/bil16",
-                minElevation: -11000,
-                maxElevation: 8850,
-                urlBuilder: new WmsUrlBuilder("https://worldwind26.arc.nasa.gov/elev", "USGS-NED", "", "1.3.0")
-            });
+  this.displayName = "USGS NED Earth Elevation Coverage";
+};
 
-            this.displayName = "USGS NED Earth Elevation Coverage";
-        };
+UsgsNedElevationCoverage.prototype = Object.create(
+  TiledElevationCoverage.prototype
+);
 
-        UsgsNedElevationCoverage.prototype = Object.create(TiledElevationCoverage.prototype);
-
-        return UsgsNedElevationCoverage;
-    });
+export default UsgsNedElevationCoverage;

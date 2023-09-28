@@ -25,209 +25,190 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
+import ArgumentError from "../../error/ArgumentError";
+import ColladaAsset from "./ColladaAsset";
+import ColladaImage from "./ColladaImage";
+import ColladaImage from "./ColladaImage";
+import ColladaMesh from "./ColladaMesh";
+import ColladaNode from "./ColladaNode";
+import ColladaScene from "./ColladaScene";
+import ColladaUtils from "./ColladaUtils";
+import Logger from "../../util/Logger";
+
 /**
- * @exports ColladaLoader
+ * Constructs a ColladaLoader
+ * @alias ColladaLoader
+ * @constructor
+ * @classdesc Represents a Collada Loader. Fetches and parses a collada document and returns the
+ * necessary information to render the collada model.
+ * @param {Position} position The model's geographic position.
+ * @param {Object} config Configuration options for the loader.
+ * <ul>
+ *  <li>dirPath - the path to the directory where the collada file is located</li>
+ * </ul>
  */
+var ColladaLoader = function (position, config) {
+  if (!position) {
+    throw new ArgumentError(
+      Logger.logMessage(
+        Logger.LEVEL_SEVERE,
+        "ColladaLoader",
+        "constructor",
+        "missingPosition"
+      )
+    );
+  }
 
-define([
-        '../../error/ArgumentError',
-        './ColladaAsset',
-        './ColladaImage',
-        './ColladaMaterial',
-        './ColladaMesh',
-        './ColladaNode',
-        './ColladaScene',
-        './ColladaUtils',
-        '../../util/Logger'
-    ],
-    function (ArgumentError,
-              ColladaAsset,
-              ColladaImage,
-              ColladaMaterial,
-              ColladaMesh,
-              ColladaNode,
-              ColladaScene,
-              ColladaUtils,
-              Logger) {
-        "use strict";
+  this.position = position;
 
-        /**
-         * Constructs a ColladaLoader
-         * @alias ColladaLoader
-         * @constructor
-         * @classdesc Represents a Collada Loader. Fetches and parses a collada document and returns the
-         * necessary information to render the collada model.
-         * @param {Position} position The model's geographic position.
-         * @param {Object} config Configuration options for the loader.
-         * <ul>
-         *  <li>dirPath - the path to the directory where the collada file is located</li>
-         * </ul>
-         */
-        var ColladaLoader = function (position, config) {
+  this.dirPath = "/";
 
-            if (!position) {
-                throw new ArgumentError(
-                    Logger.logMessage(Logger.LEVEL_SEVERE, "ColladaLoader", "constructor", "missingPosition"));
-            }
+  this.init(config);
+};
 
-            this.position = position;
+/**
+ * Initialization of the ColladaLoader
+ * @param {Object} config Configuration options for the loader.
+ * <ul>
+ *  <li>dirPath - the path to the directory where the collada file is located</li>
+ * </ul>
+ */
+ColladaLoader.prototype.init = function (config) {
+  if (config) {
+    this.dirPath = config.dirPath || "/";
+  }
 
-            this.dirPath = '/';
+  this.scene = {
+    type: "SceneTree",
+    dirPath: this.dirPath,
+    images: {},
+    metadata: {},
+    materials: {},
+    meshes: {},
+    root: { children: [] },
+  };
 
-            this.init(config);
-        };
+  this.xmlDoc = null;
+};
 
-        /**
-         * Initialization of the ColladaLoader
-         * @param {Object} config Configuration options for the loader.
-         * <ul>
-         *  <li>dirPath - the path to the directory where the collada file is located</li>
-         * </ul>
-         */
-        ColladaLoader.prototype.init = function (config) {
-            if (config) {
-                this.dirPath = config.dirPath || '/';
-            }
+/**
+ * Fetches and parses a collada file
+ * @param {String} url The url to the collada .dae file.
+ * @param {Function} cb A callback function to call with the result when the parsing is done.
+ * @returns {ColladaScene} A renderable shape.
+ */
+ColladaLoader.prototype.load = function (url, cb) {
+  if (url.indexOf("://") === -1) {
+    url = this.dirPath + url;
+  }
 
-            this.scene = {
-                type: "SceneTree",
-                dirPath: this.dirPath,
-                images: {},
-                metadata: {},
-                materials: {},
-                meshes: {},
-                root: {children: []}
-            };
+  ColladaUtils.fetchFile(
+    url,
+    function (data) {
+      if (!data) {
+        var colladaScene = null;
+      } else {
+        try {
+          colladaScene = this.parse(data);
+        } catch (e) {
+          colladaScene = null;
+          Logger.log(Logger.LEVEL_SEVERE, "error parsing collada file: " + e);
+        }
+      }
 
-            this.xmlDoc = null;
-        };
+      cb(colladaScene);
+    }.bind(this)
+  );
+};
 
-        /**
-         * Fetches and parses a collada file
-         * @param {String} url The url to the collada .dae file.
-         * @param {Function} cb A callback function to call with the result when the parsing is done.
-         * @returns {ColladaScene} A renderable shape.
-         */
-        ColladaLoader.prototype.load = function (url, cb) {
+/**
+ * Parses a collada file
+ * @param {XML} data The raw XML data of the collada file.
+ * @returns {ColladaScene} A renderable shape.
+ */
+ColladaLoader.prototype.parse = function (data) {
+  this.init();
 
-            if (url.indexOf("://") === -1) {
-                url = this.dirPath + url;
-            }
+  var parser = new DOMParser();
+  this.xmlDoc = parser.parseFromString(data, "text/xml");
 
-            ColladaUtils.fetchFile(url, function (data) {
+  var iNodes = this.xmlDoc.querySelectorAll("library_nodes node");
+  var eNodes = this.xmlDoc.querySelectorAll("library_effects effect");
 
-                if (!data) {
-                    var colladaScene = null;
-                } else {
+  this.scene.metadata = new ColladaAsset(this.xmlDoc).parse();
+  this.parseLib("visual_scene", iNodes);
+  this.parseLib("library_geometries");
+  this.parseLib("library_materials", eNodes);
+  this.parseLib("library_images");
 
-                    try {
-                        colladaScene = this.parse(data);
-                    } catch (e) {
-                        colladaScene = null;
-                        Logger.log(Logger.LEVEL_SEVERE, "error parsing collada file: " + e);
-                    }
-                }
+  this.xmlDoc = null;
 
-                cb(colladaScene);
+  return new ColladaScene(this.position, this.scene);
+};
 
-            }.bind(this));
-        };
+/**
+ * Parses a collada library tag.
+ * @param {String} libName The library tag name.
+ * @param {NodeList} extraNodes Nodes from library_nodes or effects form library_effects
+ */
+ColladaLoader.prototype.parseLib = function (libName, extraNodes) {
+  var libs = this.xmlDoc.getElementsByTagName(libName);
+  var libNodes = [];
 
-        /**
-         * Parses a collada file
-         * @param {XML} data The raw XML data of the collada file.
-         * @returns {ColladaScene} A renderable shape.
-         */
-        ColladaLoader.prototype.parse = function (data) {
+  if (libs && libs.length) {
+    libNodes = libs[0].childNodes;
+  }
 
-            this.init();
+  for (var i = 0; i < libNodes.length; i++) {
+    var libNode = libNodes[i];
 
-            var parser = new DOMParser();
-            this.xmlDoc = parser.parseFromString(data, "text/xml");
+    if (libNode.nodeType !== 1) {
+      continue;
+    }
 
-            var iNodes = this.xmlDoc.querySelectorAll('library_nodes node');
-            var eNodes = this.xmlDoc.querySelectorAll("library_effects effect");
+    switch (libNode.nodeName) {
+      case "node":
+        var nodes = new ColladaNode().parse(libNode, extraNodes);
+        if (nodes) {
+          for (var j = 0, len = nodes.length; j < len; j++) {
+            this.scene.root.children.push(nodes[j]);
+          }
+        }
+        break;
 
-            this.scene.metadata = (new ColladaAsset(this.xmlDoc)).parse();
-            this.parseLib('visual_scene', iNodes);
-            this.parseLib('library_geometries');
-            this.parseLib('library_materials', eNodes);
-            this.parseLib('library_images');
+      case "geometry":
+        var geometryId = libNode.getAttribute("id");
+        var xmlMesh = libNode.querySelector("mesh");
+        var mesh = new ColladaMesh(geometryId).parse(xmlMesh);
+        if (mesh) {
+          this.scene.meshes[geometryId] = mesh;
+        }
+        break;
 
-            this.xmlDoc = null;
+      case "material":
+        var materialId = libNode.getAttribute("id");
+        var iEffect = libNode.querySelector("instance_effect");
+        var effectId = iEffect.getAttribute("url").substr(1);
+        var effect = ColladaUtils.querySelectorById(extraNodes, effectId);
+        var material = new ColladaMaterial(materialId).parse(effect);
+        if (material) {
+          this.scene.materials[materialId] = material;
+        }
+        break;
 
-            return new ColladaScene(this.position, this.scene);
-        };
+      case "image":
+        var imageId = libNode.getAttribute("id");
+        var imageName = libNode.getAttribute("name");
+        var image = new ColladaImage(imageId, imageName).parse(libNode);
+        if (image) {
+          this.scene.images[imageId] = image;
+        }
+        break;
 
-        /**
-         * Parses a collada library tag.
-         * @param {String} libName The library tag name.
-         * @param {NodeList} extraNodes Nodes from library_nodes or effects form library_effects
-         */
-        ColladaLoader.prototype.parseLib = function (libName, extraNodes) {
+      default:
+        break;
+    }
+  }
+};
 
-            var libs = this.xmlDoc.getElementsByTagName(libName);
-            var libNodes = [];
-
-            if (libs && libs.length) {
-                libNodes = libs[0].childNodes;
-            }
-
-            for (var i = 0; i < libNodes.length; i++) {
-
-                var libNode = libNodes[i];
-
-                if (libNode.nodeType !== 1) {
-                    continue;
-                }
-
-                switch (libNode.nodeName) {
-
-                    case 'node':
-                        var nodes = (new ColladaNode()).parse(libNode, extraNodes);
-                        if (nodes) {
-                            for (var j = 0, len = nodes.length; j < len; j++) {
-                                this.scene.root.children.push(nodes[j]);
-                            }
-                        }
-                        break;
-
-                    case 'geometry':
-                        var geometryId = libNode.getAttribute("id");
-                        var xmlMesh = libNode.querySelector("mesh");
-                        var mesh = (new ColladaMesh(geometryId)).parse(xmlMesh);
-                        if (mesh) {
-                            this.scene.meshes[geometryId] = mesh;
-                        }
-                        break;
-
-                    case 'material':
-                        var materialId = libNode.getAttribute("id");
-                        var iEffect = libNode.querySelector("instance_effect");
-                        var effectId = iEffect.getAttribute("url").substr(1);
-                        var effect = ColladaUtils.querySelectorById(extraNodes, effectId);
-                        var material = (new ColladaMaterial(materialId)).parse(effect);
-                        if (material) {
-                            this.scene.materials[materialId] = material;
-                        }
-                        break;
-
-                    case 'image':
-                        var imageId = libNode.getAttribute("id");
-                        var imageName = libNode.getAttribute("name");
-                        var image = (new ColladaImage(imageId, imageName)).parse(libNode);
-                        if (image) {
-                            this.scene.images[imageId] = image;
-                        }
-                        break;
-
-                    default:
-                        break;
-                }
-            }
-
-        };
-
-        return ColladaLoader;
-
-    });
+export default ColladaLoader;

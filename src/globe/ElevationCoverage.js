@@ -25,16 +25,11 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
-/**
- * @exports ElevationCoverage
- */
-define(['../error/ArgumentError',
-        '../util/Logger',
-        '../geom/Sector'],
-    function (ArgumentError,
-              Logger,
-              Sector) {
-        "use strict";
+
+import ArgumentError from "../error/ArgumentError";
+import Logger from "../util/Logger";
+import Sector from "../geom/Sector";
+
 
         /**
          * Constructs an ElevationCoverage
@@ -181,5 +176,4 @@ define(['../error/ArgumentError',
             return true;
         };
 
-        return ElevationCoverage;
-    });
+        export default ElevationCoverage;

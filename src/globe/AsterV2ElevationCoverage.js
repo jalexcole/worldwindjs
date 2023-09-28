@@ -25,42 +25,38 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
+import Location from "../geom/Location";
+import Sector from "../geom/Sector";
+import TiledElevationCoverage from "../globe/TiledElevationCoverage";
+import WmsUrlBuilder from "../util/WmsUrlBuilder";
+
 /**
- * @exports AsterV2ElevationCoverage
+ * Constructs an Earth elevation coverage using ASTER V2 data.
+ * @alias AsterV2ElevationCoverage
+ * @constructor
+ * @augments TiledElevationCoverage
+ * @classdesc Provides elevations for Earth. Elevations are drawn from the NASA WorldWind elevation service.
  */
-define([
-        '../geom/Location',
-        '../geom/Sector',
-        '../globe/TiledElevationCoverage',
-        '../util/WmsUrlBuilder'
-    ],
-    function (Location,
-              Sector,
-              TiledElevationCoverage,
-              WmsUrlBuilder) {
-        "use strict";
+var AsterV2ElevationCoverage = function () {
+  TiledElevationCoverage.call(this, {
+    coverageSector: new Sector(-83.0001, 83.0001, -180, 180),
+    resolution: 0.000277777777778,
+    retrievalImageFormat: "application/bil16",
+    minElevation: -11000,
+    maxElevation: 8850,
+    urlBuilder: new WmsUrlBuilder(
+      "https://worldwind26.arc.nasa.gov/elev",
+      "aster_v2",
+      "",
+      "1.3.0"
+    ),
+  });
 
-        /**
-         * Constructs an Earth elevation coverage using ASTER V2 data.
-         * @alias AsterV2ElevationCoverage
-         * @constructor
-         * @augments TiledElevationCoverage
-         * @classdesc Provides elevations for Earth. Elevations are drawn from the NASA WorldWind elevation service.
-         */
-        var AsterV2ElevationCoverage = function () {
-            TiledElevationCoverage.call(this, {
-                coverageSector: new Sector(-83.0001, 83.0001, -180, 180),
-                resolution: 0.000277777777778,
-                retrievalImageFormat: "application/bil16",
-                minElevation: -11000,
-                maxElevation: 8850,
-                urlBuilder: new WmsUrlBuilder("https://worldwind26.arc.nasa.gov/elev", "aster_v2", "", "1.3.0")
-            });
+  this.displayName = "ASTER V2 Earth Elevation Coverage";
+};
 
-            this.displayName = "ASTER V2 Earth Elevation Coverage";
-        };
+AsterV2ElevationCoverage.prototype = Object.create(
+  TiledElevationCoverage.prototype
+);
 
-        AsterV2ElevationCoverage.prototype = Object.create(TiledElevationCoverage.prototype);
-
-        return AsterV2ElevationCoverage;
-    });
+export default AsterV2ElevationCoverage;

@@ -25,18 +25,10 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
-/**
- * @exports TextAttributes
- */
-define([
-        '../util/Color',
-        '../util/Font',
-        '../util/Offset'
-    ],
-    function (Color,
-              Font,
-              Offset) {
-        "use strict";
+import Color from "../util/Color";
+import Font from "../util/Font";
+import Offset from "../util/Offset";
+
 
         /**
          * Constructs a text attributes bundle.
@@ -238,5 +230,4 @@ define([
             }
         });
 
-        return TextAttributes;
-    });
+        export default TextAttributes;

@@ -25,18 +25,11 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
-/**
- * @exports ElevationImage
- */
-define([
-        '../error/ArgumentError',
-        '../util/Logger',
-        '../util/WWMath'
-    ],
-    function (ArgumentError,
-              Logger,
-              WWMath) {
-        "use strict";
+
+import ArgumentError from "../error/ArgumentError";
+import Logger from "../util/Logger";
+import WWMath from "../util/WWMath";
+
 
         /**
          * Constructs an elevation image.
@@ -383,5 +376,4 @@ define([
             }
         };
 
-        return ElevationImage;
-    });
+        export default ElevationImage;

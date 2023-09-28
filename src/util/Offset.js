@@ -25,13 +25,8 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
-/**
- * @exports Offset
- */
-define(['../geom/Vec2'
-    ],
-    function (Vec2) {
-        "use strict";
+import Vec2 from "../geom/Vec2";
+
 
         /**
          * Constructs an offset instance given specified units and offsets.
@@ -130,5 +125,5 @@ define(['../geom/Vec2'
             return this.xUnits + " " + this.x + " " + this.yUnits + " " + this.y;
         };
 
-        return Offset;
-    });
+        export default Offset;
+    

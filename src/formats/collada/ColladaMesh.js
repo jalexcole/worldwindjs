@@ -25,12 +25,8 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
-/**
- * @exports ColladaMesh
- */
+import ColladaUtils from "./ColladaUtils";
 
-define(['./ColladaUtils'], function (ColladaUtils) {
-    "use strict";
 
     /**
      * Constructs a ColladaMesh
@@ -351,5 +347,5 @@ define(['./ColladaUtils'], function (ColladaUtils) {
         return mesh;
     };
 
-    return ColladaMesh;
-});
+    export default ColladaMesh;
+

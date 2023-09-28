@@ -25,13 +25,9 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
-define([
-    '../../../util/WWUtil',
-    './KmlControls'
-], function (WWUtil,
-             KmlControls
-    ) {
-    "use strict";
+import KmlControls from "./KmlControls";
+import WWUtil from "../../../util/WWUtil";
+
 
     /**
      * This class represents the structure of Documents, Folders and Features in the document. It renders them into
@@ -112,5 +108,4 @@ define([
         this._wwd.redraw();
     };
 
-    return KmlTreeVisibility;
-});
+    export default KmlTreeVisibility;

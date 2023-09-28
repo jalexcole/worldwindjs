@@ -25,12 +25,9 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
-/**
- * @exports TapRecognizer
- */
-define(['../gesture/GestureRecognizer'],
-    function (GestureRecognizer) {
-        "use strict";
+import GestureRecognizer from "./GestureRecognizer";
+
+
 
         /**
          * Constructs a tap gesture recognizer.
@@ -190,5 +187,5 @@ define(['../gesture/GestureRecognizer'],
             }
         };
 
-        return TapRecognizer;
-    });
+        export default TapRecognizer;
+

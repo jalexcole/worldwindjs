@@ -25,12 +25,7 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
-/**
- * @exports FrameStatistics
- */
-define([],
-    function () {
-        "use strict";
+
 
         /**
          * Constructs a performance statistics instance. This is performed internally by the {@link WorldWindow}.
@@ -229,5 +224,4 @@ define([],
             this.vboLoadCount += count;
         };
 
-        return FrameStatistics;
-    });
+        export default FrameStatistics;

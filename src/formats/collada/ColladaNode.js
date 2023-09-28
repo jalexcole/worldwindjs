@@ -25,12 +25,10 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
-/**
- * @exports ColladaNode
- */
+import ColladaUtils from "./ColladaUtils";
+import Matrix from "../../geom/Matrix";
+import Vec3 from "../../geom/Vec3";
 
-define(['./ColladaUtils', '../../geom/Matrix', '../../geom/Vec3'], function (ColladaUtils, Matrix, Vec3) {
-    "use strict";
 
     /**
      * Constructs a ColladaNode
@@ -242,5 +240,4 @@ define(['./ColladaUtils', '../../geom/Matrix', '../../geom/Vec3'], function (Col
         return null;
     };
 
-    return ColladaNode;
-});
+    export default ColladaNode;

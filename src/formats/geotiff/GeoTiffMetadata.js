@@ -25,13 +25,7 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
-/**
- * @exports GeoTiffMetadata
- */
-define([
-    ],
-    function () {
-        "use strict";
+
 
         /**
          * Provides GeoTIFF metadata.
@@ -856,6 +850,4 @@ define([
             }
         });
 
-        return GeoTiffMetadata;
-    }
-);
+        export default GeoTiffMetadata;

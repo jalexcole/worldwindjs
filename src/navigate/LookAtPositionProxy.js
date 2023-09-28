@@ -13,58 +13,50 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import Position from "../geom/Position";
+
 /**
- * @exports LookAtPositionProxy
+ * Constructs a look-at position proxy
+ * @deprecated
+ * @alias LookAtPositionProxy
+ * @constructor
+ * @classdesc A Position proxy class that is used for backward compatibility purposes by the deprecated LookAtNavigator class.
  */
-define([
-        '../geom/Position'
-    ],
-    function (Position) {
-        "use strict";
+var LookAtPositionProxy = function (navigator) {
+  this.position = new Position(0, 0, 0);
+  this.lookAtNavigator = navigator;
+};
 
-        /**
-         * Constructs a look-at position proxy
-         * @deprecated
-         * @alias LookAtPositionProxy
-         * @constructor
-         * @classdesc A Position proxy class that is used for backward compatibility purposes by the deprecated LookAtNavigator class.
-         */
-        var LookAtPositionProxy = function (navigator) {
-            this.position = new Position(0, 0, 0);
-            this.lookAtNavigator = navigator;
-        };
+Object.defineProperties(LookAtPositionProxy.prototype, {
+  latitude: {
+    get: function () {
+      return this.position.latitude;
+    },
+    set: function (value) {
+      this.position.latitude = value;
+      this.lookAtNavigator.lookAtLocation = this.position;
+    },
+  },
 
-        Object.defineProperties(LookAtPositionProxy.prototype, {
-            latitude: {
-                get: function () {
-                    return this.position.latitude;
-                },
-                set: function (value) {
-                    this.position.latitude = value;
-                    this.lookAtNavigator.lookAtLocation = this.position;
-                }
-            },
+  longitude: {
+    get: function () {
+      return this.position.longitude;
+    },
+    set: function (value) {
+      this.position.longitude = value;
+      this.lookAtNavigator.lookAtLocation = this.position;
+    },
+  },
 
-            longitude: {
-                get: function () {
-                    return this.position.longitude;
-                },
-                set: function (value) {
-                    this.position.longitude = value;
-                    this.lookAtNavigator.lookAtLocation = this.position;
-                }
-            },
+  altitude: {
+    get: function () {
+      return this.position.altitude;
+    },
+    set: function (value) {
+      this.position.altitude = value;
+      this.lookAtNavigator.lookAtLocation = this.position;
+    },
+  },
+});
 
-            altitude: {
-                get: function () {
-                    return this.position.altitude;
-                },
-                set: function (value) {
-                    this.position.altitude = value;
-                    this.lookAtNavigator.lookAtLocation = this.position;
-                }
-            }
-        });
-
-        return LookAtPositionProxy;
-    });
+export default LookAtPositionProxy;

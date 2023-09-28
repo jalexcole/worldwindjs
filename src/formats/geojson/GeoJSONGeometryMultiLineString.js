@@ -25,17 +25,10 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
-/**
- * @exports GeoJSONGeometryMultiLineString
- */
-define(['../../error/ArgumentError',
-        './GeoJSONGeometry',
-        '../../util/Logger'
-    ],
-    function (ArgumentError,
-              GeoJSONGeometry,
-              Logger) {
-        "use strict";
+import ArgumentError from "../../error/ArgumentError";
+import GeoJSONGeometry from "./GeoJSONGeometry";
+import Logger from "../../util/Logger";
+
 
         /**
          * Constructs a GeoJSON geometry for a MultiLineString. Applications typically do not call this constructor.
@@ -83,6 +76,5 @@ define(['../../error/ArgumentError',
 
         GeoJSONGeometryMultiLineString.prototype = Object.create(GeoJSONGeometry.prototype);
 
-        return GeoJSONGeometryMultiLineString;
-    }
-);
+        export default GeoJSONGeometryMultiLineString;
+

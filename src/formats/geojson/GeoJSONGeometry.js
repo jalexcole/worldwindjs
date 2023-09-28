@@ -25,17 +25,10 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
-/**
- * @exports GeoJSONGeometry
- */
-define(['../../error/ArgumentError',
-        './GeoJSONConstants',
-        '../../util/Logger'
-    ],
-    function (ArgumentError,
-              GeoJSONConstants,
-              Logger) {
-        "use strict";
+import ArgumentError from "../../error/ArgumentError";
+import GeoJSONConstants from "./GeoJSONConstants";
+import Logger from "../../util/Logger";
+
 
         /**
          * Constructs a GeoJSON Geometry object. Applications typically do not call this constructor. It is called by
@@ -172,6 +165,4 @@ define(['../../error/ArgumentError',
             return (this.type === GeoJSONConstants.TYPE_MULTI_POLYGON);
         };
 
-        return GeoJSONGeometry;
-    }
-);
+        export default GeoJSONGeometry;

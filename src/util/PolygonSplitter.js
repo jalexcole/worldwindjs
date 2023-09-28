@@ -25,18 +25,13 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
+import HashMap from "./HashMap";
+import Location
+    from "../geom/Location";
+import Position from "../geom/Position";
+import WWMath from "./WWMath";
+    
 
-define([
-        './HashMap',
-        '../geom/Location',
-        '../geom/Position',
-        './WWMath'
-    ],
-    function (HashMap,
-              Location,
-              Position,
-              WWMath) {
-        'use strict';
 
         /**
          * Splits polygons that cross the anti-meridian and/or contain a pole.
@@ -464,6 +459,5 @@ define([
             }
         };
 
-        return PolygonSplitter;
+        export default PolygonSplitter;
 
-    });

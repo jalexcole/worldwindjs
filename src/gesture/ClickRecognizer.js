@@ -25,12 +25,10 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
-/**
- * @exports ClickRecognizer
- */
-define(['../gesture/GestureRecognizer'],
-    function (GestureRecognizer) {
-        "use strict";
+import GestureRecognizer from "../gesture/GestureRecognizer";
+
+
+
 
         /**
          * Constructs a mouse click gesture recognizer.
@@ -170,5 +168,5 @@ define(['../gesture/GestureRecognizer'],
             }
         };
 
-        return ClickRecognizer;
-    });
+        export default ClickRecognizer;
+

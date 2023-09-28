@@ -25,9 +25,9 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
+import Logger from "../../util/Logger";
 
-define(['../../util/Logger'], function (Logger) {
-    "use strict";
+
 
     /**
      * Provides utilities for the ColladaLoader.
@@ -227,5 +227,4 @@ define(['../../util/Logger'], function (Logger) {
         }
     };
 
-    return ColladaUtils;
-});
+    export default ColladaUtils;

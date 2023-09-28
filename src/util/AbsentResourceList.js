@@ -25,130 +25,126 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
+
 /**
- * @exports AbsentResourceList
+ * Constructs an absent resource list.
+ * @alias AbsentResourceList
+ * @constructor
+ * @classdesc Provides a collection to keep track of resources whose retrieval failed and when retrieval
+ * may be tried again. Applications typically do not use this class directly.
+ * @param {Number} maxTrys The number of attempts to make before the resource is marked as absent.
+ * @param {Number} minCheckInterval The amount of time to wait between attempts, in milliseconds.
+ * @constructor
  */
-define([],
-    function () {
-        "use strict";
+var AbsentResourceList = function (maxTrys, minCheckInterval) {
+  /**
+   * The number  of attempts to make before the resource is marked as absent.
+   * @type {Number}
+   */
+  this.maxTrys = maxTrys;
 
-        /**
-         * Constructs an absent resource list.
-         * @alias AbsentResourceList
-         * @constructor
-         * @classdesc Provides a collection to keep track of resources whose retrieval failed and when retrieval
-         * may be tried again. Applications typically do not use this class directly.
-         * @param {Number} maxTrys The number of attempts to make before the resource is marked as absent.
-         * @param {Number} minCheckInterval The amount of time to wait between attempts, in milliseconds.
-         * @constructor
-         */
-        var AbsentResourceList = function (maxTrys, minCheckInterval) {
+  /**
+   * The amount of time to wait before each attempt.
+   * @type {Number}
+   */
+  this.minCheckInterval = minCheckInterval;
 
-            /**
-             * The number  of attempts to make before the resource is marked as absent.
-             * @type {Number}
-             */
-            this.maxTrys = maxTrys;
+  /**
+   * The amount of time, in milliseconds, beyond which retrieval attempts should again be allowed.
+   * When this time has elapsed from the most recent failed attempt the number of trys attempted is
+   * reset to 0. This prevents the resource from being permanently blocked.
+   * @type {number}
+   * @default 60,000 milliseconds (one minute)
+   */
+  this.tryAgainInterval = 60e3; // 60 seconds
 
-            /**
-             * The amount of time to wait before each attempt.
-             * @type {Number}
-             */
-            this.minCheckInterval = minCheckInterval;
+  this.possiblyAbsent = {};
+};
 
-            /**
-             * The amount of time, in milliseconds, beyond which retrieval attempts should again be allowed.
-             * When this time has elapsed from the most recent failed attempt the number of trys attempted is
-             * reset to 0. This prevents the resource from being permanently blocked.
-             * @type {number}
-             * @default 60,000 milliseconds (one minute)
-             */
-            this.tryAgainInterval = 60e3; // 60 seconds
+/**
+ * Indicates whether a specified resource is marked as absent.
+ * @param {String} resourceId The resource identifier.
+ * @returns {Boolean} true if the resource is marked as absent, otherwise false.
+ */
+AbsentResourceList.prototype.isResourceAbsent = function (resourceId) {
+  var entry = this.possiblyAbsent[resourceId];
 
-            this.possiblyAbsent = {};
-        };
+  if (!entry) {
+    return false;
+  }
 
-        /**
-         * Indicates whether a specified resource is marked as absent.
-         * @param {String} resourceId The resource identifier.
-         * @returns {Boolean} true if the resource is marked as absent, otherwise false.
-         */
-        AbsentResourceList.prototype.isResourceAbsent = function (resourceId) {
-            var entry = this.possiblyAbsent[resourceId];
+  if (entry.permanent) {
+    return true;
+  }
 
-            if (!entry) {
-                return false;
-            }
+  var timeSinceLastMark = Date.now() - entry.timeOfLastMark;
 
-            if (entry.permanent) {
-                return true;
-            }
+  if (timeSinceLastMark > this.tryAgainInterval) {
+    delete this.possiblyAbsent[resourceId];
+    return false;
+  }
 
-            var timeSinceLastMark = Date.now() - entry.timeOfLastMark;
+  return (
+    timeSinceLastMark < this.minCheckInterval || entry.numTrys > this.maxTrys
+  );
+};
 
-            if (timeSinceLastMark > this.tryAgainInterval) {
-                delete this.possiblyAbsent[resourceId];
-                return false;
-            }
+/**
+ * Marks a resource attempt as having failed. This increments the number-of-tries counter and sets the time
+ * of the last attempt. When this method has been called [this.maxTrys]{@link AbsentResourceList#maxTrys}
+ * times the resource is marked as absent until this absent resource list's
+ * [try-again-interval]{@link AbsentResourceList#tryAgainInterval} is reached.
+ * @param {String} resourceId The resource identifier.
+ */
+AbsentResourceList.prototype.markResourceAbsent = function (resourceId) {
+  var entry = this.possiblyAbsent[resourceId];
 
-            return timeSinceLastMark < this.minCheckInterval || entry.numTrys > this.maxTrys;
-        };
+  if (!entry) {
+    entry = {
+      timeOfLastMark: Date.now(),
+      numTrys: 0,
+    };
+    this.possiblyAbsent[resourceId] = entry;
+  }
 
-        /**
-         * Marks a resource attempt as having failed. This increments the number-of-tries counter and sets the time
-         * of the last attempt. When this method has been called [this.maxTrys]{@link AbsentResourceList#maxTrys}
-         * times the resource is marked as absent until this absent resource list's
-         * [try-again-interval]{@link AbsentResourceList#tryAgainInterval} is reached.
-         * @param {String} resourceId The resource identifier.
-         */
-        AbsentResourceList.prototype.markResourceAbsent = function (resourceId) {
-            var entry = this.possiblyAbsent[resourceId];
+  entry.numTrys = entry.numTrys + 1;
+  entry.timeOfLastMark = Date.now();
+};
 
-            if (!entry) {
-                entry = {
-                    timeOfLastMark: Date.now(),
-                    numTrys: 0
-                };
-                this.possiblyAbsent[resourceId] = entry;
-            }
+/**
+ * Marks a resource attempt as having failed permanently. No attempt will ever again be made to retrieve
+ * the resource.
+ * @param {String} resourceId The resource identifier.
+ */
+AbsentResourceList.prototype.markResourceAbsentPermanently = function (
+  resourceId
+) {
+  var entry = this.possiblyAbsent[resourceId];
 
-            entry.numTrys = entry.numTrys + 1;
-            entry.timeOfLastMark = Date.now();
-        };
+  if (!entry) {
+    entry = {
+      timeOfLastMark: Date.now(),
+      numTrys: 0,
+    };
+    this.possiblyAbsent[resourceId] = entry;
+  }
 
-        /**
-         * Marks a resource attempt as having failed permanently. No attempt will ever again be made to retrieve
-         * the resource.
-         * @param {String} resourceId The resource identifier.
-         */
-        AbsentResourceList.prototype.markResourceAbsentPermanently = function (resourceId) {
-            var entry = this.possiblyAbsent[resourceId];
+  entry.numTrys = entry.numTrys + 1;
+  entry.timeOfLastMark = Date.now();
+  entry.permanent = true;
+};
 
-            if (!entry) {
-                entry = {
-                    timeOfLastMark: Date.now(),
-                    numTrys: 0
-                };
-                this.possiblyAbsent[resourceId] = entry;
-            }
+/**
+ * Removes the specified resource from this absent resource list. Call this method when retrieval attempts
+ * succeed.
+ * @param {String} resourceId The resource identifier.
+ */
+AbsentResourceList.prototype.unmarkResourceAbsent = function (resourceId) {
+  var entry = this.possiblyAbsent[resourceId];
 
-            entry.numTrys = entry.numTrys + 1;
-            entry.timeOfLastMark = Date.now();
-            entry.permanent = true;
-        };
+  if (entry) {
+    delete this.possiblyAbsent[resourceId];
+  }
+};
 
-        /**
-         * Removes the specified resource from this absent resource list. Call this method when retrieval attempts
-         * succeed.
-         * @param {String} resourceId The resource identifier.
-         */
-        AbsentResourceList.prototype.unmarkResourceAbsent = function (resourceId) {
-            var entry = this.possiblyAbsent[resourceId];
-
-            if (entry) {
-                delete this.possiblyAbsent[resourceId];
-            }
-        };
-
-        return AbsentResourceList;
-    });
+export default AbsentResourceList;

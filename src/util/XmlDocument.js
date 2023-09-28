@@ -26,14 +26,10 @@
  * PDF found in code  directory.
  */
 // It simply adds XmlParser, which encapsulates the fact that, there are different implementations
-define([
-        '../error/ArgumentError',
-        '../util/Logger'
-    ],
-    function(
-        ArgumentError,
-        Logger
-    ){
+
+import ArgumentError from "../error/ArgumentError";
+import Logger from "./Logger";
+
         /**
          * Constructor function responsible for abstracting away the complexities in parsing XmlDocuments.
          * @param document String representation of the xml document.
@@ -81,5 +77,4 @@ define([
             }
         };
 
-        return XmlDocument;
-});
+        export default XmlDocument;

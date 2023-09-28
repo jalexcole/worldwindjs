@@ -25,20 +25,11 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
-/**
- * @exports Level
- */
-define([
-        '../geom/Angle',
-        '../error/ArgumentError',
-        '../geom/Location',
-        '../util/Logger'
-    ],
-    function (Angle,
-              ArgumentError,
-              Location,
-              Logger) {
-        "use strict";
+import Angle from "../geom/Angle";
+import ArgumentError from "../error/ArgumentError";
+import Location from "../geom/Location";
+import Logger from "./Logger";
+
 
         /**
          * Constructs a Level within a [LevelSet]{@link LevelSet}. Applications typically do not interact with this
@@ -163,5 +154,5 @@ define([
             return 0;
         };
 
-        return Level;
-    });
+        export default Level;
+    

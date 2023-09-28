@@ -25,93 +25,90 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
+import ArgumentError from "../error/ArgumentError";
+import Logger from "../util/Logger";
+import LookAt from "../geom/LookAt";
+
 /**
- * @exports Navigator
+ * Constructs a base navigator.
+ * @deprecated
+ * @alias Navigator
+ * @constructor
+ * @classdesc Provides an abstract base class for navigators. This class is not meant to be instantiated
+ * directly. Deprecated, see  {@Link Camera}.
+ * @param {WorldWindow} worldWindow The WorldWindow to associate with this navigator.
  */
-define(['../error/ArgumentError',
-        '../util/Logger',
-        '../geom/LookAt'
-    ],
-    function (ArgumentError,
-              Logger,
-              LookAt) {
-        "use strict";
+var Navigator = function (worldWindow) {
+  if (!worldWindow) {
+    throw new ArgumentError(
+      Logger.logMessage(
+        Logger.LEVEL_SEVERE,
+        "Navigator",
+        "constructor",
+        "missingWorldWindow"
+      )
+    );
+  }
 
-        /**
-         * Constructs a base navigator.
-         * @deprecated
-         * @alias Navigator
-         * @constructor
-         * @classdesc Provides an abstract base class for navigators. This class is not meant to be instantiated
-         * directly. Deprecated, see  {@Link Camera}.
-         * @param {WorldWindow} worldWindow The WorldWindow to associate with this navigator.
-         */
-        var Navigator = function (worldWindow) {
-            if (!worldWindow) {
-                throw new ArgumentError(
-                    Logger.logMessage(Logger.LEVEL_SEVERE, "Navigator", "constructor", "missingWorldWindow"));
-            }
+  this.wwd = worldWindow;
 
-            this.wwd = worldWindow;
+  /**
+   * Internal use only.
+   * A temp variable used to hold the look view during calculations. Using an object level temp property
+   * negates the need for ad-hoc allocations and reduces load on the garbage collector.
+   * @ignore
+   */
+  this.scratchLookAt = new LookAt();
+};
 
-            /**
-             * Internal use only.
-             * A temp variable used to hold the look view during calculations. Using an object level temp property
-             * negates the need for ad-hoc allocations and reduces load on the garbage collector.
-             * @ignore
-             */
-            this.scratchLookAt = new LookAt();
-        };
+Object.defineProperties(Navigator.prototype, {
+  /**
+   * This navigator's heading, in degrees clockwise from north.
+   * @type {Number}
+   * @default 0
+   */
+  heading: {
+    get: function () {
+      return this.wwd.cameraAsLookAt(this.scratchLookAt).heading;
+    },
+    set: function (value) {
+      var lookAt = this.wwd.cameraAsLookAt(this.scratchLookAt);
+      lookAt.heading = value;
+      this.wwd.cameraFromLookAt(lookAt);
+    },
+  },
 
-        Object.defineProperties(Navigator.prototype, {
-            /**
-             * This navigator's heading, in degrees clockwise from north.
-             * @type {Number}
-             * @default 0
-             */
-            heading: {
-                get: function () {
-                    return this.wwd.cameraAsLookAt(this.scratchLookAt).heading;
-                },
-                set: function (value) {
-                    var lookAt = this.wwd.cameraAsLookAt(this.scratchLookAt);
-                    lookAt.heading = value;
-                    this.wwd.cameraFromLookAt(lookAt);
-                }
-            },
+  /**
+   * This navigator's tilt, in degrees.
+   * @type {Number}
+   * @default 0
+   */
+  tilt: {
+    get: function () {
+      return this.wwd.cameraAsLookAt(this.scratchLookAt).tilt;
+    },
+    set: function (value) {
+      var lookAt = this.wwd.cameraAsLookAt(this.scratchLookAt);
+      lookAt.tilt = value;
+      this.wwd.cameraFromLookAt(lookAt);
+    },
+  },
 
-            /**
-             * This navigator's tilt, in degrees.
-             * @type {Number}
-             * @default 0
-             */
-            tilt: {
-                get: function () {
-                    return this.wwd.cameraAsLookAt(this.scratchLookAt).tilt;
-                },
-                set: function (value) {
-                    var lookAt = this.wwd.cameraAsLookAt(this.scratchLookAt);
-                    lookAt.tilt = value;
-                    this.wwd.cameraFromLookAt(lookAt);
-                }
-            },
+  /**
+   * This navigator's roll, in degrees.
+   * @type {Number}
+   * @default 0
+   */
+  roll: {
+    get: function () {
+      return this.wwd.cameraAsLookAt(this.scratchLookAt).roll;
+    },
+    set: function (value) {
+      var lookAt = this.wwd.cameraAsLookAt(this.scratchLookAt);
+      lookAt.roll = value;
+      this.wwd.cameraFromLookAt(lookAt);
+    },
+  },
+});
 
-            /**
-             * This navigator's roll, in degrees.
-             * @type {Number}
-             * @default 0
-             */
-            roll: {
-                get: function () {
-                    return this.wwd.cameraAsLookAt(this.scratchLookAt).roll;
-                },
-                set: function (value) {
-                    var lookAt = this.wwd.cameraAsLookAt(this.scratchLookAt);
-                    lookAt.roll = value;
-                    this.wwd.cameraFromLookAt(lookAt);
-                }
-            }
-        });
-
-        return Navigator;
-    });
+export default Navigator;

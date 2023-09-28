@@ -25,37 +25,18 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
-/**
- * @exports Globe
- */
-define([
-        '../geom/Angle',
-        '../error/ArgumentError',
-        '../geom/BoundingBox',
-        '../globe/ElevationModel',
-        '../geom/Line',
-        '../geom/Location',
-        '../util/Logger',
-        '../geom/Position',
-        '../projections/ProjectionWgs84',
-        '../geom/Sector',
-        '../globe/Tessellator',
-        '../geom/Vec3',
-        '../util/WWMath'],
-    function (Angle,
-              ArgumentError,
-              BoundingBox,
-              ElevationModel,
-              Line,
-              Location,
-              Logger,
-              Position,
-              ProjectionWgs84,
-              Sector,
-              Tessellator,
-              Vec3,
-              WWMath) {
-        "use strict";
+import Angle from "../geom/Angle";
+import ArgumentError from "../error/ArgumentError";
+import BoundingBox from "../geom/BoundingBox";
+import ElevationModel from "./ElevationModel";
+import Logger from "../util/Logger";
+import Position from "../geom/Position";
+import ProjectionWgs84 from "../projections/ProjectionWgs84";
+import Sector from "../geom/Sector";
+import Tessellator from "./Tessellator";
+import Vec3 from "../geom/Vec3";
+import WWMath from "../util/WWMath";
+
 
         /**
          * Constructs an ellipsoidal Globe with default radii for Earth (WGS84).
@@ -690,5 +671,5 @@ define([
             return (altitude > 0) ? Math.sqrt(altitude * (2 * this.equatorialRadius + altitude)) : 0;
         };
 
-        return Globe;
-    });
+        export default Globe;
+

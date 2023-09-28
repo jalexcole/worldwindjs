@@ -25,6 +25,10 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
+import ArgumentError from "../error/ArgumentError";
+import Color from "../util/Color";
+import FrameStatistics from "../util/FrameStatistics";
+import FramebufferTexture from "./FramebufferTexture";
 /**
  * @exports DrawContext
  */

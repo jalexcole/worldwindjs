@@ -25,12 +25,9 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
-/**
- * @exports TiltRecognizer
- */
-define(['../gesture/PanRecognizer'],
-    function (PanRecognizer) {
-        "use strict";
+
+import PanRecognizer from "./PanRecognizer";
+
 
         /**
          * Constructs a tilt gesture recognizer.
@@ -129,5 +126,4 @@ define(['../gesture/PanRecognizer'],
             return dirMask;
         };
 
-        return TiltRecognizer;
-    });
+        export default TiltRecognizer;

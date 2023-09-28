@@ -25,12 +25,7 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
-/**
- * @exports GeoJSONConstants
- */
-define([],
-    function() {
-        "use strict";
+
 
         /**
          * Provides GeoJSON string constants.
@@ -70,8 +65,7 @@ define([],
         GeoJSONConstants.WGS84_CRS = "urn:ogc:def:crs:OGC:1.3:CRS84";
         GeoJSONConstants.EPSG4326_CRS = "EPSG:4326";
 
-        return GeoJSONConstants;
-    }
-);
+        export default GeoJSONConstants;
+
 
 

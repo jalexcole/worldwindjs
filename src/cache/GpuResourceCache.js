@@ -25,24 +25,15 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
-/**
- * @exports GpuResourceCache
- */
-define([
-        '../util/AbsentResourceList',
-        '../error/ArgumentError',
-        '../util/ImageSource',
-        '../util/Logger',
-        '../cache/MemoryCache',
-        '../render/Texture'
-    ],
-    function (AbsentResourceList,
-              ArgumentError,
-              ImageSource,
-              Logger,
-              MemoryCache,
-              Texture) {
-        "use strict";
+import AbsentResourceList from "../util/AbsentResourceList";
+import ArgumentError from "../error/ArgumentError";
+import ImageSource from "../util/ImageSource";
+import Logger from "../util/Logger";
+import MemoryCache from "./MemoryCache";
+import Texture from "../render/Texture";
+
+
+
 
         /**
          * Constructs a GPU resource cache for a specified size and low-water value.
@@ -308,5 +299,4 @@ define([
             return null;
         };
 
-        return GpuResourceCache;
-    });
+        export default GpuResourceCache;

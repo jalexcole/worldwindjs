@@ -25,62 +25,64 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
-/**
- * @exports OwsBoundingBox
- */
-define([
-        '../../error/ArgumentError',
-        '../../util/Logger',
-        '../../geom/Sector'
-    ],
-    function (ArgumentError,
-              Logger,
-              Sector) {
-        "use strict";
+import ArgumentError from "../../error/ArgumentError";
+import Logger from "../../util/Logger";
+import Sector from "../../geom/Sector";
 
-        var OwsBoundingBox = function (element) {
-            if (!element) {
-                throw new ArgumentError(
-                    Logger.logMessage(Logger.LEVEL_SEVERE, "OwsBoundingBox", "constructor", "missingDomElement"));
-            }
+var OwsBoundingBox = function (element) {
+  if (!element) {
+    throw new ArgumentError(
+      Logger.logMessage(
+        Logger.LEVEL_SEVERE,
+        "OwsBoundingBox",
+        "constructor",
+        "missingDomElement"
+      )
+    );
+  }
 
-            this.assembleElement(element);
-        };
+  this.assembleElement(element);
+};
 
-        // Internal. Intentionally not documented.
-        OwsBoundingBox.prototype.assembleElement = function (element) {
-            this.crs = element.localName === "WGS84BoundingBox" ? "WGS84" : element.getAttribute("crs");
+// Internal. Intentionally not documented.
+OwsBoundingBox.prototype.assembleElement = function (element) {
+  this.crs =
+    element.localName === "WGS84BoundingBox"
+      ? "WGS84"
+      : element.getAttribute("crs");
 
-            this.dimensions = element.getAttribute("dimensions");
+  this.dimensions = element.getAttribute("dimensions");
 
-            var children = element.children || element.childNodes;
-            for (var c = 0; c < children.length; c++) {
-                var child = children[c];
+  var children = element.children || element.childNodes;
+  for (var c = 0; c < children.length; c++) {
+    var child = children[c];
 
-                if (child.localName === "LowerCorner") {
-                    this.lowerCorner = child.textContent;
-                } else if (child.localName === "UpperCorner") {
-                    this.upperCorner = child.textContent;
-                }
-            }
-        };
+    if (child.localName === "LowerCorner") {
+      this.lowerCorner = child.textContent;
+    } else if (child.localName === "UpperCorner") {
+      this.upperCorner = child.textContent;
+    }
+  }
+};
 
-        // Internal. Intentionally not documented.
-        OwsBoundingBox.prototype.getSector = function () {
-            var minLat, minLon, maxLat, maxLon, vals;
+// Internal. Intentionally not documented.
+OwsBoundingBox.prototype.getSector = function () {
+  var minLat, minLon, maxLat, maxLon, vals;
 
-            if (this.crs.indexOf("WGS84") !== -1 || this.crs.indexOf("EPSG:4326") !== -1) {
-                vals = this.lowerCorner.split(/\s+/);
-                minLon = vals[0];
-                minLat = vals[1];
-                vals = this.upperCorner.split(/\s+/);
-                maxLon = vals[0];
-                maxLat = vals[1];
-                return new Sector(minLat, maxLat, minLon, maxLon);
-            } else {
-                return null;
-            }
-        };
+  if (
+    this.crs.indexOf("WGS84") !== -1 ||
+    this.crs.indexOf("EPSG:4326") !== -1
+  ) {
+    vals = this.lowerCorner.split(/\s+/);
+    minLon = vals[0];
+    minLat = vals[1];
+    vals = this.upperCorner.split(/\s+/);
+    maxLon = vals[0];
+    maxLat = vals[1];
+    return new Sector(minLat, maxLat, minLon, maxLon);
+  } else {
+    return null;
+  }
+};
 
-        return OwsBoundingBox;
-    });
+export default OwsBoundingBox;

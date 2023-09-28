@@ -25,12 +25,7 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
-/**
- * @exports ColladaAsset
- */
 
-define([], function () {
-    "use strict";
 
     /**
      * Constructs a ColladaAsset
@@ -87,5 +82,4 @@ define([], function () {
         return this.asset;
     };
 
-    return ColladaAsset;
-});
+    export default ColladaAsset;

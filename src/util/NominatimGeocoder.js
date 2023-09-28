@@ -25,14 +25,9 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
-/**
- * @exports NominatimGeocoder
- */
-define([
-        '../util/Logger'
-    ],
-    function (Logger) {
-        "use strict";
+
+import Logger from "./Logger";
+
 
         /**
          * Constructs a Nominatim geocoder.
@@ -80,5 +75,4 @@ define([
             xhr.send(null);
         };
 
-        return NominatimGeocoder;
-    });
+        export default NominatimGeocoder;

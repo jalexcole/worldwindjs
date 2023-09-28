@@ -25,18 +25,10 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
-/**
- * @exports AtmosphereProgram
- */
-define([
-        '../error/ArgumentError',
-        '../shaders/GpuProgram',
-        '../util/Logger'
-    ],
-    function (ArgumentError,
-              GpuProgram,
-              Logger) {
-        "use strict";
+import ArgumentError from "../error/ArgumentError";
+import GpuProgram from "./GpuProgram";
+import Logger from "../util/Logger";
+
 
         /**
          * Constructs a new program.
@@ -354,5 +346,5 @@ define([
             gl.uniform1f(this.opacityLocation, opacity);
         };
 
-        return AtmosphereProgram;
-    });
+        export default AtmosphereProgram;
+    

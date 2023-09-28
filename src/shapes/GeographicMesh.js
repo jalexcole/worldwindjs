@@ -25,42 +25,21 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
-/**
- * @exports GeographicMesh
- */
-define([
-        '../shapes/AbstractMesh',
-        '../error/ArgumentError',
-        '../shaders/BasicTextureProgram',
-        '../geom/BoundingBox',
-        '../util/Color',
-        '../util/ImageSource',
-        '../geom/Location',
-        '../util/Logger',
-        '../geom/Matrix',
-        '../pick/PickedObject',
-        '../geom/Position',
-        '../shapes/ShapeAttributes',
-        '../shapes/SurfacePolygon',
-        '../geom/Vec2',
-        '../geom/Vec3',
-    ],
-    function (AbstractMesh,
-              ArgumentError,
-              BasicTextureProgram,
-              BoundingBox,
-              Color,
-              ImageSource,
-              Location,
-              Logger,
-              Matrix,
-              PickedObject,
-              Position,
-              ShapeAttributes,
-              SurfacePolygon,
-              Vec2,
-              Vec3) {
-        "use strict";
+import AbstractMesh from "./AbstractMesh";
+import ArgumentError from "../error/ArgumentError";
+import BasicTextureProgram from "../shaders/BasicTextureProgram";
+import BoundingBox from "../geom/BoundingBox";
+import Color from "../util/Color";
+import ImageSource from "../util/ImageSource";
+import Location from "../geom/Location";
+import Logger from "../util/Logger";
+import Matrix from "../geom/Matrix";
+import PickedObject from "..pick/PickedObject";
+import ShapeAttributes from "./ShapeAttributes";
+import SurfacePolygon from "./SurfacePolygon";
+import Vec2 from "../geom/Vec2";
+import Vec3 from "../geom/Vec3";
+
 
         /**
          * Constructs a geographic mesh.
@@ -422,5 +401,4 @@ define([
             return outlineIndices;
         };
 
-        return GeographicMesh;
-    });
+        export default GeographicMesh;
