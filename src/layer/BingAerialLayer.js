@@ -25,20 +25,11 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
-/**
- * @exports BingAerialLayer
- */
-define([
-        '../geom/Location',
-        '../geom/Sector',
-        '../layer/BingTiledImageLayer',
-        '../util/BingImageryUrlBuilder'
-    ],
-    function (Location,
-              Sector,
-              BingTiledImageLayer,
-              BingImageryUrlBuilder) {
-        "use strict";
+import Location from "../geom/Location";
+import Sector from "../geom/Sector";
+import BingTiledImageLayer from "../layer/BingTiledImageLayer";
+import BingImageryUrlBuilder from "../util/BingImageryUrlBuilder";
+
 
         /**
          * Constructs a Bing Aerial layer.
@@ -63,5 +54,4 @@ define([
 
         BingAerialLayer.prototype = Object.create(BingTiledImageLayer.prototype);
 
-        return BingAerialLayer;
-    });
+        export default BingAerialLayer;

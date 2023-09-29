@@ -25,6 +25,16 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
+import ArgumentError from "../error/ArgumentError";
+import Color from "../util/Color";
+import Layer from "./Layer";
+import Logger from "../util/Logger";
+import Offset from "../util/Offset";
+import Position from "../geom/Position";
+import ScreenImage from "../shapes/ScreenImage";
+import ScreenText from "../shapes/ScreenText";
+import TextAttributes from "../shapes/TextAttributes";
+import Vec2 from "../geom/Vec2";
 /**
  * @exports CoordinatesDisplayLayer
  */

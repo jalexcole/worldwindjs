@@ -25,20 +25,11 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
-/**
- * @exports BMNGLandsatLayer
- */
-define([
-        '../geom/Location',
-        '../geom/Sector',
-        '../layer/TiledImageLayer',
-        '../util/WmsUrlBuilder'
-    ],
-    function (Location,
-              Sector,
-              TiledImageLayer,
-              WmsUrlBuilder) {
-        "use strict";
+import Location from "../geom/Location";
+import Sector from "../geom/Sector";
+import TiledImageLayer from "./TiledImageLayer";
+import WmsUrlBuilder from "../util/WmsUrlBuilder";
+
 
         /**
          * Constructs a combined Blue Marble and Landsat image layer.
@@ -58,5 +49,4 @@ define([
 
         BMNGLandsatLayer.prototype = Object.create(TiledImageLayer.prototype);
 
-        return BMNGLandsatLayer;
-    });
+        export default BMNGLandsatLayer;

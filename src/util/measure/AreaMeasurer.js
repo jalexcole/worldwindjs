@@ -33,30 +33,8 @@ import Logger from "../Logger";
 import MeasurerUtils from "./MeasurerUtils";
 import Sector from "../../geom/Sector";
 import Vec3 from "../../geom/Vec3";
+import libtessMin from "libtess";
 
-/**
- * @exports AreaMeasurer
- */
-
-define([
-        '../../geom/Angle',
-        '../../error/ArgumentError',
-        '../../geom/Location',
-        '../Logger',
-        './MeasurerUtils',
-        '../../geom/Sector',
-        '../../geom/Vec3',
-        '../libtess'
-    ],
-    function (Angle,
-              ArgumentError,
-              Location,
-              Logger,
-              MeasurerUtils,
-              Sector,
-              Vec3,
-              libtessDummy) {
-        'use strict';
 
         /**
          * Utility class to compute approximations of projected and surface (terrain following) area on a globe.
@@ -363,6 +341,4 @@ define([
             return triangles;
         };
 
-        return AreaMeasurer;
-
-    });
+        export default AreaMeasurer;

@@ -25,41 +25,43 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
+import Location from "../geom/Location";
+import Sector from "../geom/Sector";
+import TiledImageLayer from "./TiledImageLayer";
+import WmsUrlBuilder from "../util/WmsUrlBuilder";
+
 /**
- * @exports BMNGLayer
+ * Constructs a Blue Marble image layer.
+ * @alias BMNGLayer
+ * @constructor
+ * @augments TiledImageLayer
+ * @classdesc Displays a Blue Marble image layer that spans the entire globe.
+ * @param {String} layerName The name of the layer to display, in the form "BlueMarble-200401"
+ * "BlueMarble-200402", ... "BlueMarble-200412". "BlueMarble-200405" is used if the argument is null
+ * or undefined.
  */
-define([
-        '../geom/Location',
-        '../geom/Sector',
-        '../layer/TiledImageLayer',
-        '../util/WmsUrlBuilder'
-    ],
-    function (Location,
-              Sector,
-              TiledImageLayer,
-              WmsUrlBuilder) {
-        "use strict";
+var BMNGLayer = function (layerName) {
+  // This LevelSet configuration captures the Blue Marble resolution of 4.166666667E-03 degrees/pixel
+  TiledImageLayer.call(
+    this,
+    "Blue Marble",
+    Sector.FULL_SPHERE,
+    new Location(45, 45),
+    7,
+    "image/jpeg",
+    layerName || "BMNG256",
+    256,
+    256
+  );
 
-        /**
-         * Constructs a Blue Marble image layer.
-         * @alias BMNGLayer
-         * @constructor
-         * @augments TiledImageLayer
-         * @classdesc Displays a Blue Marble image layer that spans the entire globe.
-         * @param {String} layerName The name of the layer to display, in the form "BlueMarble-200401"
-         * "BlueMarble-200402", ... "BlueMarble-200412". "BlueMarble-200405" is used if the argument is null
-         * or undefined.
-         */
-        var BMNGLayer = function (layerName) {
-            // This LevelSet configuration captures the Blue Marble resolution of 4.166666667E-03 degrees/pixel
-            TiledImageLayer.call(this, "Blue Marble",
-                Sector.FULL_SPHERE, new Location(45, 45), 7, "image/jpeg", layerName || "BMNG256", 256, 256);
+  this.urlBuilder = new WmsUrlBuilder(
+    "https://worldwind25.arc.nasa.gov/wms",
+    layerName || "BlueMarble-200405",
+    "",
+    "1.3.0"
+  );
+};
 
-            this.urlBuilder = new WmsUrlBuilder("https://worldwind25.arc.nasa.gov/wms",
-                layerName || "BlueMarble-200405", "", "1.3.0");
-        };
+BMNGLayer.prototype = Object.create(TiledImageLayer.prototype);
 
-        BMNGLayer.prototype = Object.create(TiledImageLayer.prototype);
-
-        return BMNGLayer;
-    });
+export default BMNGLayer;

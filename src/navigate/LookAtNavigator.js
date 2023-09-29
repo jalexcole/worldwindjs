@@ -30,71 +30,70 @@ import LookAt from "../geom/LookAt";
 import LookAtPositionProxy from "./LookAtPositionProxy";
 import Navigator from "./Navigator";
 
+/**
+ * Constructs a look-at navigator.
+ * @deprecated
+ * @alias LookAtNavigator
+ * @constructor
+ * @augments Navigator
+ * @classdesc Represents a navigator containing the required variables to enable the user to pan, zoom and tilt
+ * the globe. Deprecated, see {@Link LookAt}.
+ */
+var LookAtNavigator = function (worldWindow) {
+  Navigator.call(this, worldWindow);
 
-        /**
-         * Constructs a look-at navigator.
-         * @deprecated
-         * @alias LookAtNavigator
-         * @constructor
-         * @augments Navigator
-         * @classdesc Represents a navigator containing the required variables to enable the user to pan, zoom and tilt
-         * the globe. Deprecated, see {@Link LookAt}.
-         */
-        var LookAtNavigator = function (worldWindow) {
-            Navigator.call(this, worldWindow);
+  /**
+   * Internal use only.
+   * A temp variable used to hold the position during calculations and property retrieval. Using an object
+   * level temp property negates the need for ad-hoc allocations and reduces load on the garbage collector.
+   * @ignore
+   */
+  this.scratchLookAtPositionProxy = new LookAtPositionProxy(this);
+};
 
+LookAtNavigator.prototype = Object.create(Navigator.prototype);
 
-            /**
-             * Internal use only.
-             * A temp variable used to hold the position during calculations and property retrieval. Using an object
-             * level temp property negates the need for ad-hoc allocations and reduces load on the garbage collector.
-             * @ignore
-             */
-            this.scratchLookAtPositionProxy = new LookAtPositionProxy(this);
-        };
+Object.defineProperties(LookAtNavigator.prototype, {
+  /**
+   * The geographic location at the center of the viewport.
+   * @type {Location}
+   */
+  lookAtLocation: {
+    get: function () {
+      this.wwd.cameraAsLookAt(this.scratchLookAt);
+      this.scratchLookAtPositionProxy.position.copy(
+        this.scratchLookAt.position
+      );
+      return this.scratchLookAtPositionProxy;
+    },
+    set: function (value) {
+      var lookAt = this.wwd.cameraAsLookAt(this.scratchLookAt);
+      lookAt.position.latitude = value.latitude;
+      lookAt.position.longitude = value.longitude;
+      if (value.altitude) {
+        lookAt.position.altitude = value.altitude;
+      } else {
+        lookAt.position.altitude = 0;
+      }
+      this.wwd.cameraFromLookAt(lookAt);
+    },
+  },
 
-        LookAtNavigator.prototype = Object.create(Navigator.prototype);
+  /**
+   * The distance from this navigator's eye point to its look-at location.
+   * @type {Number}
+   * @default 10,000 kilometers
+   */
+  range: {
+    get: function () {
+      return this.wwd.cameraAsLookAt(this.scratchLookAt).range;
+    },
+    set: function (value) {
+      var lookAt = this.wwd.cameraAsLookAt(this.scratchLookAt);
+      lookAt.range = value;
+      this.wwd.cameraFromLookAt(lookAt);
+    },
+  },
+});
 
-        Object.defineProperties(LookAtNavigator.prototype, {
-            /**
-             * The geographic location at the center of the viewport.
-             * @type {Location}
-             */
-            lookAtLocation: {
-                get: function () {
-                    this.wwd.cameraAsLookAt(this.scratchLookAt);
-                    this.scratchLookAtPositionProxy.position.copy(this.scratchLookAt.position);
-                    return this.scratchLookAtPositionProxy;
-                },
-                set: function (value) {
-                    var lookAt = this.wwd.cameraAsLookAt(this.scratchLookAt);
-                    lookAt.position.latitude = value.latitude;
-                    lookAt.position.longitude = value.longitude;
-                    if (value.altitude) {
-                        lookAt.position.altitude = value.altitude;
-                    }
-                    else {
-                        lookAt.position.altitude = 0;
-                    }
-                    this.wwd.cameraFromLookAt(lookAt);
-                }
-            },
-
-            /**
-             * The distance from this navigator's eye point to its look-at location.
-             * @type {Number}
-             * @default 10,000 kilometers
-             */
-            range: {
-                get: function () {
-                    return this.wwd.cameraAsLookAt(this.scratchLookAt).range;
-                },
-                set: function (value) {
-                    var lookAt = this.wwd.cameraAsLookAt(this.scratchLookAt);
-                    lookAt.range = value;
-                    this.wwd.cameraFromLookAt(lookAt);
-                }
-            }
-        });
-
-        export default LookAtNavigator;
+export default LookAtNavigator;

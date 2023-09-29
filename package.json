@@ -74,6 +74,8 @@
     "access": "public"
   },
   "dependencies": {
+    "es6-promise": "^4.2.8",
+    "libtess": "^1.2.2",
     "proj4": "^2.9.0"
   }
 }

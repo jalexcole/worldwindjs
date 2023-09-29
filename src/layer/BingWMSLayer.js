@@ -25,20 +25,11 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
-/**
- * @exports BingWMSLayer
- */
-define([
-        '../geom/Location',
-        '../geom/Sector',
-        '../layer/TiledImageLayer',
-        '../util/WmsUrlBuilder'
-    ],
-    function (Location,
-              Sector,
-              TiledImageLayer,
-              WmsUrlBuilder) {
-        "use strict";
+import Location from "../geom/Location";
+import Sector from "../geom/Sector";
+import TiledImageLayer from "./TiledImageLayer";
+import WmsUrlBuilder from "../util/WmsUrlBuilder";
+
 
         // Intentionally not documented. For diagnostic use only.
         var BingWMSLayer = function () {
@@ -54,5 +45,4 @@ define([
 
         BingWMSLayer.prototype = Object.create(TiledImageLayer.prototype);
 
-        return BingWMSLayer;
-    });
+        export default BingWMSLayer;

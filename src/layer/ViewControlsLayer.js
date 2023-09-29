@@ -25,30 +25,16 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
-/**
- * @exports ViewControlsLayer
- */
-define([
-        '../geom/Angle',
-        '../error/ArgumentError',
-        '../layer/Layer',
-        '../geom/Location',
-        '../util/Logger',
-        '../geom/LookAt',
-        '../util/Offset',
-        '../shapes/ScreenImage',
-        '../geom/Vec2'
-    ],
-    function (Angle,
-              ArgumentError,
-              Layer,
-              Location,
-              Logger,
-              LookAt,
-              Offset,
-              ScreenImage,
-              Vec2) {
-        "use strict";
+import Angle from "../geom/Angle";
+import ArgumentError from "../error/ArgumentError";
+import Layer from "./Layer";
+import Location from "../geom/Location";
+import Logger from "../util/Logger";
+import LookAt from "../geom/LookAt";
+import Offset from "../util/Offset";
+import ScreenImage from "../shapes/ScreenImage";
+import Vec2 from "../geom/Vec2";
+
 
         /**
          * Constructs a view controls layer.
@@ -948,5 +934,4 @@ define([
             }
         };
 
-        return ViewControlsLayer;
-    });
+        export default ViewControlsLayer;

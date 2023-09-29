@@ -25,41 +25,33 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
+import RenderableLayer from "./RenderableLayer";
+import Sector from "../geom/Sector";
+import SurfaceImage from "../shapes/SurfaceImage";
+import WWUtil from "../util/WWUtil";
+
 /**
- * @exports BMNGOneImageLayer
+ * Constructs a Blue Marble image layer that spans the entire globe.
+ * @alias BMNGOneImageLayer
+ * @constructor
+ * @augments RenderableLayer
+ * @classdesc Displays a Blue Marble image layer that spans the entire globe with a single image.
  */
-define([
-        '../layer/RenderableLayer',
-        '../geom/Sector',
-        '../shapes/SurfaceImage',
-        '../util/WWUtil'
-    ],
-    function (RenderableLayer,
-              Sector,
-              SurfaceImage,
-              WWUtil) {
-        "use strict";
+var BMNGOneImageLayer = function () {
+  RenderableLayer.call(this, "Blue Marble Image");
 
-        /**
-         * Constructs a Blue Marble image layer that spans the entire globe.
-         * @alias BMNGOneImageLayer
-         * @constructor
-         * @augments RenderableLayer
-         * @classdesc Displays a Blue Marble image layer that spans the entire globe with a single image.
-         */
-        var BMNGOneImageLayer = function () {
-            RenderableLayer.call(this, "Blue Marble Image");
+  var surfaceImage = new SurfaceImage(
+    Sector.FULL_SPHERE,
+    WorldWind.configuration.baseUrl +
+      "images/BMNG_world.topo.bathy.200405.3.2048x1024.jpg"
+  );
 
-            var surfaceImage = new SurfaceImage(Sector.FULL_SPHERE,
-                WorldWind.configuration.baseUrl + "images/BMNG_world.topo.bathy.200405.3.2048x1024.jpg");
+  this.addRenderable(surfaceImage);
 
-            this.addRenderable(surfaceImage);
+  this.pickEnabled = false;
+  this.minActiveAltitude = 3e6;
+};
 
-            this.pickEnabled = false;
-            this.minActiveAltitude = 3e6;
-        };
+BMNGOneImageLayer.prototype = Object.create(RenderableLayer.prototype);
 
-        BMNGOneImageLayer.prototype = Object.create(RenderableLayer.prototype);
-
-        return BMNGOneImageLayer;
-    });
+export default BMNGOneImageLayer;

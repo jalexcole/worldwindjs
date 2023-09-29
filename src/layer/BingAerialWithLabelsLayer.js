@@ -25,43 +25,34 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
+import Location from "../geom/Location";
+import Sector from "../geom/Sector";
+import BingTiledImageLayer from "./BingTiledImageLayer";
+import BingImageryUrlBuilder from "../util/BingImageryUrlBuilder";
+
 /**
- * @exports BingAerialWithLabelsLayer
+ * Constructs a Bing Aerial with Labels layer.
+ * @alias BingAerialWithLabelsLayer
+ * @constructor
+ * @augments BingTiledImageLayer
+ * @classdesc Displays a Bing Aerial layer with roads and labels.
+ * See also {@link BingAerialLayer} and {@link BingRoadsLayer}.
+ *
+ * @param {String} bingMapsKey The Bing Maps key to use for the image requests. If null or undefined, the key at
+ * WorldWind.BingMapsKey is used. If that is null or undefined, the default WorldWind Bing Maps key is used,
+ * but this fallback is provided only for non-production use. If you are using Web WorldWind in an app or a
+ * web page, you must obtain your own key from the
+ * [Bing Maps Portal]{@link https://www.microsoft.com/maps/choose-your-bing-maps-API.aspx}
+ * and either pass it as a parameter to this constructor or specify it as the property WorldWind.BingMapsKey.
  */
-define([
-        '../geom/Location',
-        '../geom/Sector',
-        '../layer/BingTiledImageLayer',
-        '../util/BingImageryUrlBuilder'
-    ],
-    function (Location,
-              Sector,
-              BingTiledImageLayer,
-              BingImageryUrlBuilder) {
-        "use strict";
+var BingAerialWithLabelsLayer = function (bingMapsKey) {
+  BingTiledImageLayer.call(this, "Bing Aerial with Labels");
 
-        /**
-         * Constructs a Bing Aerial with Labels layer.
-         * @alias BingAerialWithLabelsLayer
-         * @constructor
-         * @augments BingTiledImageLayer
-         * @classdesc Displays a Bing Aerial layer with roads and labels.
-         * See also {@link BingAerialLayer} and {@link BingRoadsLayer}.
-         *
-         * @param {String} bingMapsKey The Bing Maps key to use for the image requests. If null or undefined, the key at
-         * WorldWind.BingMapsKey is used. If that is null or undefined, the default WorldWind Bing Maps key is used,
-         * but this fallback is provided only for non-production use. If you are using Web WorldWind in an app or a
-         * web page, you must obtain your own key from the
-         * [Bing Maps Portal]{@link https://www.microsoft.com/maps/choose-your-bing-maps-API.aspx}
-         * and either pass it as a parameter to this constructor or specify it as the property WorldWind.BingMapsKey.
-         */
-        var BingAerialWithLabelsLayer = function (bingMapsKey) {
-            BingTiledImageLayer.call(this, "Bing Aerial with Labels");
+  this.urlBuilder = new BingImageryUrlBuilder("AerialWithLabels", bingMapsKey);
+};
 
-            this.urlBuilder = new BingImageryUrlBuilder("AerialWithLabels", bingMapsKey);
-        };
+BingAerialWithLabelsLayer.prototype = Object.create(
+  BingTiledImageLayer.prototype
+);
 
-        BingAerialWithLabelsLayer.prototype = Object.create(BingTiledImageLayer.prototype);
-
-        return BingAerialWithLabelsLayer;
-    });
+export default BingAerialWithLabelsLayer;

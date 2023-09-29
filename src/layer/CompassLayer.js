@@ -25,55 +25,46 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
+import Compass from "../shapes/Compass";
+import RenderableLayer from "./RenderableLayer";
+
 /**
- * @exports CompassLayer
+ * Constructs a compass layer.
+ * @alias CompassLayer
+ * @constructor
+ * @augments RenderableLayer
+ * @classdesc Displays a compass. Compass layers cannot be shared among WorldWindows. Each WorldWindow if it
+ * is to have a compass layer must have its own. See the MultiWindow example for guidance.
  */
-define([
-        '../shapes/Compass',
-        '../layer/RenderableLayer'
-    ],
-    function (Compass,
-              RenderableLayer) {
-        "use strict";
+var CompassLayer = function () {
+  RenderableLayer.call(this, "Compass");
 
-        /**
-         * Constructs a compass layer.
-         * @alias CompassLayer
-         * @constructor
-         * @augments RenderableLayer
-         * @classdesc Displays a compass. Compass layers cannot be shared among WorldWindows. Each WorldWindow if it
-         * is to have a compass layer must have its own. See the MultiWindow example for guidance.
-         */
-        var CompassLayer = function () {
-            RenderableLayer.call(this, "Compass");
+  this._compass = new Compass(null, null);
 
-            this._compass = new Compass(null, null);
+  this.addRenderable(this._compass);
+};
 
-            this.addRenderable(this._compass);
-        };
+CompassLayer.prototype = Object.create(RenderableLayer.prototype);
 
-        CompassLayer.prototype = Object.create(RenderableLayer.prototype);
+Object.defineProperties(CompassLayer.prototype, {
+  /**
+   * The compass to display.
+   * @type {Compass}
+   * @default {@link Compass}
+   * @memberof CompassLayer.prototype
+   */
+  compass: {
+    get: function () {
+      return this._compass;
+    },
+    set: function (compass) {
+      if (compass && compass instanceof Compass) {
+        this.removeAllRenderables();
+        this.addRenderable(compass);
+        this._compass = compass;
+      }
+    },
+  },
+});
 
-        Object.defineProperties(CompassLayer.prototype, {
-            /**
-             * The compass to display.
-             * @type {Compass}
-             * @default {@link Compass}
-             * @memberof CompassLayer.prototype
-             */
-            compass: {
-                get: function () {
-                    return this._compass;
-                },
-                set: function (compass) {
-                    if (compass && compass instanceof Compass) {
-                        this.removeAllRenderables();
-                        this.addRenderable(compass);
-                        this._compass = compass;
-                    }
-                }
-            }
-        });
-
-        return CompassLayer;
-    });
+export default CompassLayer;
