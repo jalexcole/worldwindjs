@@ -15,39 +15,37 @@
  * limitations under the License.
  */
 
+/**
+ * Provides constants for the ShapeEditor.
+ * @exports ShapeEditorConstants
+ */
+var ShapeEditorConstants = {
+  // Indicates a control point controlling a location.
+  LOCATION: "location",
 
-        /**
-         * Provides constants for the ShapeEditor.
-         * @exports ShapeEditorConstants
-         */
-        var ShapeEditorConstants = {
+  // Indicates a control point controlling the rotation of shape.
+  ROTATION: "rotation",
 
-            // Indicates a control point controlling a location.
-            LOCATION: "location",
+  // Indicates a control point controlling the width of a shape.
+  WIDTH: "width",
 
-            // Indicates a control point controlling the rotation of shape.
-            ROTATION: "rotation",
+  // Indicates a control point controlling the height of a shape.
+  HEIGHT: "height",
 
-            // Indicates a control point controlling the width of a shape.
-            WIDTH: "width",
+  // Indicates a control point controlling the radius of a shape.
+  RADIUS: "radius",
 
-            // Indicates a control point controlling the height of a shape.
-            HEIGHT: "height",
+  // Indicates that an entire shape is being dragged.
+  DRAG: "drag",
 
-            // Indicates a control point controlling the radius of a shape.
-            RADIUS: "radius",
+  // Indicates the corner with min latitude for a surface sector
+  MIN_CORNER: "min_corner",
 
-            // Indicates that an entire shape is being dragged.
-            DRAG: "drag",
+  // Indicates the corner with max latitude for a surface sector
+  MAX_CORNER: "max_corner",
 
-            // Indicates the corner with min latitude for a surface sector
-            MIN_CORNER: "min_corner",
+  // Indicates a control point that marks the middle of a segment.
+  SHADOW: "shadow",
+};
 
-            // Indicates the corner with max latitude for a surface sector
-            MAX_CORNER: "max_corner",
-
-            // Indicates a control point that marks the middle of a segment.
-            SHADOW: "shadow"
-        };
-
-        export default ShapeEditorConstants;
+export default ShapeEditorConstants;

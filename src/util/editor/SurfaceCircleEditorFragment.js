@@ -14,92 +14,101 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/**
- * @exports SurfaceCircleEditorFragment
- */
-define([
-        './BaseSurfaceEditorFragment',
-        '../../geom/Location',
-        './ShapeEditorConstants',
-        '../../shapes/SurfaceCircle'
-    ],
-    function (BaseSurfaceEditorFragment,
-              Location,
-              ShapeEditorConstants,
-              SurfaceCircle) {
-        "use strict";
+import BaseSurfaceEditorFragment from "./BaseSurfaceEditorFragment";
+import Location from "../../geom/Location";
+import ShapeEditorConstants from "./ShapeEditorConstants";
+import SurfaceCircle from "../../shapes/SurfaceCircle";
 
-        // Internal use only.
-        var SurfaceCircleEditorFragment = function () {};
+// Internal use only.
+var SurfaceCircleEditorFragment = function () {};
 
-        SurfaceCircleEditorFragment.prototype = Object.create(BaseSurfaceEditorFragment.prototype);
-
-        // Internal use only.
-        SurfaceCircleEditorFragment.prototype.canHandle = function (shape) {
-            if (shape instanceof Function) {
-                return shape.name === "SurfaceCircle";
-            }
-            return shape instanceof SurfaceCircle;
-        };
-
-        // Internal use only.
-        SurfaceCircleEditorFragment.prototype.createShadowShape = function (shape) {
-            return new SurfaceCircle(shape.center, shape.radius, shape.attributes);
-        };
-
-        // Internal use only.
-        SurfaceCircleEditorFragment.prototype.getShapeCenter = function (shape) {
-            return shape.center;
-        };
-
-        // Internal use only.
-        SurfaceCircleEditorFragment.prototype.isRegularShape = function () {
-            return true;
-        };
-
-        // Internal use only.
-        SurfaceCircleEditorFragment.prototype.initializeControlElements = function (shape,
-                                                                                    controlPoints,
-                                                                                    shadowControlPoints,
-                                                                                    accessories,
-                                                                                    resizeControlPointAttributes) {
-            if (resizeControlPointAttributes) {
-                this.createControlPoint(controlPoints, resizeControlPointAttributes, ShapeEditorConstants.RADIUS);
-            }
-        };
-
-        // Internal use only.
-        SurfaceCircleEditorFragment.prototype.updateControlElements = function (shape, globe, controlPoints) {
-            if (controlPoints.length > 0) {
-                Location.greatCircleLocation(
-                    shape.center,
-                    90,
-                    shape.radius / globe.equatorialRadius,
-                    controlPoints[0].position
-                );
-
-                controlPoints[0].userProperties.size = shape.radius;
-            }
-        };
-
-        // Internal use only.
-        SurfaceCircleEditorFragment.prototype.reshape = function (shape,
-                                                                  globe,
-                                                                  controlPoint,
-                                                                  currentPosition,
-                                                                  previousPosition) {
-
-            if (controlPoint.userProperties.purpose === ShapeEditorConstants.RADIUS) {
-                var delta = this.computeControlPointDelta(globe, currentPosition, previousPosition);
-                var vector = this.computeControlPointDelta(globe, controlPoint.position, shape.center).normalize();
-
-                var radius = shape.radius + delta.dot(vector);
-                if (radius > 0) {
-                    shape.radius = radius;
-                }
-            }
-        };
-
-        return SurfaceCircleEditorFragment;
-    }
+SurfaceCircleEditorFragment.prototype = Object.create(
+  BaseSurfaceEditorFragment.prototype
 );
+
+// Internal use only.
+SurfaceCircleEditorFragment.prototype.canHandle = function (shape) {
+  if (shape instanceof Function) {
+    return shape.name === "SurfaceCircle";
+  }
+  return shape instanceof SurfaceCircle;
+};
+
+// Internal use only.
+SurfaceCircleEditorFragment.prototype.createShadowShape = function (shape) {
+  return new SurfaceCircle(shape.center, shape.radius, shape.attributes);
+};
+
+// Internal use only.
+SurfaceCircleEditorFragment.prototype.getShapeCenter = function (shape) {
+  return shape.center;
+};
+
+// Internal use only.
+SurfaceCircleEditorFragment.prototype.isRegularShape = function () {
+  return true;
+};
+
+// Internal use only.
+SurfaceCircleEditorFragment.prototype.initializeControlElements = function (
+  shape,
+  controlPoints,
+  shadowControlPoints,
+  accessories,
+  resizeControlPointAttributes
+) {
+  if (resizeControlPointAttributes) {
+    this.createControlPoint(
+      controlPoints,
+      resizeControlPointAttributes,
+      ShapeEditorConstants.RADIUS
+    );
+  }
+};
+
+// Internal use only.
+SurfaceCircleEditorFragment.prototype.updateControlElements = function (
+  shape,
+  globe,
+  controlPoints
+) {
+  if (controlPoints.length > 0) {
+    Location.greatCircleLocation(
+      shape.center,
+      90,
+      shape.radius / globe.equatorialRadius,
+      controlPoints[0].position
+    );
+
+    controlPoints[0].userProperties.size = shape.radius;
+  }
+};
+
+// Internal use only.
+SurfaceCircleEditorFragment.prototype.reshape = function (
+  shape,
+  globe,
+  controlPoint,
+  currentPosition,
+  previousPosition
+) {
+  if (controlPoint.userProperties.purpose === ShapeEditorConstants.RADIUS) {
+    var delta = this.computeControlPointDelta(
+      globe,
+      currentPosition,
+      previousPosition
+    );
+    var vector = this.computeControlPointDelta(
+      globe,
+      controlPoint.position,
+      shape.center
+    ).normalize();
+
+    var radius = shape.radius + delta.dot(vector);
+    if (radius > 0) {
+      shape.radius = radius;
+    }
+  }
+};
+
+export default SurfaceCircleEditorFragment;
