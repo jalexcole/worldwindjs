@@ -28,7 +28,6 @@
 import ArgumentError from "../../error/ArgumentError";
 import ColladaAsset from "./ColladaAsset";
 import ColladaImage from "./ColladaImage";
-import ColladaImage from "./ColladaImage";
 import ColladaMesh from "./ColladaMesh";
 import ColladaNode from "./ColladaNode";
 import ColladaScene from "./ColladaScene";

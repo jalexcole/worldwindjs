@@ -267,7 +267,7 @@ import Touch from "./gesture/Touch";
 import TriangleMesh from "./shapes/TriangleMesh";
 import UnsupportedOperationError from "./error/UnsupportedOperationError";
 import UsgsNedElevationCoverage from "./globe/UsgsNedElevationCoverage";
-import UsgsNedElevationCoverage from "./globe/UsgsNedHiElevationCoverage";
+import UsgsNedHiElevationCoverage from "./globe/UsgsNedHiElevationCoverage";
 import UrlBuilder from "./util/UrlBuilder";
 import Vec2 from "./geom/Vec2";
 import Vec3 from "./geom/Vec3";

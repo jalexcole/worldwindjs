@@ -236,4 +236,4 @@ Matrix3.prototype.columnMajorComponents = function (result) {
   return result;
 };
 
-return Matrix3;
+export default Matrix3;

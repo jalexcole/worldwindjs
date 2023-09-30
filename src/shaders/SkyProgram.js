@@ -26,14 +26,7 @@
  * PDF found in code  directory.
  */
 import AtmosphereProgram from "./AtmosphereProgram";
-/**
- * @exports SkyProgram
- */
-define([
-        '../shaders/AtmosphereProgram'
-    ],
-    function (AtmosphereProgram) {
-        "use strict";
+
 
         /**
          * Constructs a new program.
@@ -205,8 +198,8 @@ define([
         // Inherit from AtmosphereProgram.
         SkyProgram.prototype = Object.create(AtmosphereProgram.prototype);
 
-        return SkyProgram;
-    });
+        export default SkyProgram;
+
 
 
 

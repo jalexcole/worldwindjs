@@ -25,38 +25,26 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
+import AsterV2ElevationCoverage from "./AsterV2ElevationCoverage";
+import ElevationModel from "./ElevationModel";
+import GebcoElevationCoverage from "./GebcoElevationCoverage";
+import UsgsNedElevationCoverage from "./UsgsNedElevationCoverage";
+import UsgsNedHiElevationCoverage from "./UsgsNedHiElevationCoverage";
+
 /**
- * @exports EarthElevationModel
+ * Constructs an EarthElevationModel consisting of three elevation coverages GEBCO, Aster V2, and USGS NED.
+ * @alias EarthElevationModel
+ * @constructor
  */
-define([
-        '../globe/AsterV2ElevationCoverage',
-        '../globe/ElevationModel',
-        '../globe/GebcoElevationCoverage',
-        '../globe/UsgsNedElevationCoverage',
-        '../globe/UsgsNedHiElevationCoverage'
-    ],
-    function (AsterV2ElevationCoverage,
-              ElevationModel,
-              GebcoElevationCoverage,
-              UsgsNedElevationCoverage,
-              UsgsNedHiElevationCoverage) {
-        "use strict";
+var EarthElevationModel = function () {
+  ElevationModel.call(this);
 
-        /**
-         * Constructs an EarthElevationModel consisting of three elevation coverages GEBCO, Aster V2, and USGS NED.
-         * @alias EarthElevationModel
-         * @constructor
-         */
-        var EarthElevationModel = function () {
-            ElevationModel.call(this);
+  this.addCoverage(new GebcoElevationCoverage());
+  this.addCoverage(new AsterV2ElevationCoverage());
+  this.addCoverage(new UsgsNedElevationCoverage());
+  this.addCoverage(new UsgsNedHiElevationCoverage());
+};
 
-            this.addCoverage(new GebcoElevationCoverage());
-            this.addCoverage(new AsterV2ElevationCoverage());
-            this.addCoverage(new UsgsNedElevationCoverage());
-            this.addCoverage(new UsgsNedHiElevationCoverage());
-        };
+EarthElevationModel.prototype = Object.create(ElevationModel.prototype);
 
-        EarthElevationModel.prototype = Object.create(ElevationModel.prototype);
-
-        return EarthElevationModel;
-    });
+export default EarthElevationModel;

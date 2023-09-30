@@ -36,7 +36,7 @@ import Logger from "../util/Logger";
 import Matrix from "../geom/Matrix";
 import Offset from "../util/Offset";
 import PickedObject from "../pick/PickedObject";
-import Renderable from "..render/Renderable";
+import Renderable from "../render/Renderable";
 import TextAttributes from "./TextAttributes";
 import Vec2 from "../geom/Vec2";
 import Vec3 from "../geom/Vec3";

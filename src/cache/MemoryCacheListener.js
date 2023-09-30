@@ -69,4 +69,4 @@ MemoryCacheListener.prototype.removalError = function (error, key, entry) {
   );
 };
 
-return MemoryCacheListener;
+export default MemoryCacheListener;

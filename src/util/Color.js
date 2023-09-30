@@ -369,6 +369,6 @@ Color.prototype.toCssColorString = function () {
   return "rgba(" + red + ", " + green + ", " + blue + ", " + this.alpha + ")";
 };
 
-return Color;
+
 
 export default Color;

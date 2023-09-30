@@ -25,18 +25,11 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
-/**
- * @exports ElevationModel
- */
-define(['../error/ArgumentError',
-        '../geom/Angle',
-        '../geom/Location',
-        '../util/Logger'],
-    function (ArgumentError,
-              Angle,
-              Location,
-              Logger) {
-        "use strict";
+import ArgumentError from "../error/ArgumentError";
+import Angle from "../geom/Angle";
+import Location from "../geom/Location";
+import Logger from "../util/Logger";
+
 
         /**
          * Constructs an elevation model.
@@ -429,5 +422,5 @@ define(['../error/ArgumentError',
             return resolution;
         };
 
-        return ElevationModel;
-    });
+        export default ElevationModel;
+
