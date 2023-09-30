@@ -25,10 +25,8 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
-define([
-    './KmlNodeTransformers'
-], function (NodeTransformers) {
-    "use strict";
+import KmlNodeTransformers from "./KmlNodeTransformers";
+
 
     /**
      * Simple factory, which understands the mapping between the XML and the internal Elements.
@@ -113,5 +111,4 @@ define([
         return applicationWide;
     };
 
-    return KmlElementsFactory;
-});
+    export default KmlElementsFactory;

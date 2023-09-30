@@ -25,45 +25,42 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
-define([
-	'../KmlElements',
-	'../KmlObject'
-], function(KmlElements,
-			KmlObject){
-	/**
-	 * @augment KmlObject
-	 * @param options
-	 * @constructor
-	 * @alias KmlChange
-	 */
-	var KmlChange = function(options) {
-		KmlObject.call(this, options);
-	};
+import KmlElements from "../KmlElements";
+import KmlObject from "../KmlObject";
 
-	KmlChange.prototype = Object.create(KmlObject.prototype);
+/**
+ * @augment KmlObject
+ * @param options
+ * @constructor
+ * @alias KmlChange
+ */
+var KmlChange = function (options) {
+  KmlObject.call(this, options);
+};
 
-	Object.defineProperties(KmlChange.prototype, {
-		/**
-		 * All shapes which should be changed with the location where they should be changed.
-		 * @memberof KmlChange.prototype
-		 * @readonly
-		 * @type {KmlObject[]}
-		 */
-		shapes: {
-			get: function(){
-				return this._factory.all(this);
-			}
-		}
-	});
+KmlChange.prototype = Object.create(KmlObject.prototype);
 
-	/**
-	 * @inheritDoc
-	 */
-	KmlChange.prototype.getTagNames = function() {
-		return ['Change'];
-	};
-
-	KmlElements.addKey(KmlChange.prototype.getTagNames()[0], KmlChange);
-
-	return KmlChange;
+Object.defineProperties(KmlChange.prototype, {
+  /**
+   * All shapes which should be changed with the location where they should be changed.
+   * @memberof KmlChange.prototype
+   * @readonly
+   * @type {KmlObject[]}
+   */
+  shapes: {
+    get: function () {
+      return this._factory.all(this);
+    },
+  },
 });
+
+/**
+ * @inheritDoc
+ */
+KmlChange.prototype.getTagNames = function () {
+  return ["Change"];
+};
+
+KmlElements.addKey(KmlChange.prototype.getTagNames()[0], KmlChange);
+
+export default KmlChange;

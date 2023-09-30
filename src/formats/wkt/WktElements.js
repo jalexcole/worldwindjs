@@ -25,7 +25,7 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
-define([], function () {
+
     //noinspection UnnecessaryLocalVariableJS
     /**
      * Map representing the available elements. Basically this is a way to overcome circular dependencies issues. They
@@ -35,5 +35,4 @@ define([], function () {
     var WktElements = {
     };
 
-    return WktElements;
-});
+    export default WktElements;

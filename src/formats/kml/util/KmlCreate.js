@@ -25,46 +25,43 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
-define([
-	'../KmlElements',
-	'../KmlObject'
-], function(KmlElements, 
-			KmlObject){
-	/**
-	 *
-	 * @param options {Object}
-	 * @augments KmlObject
-	 * @constructor
-	 * @alias KmlCreate
-	 */
-	var KmlCreate = function(options) {
-		KmlObject.call(this, options);
-	};
+import KmlElements from "../KmlElements";
+import KmlObject from "../KmlObject";
 
-	KmlCreate.prototype = Object.create(KmlObject.prototype);
-	
-	Object.defineProperties(KmlCreate.prototype, {
-		/**
-		 * All shapes which should be created with the location where they should be created.
-		 * @memberof KmlCreate.prototype
-		 * @readonly
-		 * @type {KmlObject[]}
-		 */
-		shapes: {
-			get: function(){
-				return this._factory.all(this);
-			}
-		}
-	});
+/**
+ *
+ * @param options {Object}
+ * @augments KmlObject
+ * @constructor
+ * @alias KmlCreate
+ */
+var KmlCreate = function (options) {
+  KmlObject.call(this, options);
+};
 
-	/**
-	 * @inheritDoc
-	 */
-	KmlCreate.prototype.getTagNames = function() {
-		return ['Create'];
-	};
-	
-	KmlElements.addKey(KmlCreate.prototype.getTagNames()[0], KmlCreate);
+KmlCreate.prototype = Object.create(KmlObject.prototype);
 
-	return KmlCreate;
+Object.defineProperties(KmlCreate.prototype, {
+  /**
+   * All shapes which should be created with the location where they should be created.
+   * @memberof KmlCreate.prototype
+   * @readonly
+   * @type {KmlObject[]}
+   */
+  shapes: {
+    get: function () {
+      return this._factory.all(this);
+    },
+  },
 });
+
+/**
+ * @inheritDoc
+ */
+KmlCreate.prototype.getTagNames = function () {
+  return ["Create"];
+};
+
+KmlElements.addKey(KmlCreate.prototype.getTagNames()[0], KmlCreate);
+
+export default KmlCreate;

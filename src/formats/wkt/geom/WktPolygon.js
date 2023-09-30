@@ -25,63 +25,66 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
-define([
-    '../../../shapes/Polygon',
-    '../../../shapes/ShapeAttributes',
-    '../../../shapes/SurfacePolygon',
-    '../WktElements',
-    './WktObject',
-    '../WktType'
-], function (Polygon,
-             ShapeAttributes,
-             SurfacePolygon,
-             WktElements,
-             WktObject,
-             WktType) {
-    /**
-     * It represents the polygon.
-     * @alias WktPolygon
-     * @augments WktObject
-     * @constructor
-     */
-    var WktPolygon = function () {
-        WktObject.call(this, WktType.SupportedGeometries.POLYGON);
+import Polygon from "../../../shapes/Polygon";
+import ShapeAttributes from "../../../shapes/ShapeAttributes";
+import SurfacePolygon from "../../../shapes/SurfacePolygon";
+import WktElements from "../WktElements";
+import WktObject from "./WktObject";
+import WktType from "../WktType";
 
-        this._renderable = null;
-    };
+/**
+ * It represents the polygon.
+ * @alias WktPolygon
+ * @augments WktObject
+ * @constructor
+ */
+var WktPolygon = function () {
+  WktObject.call(this, WktType.SupportedGeometries.POLYGON);
 
-    WktPolygon.prototype = Object.create(WktObject.prototype);
+  this._renderable = null;
+};
 
-    /**
-     * @inheritDoc
-     */
-    WktPolygon.prototype.commaWithoutCoordinates = function() {
-        this.outerBoundaries = this.coordinates.slice();
-        this.coordinates = [];
-    };
+WktPolygon.prototype = Object.create(WktObject.prototype);
 
-    /**
-     * It returns SurfacePolygon for 2D. It returns Polygon for 3D.
-     * @inheritDoc
-     * @return {Polygon[]|SurfacePolyline[]}
-     */
-    WktPolygon.prototype.shapes = function () {
-        if (this._is3d) {
-            if(this.outerBoundaries) {
-                return [new Polygon([this.outerBoundaries, this.coordinates], new ShapeAttributes(null))];
-            } else {
-                return [new Polygon(this.coordinates, new ShapeAttributes(null))];
-            }
-        } else {
-            if(this.outerBoundaries) {
-                return [new SurfacePolygon([this.outerBoundaries, this.coordinates], new ShapeAttributes(null))];
-            } else {
-                return [new SurfacePolygon(this.coordinates, new ShapeAttributes(null))];
-            }
-        }
-    };
+/**
+ * @inheritDoc
+ */
+WktPolygon.prototype.commaWithoutCoordinates = function () {
+  this.outerBoundaries = this.coordinates.slice();
+  this.coordinates = [];
+};
 
-    WktElements['POLYGON'] = WktPolygon;
+/**
+ * It returns SurfacePolygon for 2D. It returns Polygon for 3D.
+ * @inheritDoc
+ * @return {Polygon[]|SurfacePolyline[]}
+ */
+WktPolygon.prototype.shapes = function () {
+  if (this._is3d) {
+    if (this.outerBoundaries) {
+      return [
+        new Polygon(
+          [this.outerBoundaries, this.coordinates],
+          new ShapeAttributes(null)
+        ),
+      ];
+    } else {
+      return [new Polygon(this.coordinates, new ShapeAttributes(null))];
+    }
+  } else {
+    if (this.outerBoundaries) {
+      return [
+        new SurfacePolygon(
+          [this.outerBoundaries, this.coordinates],
+          new ShapeAttributes(null)
+        ),
+      ];
+    } else {
+      return [new SurfacePolygon(this.coordinates, new ShapeAttributes(null))];
+    }
+  }
+};
 
-    return WktPolygon;
-});
+WktElements["POLYGON"] = WktPolygon;
+
+export default WktPolygon;

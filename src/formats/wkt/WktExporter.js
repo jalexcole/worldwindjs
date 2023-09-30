@@ -25,17 +25,10 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
-/**
- * @exports WktExporter
- */
-define(['../../error/ArgumentError',
-        '../../util/Logger',
-        './WktType'
-    ],
-    function (ArgumentError,
-              Logger,
-              WktType) {
-        "use strict";
+import ArgumentError from "../../error/ArgumentError";
+import Logger from "../../util/Logger";
+import WktType from "./WktType";
+
 
         /**
          * Provides WKT exporter functions.
@@ -423,5 +416,4 @@ define(['../../error/ArgumentError',
             }
         };
 
-        return WktExporter;
-    });
+        export default WktExporter;

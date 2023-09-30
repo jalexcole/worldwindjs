@@ -25,17 +25,12 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
-define([
-    '../../../geom/Location',
-    '../../../geom/Position',
-    '../WktElements',
-    './WktObject',
-    '../WktType'
-], function (Location,
-             Position,
-             WktElements,
-             WktObject,
-             WktType) {
+import Location from "../../../geom/Location";
+import Position from "../../../geom/Position";
+import WktElements from "../WktElements";
+import WktObject from "./WktObject";
+import WktType from "../WktType";
+
     /**
      * This item can contain other geometries to be shown.
      * @alias WktGeometryCollection
@@ -91,5 +86,4 @@ define([
 
     WktElements['GEOMETRYCOLLECTION'] = WktGeometryCollection;
 
-    return WktGeometryCollection;
-});
+    export default WktGeometryCollection;

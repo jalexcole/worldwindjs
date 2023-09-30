@@ -25,46 +25,47 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
-define([], function () {
-    "use strict";
 
-    /**
-     * This class represents abstraction for KmlAttribute. It is possible to test its existence, retrieve value and set
-     * value.
-     * @alias KmlAttribute
-     * @param node {Node} Node on which the attribute exists
-     * @param name {String} Name of the attribute
-     * @constructor
-     */
-    var KmlAttribute = function(node, name) {
-        this.node = node;
-        this.name = name;
-    };
+/**
+ * This class represents abstraction for KmlAttribute. It is possible to test its existence, retrieve value and set
+ * value.
+ * @alias KmlAttribute
+ * @param node {Node} Node on which the attribute exists
+ * @param name {String} Name of the attribute
+ * @constructor
+ */
+var KmlAttribute = function (node, name) {
+  this.node = node;
+  this.name = name;
+};
 
-    /**
-     * It returns value of the attribute. If the attribute doesn't exists it returns null.
-     * @returns {String|null}
-     */
-    KmlAttribute.prototype.value = function(){
-        return (this.node.attributes && this.node.attributes.getNamedItem(this.name)&&
-            this.node.attributes.getNamedItem(this.name).value) || null;
-    };
+/**
+ * It returns value of the attribute. If the attribute doesn't exists it returns null.
+ * @returns {String|null}
+ */
+KmlAttribute.prototype.value = function () {
+  return (
+    (this.node.attributes &&
+      this.node.attributes.getNamedItem(this.name) &&
+      this.node.attributes.getNamedItem(this.name).value) ||
+    null
+  );
+};
 
-    /**
-     * It returns true if there exists attribute with given name.
-     * @returns {boolean}
-     */
-    KmlAttribute.prototype.exists = function() {
-        return this.value() != null;
-    };
+/**
+ * It returns true if there exists attribute with given name.
+ * @returns {boolean}
+ */
+KmlAttribute.prototype.exists = function () {
+  return this.value() != null;
+};
 
-    /**
-     * Value which should be set to the attribute. 
-     * @param value {String}
-     */
-    KmlAttribute.prototype.save = function(value) {
-        this.node.setAttribute(this.name, value);
-    };
+/**
+ * Value which should be set to the attribute.
+ * @param value {String}
+ */
+KmlAttribute.prototype.save = function (value) {
+  this.node.setAttribute(this.name, value);
+};
 
-    return KmlAttribute;
-});
+export default KmlAttribute;

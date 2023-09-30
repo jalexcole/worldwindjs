@@ -25,48 +25,43 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
-define([
-    '../../../shapes/Placemark',
-    '../../../shapes/PlacemarkAttributes',
-    '../WktElements',
-    './WktObject',
-    './WktPoint',
-    '../WktType'
-], function (Placemark,
-             PlacemarkAttributes,
-             WktElements,
-             WktObject,
-             WktPoint,
-             WktType) {
-    /**
-     * It represents multiple points.
-     * @alias WktMultiPoint
-     * @augments WktObject
-     * @constructor
-     */
-    var WktMultiPoint = function () {
-        WktObject.call(this, WktType.SupportedGeometries.MULTI_POINT);
-    };
+import Placemark from "../../../shapes/Placemark";
+import PlacemarkAttributes from "../../../shapes/PlacemarkAttributes";
+import WktElements from "../WktElements";
+import WktObject from "./WktObject";
+import WktPoint from "./WktPoint";
+import WktType from "../WktType";
 
-    WktMultiPoint.prototype = Object.create(WktObject.prototype);
+/**
+ * It represents multiple points.
+ * @alias WktMultiPoint
+ * @augments WktObject
+ * @constructor
+ */
+var WktMultiPoint = function () {
+  WktObject.call(this, WktType.SupportedGeometries.MULTI_POINT);
+};
 
-    /**
-     * Specific for Multi objects as it depicts the boundaries.
-     */
-    WktMultiPoint.prototype.commaWithoutCoordinates = function() {};
+WktMultiPoint.prototype = Object.create(WktObject.prototype);
 
-    /**
-     * It returns Placemark for each point.
-     * @inheritDoc
-     * @return {Placemark[]}
-     */
-    WktMultiPoint.prototype.shapes = function() {
-        return this.coordinates.map(function(coordinate){
-            return WktPoint.placemark(coordinate);
-        }.bind(this));
-    };
+/**
+ * Specific for Multi objects as it depicts the boundaries.
+ */
+WktMultiPoint.prototype.commaWithoutCoordinates = function () {};
 
-    WktElements['MULTIPOINT'] = WktMultiPoint;
+/**
+ * It returns Placemark for each point.
+ * @inheritDoc
+ * @return {Placemark[]}
+ */
+WktMultiPoint.prototype.shapes = function () {
+  return this.coordinates.map(
+    function (coordinate) {
+      return WktPoint.placemark(coordinate);
+    }.bind(this)
+  );
+};
 
-    return WktMultiPoint;
-});
+WktElements["MULTIPOINT"] = WktMultiPoint;
+
+export default WktMultiPoint;
