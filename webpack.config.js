@@ -3,7 +3,10 @@ const path = require("path");
 // const HtmlWebpackPlugin = require("html-webpack-plugin");
 
 module.exports = {
-  mode: "development",
+  //mode: "development",
+  optimization: {
+    minimize: false, // Disable minification
+  },
   entry: "./src/WorldWind.js",
   output: {
     filename: "worldwind.min.js",
