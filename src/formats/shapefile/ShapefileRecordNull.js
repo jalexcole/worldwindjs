@@ -25,37 +25,28 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
+import Shapefile from "./Shapefile";
+import ShapefileRecord from "./ShapefileRecord";
+
 /**
- * @exports ShapefileRecordNull
+ * Constructs a null shapefile record. Applications typically do not call this constructor. It is called by
+ * {@link Shapefile} as shapefile records are read.
+ * @alias ShapefileRecordNull
+ * @constructor
+ * @classdesc Contains the data associated with a null shapefile record.
+ * @augments ShapefileRecord
+ * @param {Shapefile} shapefile The shapefile containing this record.
+ * @param {ByteBuffer} buffer A buffer descriptor to read data from.
+ * @throws {ArgumentError} If either the specified shapefile or buffer are null or undefined.
  */
-define(['../../formats/shapefile/Shapefile',
-        '../../formats/shapefile/ShapefileRecord'
-    ],
-    function (Shapefile,
-              ShapefileRecord) {
-        "use strict";
+var ShapefileRecordNull = function (shapefile, buffer) {
+  ShapefileRecord.call(this, shapefile, buffer);
+};
 
-        /**
-         * Constructs a null shapefile record. Applications typically do not call this constructor. It is called by
-         * {@link Shapefile} as shapefile records are read.
-         * @alias ShapefileRecordNull
-         * @constructor
-         * @classdesc Contains the data associated with a null shapefile record.
-         * @augments ShapefileRecord
-         * @param {Shapefile} shapefile The shapefile containing this record.
-         * @param {ByteBuffer} buffer A buffer descriptor to read data from.
-         * @throws {ArgumentError} If either the specified shapefile or buffer are null or undefined.
-         */
-        var ShapefileRecordNull = function (shapefile, buffer) {
-            ShapefileRecord.call(this, shapefile, buffer);
-        };
+ShapefileRecordNull.prototype = Object.create(ShapefileRecord.prototype);
 
-        ShapefileRecordNull.prototype = Object.create(ShapefileRecord.prototype);
+ShapefileRecordNull.prototype.readContents = function () {
+  this.readNullContents();
+};
 
-        ShapefileRecordNull.prototype.readContents = function() {
-            this.readNullContents();
-        };
-
-        return ShapefileRecordNull;
-    }
-);
+export default ShapefileRecordNull;

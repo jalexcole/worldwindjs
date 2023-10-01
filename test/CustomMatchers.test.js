@@ -25,8 +25,7 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
-define([], function () {
-    "use strict";
+
 
     var CustomMatchers = function () {
     };
@@ -128,5 +127,4 @@ define([], function () {
         return (Math.round(delta * pow) / pow) <= maxDelta;
     };
 
-    return CustomMatchers;
-});
+    export default CustomMatchers;

@@ -25,37 +25,28 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
+import Shapefile from "./Shapefile";
+import ShapefileRecord from "./ShapefileRecord";
+
 /**
- * @exports ShapefileRecordPoint
+ * Constructs a shapefile record for a point. Applications typically do not call this constructor. It is called by
+ * {@link Shapefile} as shapefile records are read.
+ * @alias ShapefileRecordPoint
+ * @constructor
+ * @classdesc Contains the data associated with a shapefile point record.
+ * @augments ShapefileRecord
+ * @param {Shapefile} shapefile The shapefile containing this record.
+ * @param {ByteBuffer} buffer A buffer descriptor to read data from.
+ * @throws {ArgumentError} If either the specified shapefile or buffer are null or undefined.
  */
-define(['../../formats/shapefile/Shapefile',
-        '../../formats/shapefile/ShapefileRecord'
-    ],
-    function (Shapefile,
-              ShapefileRecord) {
-        "use strict";
+var ShapefileRecordPoint = function (shapefile, buffer) {
+  ShapefileRecord.call(this, shapefile, buffer);
+};
 
-        /**
-         * Constructs a shapefile record for a point. Applications typically do not call this constructor. It is called by
-         * {@link Shapefile} as shapefile records are read.
-         * @alias ShapefileRecordPoint
-         * @constructor
-         * @classdesc Contains the data associated with a shapefile point record.
-         * @augments ShapefileRecord
-         * @param {Shapefile} shapefile The shapefile containing this record.
-         * @param {ByteBuffer} buffer A buffer descriptor to read data from.
-         * @throws {ArgumentError} If either the specified shapefile or buffer are null or undefined.
-         */
-        var ShapefileRecordPoint = function (shapefile, buffer) {
-            ShapefileRecord.call(this, shapefile, buffer);
-        };
+ShapefileRecordPoint.prototype = Object.create(ShapefileRecord.prototype);
 
-        ShapefileRecordPoint.prototype = Object.create(ShapefileRecord.prototype);
+ShapefileRecordPoint.prototype.readContents = function () {
+  this.readPointContents();
+};
 
-        ShapefileRecordPoint.prototype.readContents = function() {
-            this.readPointContents();
-        };
-
-        return ShapefileRecordPoint;
-    }
-);
+export default ShapefileRecordPoint;

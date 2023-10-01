@@ -25,15 +25,9 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
-/**
- * @exports ShapefileRecordPolygon
- */
-define(['../../formats/shapefile/Shapefile',
-        '../../formats/shapefile/ShapefileRecord'
-    ],
-    function (Shapefile,
-              ShapefileRecord) {
-        "use strict";
+import Shapefile from "./Shapefile";
+import ShapefileRecord from "./ShapefileRecord";
+
 
         /**
          * Constructs a shapefile record for a polygon. Applications typically do not call this constructor. It is called by
@@ -56,6 +50,4 @@ define(['../../formats/shapefile/Shapefile',
             this.readPolylineContents();
         };
 
-        return ShapefileRecordPolygon;
-    }
-);
+        export default ShapefileRecordPolygon;

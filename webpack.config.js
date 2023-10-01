@@ -1,18 +1,21 @@
 const path = require("path");
+//const { CleanWebpackPlugin } = require("clean-webpack-plugin");
+// const HtmlWebpackPlugin = require("html-webpack-plugin");
 
 module.exports = {
+  mode: "development",
   entry: "./src/WorldWind.js",
   output: {
     filename: "worldwind.min.js",
-      path: path.resolve(__dirname, "build/dist"),
-    assetModuleFilename: 'images/[hash][ext][query]'
+    path: path.resolve(__dirname, "build/dist"),
+    assetModuleFilename: "images/[hash][ext][query]",
   },
   module: {
     rules: [
       {
         loader: "file-loader",
-        test: /\.(png|jpg|gif)$/,
-        type: "images",
+        test: /\.(png|svg|jpg|jpeg|gif)$/,
+        type: "asset/resource",
       },
     ],
   },

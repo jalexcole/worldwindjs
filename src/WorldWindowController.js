@@ -39,104 +39,106 @@ import UnsupportedOperationError from "./error/UnsupportedOperationError";
  * @param {WorldWindow} worldWindow The WorldWindow associated with this layer.
  * @throws {ArgumentError} If the specified WorldWindow is null or undefined.
  */
-var WorldWindowController = function (worldWindow) {
-  if (!worldWindow) {
-    throw new ArgumentError(
-      Logger.logMessage(
-        Logger.LEVEL_SEVERE,
-        "WorldWindowController",
-        "constructor",
-        "missingWorldWindow"
-      )
-    );
+class WorldWindowController {
+  constructor(worldWindow) {
+    if (!worldWindow) {
+      throw new ArgumentError(
+        Logger.logMessage(
+          Logger.LEVEL_SEVERE,
+          "WorldWindowController",
+          "constructor",
+          "missingWorldWindow"
+        )
+      );
+    }
+
+    /**
+     * The WorldWindow associated with this controller.
+     * @type {WorldWindow}
+     * @readonly
+     */
+    this.wwd = worldWindow;
+
+    // Intentionally not documented.
+    this.allGestureListeners = [];
   }
-
-  /**
-   * The WorldWindow associated with this controller.
-   * @type {WorldWindow}
-   * @readonly
-   */
-  this.wwd = worldWindow;
-
   // Intentionally not documented.
-  this.allGestureListeners = [];
-};
+  onGestureEvent(event) {
+    var handled = false;
 
-// Intentionally not documented.
-WorldWindowController.prototype.onGestureEvent = function (event) {
-  var handled = false;
+    for (var i = 0; i < this.allGestureListeners.length && !handled; i++) {
+      handled |= this.allGestureListeners[i].onGestureEvent(event);
+    }
 
-  for (var i = 0; i < this.allGestureListeners.length && !handled; i++) {
-    handled |= this.allGestureListeners[i].onGestureEvent(event);
+    return handled;
   }
-
-  return handled;
-};
-
-// Intentionally not documented.
-WorldWindowController.prototype.gestureStateChanged = function (recognizer) {
-  throw new UnsupportedOperationError(
-    Logger.logMessage(
-      Logger.LEVEL_SEVERE,
-      "WorldWindowController",
-      "gestureStateChanged",
-      "abstractInvocation"
-    )
-  );
-};
-
-/**
- * Registers a gesture event listener on this controller. Registering event listeners using this function
- * enables applications to prevent the controller's default behavior.
- *
- * Listeners must implement an onGestureEvent method to receive event notifications. The onGestureEvent method will
- * receive one parameter containing the information about the gesture event. Returning true from onGestureEvent
- * indicates that the event was processed and will prevent any further handling of the event.
- *
- * When an event occurs, application event listeners are called before WorldWindowController event listeners.
- *
- * @param listener The function to call when the event occurs.
- * @throws {ArgumentError} If any argument is null or undefined.
- */
-WorldWindowController.prototype.addGestureListener = function (listener) {
-  if (!listener) {
-    throw new ArgumentError(
+  // Intentionally not documented.
+  gestureStateChanged(recognizer) {
+    throw new UnsupportedOperationError(
       Logger.logMessage(
         Logger.LEVEL_SEVERE,
         "WorldWindowController",
-        "addGestureListener",
-        "missingListener"
+        "gestureStateChanged",
+        "abstractInvocation"
       )
     );
   }
+  /**
+   * Registers a gesture event listener on this controller. Registering event listeners using this function
+   * enables applications to prevent the controller's default behavior.
+   *
+   * Listeners must implement an onGestureEvent method to receive event notifications. The onGestureEvent method will
+   * receive one parameter containing the information about the gesture event. Returning true from onGestureEvent
+   * indicates that the event was processed and will prevent any further handling of the event.
+   *
+   * When an event occurs, application event listeners are called before WorldWindowController event listeners.
+   *
+   * @param listener The function to call when the event occurs.
+   * @throws {ArgumentError} If any argument is null or undefined.
+   */
+  addGestureListener(listener) {
+    if (!listener) {
+      throw new ArgumentError(
+        Logger.logMessage(
+          Logger.LEVEL_SEVERE,
+          "WorldWindowController",
+          "addGestureListener",
+          "missingListener"
+        )
+      );
+    }
 
-  this.allGestureListeners.push(listener);
-};
-
-/**
- * Removes a gesture event listener from this controller. The listener must be the same object passed to
- * addGestureListener. Calling removeGestureListener with arguments that do not identify a currently registered
- * listener has no effect.
- *
- * @param listener The listener to remove. Must be the same object passed to addGestureListener.
- * @throws {ArgumentError} If any argument is null or undefined.
- */
-WorldWindowController.prototype.removeGestureListener = function (listener) {
-  if (!listener) {
-    throw new ArgumentError(
-      Logger.logMessage(
-        Logger.LEVEL_SEVERE,
-        "WorldWindowController",
-        "removeGestureListener",
-        "missingListener"
-      )
-    );
+    this.allGestureListeners.push(listener);
   }
+  /**
+   * Removes a gesture event listener from this controller. The listener must be the same object passed to
+   * addGestureListener. Calling removeGestureListener with arguments that do not identify a currently registered
+   * listener has no effect.
+   *
+   * @param listener The listener to remove. Must be the same object passed to addGestureListener.
+   * @throws {ArgumentError} If any argument is null or undefined.
+   */
+  removeGestureListener(listener) {
+    if (!listener) {
+      throw new ArgumentError(
+        Logger.logMessage(
+          Logger.LEVEL_SEVERE,
+          "WorldWindowController",
+          "removeGestureListener",
+          "missingListener"
+        )
+      );
+    }
 
-  var index = this.allGestureListeners.indexOf(listener);
-  if (index !== -1) {
-    this.allGestureListeners.splice(index, 1); // remove the listener from the list
+    var index = this.allGestureListeners.indexOf(listener);
+    if (index !== -1) {
+      this.allGestureListeners.splice(index, 1); // remove the listener from the list
+    }
   }
-};
+}
+
+
+
+
 
 export default WorldWindowController;

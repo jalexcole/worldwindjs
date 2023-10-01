@@ -25,133 +25,140 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
+import ArgumentError from "../../error/ArgumentError";
+import ByteBuffer from "../../util/ByteBuffer";
+import DBaseField from "./DBaseField";
+import DBaseFile from "./DBaseFile";
+import Logger from "../../util/Logger";
+
 /**
- * @exports DBaseRecord
+ * Create a DBase record. Applications typically do not call this constructor. It is called by
+ * {@link DBaseFile} as attribute records are read.
+ * @param {DBaseFile} dbaseFile A dBase attribute file.
+ * @param {ByteBuffer} buffer A buffer descriptor from which to parse a record.
+ * @param {Number} recordNumber The number of the record to parse.
+ * @returns {DBaseRecord} The DBase record that was parsed.
+ * @constructor
  */
-define(['../../error/ArgumentError',
-        '../../util/ByteBuffer',
-        '../../formats/shapefile/DBaseField',
-        '../../formats/shapefile/DBaseFile',
-        '../../util/Logger'
-    ],
-    function (ArgumentError,
-              ByteBuffer,
-              DBaseField,
-              DBaseFile,
-              Logger) {
-        "use strict";
+var DBaseRecord = function (dbaseFile, buffer, recordNumber) {
+  if (!dbaseFile) {
+    throw new ArgumentError(
+      Logger.logMessage(
+        Logger.LEVEL_SEVERE,
+        "DBaseRecord",
+        "constructor",
+        "missingAttributeName"
+      )
+    );
+  }
 
-        /**
-         * Create a DBase record. Applications typically do not call this constructor. It is called by
-         * {@link DBaseFile} as attribute records are read.
-         * @param {DBaseFile} dbaseFile A dBase attribute file.
-         * @param {ByteBuffer} buffer A buffer descriptor from which to parse a record.
-         * @param {Number} recordNumber The number of the record to parse.
-         * @returns {DBaseRecord} The DBase record that was parsed.
-         * @constructor
-         */
-        var DBaseRecord = function(dbaseFile, buffer, recordNumber) {
-            if (!dbaseFile) {
-                throw new ArgumentError(
-                    Logger.logMessage(Logger.LEVEL_SEVERE, "DBaseRecord", "constructor", "missingAttributeName")
-                );
-            }
+  if (!buffer) {
+    throw new ArgumentError(
+      Logger.logMessage(
+        Logger.LEVEL_SEVERE,
+        "DBaseRecord",
+        "constructor",
+        "missingBuffer"
+      )
+    );
+  }
 
-            if (!buffer) {
-                throw new ArgumentError(
-                    Logger.logMessage(Logger.LEVEL_SEVERE, "DBaseRecord", "constructor", "missingBuffer")
-                );
-            }
+  /**
+   * Indicates whether the record was deleted.
+   * @type {Boolean}
+   */
+  this.deleted = false;
 
-            /**
-             * Indicates whether the record was deleted.
-             * @type {Boolean}
-             */
-            this.deleted = false;
+  /**
+   * Indicates the current record number.
+   * @type {Number}
+   */
+  this.recordNumber = recordNumber;
 
-            /**
-             * Indicates the current record number.
-             * @type {Number}
-             */
-            this.recordNumber = recordNumber;
+  //DateFormat dateformat = new SimpleDateFormat("yyyyMMdd");
 
-            //DateFormat dateformat = new SimpleDateFormat("yyyyMMdd");
+  this.values = null;
 
-            this.values = null;
+  this.readFromBuffer(dbaseFile, buffer, recordNumber);
+};
 
-            this.readFromBuffer(dbaseFile, buffer, recordNumber);
-        };
+/**
+ * Returned whether the record was deleted
+ * @returns {Boolean} True if the record was deleted.
+ */
+DBaseRecord.prototype.isDeleted = function () {
+  return this.deleted;
+};
 
-        /**
-         * Returned whether the record was deleted
-         * @returns {Boolean} True if the record was deleted.
-         */
-        DBaseRecord.prototype.isDeleted = function() {
-            return this.deleted;
-        };
+/**
+ * Returns the number of the record.
+ * @returns {Number} The number of the record.
+ */
+DBaseRecord.prototype.getRecordNumber = function () {
+  return this.recordNumber;
+};
 
-        /**
-         * Returns the number of the record.
-         * @returns {Number} The number of the record.
-         */
-        DBaseRecord.prototype.getRecordNumber = function() {
-            return this.recordNumber;
-        };
+/**
+ * Reads a dBase record from the buffer.
+ * @param {DBaseFile} dbaseFile The dBase file from which to read a record.
+ * @param {ByteBuffer} buffer The buffer descriptor to read the record from.
+ * @param {Number} recordNumber The record number to read.
+ */
+DBaseRecord.prototype.readFromBuffer = function (
+  dbaseFile,
+  buffer,
+  recordNumber
+) {
+  buffer.order(ByteBuffer.LITTLE_ENDIAN);
 
-        /**
-         * Reads a dBase record from the buffer.
-         * @param {DBaseFile} dbaseFile The dBase file from which to read a record.
-         * @param {ByteBuffer} buffer The buffer descriptor to read the record from.
-         * @param {Number} recordNumber The record number to read.
-         */
-        DBaseRecord.prototype.readFromBuffer = function(dbaseFile, buffer, recordNumber) {
-            buffer.order(ByteBuffer.LITTLE_ENDIAN);
+  this.recordNumber = recordNumber;
 
-            this.recordNumber = recordNumber;
+  // Read deleted record flag.
+  var b = buffer.getByte();
+  this.deleted = b == 0x2a;
 
-            // Read deleted record flag.
-            var b = buffer.getByte();
-            this.deleted = (b == 0x2A);
+  var fields = dbaseFile.getFields();
 
-            var fields = dbaseFile.getFields();
+  this.values = {};
 
-            this.values = {};
+  for (var idx = 0, len = fields.length; idx < len; idx += 1) {
+    var field = fields[idx];
 
-            for (var idx = 0, len = fields.length; idx < len; idx += 1) {
-                var field = fields[idx];
+    var key = field.getName();
 
-                var key = field.getName();
+    var value = dbaseFile
+      .readNullTerminatedString(buffer, field.getLength())
+      .trim();
 
-                var value = dbaseFile.readNullTerminatedString(buffer, field.getLength()).trim();
-
-                try {
-                    if (field.getType() == DBaseField.TYPE_BOOLEAN) {
-                        var firstChar = value.charAt(0);
-                        this.values[key] = firstChar == 't' || firstChar == 'T' || firstChar == 'Y' || firstChar == 'y';
-                    }
-                    else if (field.getType() == DBaseField.TYPE_CHAR) {
-                        this.values[key] = value;
-                    }
-                    else if (field.getType() == DBaseField.TYPE_DATE) {
-                        this.values[key] = new Date(value);
-                    }
-                    else if (field.getType() == DBaseField.TYPE_NUMBER) {
-                        this.values[key] = +value;
-                    }
-                }
-                catch (e) {
-                    // Log warning but keep reading.
-                    Logger.log(Logger.LEVEL_WARNING,
-                        "Shapefile attribute parsing error:" +
-                        field.toString() +
-                        " -> " +
-                        value.toString() +
-                        " [" + e + "]"
-                    );
-                }
-            }
-        };
-
-        return DBaseRecord;
+    try {
+      if (field.getType() == DBaseField.TYPE_BOOLEAN) {
+        var firstChar = value.charAt(0);
+        this.values[key] =
+          firstChar == "t" ||
+          firstChar == "T" ||
+          firstChar == "Y" ||
+          firstChar == "y";
+      } else if (field.getType() == DBaseField.TYPE_CHAR) {
+        this.values[key] = value;
+      } else if (field.getType() == DBaseField.TYPE_DATE) {
+        this.values[key] = new Date(value);
+      } else if (field.getType() == DBaseField.TYPE_NUMBER) {
+        this.values[key] = +value;
+      }
+    } catch (e) {
+      // Log warning but keep reading.
+      Logger.log(
+        Logger.LEVEL_WARNING,
+        "Shapefile attribute parsing error:" +
+          field.toString() +
+          " -> " +
+          value.toString() +
+          " [" +
+          e +
+          "]"
+      );
     }
-);
+  }
+};
+
+export default DBaseRecord;
