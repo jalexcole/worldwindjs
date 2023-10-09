@@ -28,6 +28,7 @@
 import ArgumentError from "../error/ArgumentError";
 import Color from "../util/Color";
 import Font from "../util/Font";
+import Layer from "../layer/Layer";
 import Logger from "../util/Logger";
 import Offset from "../util/Offset";
 import ScreenText from "../shapes/ScreenText";

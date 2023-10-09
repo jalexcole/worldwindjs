@@ -25,34 +25,31 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
-define([
-    './../KmlObject'
-], function (KmlObject) {
-    "use strict";
-    /**
-     * Constructs an KmlStyleSelector. Application usually don't call this constructor. It is called by {@link KmlFile}
-     * as Objects from KmlFile are read.
-     * @alias KmlStyleSelector
-     * @constructor
-     * @classdesc Contains the data associated with Kml style selector
-     * @param options {Object}
-     * @param options.objectNode {Node} Node representing the Kml style selector.
-     * @throws {ArgumentError} If either the node is null or undefined.
-     * @see https://developers.google.com/kml/documentation/kmlreference#styleselector
-     * @augments KmlObject
-     */
-    var KmlStyleSelector = function (options) {
-        KmlObject.call(this, options);
-    };
+import KmlObject from "../KmlObject";
 
-    KmlStyleSelector.prototype = Object.create(KmlObject.prototype);
+/**
+ * Constructs an KmlStyleSelector. Application usually don't call this constructor. It is called by {@link KmlFile}
+ * as Objects from KmlFile are read.
+ * @alias KmlStyleSelector
+ * @constructor
+ * @classdesc Contains the data associated with Kml style selector
+ * @param options {Object}
+ * @param options.objectNode {Node} Node representing the Kml style selector.
+ * @throws {ArgumentError} If either the node is null or undefined.
+ * @see https://developers.google.com/kml/documentation/kmlreference#styleselector
+ * @augments KmlObject
+ */
+var KmlStyleSelector = function (options) {
+  KmlObject.call(this, options);
+};
 
-    /**
-     * @inheritDoc
-     */
-    KmlStyleSelector.prototype.getTagNames = function () {
-        return ['Style', 'StyleMap'];
-    };
+KmlStyleSelector.prototype = Object.create(KmlObject.prototype);
 
-    return KmlStyleSelector;
-});
+/**
+ * @inheritDoc
+ */
+KmlStyleSelector.prototype.getTagNames = function () {
+  return ["Style", "StyleMap"];
+};
+
+export default KmlStyleSelector;

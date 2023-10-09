@@ -25,66 +25,66 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
-define([
-    './KmlSubStyle',
-    '../util/KmlNodeTransformers'
-], function (
-    KmlSubStyle,
-    NodeTransformers
-) {
-    "use strict";
-    /**
-     * Constructs an KmlColorStyle. Applications usually don't call this constructor. It is called by {@link KmlFile} as
-     * objects from KmlFiles are read. This object is abstract. Only its descendants are instantiating it.
-     * @alias KmlColorStyle
-     * @classdesc Contains the data associated with ColorStyle node
-     * @param options {Object}
-     * @param options.objectNode {Node}  Node representing ColorStyle from Kml document
-     * @constructor
-     * @throws {ArgumentError} If the node is null.
-     * @see https://developers.google.com/kml/documentation/kmlreference#colorstyle
-     * @augments KmlSubStyle
-     */
-    var KmlColorStyle = function (options) {
-        KmlSubStyle.call(this, options);
-    };
+import KmlSubStyle from "./KmlSubStyle";
+import KmlNodeTransformers from "../util/KmlNodeTransformers";
 
-    KmlColorStyle.prototype = Object.create(KmlSubStyle.prototype);
+/**
+ * Constructs an KmlColorStyle. Applications usually don't call this constructor. It is called by {@link KmlFile} as
+ * objects from KmlFiles are read. This object is abstract. Only its descendants are instantiating it.
+ * @alias KmlColorStyle
+ * @classdesc Contains the data associated with ColorStyle node
+ * @param options {Object}
+ * @param options.objectNode {Node}  Node representing ColorStyle from Kml document
+ * @constructor
+ * @throws {ArgumentError} If the node is null.
+ * @see https://developers.google.com/kml/documentation/kmlreference#colorstyle
+ * @augments KmlSubStyle
+ */
+var KmlColorStyle = function (options) {
+  KmlSubStyle.call(this, options);
+};
 
-    Object.defineProperties(KmlColorStyle.prototype, {
-        /**
-         * Color, which should be used. Shapes supporting colored styles must correctly apply the
-         * color.
-         * @memberof KmlColorStyle.prototype
-         * @readonly
-         * @type {String}
-         */
-        kmlColor: {
-            get: function() {
-                return this._factory.specific(this, {name: 'color', transformer: NodeTransformers.string});
-            }
-        },
+KmlColorStyle.prototype = Object.create(KmlSubStyle.prototype);
 
-        /**
-         * Either normal or random. Normal means applying of the color as stated. Random applies linear scale based
-         * on the color. More on https://developers.google.com/kml/documentation/kmlreference#colorstyle
-         * @memberof KmlColorStyle.prototype
-         * @readonly
-         * @type {String}
-         */
-        kmlColorMode: {
-            get: function() {
-                return this._factory.specific(this, {name: 'colorMode', transformer: NodeTransformers.string});
-            }
-        }
-    });
+Object.defineProperties(KmlColorStyle.prototype, {
+  /**
+   * Color, which should be used. Shapes supporting colored styles must correctly apply the
+   * color.
+   * @memberof KmlColorStyle.prototype
+   * @readonly
+   * @type {String}
+   */
+  kmlColor: {
+    get: function () {
+      return this._factory.specific(this, {
+        name: "color",
+        transformer: NodeTransformers.string,
+      });
+    },
+  },
 
-    /**
-     * @inheritDoc
-     */
-    KmlColorStyle.prototype.getTagNames = function () {
-        return ['LineStyle', 'PolyStyle', 'IconStyle', 'LabelStyle'];
-    };
-
-    return KmlColorStyle;
+  /**
+   * Either normal or random. Normal means applying of the color as stated. Random applies linear scale based
+   * on the color. More on https://developers.google.com/kml/documentation/kmlreference#colorstyle
+   * @memberof KmlColorStyle.prototype
+   * @readonly
+   * @type {String}
+   */
+  kmlColorMode: {
+    get: function () {
+      return this._factory.specific(this, {
+        name: "colorMode",
+        transformer: NodeTransformers.string,
+      });
+    },
+  },
 });
+
+/**
+ * @inheritDoc
+ */
+KmlColorStyle.prototype.getTagNames = function () {
+  return ["LineStyle", "PolyStyle", "IconStyle", "LabelStyle"];
+};
+
+export default KmlColorStyle;

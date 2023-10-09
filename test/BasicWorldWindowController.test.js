@@ -25,39 +25,36 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
-define([
-    'src/globe/Globe2D',
-    'src/geom/LookAt',
-    'src/geom/Vec2',
-    'test/util/TestUtils.test'
-], function (Globe2D, LookAt, Vec2, TestUtils) {
-    "use strict";
 
-    var mockGlobe = new Globe2D();
-    var wwd = TestUtils.getMockWwd(mockGlobe);
-    wwd.resetDrawContext();
+import { Globe2D, LookAt, Vec2 } from "../src/WorldWind.js";
 
-    describe("BasicWorldWindowController tests", function () {
+import { describe } from "vitest";
+import TestUtils from "./util/TestUtils.test.js";
 
-        describe("Calculate 2D drag", function () {
-            // TODO This tests require normal GLContext mock
-            // it("Correctly interprets 2D drag gesture", function () {
-            //     var recognizer = {state: "changed", clientX: 0, clientY: 0, translationX: 0, translationY: 0};
-            //     wwd.worldWindowController.beginPoint = new Vec2(693, 428);
-            //     wwd.worldWindowController.lastPoint = new Vec2(693.4, 429.2);
-            //     wwd.worldWindowController.handlePanOrDrag2D(recognizer);
-            //
-            //     var lookAt = new LookAt();
-            //     wwd.cameraAsLookAt(lookAt);
-            //
-            //     expect(lookAt.range).toEqual(10000000);
-            //     expect(lookAt.tilt).toEqual(0);
-            //     expect(lookAt.roll).toEqual(0);
-            //     expect(lookAt.heading).toEqual(0);
-            //     expect(lookAt.position.latitude).toBeCloseTo(29.8728799, 7);
-            //     expect(lookAt.position.longitude).toBeCloseTo(-109.9576266, 7);
-            // });
-        });
-    });
+
+
+// var mockGlobe = new Globe2D();
+var wwd = TestUtils.getMockWwd(Globe2D.default);
+wwd.resetDrawContext();
+
+describe("BasicWorldWindowController tests", function () {
+  describe("Calculate 2D drag", function () {
+    // TODO This tests require normal GLContext mock
+    // it("Correctly interprets 2D drag gesture", function () {
+    //     var recognizer = {state: "changed", clientX: 0, clientY: 0, translationX: 0, translationY: 0};
+    //     wwd.worldWindowController.beginPoint = new Vec2(693, 428);
+    //     wwd.worldWindowController.lastPoint = new Vec2(693.4, 429.2);
+    //     wwd.worldWindowController.handlePanOrDrag2D(recognizer);
+    //
+    //     var lookAt = new LookAt();
+    //     wwd.cameraAsLookAt(lookAt);
+    //
+    //     expect(lookAt.range).toEqual(10000000);
+    //     expect(lookAt.tilt).toEqual(0);
+    //     expect(lookAt.roll).toEqual(0);
+    //     expect(lookAt.heading).toEqual(0);
+    //     expect(lookAt.position.latitude).toBeCloseTo(29.8728799, 7);
+    //     expect(lookAt.position.longitude).toBeCloseTo(-109.9576266, 7);
+    // });
+  });
 });
-

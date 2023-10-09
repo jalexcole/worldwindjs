@@ -13,88 +13,82 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/**
- * @exports TestUtils
- */
-define([
-        'src/BasicWorldWindowController',
-        'src/geom/Camera',
-        'src/globe/Globe',
-        'src/render/DrawContext',
-        'src/geom/Matrix',
-        'src/geom/Rectangle',
-        'src/WorldWind',
-        'src/WorldWindow'
-    ],
-    function (BasicWorldWindowController, Camera, Globe, DrawContext, Matrix, Rectangle, WorldWind, WorldWindow) {
-        "use strict";
 
-        var TestUtils = function () {
-        };
+import {
+  BasicWorldWindowController,
+  Camera,
+  Globe,
+  DrawContext,
+  Matrix,
+  Rectangle,
+  WorldWindow,
+} from "../../src/WorldWind.js";
 
-        TestUtils.expectPlaneCloseTo = function (p1, p2) {
-            expect(p1.distance).toBeCloseTo(p2.distance, 3);
-            TestUtils.expectVec3CloseTo(p1.normal, p2.normal);
-        };
+var TestUtils = function () {};
 
-        TestUtils.expectVec3CloseTo = function (v1, v2) {
-            for (var i = 0; i < 3; i++) {
-                expect(v1[i]).toBeCloseTo(v2[i], 3);
-            }
-        };
+TestUtils.expectPlaneCloseTo = function (p1, p2) {
+  expect(p1.distance).toBeCloseTo(p2.distance, 3);
+  TestUtils.expectVec3CloseTo(p1.normal, p2.normal);
+};
 
-        TestUtils.expectMatrixEquality = function (matrix1, matrix2) {
-            for (var i = 0; i < 16; i++) {
-                expect(matrix1[i]).toEqual(matrix2[i]);
-            }
-        };
+TestUtils.expectVec3CloseTo = function (v1, v2) {
+  for (var i = 0; i < 3; i++) {
+    expect(v1[i]).toBeCloseTo(v2[i], 3);
+  }
+};
 
-        TestUtils.expectMatrixCloseTo = function (matrix1, matrix2, precision) {
-            if (precision === undefined) {
-                precision = 3;
-            }
+TestUtils.expectMatrixEquality = function (matrix1, matrix2) {
+  for (var i = 0; i < 16; i++) {
+    expect(matrix1[i]).toEqual(matrix2[i]);
+  }
+};
 
-            for (var i = 0; i < 16; i++) {
-                expect(matrix1[i]).toBeCloseTo(matrix2[i], precision);
-            }
-        };
+TestUtils.expectMatrixCloseTo = function (matrix1, matrix2, precision) {
+  if (precision === undefined) {
+    precision = 3;
+  }
 
-        TestUtils.getMockWwd = function (mockGlobe) {
-            var MockGlContext = function () {
-                this.drawingBufferWidth = 800;
-                this.drawingBufferHeight = 800;
-            };
+  for (var i = 0; i < 16; i++) {
+    expect(matrix1[i]).toBeCloseTo(matrix2[i], precision);
+  }
+};
 
-            var viewport = new Rectangle(0, 0, 848, 848);
-            var dc = new DrawContext(new MockGlContext());
-            var MockWorldWindow = function () {
-            };
+TestUtils.getMockWwd = function (mockGlobe) {
+  var MockGlContext = function () {
+    this.drawingBufferWidth = 800;
+    this.drawingBufferHeight = 800;
+  };
 
-            MockWorldWindow.prototype = Object.create(WorldWindow.prototype);
+  var viewport = new Rectangle(0, 0, 848, 848);
+  var dc = new DrawContext(new MockGlContext());
+  var MockWorldWindow = function () {};
 
-            // create a globe that returns mock elevations for a given sector so we don't have to rely on
-            // asynchronous tile calls to finish.
-            Globe.prototype.minAndMaxElevationsForSector = function (sector) {
-                return [125.0, 350.0];
-            };
+  MockWorldWindow.prototype = Object.create(WorldWindow.prototype);
 
-            var wwd = new MockWorldWindow();
-            wwd.globe = mockGlobe;
-            wwd.drawContext = dc;
-            wwd.camera = new Camera();
-            wwd.worldWindowController = new BasicWorldWindowController(wwd);
-            wwd.viewport = viewport;
-            wwd.depthBits = 24;
-            wwd.canvas = {
-                clientLeft: 0, clientTop: 0, getBoundingClientRect: function () {
-                    return {left: 339.5, top: 225};
-                }
-            };
-            wwd.layers = [];
-            wwd.scratchModelview = Matrix.fromIdentity();
-            wwd.scratchProjection = Matrix.fromIdentity();
-            return wwd;
-        };
+  // create a globe that returns mock elevations for a given sector so we don't have to rely on
+  // asynchronous tile calls to finish.
+  Globe.prototype.minAndMaxElevationsForSector = function (sector) {
+    return [125.0, 350.0];
+  };
 
-        return TestUtils;
-    });
+  var wwd = new MockWorldWindow();
+  wwd.globe = mockGlobe;
+  wwd.drawContext = dc;
+  wwd.camera = new Camera();
+  wwd.worldWindowController = new BasicWorldWindowController(wwd);
+  wwd.viewport = viewport;
+  wwd.depthBits = 24;
+  wwd.canvas = {
+    clientLeft: 0,
+    clientTop: 0,
+    getBoundingClientRect: function () {
+      return { left: 339.5, top: 225 };
+    },
+  };
+  wwd.layers = [];
+  wwd.scratchModelview = Matrix.fromIdentity();
+  wwd.scratchProjection = Matrix.fromIdentity();
+  return wwd;
+};
+
+export default TestUtils;
