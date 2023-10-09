@@ -25,13 +25,9 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
-define([
-        'src/util/PolygonSplitter',
-        './PolygonSplitterData.test'
-    ],
-    function (PolygonSplitter,
-              PolygonSplitterData) {
-        'use strict';
+import { PolygonSplitter } from "../../src/WorldWind.js";
+import PolygonSplitterData from "./PolygonSplitterData.test.js";
+
 
         describe('spilt polygons', function () {
 
@@ -109,4 +105,3 @@ define([
 
         });
 
-    });

@@ -25,11 +25,9 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
-require([
-    'src/util/XmlDocument'
-], function(
-    XmlDocument
-){
+
+import { XMLDocument } from "../../src/WorldWind.js";
+import { describe, expect, it } from "vitest";
     describe("XmlDocument", function() {
         it("testGettingDomOfValidXml", function() {
             var xmlDocument = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
@@ -46,4 +44,3 @@ require([
             expect(resultingDom.childNodes.length).toEqual(1);
         });
     });
-});

@@ -25,8 +25,8 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
-import Logger from "../util/Logger";
-import ArgumentError from "../error/ArgumentError";
+import Logger from "../util/Logger.js";
+import ArgumentError from "../error/ArgumentError.js";
 
 /**
  * Constructs a three-component vector.
@@ -633,4 +633,6 @@ Vec3.prototype.toString = function () {
   return "(" + this[0] + ", " + this[1] + ", " + this[2] + ")";
 };
 
-export default Vec3;
+export default {
+  Vec3
+}

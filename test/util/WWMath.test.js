@@ -27,6 +27,7 @@
  */
 import { Vec3, WWMath } from "../../src/WorldWind.js";
 import { describe, it } from "vitest";
+
 describe("WWMath test", function () {
   describe("normalizeAngle360 test", function () {
     it("Normalize an angle to be between [0, 360)", function () {
@@ -42,8 +43,7 @@ describe("WWMath test", function () {
   });
 
   describe("computeTriangleNormal test", function () {
-      it("Computes a triangle normals", function () {
-        
+    it("Computes a triangle normals", function () {
       var v1 = new Vec3(26, 2, 1);
       var v2 = new Vec3(26, 2, 13);
       var v3 = new Vec3(12, -23, 13);
