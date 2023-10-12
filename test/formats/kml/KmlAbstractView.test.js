@@ -25,14 +25,11 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
-define([
-    'src/formats/kml/KmlAbstractView',
-    'src/formats/kml/KmlTimeSpan',
-    'src/util/XmlDocument'
-], function ( KmlAbstractView,
-              KmlTimeSpan,
-              XmlDocument){
-    "use strict";
+
+import KmlAbstractView from "../../../src/WorldWind.js";
+import KmlTimeSpan from "../../../src/WorldWind.js";
+import { XMLDocument } from "../../../src/WorldWind.js";
+
 
     describe("KmlAbstractViewTest", function () {
         var validKml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
@@ -50,5 +47,5 @@ define([
             expect(overlay.kmlTimePrimitive instanceof KmlTimeSpan).toBeTruthy();
         })
     });
-});
+
 

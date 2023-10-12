@@ -25,11 +25,8 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
-define([
-    'src/formats/kml/KmlTimeStamp',
-    'src/util/XmlDocument'
-], function (KmlTimeStamp,
-             XmlDocument) {
+import { KmlTimeStamp, XmlDocument } from "../../../src/WorldWind";
+
     describe ("KmlTimeStamp", function () {
             var validTimeStampXml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
                 "<kml xmlns=\"http://www.opengis.net/kml/2.2\">" +
@@ -46,4 +43,4 @@ define([
 
 
         });
-});
+

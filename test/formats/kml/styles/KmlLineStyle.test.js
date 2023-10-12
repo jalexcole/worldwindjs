@@ -25,14 +25,9 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
-define([
-    'src/util/XmlDocument',
-    'src/formats/kml/styles/KmlLineStyle'
-], function (
-    XmlDocument,
-    KmlLineStyle
-) {
-    "use strict";
+import { KmlLineStyle, XMLDocument } from "../../../../src/WorldWind";
+
+
     describe("KmlLineStyle", function(){
 
     var validKml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
@@ -64,4 +59,3 @@ define([
 
 
     });
-});

@@ -25,20 +25,8 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
-define( [
-    'src/formats/kml/util/KmlImagePyramid',
-    'src/formats/kml/util/KmlViewVolume',
-    'src/formats/kml/geom/KmlPoint',
-    'src/formats/kml/features/KmlPhotoOverlay',
-    'src/util/XmlDocument'
-], function (
-    ImagePyramid,
-    ViewVolume,
-    KmlPoint,
-    KmlPhotoOverlay,
-    XmlDocument
-) {
-    "use strict";
+import { KmlImagePyramid, KmlViewVolume, KmlPoint, KmlPhotoOverlay, XmlDocument } from "../../../../src/WorldWind";
+
     describe("KmlPhotoOverlayTest", function () {
             var validKml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
                 "<kml xmlns=\"http://www.opengis.net/kml/2.2\">" +
@@ -69,4 +57,4 @@ define( [
 
 
         });
-    });
+

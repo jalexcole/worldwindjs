@@ -25,35 +25,23 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
-define([
-    'src/formats/kml/KmlObject',
-    'src/formats/kml/geom/KmlPoint',
-    'src/util/XmlDocument'
-], function(
-    KmlObject,
-    KmlPoint,
-    XmlDocument
-) {
-    describe("KmlObjectTestCase", function () {
-        describe("testUndefinedNode", function () {
+import { KmlObject, KmlPoint, XmlDocument } from "../../../src/WorldWind";
 
-            it('should raise an exception', function () {
-                expect(function () {
-                    new KmlObject();
-                    fail("Exception should have been thrown");
-                }).toThrow();
-            });
-
-
-            });
-            describe('testNullNode', function () {
-
-
-                it('should raise an Argument Error exception', function () {
-                    expect(function () {
-                        new KmlObject(null, {});
-                        fail("Exception should have been thrown")}).toThrow();
-                });
-            });
-        });
+describe("KmlObjectTestCase", function () {
+  describe("testUndefinedNode", function () {
+    it("should raise an exception", function () {
+      expect(function () {
+        new KmlObject();
+        fail("Exception should have been thrown");
+      }).toThrow();
     });
+  });
+  describe("testNullNode", function () {
+    it("should raise an Argument Error exception", function () {
+      expect(function () {
+        new KmlObject(null, {});
+        fail("Exception should have been thrown");
+      }).toThrow();
+    });
+  });
+});

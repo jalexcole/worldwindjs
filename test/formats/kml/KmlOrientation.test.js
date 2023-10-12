@@ -25,14 +25,8 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
-define([
-    'src/formats/kml/KmlOrientation',
-    'src/util/XmlDocument'
-], function (
-    KmlOrientation,
-    XmlDocument
-) {
-    "use strict";
+import { KmlOrientation, XmlDocument } from "../../../src/WorldWind";
+
     describe("KmlOrientationTest",function () {
             var validKml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
                 "<kml xmlns=\"http://www.opengis.net/kml/2.2\">" +
@@ -52,4 +46,3 @@ define([
             expect(orientation.kmlRoll).toBe(0.0);
         });
     });
-});

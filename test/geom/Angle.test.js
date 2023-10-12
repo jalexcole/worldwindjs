@@ -25,10 +25,9 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
-define([
-    'src/geom/Angle'
-], function (Angle) {
-    "use strict";
+
+import Angle from "../../src/WorldWind.js"
+
 
     describe("AngleTest", function () {
 
@@ -182,4 +181,3 @@ define([
         });
 
     });
-});

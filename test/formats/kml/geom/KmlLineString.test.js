@@ -25,18 +25,8 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
-define([
-    'src/formats/kml/geom/KmlLineString',
-    'src/geom/Position',
-    'src/util/XmlDocument',
-    'src/WorldWind'
-], function (
-    KmlLineString,
-    Position,
-    XmlDocument,
-    WorldWind
-) {
-    "use strict";
+import { KmlLineString, Position, XMLDocument, WorldWind } from "../../../../src/WorldWind";
+
     describe("KmlLineString", function () {
 
         var kmlContainingLineString = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
@@ -80,4 +70,3 @@ define([
 
 
     });
-});

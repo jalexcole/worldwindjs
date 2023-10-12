@@ -25,12 +25,9 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
-define([
-        'src/globe/ElevationImage',
-        'src/geom/Sector'
-    ],
-    function (ElevationImage, Sector) {
-        "use strict";
+import ElevationImage from "../../src/globe/ElevationImage";
+import Sector from "../../src/geom/Sector";
+import { describe, it, expect } from "vitest";
         describe("ElevationImage tests", function () {
             describe("No data value tests", function () {
                 it("Correctly classifies no data pixels", function () {
@@ -63,5 +60,5 @@ define([
             });
 
         });
-    });
+
 

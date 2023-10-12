@@ -25,15 +25,10 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
-define([
-    'test/CustomMatchers.test',
-    'src/geom/Sector',
-    'src/geom/TileMatrix'
-], function (
-    CustomMatchers,
-    Sector,
-    TileMatrix) {
-    "use strict";
+import CustomMatchers from "./TileMatrixSet.test.js";
+import { Sector, TileMatrix } from "../../src/WorldWind.js";
+
+
 
     beforeEach(function () {
         jasmine.addMatchers(CustomMatchers);
@@ -119,4 +114,4 @@ define([
             expect(actualResolution).toBe(expectedResolution);
         });
     });
-});
+

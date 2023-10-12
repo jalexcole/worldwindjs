@@ -25,11 +25,9 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
-define([
-    'src/geom/Matrix3',
-    'src/geom/Sector'
-], function (Matrix3, Sector) {
-    "use strict";
+import { Matrix, Sector } from "../../src/WorldWind.js";
+
+
 
     describe("Matrix3 Tests", function () {
 
@@ -169,4 +167,4 @@ define([
         });
 
     });
-});
+

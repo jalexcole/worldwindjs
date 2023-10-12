@@ -1,11 +1,9 @@
-define([
-    'src/util/Font',
-    'src/render/TextRenderer',
-    'src/geom/Vec2'
-], function (Font,
-             TextRenderer,
-             Vec2) {
-    "use strict";
+import Font from "../../src/util/Font";
+import TextRenderer from "../../src/render/TextRenderer";
+import Vec2 from "../../src/geom/Vec2";
+
+import { describe, expect, it } from "vitest";
+
     describe("TextRenderer tests", function () {
 
         // Mocking TextRenderer.textSize() to avoid 2D context requirement.
@@ -75,4 +73,3 @@ define([
                 "ut");
         });
     })
-});

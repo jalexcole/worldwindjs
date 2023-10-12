@@ -26,10 +26,9 @@
  * PDF found in code  directory.
  */
 var WorldWind = {};
-define([
-    'src/formats/kml/KmlFile'
-], function (KmlFile) {
-    "use strict";
+
+import KmlFile from "../../../src/WorldWind.js";
+
     WorldWind.KmlFile = KmlFile;
 
     describe("KmlFile", function () {
@@ -51,4 +50,4 @@ define([
             });
         });
     });
-});
+

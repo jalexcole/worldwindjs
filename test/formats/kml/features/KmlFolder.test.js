@@ -25,16 +25,8 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
-define([
-    'src/formats/kml/features/KmlFolder',
-    'src/formats/kml/features/KmlPlacemark',
-    'src/util/XmlDocument'
-], function (
-    KmlFolder,
-    KmlPlacemark,
-    XmlDocument
-) {
-    "use strict";
+import { KmlFolder, KmlPlacemark, XmlDocument } from "../../../../src/WorldWind";
+
     describe("KmlFolderTest", function() {
 
             var validKml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
@@ -51,4 +43,3 @@ define([
                 expect(folder.kmlShapes[0] instanceof KmlPlacemark).toBeTruthy();
             });
         });
-    });

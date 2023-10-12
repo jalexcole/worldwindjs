@@ -27,7 +27,7 @@
  */
 
 import Vec3 from "../../src/WorldWind.js";
-import { describe, expect } from "vitest";
+import { describe, it, expect } from "vitest";
 
 describe("Vec3Test", function () {
   it("Should have the correct three components", function () {

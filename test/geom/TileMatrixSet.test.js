@@ -25,6 +25,8 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
+import CustomMatchers from "../CustomMatchers.test.js";
+import { Sector, TileMatrix, TileMatrixSet } from "../../src/WorldWind.js";
 define([
     'test/CustomMatchers.test',
     'src/geom/Sector',

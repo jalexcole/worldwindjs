@@ -25,16 +25,8 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
-define([
-    'src/formats/kml/KmlIcon',
-    'src/formats/kml/features/KmlOverlay',
-    'src/util/XmlDocument'
-], function (
-    KmlIcon,
-    KmlOverlay,
-    XmlDocument
-) {
-    "use strict";
+import { KmlIcon, KmlOverlay, XmlDocument } from "../../../../src/WorldWind";
+
     describe("KmlOverlayTest", function () {
             var validKml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
                 "<kml xmlns=\"http://www.opengis.net/kml/2.2\">" +
@@ -54,4 +46,4 @@ define([
             });
 
         });
-    });
+

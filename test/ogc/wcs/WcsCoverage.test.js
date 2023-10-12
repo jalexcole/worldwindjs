@@ -25,15 +25,11 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
-define([
-    'test/CustomMatchers.test',
-    'src/geom/Sector',
-    'src/ogc/wcs/WcsCoverage'
-], function (
-    CustomMatchers,
-    Sector,
-    WcsCoverage) {
-    "use strict";
+import CustomMatchers from "../../CustomMatchers.test.js";
+import Sector from "../../../src/geom/Sector.js";
+import WcsCoverage from "../../../src/WorldWind.js";
+
+import { beforeEach, describe, expect, it } from "vitest";
 
     beforeEach(function () {
         jasmine.addMatchers(CustomMatchers);
@@ -68,4 +64,4 @@ define([
             });
         });
     });
-});
+

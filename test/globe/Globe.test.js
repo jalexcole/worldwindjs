@@ -25,67 +25,80 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
-define(['src/WorldWind'], function (WorldWind) {
-    "use strict";
 
-    describe("Globe tests", function () {
-        // WGS 84 reference values taken from
-        // http://earth-info.nga.mil/GandG/publications/NGA_STND_0036_1_0_0_WGS84/NGA.STND.0036_1.0.0_WGS84.pdf
-        var WGS84_REFERENCE_SEMI_MAJOR_RADIUS = 6378137.0;
-        var WGS84_REFERENCE_SEMI_MINOR_RADIUS = 6356752.3142;
-        var WGS84_REFERENCE_EC2 = 6.694379990141e-3;
+import { ProjectionWgs84 } from "../../src/WorldWind";
+import ElevationModel from "../../src/globe/ElevationModel";
+import Globe from "../../src/globe/Globe";
+import { describe, expect, it } from "vitest";
 
-        // From Radius of the Earth - Radii Used in Geodesy
-        // J. Clynch, Naval Post Graduate School, 2002
-        function wgs84ReferenceRadiusAt(latitude) {
-            var sinLatSquared = Math.pow(Math.sin(latitude * Math.PI / 180), 2);
-            var cosLatSquared = Math.pow(Math.cos(latitude * Math.PI / 180), 2);
-            var a = WGS84_REFERENCE_SEMI_MAJOR_RADIUS;
-            var eSquared = WGS84_REFERENCE_EC2;
-            var radius = a * Math.sqrt(Math.pow(1 - eSquared, 2.0) * sinLatSquared + cosLatSquared);
-            radius /= Math.sqrt(1 - eSquared * sinLatSquared);
-            return radius;
-        }
+describe("Globe tests", function () {
+  // WGS 84 reference values taken from
+  // http://earth-info.nga.mil/GandG/publications/NGA_STND_0036_1_0_0_WGS84/NGA.STND.0036_1.0.0_WGS84.pdf
+  var WGS84_REFERENCE_SEMI_MAJOR_RADIUS = 6378137.0;
+  var WGS84_REFERENCE_SEMI_MINOR_RADIUS = 6356752.3142;
+  var WGS84_REFERENCE_EC2 = 6.694379990141e-3;
 
-        it("has an equatorial radius matching the WGS84 reference value", function () {
-            var globe = new WorldWind.Globe(new WorldWind.ElevationModel(), new WorldWind.ProjectionWgs84());
+  // From Radius of the Earth - Radii Used in Geodesy
+  // J. Clynch, Naval Post Graduate School, 2002
+  function wgs84ReferenceRadiusAt(latitude) {
+    var sinLatSquared = Math.pow(Math.sin((latitude * Math.PI) / 180), 2);
+    var cosLatSquared = Math.pow(Math.cos((latitude * Math.PI) / 180), 2);
+    var a = WGS84_REFERENCE_SEMI_MAJOR_RADIUS;
+    var eSquared = WGS84_REFERENCE_EC2;
+    var radius =
+      a *
+      Math.sqrt(Math.pow(1 - eSquared, 2.0) * sinLatSquared + cosLatSquared);
+    radius /= Math.sqrt(1 - eSquared * sinLatSquared);
+    return radius;
+  }
 
-            // Expect an exact match to the reference value.
-            expect(globe.equatorialRadius).toBe(WGS84_REFERENCE_SEMI_MAJOR_RADIUS);
-        });
+  it("has an equatorial radius matching the WGS84 reference value", function () {
+    var globe = new Globe(
+      new ElevationModel(),
+      new ProjectionWgs84()
+    );
 
-        // TODO: Review, fix related issues and reinstate this test after switch from PhantomJS to headless browsers.
-        // This produces a precision error on Chrome Headless 86.0.4240.180. Behavior on Firefox Headless is as expected.
-        // If the accuracy of the comparison is reduced to three decimals, the test passes.
+    // Expect an exact match to the reference value.
+    expect(globe.equatorialRadius).toBe(WGS84_REFERENCE_SEMI_MAJOR_RADIUS);
+  });
 
-        // it("has a polar radius matching the WGS84 reference value", function () {
-        //     var globe = new WorldWind.Globe(new WorldWind.ElevationModel(), new WorldWind.ProjectionWgs84());
+  // TODO: Review, fix related issues and reinstate this test after switch from PhantomJS to headless browsers.
+  // This produces a precision error on Chrome Headless 86.0.4240.180. Behavior on Firefox Headless is as expected.
+  // If the accuracy of the comparison is reduced to three decimals, the test passes.
 
-        //     // WGS84 reference value: 6356752.3142
-        //     // Actual computed value: 6356752.314245179
-        //     // Match the four decimals specified by the reference value. Additional precision is acceptable.
-        //     expect(globe.polarRadius).toBeCloseTo(WGS84_REFERENCE_SEMI_MINOR_RADIUS, 4);
-        // });
+  // it("has a polar radius matching the WGS84 reference value", function () {
+  //     var globe = new WorldWind.Globe(new WorldWind.ElevationModel(), new WorldWind.ProjectionWgs84());
 
-        it("has an eccentricity squared matching the WGS84 reference value", function () {
-            var globe = new WorldWind.Globe(new WorldWind.ElevationModel(), new WorldWind.ProjectionWgs84());
+  //     // WGS84 reference value: 6356752.3142
+  //     // Actual computed value: 6356752.314245179
+  //     // Match the four decimals specified by the reference value. Additional precision is acceptable.
+  //     expect(globe.polarRadius).toBeCloseTo(WGS84_REFERENCE_SEMI_MINOR_RADIUS, 4);
+  // });
 
-            // WGS84 reference value: 6.694379990141e-3
-            // Actual computed value: 6.6943799901413165e-3
-            // Match the fifteen decimals specified by the reference value. Additional precision is acceptable.
-            expect(globe.eccentricitySquared).toBeCloseTo(WGS84_REFERENCE_EC2, 15);
-        });
+  it("has an eccentricity squared matching the WGS84 reference value", function () {
+    var globe = new Globe(
+      new ElevationModel(),
+      new ProjectionWgs84()
+    );
 
-        it("computes the WGS84 ellipsoid's radius at integer latitudes", function () {
-            var globe = new WorldWind.Globe(new WorldWind.ElevationModel(), new WorldWind.ProjectionWgs84());
+    // WGS84 reference value: 6.694379990141e-3
+    // Actual computed value: 6.6943799901413165e-3
+    // Match the fifteen decimals specified by the reference value. Additional precision is acceptable.
+    expect(globe.eccentricitySquared).toBeCloseTo(WGS84_REFERENCE_EC2, 15);
+  });
 
-            for (var lat = -90; lat <= 90; lat += 1.0) {
-                var radiusExpected = wgs84ReferenceRadiusAt(lat);
-                var radiusActual = globe.radiusAt(lat, 0);
+  it("computes the WGS84 ellipsoid's radius at integer latitudes", function () {
+    var globe = new Globe(
+      new ElevationModel(),
+      new ProjectionWgs84()
+    );
 
-                // Match the first eight decimals.
-                expect(radiusActual).toBeCloseTo(radiusExpected, 8);
-            }
-        });
-    });
+    for (var lat = -90; lat <= 90; lat += 1.0) {
+      var radiusExpected = wgs84ReferenceRadiusAt(lat);
+      var radiusActual = globe.radiusAt(lat, 0);
+
+      // Match the first eight decimals.
+      expect(radiusActual).toBeCloseTo(radiusExpected, 8);
+    }
+  });
 });

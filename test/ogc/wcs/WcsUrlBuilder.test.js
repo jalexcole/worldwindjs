@@ -25,22 +25,15 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
-define([
-    'src/util/LevelSet',
-    'src/util/Promise',
-    'src/geom/Sector',
-    'src/util/Tile',
-    'src/ogc/wcs/WcsCapabilities',
-    'src/ogc/wcs/WcsUrlBuilder',
-    'src/ogc/wcs/WebCoverageService'
-], function (LevelSet,
-             Promise,
-             Sector,
-             Tile,
-             WcsCapabilities,
-             WcsUrlBuilder,
-             WebCoverageService) {
-    "use strict";
+
+import LevelSet from "../../../src/util/LevelSet";
+import { Promise } from "../../../src/WorldWind";
+import Sector from "../../../src/geom/Sector";
+import { Tile } from "../../../src/WorldWind";
+import WcsUrlBuilder from "../../../src/ogc/wcs/WcsUrlBuilder";
+import WcsCapabilities from "../../../src/ogc/wcs/WcsCapabilities";
+import WebCoverageService from "../../../src/ogc/wcs/WebCoverageService.js";
+
 
     describe("1.0.0 WCS Url Builder", function () {
 
@@ -178,4 +171,4 @@ define([
             expect(coverageUrl).toBe(expectedUrl);
         });
     });
-});
+

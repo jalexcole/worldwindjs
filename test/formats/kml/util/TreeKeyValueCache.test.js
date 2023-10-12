@@ -25,53 +25,48 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
+import { KmlTreeKeyValueCache } from "../../../../src/WorldWind.js";
+import { describe, beforeEach, it, expect } from "vitest";
+describe("TreKeyValueCacheTest", function () {
+  describe("#retrieval", function () {
+    var cache;
+    beforeEach(function () {
+      cache = new KmlTreeKeyValueCache();
+      cache.add("MultiGeometry#1", "LineString#1", "ToStore");
+      cache.add("MultiGeometry#1", "LineString#2", "ToStore2");
+      cache.add("MultiGeometry#2", "LineString#1", "ToStore3");
+    });
 
+    it("retrieves the specific piece of data", function () {
+      var retrievedValue = cache.value("MultiGeometry#1", "LineString#1");
+      expect("ToStore").toEqual(retrievedValue);
+    });
 
-define([
-	'src/formats/kml/util/KmlTreeKeyValueCache'
-], function (TreeKeyValueCache) {
-	"use strict";
-	describe("TreKeyValueCacheTest", function () {
-		describe('#retrieval', function(){
-			var cache;
-			beforeEach(function(){
-				cache = new TreeKeyValueCache();
-				cache.add("MultiGeometry#1", "LineString#1", "ToStore");
-				cache.add("MultiGeometry#1", "LineString#2", "ToStore2");
-				cache.add("MultiGeometry#2", "LineString#1", "ToStore3");
-			});
+    it("retrieves the data for whole level", function () {
+      var level = cache.level("MultiGeometry#1");
+      expect("ToStore").toEqual(level["LineString#1"]);
+      expect("ToStore2").toEqual(level["LineString#2"]);
+    });
 
-			it('retrieves the specific piece of data', function(){
-				var retrievedValue = cache.value("MultiGeometry#1", "LineString#1");
-				expect("ToStore").toEqual(retrievedValue);
-			});
+    it("retrieves the unspecified amount of data", function () {
+      var retrievedValue = cache.value("MultiGeometry#1", "LineString");
+      expect("ToStore").toEqual(retrievedValue);
+    });
+  });
 
-			it('retrieves the data for whole level', function(){
-				var level = cache.level("MultiGeometry#1");
-				expect("ToStore").toEqual(level["LineString#1"]);
-				expect("ToStore2").toEqual(level["LineString#2"]);
-			});
+  describe("#removal", function () {
+    var cache;
+    beforeEach(function () {
+      cache = new KmlTreeKeyValueCache();
+      cache.add("MultiGeometry#1", "LineString#1", "ToStore");
+      cache.add("MultiGeometry#1", "LineString#2", "ToStore2");
+      cache.add("MultiGeometry#2", "LineString#1", "ToStore3");
 
-			it('retrieves the unspecified amount of data', function(){
-				var retrievedValue = cache.value("MultiGeometry#1", "LineString");
-				expect("ToStore").toEqual(retrievedValue);
-			});
-		});
+      cache.remove("MultiGeometry#1", "LineString#2");
+    });
 
-		describe('#removal', function(){
-			var cache;
-			beforeEach(function(){
-				cache = new TreeKeyValueCache();
-				cache.add("MultiGeometry#1", "LineString#1", "ToStore");
-				cache.add("MultiGeometry#1", "LineString#2", "ToStore2");
-				cache.add("MultiGeometry#2", "LineString#1", "ToStore3");
-
-				cache.remove("MultiGeometry#1", "LineString#2");
-			});
-
-			it('retrieves null', function(){
-				expect(null).toEqual(cache.value("MultiGeometry#1", "LineString#2"));
-			})
-		});
-	});
+    it("retrieves null", function () {
+      expect(null).toEqual(cache.value("MultiGeometry#1", "LineString#2"));
+    });
+  });
 });

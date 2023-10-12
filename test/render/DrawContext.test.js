@@ -35,6 +35,7 @@ import Vec3 from "../../src/geom/Vec3";
 import CustomMatchers from "../CustomMatchers.test";
 import TestUtils from "../util/TestUtils.test";
 
+import { beforeEach, describe, expect, it } from "vitest";
 var dummyParam = "dummy";
 var mockGlobe = new Globe(new ElevationModel());
 var wwd = TestUtils.getMockWwd(mockGlobe);

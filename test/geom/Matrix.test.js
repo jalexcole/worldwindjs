@@ -25,17 +25,9 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
-define([
-    'src/geom/Matrix',
-    'src/geom/Angle',
-    'src/globe/Globe',
-    'src/globe/EarthElevationModel',
-    'src/globe/ElevationModel',
-    'src/geom/Plane',
-    'src/geom/Rectangle',
-    'src/geom/Vec3'
-], function (Matrix, Angle, Globe, EarthElevationModel, ElevationModel, Plane, Rectangle, Vec3) {
-    "use strict";
+import { Angle, Globe, EarthElevationModel, ElevationModel, Matrix, Plane, Rectangle, Vec3 } from "../../src/WorldWind.js";
+
+
 
     describe("Matrix Tests", function () {
 
@@ -1355,4 +1347,3 @@ define([
         });
 
     });
-});

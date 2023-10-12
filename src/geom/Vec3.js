@@ -634,5 +634,5 @@ Vec3.prototype.toString = function () {
 };
 
 export default {
-  Vec3
-}
+  Vec3,
+};

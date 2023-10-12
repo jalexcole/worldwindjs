@@ -25,14 +25,9 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
-define([
-    'src/geom/Location',
-    'src/geom/Angle',
-    'src/globe/EarthElevationModel',
-    'src/globe/ElevationModel',
-    'src/globe/Globe'
-], function (Location, Angle, EarthElevationModel, ElevationModel, Globe) {
-    "use strict";
+import { Angle, ElevationModel, EarthElevationModel,Globe, Location } from "../../src/WorldWind";
+
+
 
     describe("Location Tests", function () {
 
@@ -699,4 +694,3 @@ define([
         });
 
     });
-});

@@ -25,34 +25,8 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
-define([
-    'src/geom/Location',
-    'src/shapes/Placemark',
-    'src/geom/Position',
-    'src/shapes/SurfacePolyline',
-    'src/formats/wkt/geom/WktGeometryCollection',
-    'src/formats/wkt/geom/WktLineString',
-    'src/formats/wkt/geom/WktMultiLineString',
-    'src/formats/wkt/geom/WktMultiPoint',
-    'src/formats/wkt/geom/WktMultiPolygon',
-    'src/formats/wkt/geom/WktPoint',
-    'src/formats/wkt/geom/WktPolygon',
-    'src/formats/wkt/WktTokens',
-    'src/formats/wkt/geom/WktTriangle'
-], function (Location,
-             Placemark,
-             Position,
-             SurfacePolyline,
-             WktGeometryCollection,
-             WktLineString,
-             WktMultiLineString,
-             WktMultiPoint,
-             WktMultiPolygon,
-             WktPoint,
-             WktPolygon,
-             WktTokens,
-             WktTriangle) {
-    "use strict";
+import { Location, Placemark, Position, SurfacePolyline, WktGeometryCollection, WktLineString, WktMultiLineString, WktMultiPoint, WktPoint, WktTokens, WktTriangle } from "../../../src/WorldWind";
+
 
     describe("WktTokens", function () {
         describe("Point", function () {
@@ -437,5 +411,4 @@ define([
             return equals;
         }
     });
-});
 

@@ -29,6 +29,7 @@
 import ArgumentError from "../error/ArgumentError";
 import BasicTextureProgram from "../shaders/BasicTextureProgram";
 import Color from "../util/Color";
+
 import Font from "../util/Font";
 import Logger from "../util/Logger";
 import Matrix from "../geom/Matrix";

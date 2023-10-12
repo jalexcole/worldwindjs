@@ -25,14 +25,10 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
-define([
-    'src/util/Promise',
-    'src/ogc/wcs/WcsCapabilities',
-    'src/ogc/wcs/WebCoverageService'
-], function (Promise,
-             WcsCapabilities,
-             WebCoverageService) {
-    "use strict";
+import { Promise } from "../../../src/WorldWind";
+import WcsCapabilities from "../../../src/ogc/wcs/WcsCapabilities";
+import WebCoverageService from "../../../src/ogc/wcs/WebCoverageService";
+import { beforeAll, beforeEach, describe, expect, it } from "vitest";
 
     describe("1.0.0 WebCoverageService", function () {
 
@@ -147,4 +143,4 @@ define([
             expect(coverageCount).toBe(2);
         });
     });
-});
+

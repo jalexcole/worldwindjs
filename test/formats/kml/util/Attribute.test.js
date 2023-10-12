@@ -25,9 +25,8 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
-import KmlAttribute from "../../../../src/formats/kml/util/KmlAttribute";
 import { XMLDocument } from "../../../../src/WorldWind.js";
-
+import KmlAttribute from "../../../../src/formats/kml/util/KmlAttribute.js";
 describe("KmlAttributeTest", function () {
   var validKml =
     '<?xml version="1.0" encoding="UTF-8"?>' +
@@ -48,33 +47,33 @@ describe("KmlAttributeTest", function () {
 
   it("should return value of existing attribute", function () {
     var node = document.getElementById("9");
-    var attribute = new Attribute(node, "id");
+    var attribute = new KmlAttribute(node, "id");
     expect(attribute.value()).toEqual("9");
   });
 
   it("sets value to a nonexistent attribute", function () {
     var node = document.getElementById("9");
-    var attribute = new Attribute(node, "name");
+    var attribute = new KmlAttribute(node, "name");
     attribute.save("newOne");
     expect(attribute.value()).toEqual("newOne");
   });
 
   it("updates value to existing attribute", function () {
     var node = document.getElementById("10");
-    var attribute = new Attribute(node, "id");
+    var attribute = new KmlAttribute(node, "id");
     attribute.save("15");
     expect(attribute.value()).toEqual("15");
   });
 
   it("returns true if attribute exists", function () {
     var node = document.getElementById("9");
-    var attribute = new Attribute(node, "id");
+    var attribute = new KmlAttribute(node, "id");
     expect(attribute.exists()).toEqual(true);
   });
 
   it("returns false if attribute doesn't exist", function () {
     var node = document.getElementById("9");
-    var attribute = new Attribute(node, "test");
+    var attribute = new KmlAttribute(node, "test");
     expect(attribute.exists()).toEqual(false);
   });
 });

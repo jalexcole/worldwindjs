@@ -25,22 +25,9 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
-define([
-	'src/formats/kml/util/KmlElementsFactory',
-	'src/formats/kml/geom/KmlGeometry',
-	'src/formats/kml/geom/KmlLineString',
-	'src/formats/kml/geom/KmlMultiGeometry',
-	'src/formats/kml/geom/KmlPoint',
-	'src/formats/kml/util/KmlNodeTransformers',
-	'src/util/XmlDocument'
-], function (KmlElementsFactory,
-			 KmlGeometry,
-			 KmlLineString,
-			 KmlMultiGeometry,
-			 KmlPoint,
-			 NodeTransformers,
-			 XmlDocument) {
-	"use strict";
+import { KmlElementsFactory, KmlGeometry, KmlLineString, KmlMultiGeometry, KmlPoint, XMLDocument } from "../../../../src/WorldWind";
+import KmlNodeTransformers from "../../../../src/formats/kml/util/KmlNodeTransformers";
+
 	describe("KmlElementsFactoryTest", function () {
 		var factory = new KmlElementsFactory();
 		var exampleDocument = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
@@ -96,4 +83,3 @@ define([
 			expect(createdElements[1] instanceof KmlLineString).toEqual(true);
 		});
 	});
-});
