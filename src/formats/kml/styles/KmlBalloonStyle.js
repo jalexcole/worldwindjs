@@ -25,16 +25,10 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
-define([
-    '../KmlElements',
-    './KmlSubStyle',
-    '../util/KmlNodeTransformers'
-], function (
-    KmlElements,
-    KmlSubStyle,
-    NodeTransformers
-) {
-    "use strict";
+import KmlElements from "../KmlElements";
+import KmlSubStyle from "./KmlSubStyle";
+import KmlNodeTransformers from "../util/KmlNodeTransformers";
+
     /**
      * Constructs an KmlBalloonStyle. Applications usually don't call this constructor. It is called by {@link KmlFile}
      * as objects from KmlFile are read. This object is already concrete implementation.
@@ -116,5 +110,4 @@ define([
 
     KmlElements.addKey(KmlBalloonStyle.prototype.getTagNames()[0], KmlBalloonStyle);
 
-    return KmlBalloonStyle;
-});
+    export default KmlBalloonStyle;

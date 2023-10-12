@@ -25,178 +25,199 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
-define([
-	'../KmlAbstractView',
-	'../KmlElements',
-	'../KmlObject',
-	'./KmlNodeTransformers',
-	'./KmlUpdate'
-], function (KmlAbstractView,
-			 KmlElements,
-			 KmlObject,
-			 NodeTransformers,
-			 Update) {
-	/**
-	 * Controls the behavior of files fetched by a <NetworkLink>. It is direct descendant of kml and there should always
-     * be maximum one per document.
-	 * @alias KmlNetworkLinkControl
-	 * @constructor
-	 * @augments KmlObject
-	 */
-	var KmlNetworkLinkControl = function(options) {
-		KmlObject.call(this, options);
-	};
+import KmlAbstractView from "../KmlAbstractView";
+import KmlElements from "../KmlElements";
+import KmlObject from "../KmlObject";
+import KmlNodeTransformers from "./KmlNodeTransformers";
+import KmlUpdate from "./KmlUpdate";
 
-	KmlNetworkLinkControl.prototype = Object.create(KmlObject.prototype);
+/**
+ * Controls the behavior of files fetched by a <NetworkLink>. It is direct descendant of kml and there should always
+ * be maximum one per document.
+ * @alias KmlNetworkLinkControl
+ * @constructor
+ * @augments KmlObject
+ */
+var KmlNetworkLinkControl = function (options) {
+  KmlObject.call(this, options);
+};
 
-	Object.defineProperties(KmlNetworkLinkControl.prototype, {
-		/**
-		 * Specified in seconds, <minRefreshPeriod> is the minimum allowed time between fetches of the file. This
-		 * parameter allows servers to throttle fetches of a particular file and to tailor refresh rates to the expected
-		 * rate of change to the data. For example, a user might set a link refresh to 5 seconds, but you could set your
-		 * minimum refresh period to 3600 to limit refresh updates to once every hour.
-		 * @memberof KmlNetworkLinkControl.prototype
-		 * @readonly
-		 * @type {Number}
-		 */
-		minRefreshPeriod: {
-			get: function() {
-				return this._factory.specific(this, {name: 'minRefreshPeriod', transformer: NodeTransformers.number});
-			}
-		},
+KmlNetworkLinkControl.prototype = Object.create(KmlObject.prototype);
 
-		/**
-		 * Specified in seconds, <maxSessionLength> is the maximum amount of time for which the client NetworkLink can
-         * remain connected. The default value of -1 indicates not to terminate the session explicitly.
-		 * @memberof KmlNetworkLinkControl.prototype
-		 * @readonly
-		 * @type {Number}
-		 */
-		maxSessionLength: {
-			get: function() {
-				return this._factory.specific(this, {name: 'maxSessionLength', transformer: NodeTransformers.number});
-			}
-		},
+Object.defineProperties(KmlNetworkLinkControl.prototype, {
+  /**
+   * Specified in seconds, <minRefreshPeriod> is the minimum allowed time between fetches of the file. This
+   * parameter allows servers to throttle fetches of a particular file and to tailor refresh rates to the expected
+   * rate of change to the data. For example, a user might set a link refresh to 5 seconds, but you could set your
+   * minimum refresh period to 3600 to limit refresh updates to once every hour.
+   * @memberof KmlNetworkLinkControl.prototype
+   * @readonly
+   * @type {Number}
+   */
+  minRefreshPeriod: {
+    get: function () {
+      return this._factory.specific(this, {
+        name: "minRefreshPeriod",
+        transformer: NodeTransformers.number,
+      });
+    },
+  },
 
-		/**
-		 * Use this element to append a string to the URL query on the next refresh of the network link. You can use
-         * this data in your script to provide more intelligent handling on the server side, including version querying
-         * and conditional file delivery.
-		 * @memberof KmlNetworkLinkControl.prototype
-		 * @readonly
-		 * @type {String}
-		 */
-		cookie: {
-			get: function() {
-				return this._factory.specific(this, {name: 'cookie', transformer: NodeTransformers.string});
-			}
-		},
+  /**
+   * Specified in seconds, <maxSessionLength> is the maximum amount of time for which the client NetworkLink can
+   * remain connected. The default value of -1 indicates not to terminate the session explicitly.
+   * @memberof KmlNetworkLinkControl.prototype
+   * @readonly
+   * @type {Number}
+   */
+  maxSessionLength: {
+    get: function () {
+      return this._factory.specific(this, {
+        name: "maxSessionLength",
+        transformer: NodeTransformers.number,
+      });
+    },
+  },
 
-		/**
-		 * You can deliver a pop-up message, such as usage guidelines for your network link. The message appears when
-         * the network link is first loaded into Google Earth, or when it is changed in the network link control.
-		 * @memberof KmlNetworkLinkControl.prototype
-		 * @readonly
-		 * @type {String}
-		 */
-		message: {
-			get: function() {
-				return this._factory.specific(this, {name: 'message', transformer: NodeTransformers.string});
-			}
-		},
+  /**
+   * Use this element to append a string to the URL query on the next refresh of the network link. You can use
+   * this data in your script to provide more intelligent handling on the server side, including version querying
+   * and conditional file delivery.
+   * @memberof KmlNetworkLinkControl.prototype
+   * @readonly
+   * @type {String}
+   */
+  cookie: {
+    get: function () {
+      return this._factory.specific(this, {
+        name: "cookie",
+        transformer: NodeTransformers.string,
+      });
+    },
+  },
 
-		/**
-		 * You can control the name of the network link from the server, so that changes made to the name on the client
-         * side are overridden by the server.
-		 * @memberof KmlNetworkLinkControl.prototype
-		 * @readonly
-		 * @type {String}
-		 */
-		linkName: {
-			get: function() {
-				return this._factory.specific(this, {name: 'linkName', transformer: NodeTransformers.string});
-			}
-		},
+  /**
+   * You can deliver a pop-up message, such as usage guidelines for your network link. The message appears when
+   * the network link is first loaded into Google Earth, or when it is changed in the network link control.
+   * @memberof KmlNetworkLinkControl.prototype
+   * @readonly
+   * @type {String}
+   */
+  message: {
+    get: function () {
+      return this._factory.specific(this, {
+        name: "message",
+        transformer: NodeTransformers.string,
+      });
+    },
+  },
 
-		/**
-		 * You can control the description of the network link from the server, so that changes made to the description
-         * on the client side are overridden by the server.You can control the description of the network link from the
-         * server, so that changes made to the description on the client side are overridden by the server.
-		 * @memberof KmlNetworkLinkControl.prototype
-		 * @readonly
-		 * @type {String}
-		 */
-		linkDescription: {
-			get: function() {
-				return this._factory.specific(this, {name: 'linkDescription', transformer: NodeTransformers.string});
-			}
-		},
+  /**
+   * You can control the name of the network link from the server, so that changes made to the name on the client
+   * side are overridden by the server.
+   * @memberof KmlNetworkLinkControl.prototype
+   * @readonly
+   * @type {String}
+   */
+  linkName: {
+    get: function () {
+      return this._factory.specific(this, {
+        name: "linkName",
+        transformer: NodeTransformers.string,
+      });
+    },
+  },
 
-		/**
-		 * You can control the snippet for the network link from the server, so that changes made to the snippet on the
-         * client side are overridden by the server. <linkSnippet> has a maxLines attribute, an integer that specifies
-         * the maximum number of lines to display.
-		 * @memberof KmlNetworkLinkControl.prototype
-		 * @readonly
-		 * @type {String}
-		 */
-		linkSnippet: {
-			get: function() {
-				return this._factory.specific(this, {name: 'linkSnippet', transformer: NodeTransformers.string});
-			}
-		},
+  /**
+   * You can control the description of the network link from the server, so that changes made to the description
+   * on the client side are overridden by the server.You can control the description of the network link from the
+   * server, so that changes made to the description on the client side are overridden by the server.
+   * @memberof KmlNetworkLinkControl.prototype
+   * @readonly
+   * @type {String}
+   */
+  linkDescription: {
+    get: function () {
+      return this._factory.specific(this, {
+        name: "linkDescription",
+        transformer: NodeTransformers.string,
+      });
+    },
+  },
 
-		/**
-		 * You can specify a date/time at which the link should be refreshed. This specification takes effect only if
-         * the <refreshMode> in <Link> has a value of onExpire. See <refreshMode>
-		 * @memberof KmlNetworkLinkControl.prototype
-		 * @readonly
-		 * @type {Date}
-		 */
-		expires: {
-			get: function() {
-				return this._factory.specific(this, {name: 'expires', transformer: NodeTransformers.date});
-			}
-		},
+  /**
+   * You can control the snippet for the network link from the server, so that changes made to the snippet on the
+   * client side are overridden by the server. <linkSnippet> has a maxLines attribute, an integer that specifies
+   * the maximum number of lines to display.
+   * @memberof KmlNetworkLinkControl.prototype
+   * @readonly
+   * @type {String}
+   */
+  linkSnippet: {
+    get: function () {
+      return this._factory.specific(this, {
+        name: "linkSnippet",
+        transformer: NodeTransformers.string,
+      });
+    },
+  },
 
-		/**
-		 * With <Update>, you can specify any number of Change, Create, and Delete tags for a .kml file or .kmz archive
-         * that has previously been loaded with a network link. See <Update>.
-		 * @memberof KmlNetworkLinkControl.prototype
-		 * @readonly
-		 * @type {Update}
-		 */
-		Update: {
-			get: function() {
-				return this._factory.any(this, {
-					name: Update.prototype.getTagNames()
-				});
-			}
-		},
+  /**
+   * You can specify a date/time at which the link should be refreshed. This specification takes effect only if
+   * the <refreshMode> in <Link> has a value of onExpire. See <refreshMode>
+   * @memberof KmlNetworkLinkControl.prototype
+   * @readonly
+   * @type {Date}
+   */
+  expires: {
+    get: function () {
+      return this._factory.specific(this, {
+        name: "expires",
+        transformer: NodeTransformers.date,
+      });
+    },
+  },
 
-		/**
-		 * Either Camera or LookAt which will be used to fly to the location whenever the
-		 * @memberof KmlNetworkLinkControl.prototype
-		 * @readonly
-		 * @type {AbstractView}
-		 */
-		AbstractView: {
-			get: function() {
-				return this._factory.any(this, {
-					name: KmlAbstractView.prototype.getTagNames()
-				});
-			}
-		}
-	});
+  /**
+   * With <Update>, you can specify any number of Change, Create, and Delete tags for a .kml file or .kmz archive
+   * that has previously been loaded with a network link. See <Update>.
+   * @memberof KmlNetworkLinkControl.prototype
+   * @readonly
+   * @type {Update}
+   */
+  Update: {
+    get: function () {
+      return this._factory.any(this, {
+        name: Update.prototype.getTagNames(),
+      });
+    },
+  },
 
-	/**
-	 * @inheritDoc
-	 */
-	KmlNetworkLinkControl.prototype.getTagNames = function() {
-		return ['NetworkLinkControl'];
-	};
-
-	KmlElements.addKey(KmlNetworkLinkControl.prototype.getTagNames()[0], KmlNetworkLinkControl);
-
-	return KmlNetworkLinkControl;
+  /**
+   * Either Camera or LookAt which will be used to fly to the location whenever the
+   * @memberof KmlNetworkLinkControl.prototype
+   * @readonly
+   * @type {AbstractView}
+   */
+  AbstractView: {
+    get: function () {
+      return this._factory.any(this, {
+        name: KmlAbstractView.prototype.getTagNames(),
+      });
+    },
+  },
 });
+
+/**
+ * @inheritDoc
+ */
+KmlNetworkLinkControl.prototype.getTagNames = function () {
+  return ["NetworkLinkControl"];
+};
+
+KmlElements.addKey(
+  KmlNetworkLinkControl.prototype.getTagNames()[0],
+  KmlNetworkLinkControl
+);
+
+export default KmlNetworkLinkControl;

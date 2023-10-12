@@ -27,14 +27,7 @@
  */
 import CustomMatchers from "../CustomMatchers.test.js";
 import { Sector, TileMatrix, TileMatrixSet } from "../../src/WorldWind.js";
-define([
-    'test/CustomMatchers.test',
-    'src/geom/Sector',
-    'src/geom/TileMatrix',
-    'src/geom/TileMatrixSet'
 
-], function (CustomMatchers, Sector, TileMatrix, TileMatrixSet) {
-    "use strict";
 
     beforeEach(function () {
         jasmine.addMatchers(CustomMatchers);
@@ -165,4 +158,4 @@ define([
             expect(actualLevel).toBe(expectedLevel);
         });
     });
-});
+

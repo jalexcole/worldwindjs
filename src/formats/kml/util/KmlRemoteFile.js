@@ -25,16 +25,10 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
-define([
-    '../../../error/ArgumentError',
-    '../../../util/Logger',
-    '../../../util/Promise'
-], function (
-    ArgumentError,
-    Logger,
-    Promise
-) {
-    "use strict";
+import ArgumentError from "../../../error/ArgumentError";
+import Logger from "../../../util/Logger";
+import { Promise } from "es6-promise";
+
     /**
      * Creates representation of KmlRemoteFile. In order to load an object it is necessary to run get function on created object.
      * @param options {Object}
@@ -125,5 +119,4 @@ define([
         });
     };
 
-    return KmlRemoteFile;
-});
+    export default KmlRemoteFile;

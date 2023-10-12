@@ -25,39 +25,36 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
-define([
-	'./KmlChange',
-	'./KmlCreate',
-	'./KmlDelete',
-	'../KmlElements',
-	'../KmlObject',
-	'./KmlNodeTransformers'
-], function(Change,
-			Create,
-			Delete,
-			KmlElements,
-			KmlObject,
-			NodeTransformers){
-	var KmlUpdate = function(options) {
-		KmlObject.call(this, options);
-	};
+import KmlChange from "./KmlChange";
+import KmlCreate from "./KmlCreate";
+import KmlDelete from "./KmlDelete";
+import KmlElements from "../KmlElements";
+import KmlObject from "../KmlObject";
+import KmlNodeTransformers from "./KmlNodeTransformers";
 
-	KmlUpdate.prototype = Object.create(KmlObject.prototype);
+var KmlUpdate = function (options) {
+  KmlObject.call(this, options);
+};
 
-	Object.defineProperties(KmlUpdate.prototype, {
-		/**
-		 * A URL that specifies the .kml or .kmz file whose data (within Google Earth) is to be modified by an <KmlUpdate> element. This KML file must already have been loaded via a <NetworkLink>. In that file, the element to be modified must already have an explicit id attribute defined for it.
-		 * @memberof KmlUpdate.prototype
-		 * @readonly
-		 * @type {String}
-		 */
-		targetHref: {
-			get: function() {
-				return this._factory.specific(this, {name: 'minRefreshPeriod', transformer: NodeTransformers.number});
-			}
-		},
+KmlUpdate.prototype = Object.create(KmlObject.prototype);
 
-		/**
+Object.defineProperties(KmlUpdate.prototype, {
+  /**
+   * A URL that specifies the .kml or .kmz file whose data (within Google Earth) is to be modified by an <KmlUpdate> element. This KML file must already have been loaded via a <NetworkLink>. In that file, the element to be modified must already have an explicit id attribute defined for it.
+   * @memberof KmlUpdate.prototype
+   * @readonly
+   * @type {String}
+   */
+  targetHref: {
+    get: function () {
+      return this._factory.specific(this, {
+        name: "minRefreshPeriod",
+        transformer: NodeTransformers.number,
+      });
+    },
+  },
+
+  /**
 		 * Modifies the values in an element that has already been loaded with a <NetworkLink>. Within the Change element, the child to be modified must include a targetId attribute that references the original element's id.
 		 This update can be considered a "sparse update": in the modified element, only the values listed in <Change> are replaced; all other values remained untouched. When <Change> is applied to a set of coordinates, the new coordinates replace the current coordinates.
 		 Children of this element are the element(s) to be modified, which are identified by the targetId attribute.
@@ -65,53 +62,52 @@ define([
 		 * @readonly
 		 * @type {Change}
 		 */
-		Change: {
-			get: function() {
-				return this._factory.any(this, {
-					name: Change.prototype.getTagNames()
-				});
-			}
-		},
+  Change: {
+    get: function () {
+      return this._factory.any(this, {
+        name: Change.prototype.getTagNames(),
+      });
+    },
+  },
 
-		/**
+  /**
 		 * Adds new elements to a Folder or Document that has already been loaded via a <NetworkLink>. The <targetHref> element in <KmlUpdate> specifies the URL of the .kml or .kmz file that contained the original Folder or Document. Within that file, the Folder or Document that is to contain the new data must already have an explicit id defined for it. This id is referenced as the targetId attribute of the Folder or Document within <Create> that contains the element to be added.
 		 Once an object has been created and loaded into Google Earth, it takes on the URL of the original parent Document of Folder. To perform subsequent updates to objects added with this KmlUpdate/Create mechanism, set <targetHref> to the URL of the original Document or Folder (not the URL of the file that loaded the intervening updates).
 		 * @memberof KmlUpdate.prototype
 		 * @readonly
 		 * @type {Create}
 		 */
-		Create: {
-			get: function() {
-				return this._factory.any(this, {
-					name: Create.prototype.getTagNames()
-				});
-			}
-		},
+  Create: {
+    get: function () {
+      return this._factory.any(this, {
+        name: Create.prototype.getTagNames(),
+      });
+    },
+  },
 
-		/**
+  /**
 		 * Deletes features from a complex element that has already been loaded via a <NetworkLink>. The <targetHref> element in <KmlUpdate> specifies the .kml or .kmz file containing the data to be deleted. Within that file, the element to be deleted must already have an explicit id defined for it. The <Delete> element references this id in the targetId attribute.
 		 Child elements for <Delete>, which are the only elements that can be deleted, are Document, Folder, GroundOverlay, Placemark, and ScreenOverlay.
 		 * @memberof KmlUpdate.prototype
 		 * @readonly
 		 * @type {Delete}
 		 */
-		Delete: {
-			get: function() {
-				return this._factory.any(this, {
-					name: Delete.prototype.getTagNames()
-				});
-			}
-		}
-	});
-
-	/**
-	 * @inheritDoc
-	 */
-	KmlUpdate.prototype.getTagNames = function() {
-		return ['Update'];
-	};
-
-	KmlElements.addKey(KmlUpdate.prototype.getTagNames()[0], KmlUpdate);
-
-	return KmlUpdate;
+  Delete: {
+    get: function () {
+      return this._factory.any(this, {
+        name: Delete.prototype.getTagNames(),
+      });
+    },
+  },
 });
+
+/**
+ * @inheritDoc
+ */
+KmlUpdate.prototype.getTagNames = function () {
+  return ["Update"];
+};
+
+KmlElements.addKey(KmlUpdate.prototype.getTagNames()[0], KmlUpdate);
+
+export default KmlUpdate;

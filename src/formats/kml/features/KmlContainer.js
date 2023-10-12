@@ -25,10 +25,8 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
-define([
-    './KmlFeature'
-], function (KmlFeature) {
-    "use strict";
+import KmlFeature from "./KmlFeature";
+
     /**
      * Constructs an KmlContainer. Applications usually don't call this constructor. It is called by {@link KmlFile} as
      * objects from Kml file are read. This object is already concrete implementation.
@@ -95,5 +93,4 @@ define([
         return ['Folder', 'Document'];
     };
 
-    return KmlContainer;
-});
+    export default KmlContainer;

@@ -25,16 +25,10 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
-define([
-    './KmlColorStyle',
-    '../KmlElements',
-    '../util/KmlNodeTransformers'
-], function (
-    KmlColorStyle,
-    KmlElements,
-    NodeTransformers
-) {
-    "use strict";
+import KmlColorStyle from "./KmlColorStyle";
+import KmlElements from "../KmlElements";
+import KmlNodeTransformers from "../util/KmlNodeTransformers";
+
     /**
      * Constructs an KmlLabelStyle. Applications don't usually call this constructor. It is called by {@link KmlFile} as
      * objects from KmlFile are read. This object is already concrete implementation.
@@ -81,5 +75,4 @@ define([
 
     KmlElements.addKey(KmlLabelStyle.prototype.getTagNames()[0], KmlLabelStyle);
 
-    return KmlLabelStyle;
-});
+    export default KmlLabelStyle;

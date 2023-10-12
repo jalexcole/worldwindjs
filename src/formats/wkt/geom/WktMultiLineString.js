@@ -25,61 +25,58 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
-define([
-    '../../../shapes/Path',
-    '../../../shapes/ShapeAttributes',
-    '../../../shapes/SurfacePolyline',
-    '../WktElements',
-    './WktObject',
-    '../WktType'
-], function (Path,
-             ShapeAttributes,
-             SurfacePolyline,
-             WktElements,
-             WktObject,
-             WktType) {
-    /**
-     * It represents multiple line string as one object.
-     * @alias WktMultiLineString
-     * @augments WktObject
-     * @constructor
-     */
-    var WktMultiLineString = function () {
-        WktObject.call(this, WktType.SupportedGeometries.MULTI_LINE_STRING);
+import Path from "../../../shapes/Path";
+import ShapeAttributes from "../../../shapes/ShapeAttributes";
+import SurfacePolyline from "../../../shapes/SurfacePolyline";
+import WktElements from "../WktElements";
+import WktObject from "./WktObject.js";
+import WktType from "../WktType";
 
-        this.objectBoundaries = [];
-    };
+/**
+ * It represents multiple line string as one object.
+ * @alias WktMultiLineString
+ * @augments WktObject
+ * @constructor
+ */
+var WktMultiLineString = function () {
+  WktObject.call(this, WktType.SupportedGeometries.MULTI_LINE_STRING);
 
-    WktMultiLineString.prototype = Object.create(WktObject.prototype);
+  this.objectBoundaries = [];
+};
 
-    /**
-     * Specific for Multi objects as it depicts the boundaries.
-     */
-    WktMultiLineString.prototype.commaWithoutCoordinates = function() {
-        this.objectBoundaries.push(this.coordinates.slice());
-        this.coordinates = [];
-    };
+WktMultiLineString.prototype = Object.create(WktObject.prototype);
 
-    /**
-     * In case of 2D it returns SurfacePolyline, In case of 3D return Path.
-     * @inheritDoc
-     * @return {Path[]|SurfacePolyline[]}
-     */
-    WktMultiLineString.prototype.shapes = function() {
-        this.commaWithoutCoordinates(); // This needs to be more careful and probably move to the stuff
+/**
+ * Specific for Multi objects as it depicts the boundaries.
+ */
+WktMultiLineString.prototype.commaWithoutCoordinates = function () {
+  this.objectBoundaries.push(this.coordinates.slice());
+  this.coordinates = [];
+};
 
-        if(this._is3d){
-            return this.objectBoundaries.map(function(boundaries){
-                return new Path(boundaries, new ShapeAttributes(null));
-            }.bind(this));
-        } else {
-            return this.objectBoundaries.map(function(boundaries){
-                return new SurfacePolyline(boundaries, new ShapeAttributes(null));
-            }.bind(this));
-        }
-    };
+/**
+ * In case of 2D it returns SurfacePolyline, In case of 3D return Path.
+ * @inheritDoc
+ * @return {Path[]|SurfacePolyline[]}
+ */
+WktMultiLineString.prototype.shapes = function () {
+  this.commaWithoutCoordinates(); // This needs to be more careful and probably move to the stuff
 
-    WktElements['MULTILINESTRING'] = WktMultiLineString;
+  if (this._is3d) {
+    return this.objectBoundaries.map(
+      function (boundaries) {
+        return new Path(boundaries, new ShapeAttributes(null));
+      }.bind(this)
+    );
+  } else {
+    return this.objectBoundaries.map(
+      function (boundaries) {
+        return new SurfacePolyline(boundaries, new ShapeAttributes(null));
+      }.bind(this)
+    );
+  }
+};
 
-    return WktMultiLineString;
-});
+WktElements["MULTILINESTRING"] = WktMultiLineString;
+
+export default WktMultiLineString;

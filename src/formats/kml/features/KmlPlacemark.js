@@ -28,34 +28,20 @@
 /**
  * @export KmlPlacemark
  */
-define([
-    './../KmlElements',
-    './KmlFeature',
-    '../geom/KmlGeometry',
-    '../styles/KmlStyle',
-    '../KmlTimeSpan',
-    '../KmlTimeStamp',
-    '../../../shapes/PlacemarkAttributes',
-    '../../../shapes/Placemark',
-    '../../../util/Color',
-    '../../../shapes/ShapeAttributes',
-    '../../../shapes/TextAttributes',
-    '../../../util/Offset',
-    '../../../util/WWUtil'
-], function (KmlElements,
-             KmlFeature,
-             KmlGeometry,
-             KmlStyle,
-             KmlTimeSpan,
-             KmlTimeStamp,
-             PlacemarkAttributes,
-             Placemark,
-             Color,
-             ShapeAttributes,
-             TextAttributes,
-             Offset,
-             WWUtil) {
-    "use strict";
+import KmlElements from "../KmlElements";
+import KmlFeature from "./KmlFeature";
+import KmlGeometry from "../geom/KmlGeometry";
+import KmlStyle from "../styles/KmlStyle";
+import KmlTimeSpan from "../KmlTimeSpan";
+import KmlTimeStamp from "../KmlTimeStamp";
+import PlacemarkAttributes from "../../../shapes/PlacemarkAttributes.js";
+import Placemark from "../../../shapes/Placemark.js";
+import Color from "../../../util/Color";
+import ShapeAttributes from "../../../shapes/ShapeAttributes";
+import TextAttributes from "../../../shapes/TextAttributes";
+import Offset from "../../../util/Offset";
+import WWUtil from "../../../util/WWUtil";
+
     /**
      * Constructs an KmlPlacemark. Applications usually don't call this constructor. It is called by {@link KmlFile} as
      * Objects from Kml file are read
@@ -166,5 +152,4 @@ define([
 
     KmlElements.addKey(KmlPlacemark.prototype.getTagNames()[0], KmlPlacemark);
 
-    return KmlPlacemark;
-});
+    export default KmlPlacemark;

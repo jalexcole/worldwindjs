@@ -25,26 +25,15 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
-define([
-    './../KmlElements',
-    './KmlFeature',
-    '../KmlLatLonBox',
-    '../KmlLatLonQuad',
-    './KmlOverlay',
-    '../util/KmlNodeTransformers',
-    '../../../geom/Sector',
-    '../../../shapes/SurfaceImage'
-], function (
-    KmlElements,
-    KmlFeature,
-    KmlLatLonBox,
-    KmlLatLonQuad,
-    KmlOverlay,
-    NodeTransformers,
-    Sector,
-    SurfaceImage
-) {
-    "use strict";
+import KmlElements from "../KmlElements";
+import KmlFeature from "./KmlFeature";
+import KmlLatLonBox from "../KmlLatLonBox";
+import KmlLatLonQuad from "../KmlLatLonQuad";
+import KmlOverlay from "./KmlOverlay.js";
+import KmlNodeTransformers from "../util/KmlNodeTransformers";
+import Sector from "../../../geom/Sector";
+import SurfaceImage from "../../../shapes/SurfaceImage";
+
 
     /**
      * Constructs an KmlGroundOverlay. Applications usually don't call this constructor. It is called by {@link
@@ -157,5 +146,4 @@ define([
 
     KmlElements.addKey(KmlGroundOverlay.prototype.getTagNames()[0], KmlGroundOverlay);
 
-    return KmlGroundOverlay;
-});
+    export default KmlGroundOverlay;

@@ -25,20 +25,13 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
-define([
-    './../KmlElements',
-    './KmlFeature',
-    '../KmlFile',
-    '../KmlLink',
-    '../util/KmlNodeTransformers',
-    '../util/KmlRefreshListener'
-], function (KmlElements,
-             KmlFeature,
-             KmlFile,
-             KmlLink,
-             NodeTransformers,
-             RefreshListener) {
-    "use strict";
+import KmlElements from "../KmlElements";
+import KmlFeature from "./KmlFeature";
+import KmlFile from "../KmlFile";
+import KmlLink from "../KmlLink";
+import KmlNodeTransformers from "../util/KmlNodeTransformers";
+import KmlRefreshListener from "../util/KmlRefreshListener";
+
 
     var REFRESH_NETWORK_LINK_EVENT = "refreshNetworkLinkEvent";
 
@@ -206,5 +199,4 @@ define([
 
     KmlElements.addKey(KmlNetworkLink.prototype.getTagNames()[0], KmlNetworkLink);
 
-    return KmlNetworkLink;
-});
+    export default KmlNetworkLink;

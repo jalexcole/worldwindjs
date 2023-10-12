@@ -25,16 +25,10 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
-define([
-    './../KmlElements',
-    '../KmlObject',
-    './KmlNodeTransformers'
-], function (
-    KmlElements,
-    KmlObject,
-    NodeTransformers
-) {
-    "use strict";
+import KmlElements from "../KmlElements";
+import KmlObject from "../KmlObject";
+import KmlNodeTransformers from "./KmlNodeTransformers";
+
 
     /**
      * Constructs a KmlScale. Application usually don't call this constructor. It is called by {@link KmlFile} as
@@ -101,5 +95,5 @@ define([
 
     KmlElements.addKey(KmlScale.prototype.getTagNames()[0], KmlScale);
 
-    return KmlScale;
-});
+    export default KmlScale;
+

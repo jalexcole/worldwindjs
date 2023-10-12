@@ -25,26 +25,16 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
-define([
-    './../KmlObject',
-    '../KmlAbstractView',
-    '../KmlFile',
-    '../styles/KmlStyleMap',
-    '../styles/KmlStyleSelector',
-    '../KmlRegion',
-    '../KmlTimePrimitive',
-    '../util/KmlNodeTransformers',
-    '../../../util/Promise'
-], function (KmlObject,
-             KmlAbstractView,
-             KmlFile,
-             KmlStyleMap,
-             KmlStyleSelector,
-             KmlRegion,
-             KmlTimePrimitive,
-             NodeTransformers,
-             Promise) {
-    "use strict";
+import KmlObject from "../KmlObject";
+import KmlAbstractView from "../KmlAbstractView";
+import KmlFile from "../KmlFile";
+import KmlStyleMap from "../styles/KmlStyleMap";
+import KmlStyleSelector from "../styles/KmlStyleSelector";
+import KmlRegion from "../KmlRegion";
+import KmlTimePrimitive from "../KmlTimePrimitive";
+import KmlNodeTransformers from "../util/KmlNodeTransformers";
+import { Promise } from "es6-promise";
+
     /**
      * Constructs an KmlFeature. Applications usually don't call this constructor. It is called by {@link KmlFile} as
      * objects from Kml file are read
@@ -358,5 +348,4 @@ define([
             'Document'];
     };
 
-    return KmlFeature;
-});
+    export default KmlFeature;

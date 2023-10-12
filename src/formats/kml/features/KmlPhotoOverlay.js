@@ -25,20 +25,13 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
-define([
-    '../util/KmlImagePyramid',
-    './../KmlElements',
-    './KmlOverlay',
-    '../geom/KmlPoint',
-    '../util/KmlNodeTransformers',
-    '../util/KmlViewVolume'
-], function (ImagePyramid,
-             KmlElements,
-             KmlOverlay,
-             KmlPoint,
-             NodeTransformers,
-             ViewVolume) {
-    "use strict";
+import KmlImagePyramid from "../util/KmlImagePyramid";
+import KmlElements from "../KmlElements";
+import KmlOverlay from "./KmlOverlay";
+import KmlPoint from "../geom/KmlPoint";
+import KmlNodeTransformers from "../util/KmlNodeTransformers";
+import KmlViewVolume from "../util/KmlViewVolume";
+
 
     /**
      * Constructs an KmlPhotoOverlay. Applications usually don't call this constructor. It is called by {@link KmlFile}
@@ -152,5 +145,4 @@ define([
 
     KmlElements.addKey(KmlPhotoOverlay.prototype.getTagNames[0], KmlPhotoOverlay);
 
-    return KmlPhotoOverlay;
-});
+    export default KmlPhotoOverlay;

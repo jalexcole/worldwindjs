@@ -25,45 +25,37 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
-define([
-    '../../../shapes/Path',
-    '../../../shapes/ShapeAttributes',
-    '../../../shapes/SurfacePolyline',
-    '../WktElements',
-    './WktObject',
-    '../WktType'
-], function (Path,
-             ShapeAttributes,
-             SurfacePolyline,
-             WktElements,
-             WktObject,
-             WktType) {
-    /**
-     * It represents WKT LineString.
-     * @alias WktLineString
-     * @augments WktObject
-     * @constructor
-     */
-    var WktLineString = function () {
-        WktObject.call(this, WktType.SupportedGeometries.LINE_STRING);
-    };
+import Path from "../../../shapes/Path";
+import ShapeAttributes from "../../../shapes/ShapeAttributes";
+import SurfacePolyline from "../../../shapes/SurfacePolyline";
+import WktElements from "../WktElements.js";
+import WktType from "../WktType.js";
 
-    WktLineString.prototype = Object.create(WktObject.prototype);
+/**
+ * It represents WKT LineString.
+ * @alias WktLineString
+ * @augments WktObject
+ * @constructor
+ */
+var WktLineString = function () {
+  WktObject.call(this, WktType.SupportedGeometries.LINE_STRING);
+};
 
-    /**
-     * In case of 2D return SurfacePolyline, in case of 3D returns Path.
-     * @inheritDoc
-     * @return {Path[]|SurfacePolyline[]}
-     */
-    WktLineString.prototype.shapes = function () {
-        if (this._is3d) {
-            return [new Path(this.coordinates, new ShapeAttributes(null))];
-        } else {
-            return [new SurfacePolyline(this.coordinates, new ShapeAttributes(null))];
-        }
-    };
+WktLineString.prototype = Object.create(WktObject.prototype);
 
-    WktElements['LINESTRING'] = WktLineString;
+/**
+ * In case of 2D return SurfacePolyline, in case of 3D returns Path.
+ * @inheritDoc
+ * @return {Path[]|SurfacePolyline[]}
+ */
+WktLineString.prototype.shapes = function () {
+  if (this._is3d) {
+    return [new Path(this.coordinates, new ShapeAttributes(null))];
+  } else {
+    return [new SurfacePolyline(this.coordinates, new ShapeAttributes(null))];
+  }
+};
 
-    return WktLineString;
-});
+WktElements["LINESTRING"] = WktLineString;
+
+export default WktLineString;

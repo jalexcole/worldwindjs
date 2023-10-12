@@ -25,17 +25,10 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
-/**
- * @exports KmlTimeStamp
- */
-define([
-    './KmlElements',
-    './KmlTimePrimitive',
-    './util/KmlNodeTransformers'
-], function (KmlElements,
-             KmlTimePrimitive,
-             NodeTransformers) {
-    "use strict";
+import KmlElements from "./KmlElements";
+import KmlTimePrimitive from "./KmlTimePrimitive";
+import KmlNodeTransformers from "./util/KmlNodeTransformers";
+
 
     /**
      * Constructs an KmlTimeStamp. Applications usually don't call this constructor. It is called by {@link KmlFile} as
@@ -81,5 +74,4 @@ define([
 
     KmlElements.addKey(KmlTimeStamp.prototype.getTagNames()[0], KmlTimeStamp);
 
-    return KmlTimeStamp;
-});
+    export default KmlTimeStamp;

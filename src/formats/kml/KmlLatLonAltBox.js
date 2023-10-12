@@ -25,14 +25,10 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
-define([
-    './KmlElements',
-    './KmlObject',
-    './util/KmlNodeTransformers'
-], function (KmlElements,
-             KmlObject, 
-             NodeTransformers) {
-    "use strict";
+import KmlElements from "./KmlElements";
+import KmlObject from "./KmlObject";
+import KmlNodeTransformers from "./util/KmlNodeTransformers";
+
 
     /**
      * Constructs an KmlLatLonAltBox. Applications usually don't call this constructor. It is called by {@link KmlFile}
@@ -136,5 +132,4 @@ define([
 
     KmlElements.addKey(KmlLatLonAltBox.prototype.getTagNames()[0], KmlLatLonAltBox);
 
-    return KmlLatLonAltBox;
-});
+    export default KmlLatLonAltBox;

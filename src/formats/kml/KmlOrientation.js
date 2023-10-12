@@ -25,14 +25,10 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
-define([
-    './KmlElements',
-    './KmlObject',
-    './util/KmlNodeTransformers'
-], function (KmlElements,
-             KmlObject,
-             NodeTransformers) {
-    "use strict";
+import KmlElements from "./KmlElements";
+import KmlObject from "./KmlObject";
+import KmlNodeTransformers from "./util/KmlNodeTransformers";
+
 
     /**
      * Constructs an KmlOrientation. Applications usually don't call this constructor. It is called by {@link KmlFile}
@@ -102,5 +98,4 @@ define([
 
     KmlElements.addKey(KmlOrientation.prototype.getTagNames()[0], KmlOrientation);
 
-    return KmlOrientation;
-});
+    export default KmlOrientation;

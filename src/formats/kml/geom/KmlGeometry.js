@@ -28,10 +28,9 @@
 /**
  * @exports KmlGeometry
  */
-define([
-    '../KmlObject'
-], function (KmlObject) {
-    "use strict";
+
+import KmlObject from "../KmlObject";
+
     /**
      * Constructs an KmlGeometry. Application usually don't call this constructor. It is called by {@link KmlFile} as
      * Objects from KmlFile are read.
@@ -68,5 +67,4 @@ define([
         return ['Point', 'LinearRing', 'LineString', 'MultiGeometry', 'Polygon'];
     };
 
-    return KmlGeometry;
-});
+    export default KmlGeometry;

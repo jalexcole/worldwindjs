@@ -25,16 +25,11 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
-define([
-    './util/KmlHrefResolver',
-    './KmlElements',
-    './KmlObject',
-    './util/KmlNodeTransformers'
-], function (HrefResolver,
-             KmlElements,
-             KmlObject,
-             NodeTransformers) {
-    "use strict";
+import KmlHrefResolver from "./util/KmlHrefResolver";
+import KmlElements from "./KmlElements";
+import KmlObject from "./KmlObject";
+import KmlNodeTransformers from "./util/KmlNodeTransformers";
+
 
     /**
      * Constructs an KmlLink. Applications usually don't call this constructor. It is called by {@link KmlFile} as
@@ -204,5 +199,4 @@ define([
 
 	KmlElements.addKey(KmlLink.prototype.getTagNames()[0], KmlLink);
 
-    return KmlLink;
-});
+    export default KmlLink;

@@ -25,38 +25,21 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
-define([
-    '../../../util/Color',
-    '../../../util/Font',
-    './KmlStyleSelector',
-    './../KmlElements',
-    './KmlPolyStyle',
-    './KmlIconStyle',
-    './KmlLabelStyle',
-    './KmlLineStyle',
-    './KmlListStyle',
-    './KmlBalloonStyle',
-    '../../../util/Offset',
-    '../../../util/Promise',
-    '../../../shapes/ShapeAttributes',
-    '../../../shapes/TextAttributes'
-], function (
-    Color,
-    Font,
-    KmlStyleSelector,
-    KmlElements,
-    KmlPolyStyle,
-    KmlIconStyle,
-    KmlLabelStyle,
-    KmlLineStyle,
-    KmlListStyle,
-    KmlBalloonStyle,
-    Offset,
-    Promise,
-    ShapeAttributes,
-    TextAttributes
-) {
-    "use strict";
+import Color from "../../../util/Color";
+import Font from "../../../util/Font";
+import KmlStyleSelector from "./KmlStyleSelector";
+import KmlElements from "../KmlElements";
+import KmlPolyStyle from "./KmlPolyStyle";
+import KmlIconStyle from "./KmlIconStyle.js";
+import KmlLabelStyle from "./KmlLabelStyle.js";
+import KmlLineStyle from "./KmlLineStyle.js";
+import KmlListStyle from "./KmlListStyle.js";
+import KmlBalloonStyle from "./KmlBalloonStyle.js";
+import Offset from "../../../util/Offset";
+import { Promise } from "es6-promise";
+import ShapeAttributes from "../../../shapes/ShapeAttributes";
+import TextAttributes from "../../../shapes/TextAttributes";
+
 
     /**
      * Constructs an KmlStyle. Application usually don't call this constructor. It is called by {@link KmlFile} as
@@ -283,5 +266,4 @@ define([
         });
     };
 
-    return KmlStyle;
-});
+    export default KmlStyle;

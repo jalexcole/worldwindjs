@@ -25,18 +25,11 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
-define([
-    './../KmlElements',
-    '../KmlObject',
-    '../styles/KmlStyleSelector',
-    './KmlNodeTransformers'
-], function (
-    KmlElements,
-    KmlObject,
-    KmlStyleSelector,
-    NodeTransformers
-) {
-    "use strict";
+import KmlElements from "../KmlElements";
+import KmlObject from "../KmlObject";
+import KmlStyleSelector from "../styles/KmlStyleSelector";
+import KmlNodeTransformers from "./KmlNodeTransformers";
+
 
     /**
      * Constructs a KmlPair. Application usually don't call this constructor. It is called by {@link KmlFile} as
@@ -112,5 +105,4 @@ define([
 
     KmlElements.addKey(KmlPair.prototype.getTagNames()[0], KmlPair);
 
-    return KmlPair;
-});
+    export default KmlPair;
