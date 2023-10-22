@@ -30,7 +30,6 @@ import { describe, expect, it } from "vitest";
 import { ProjectionWgs84 } from "../../src/WorldWind";
 import ElevationModel from "../../src/globe/ElevationModel";
 import Globe from "../../src/globe/Globe";
-import { beforeAll, beforeEach, describe,expect, it } from "vitest";
 describe("Globe tests", function () {
   // WGS 84 reference values taken from
   // http://earth-info.nga.mil/GandG/publications/NGA_STND_0036_1_0_0_WGS84/NGA.STND.0036_1.0.0_WGS84.pdf
