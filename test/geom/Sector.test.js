@@ -36,6 +36,8 @@ import {
   Vec3,
 } from "../../src/WorldWind";
 
+import { beforeEach, describe,expect, it } from "vitest";
+
 describe("Sector Tests", function () {
   it("Should construct a Sector", function () {
     var sector = new Sector(37, 39, 13, 18);

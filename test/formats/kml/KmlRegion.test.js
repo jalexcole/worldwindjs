@@ -31,7 +31,7 @@ import {
   KmlLod,
   XmlDocument,
 } from "../../../src/WorldWind";
-
+import { beforeAll, beforeEach, describe,expect, it } from "vitest";
 describe("KmlRegionTest", function () {
   var validKml =
     '<?xml version="1.0" encoding="UTF-8"?>' +

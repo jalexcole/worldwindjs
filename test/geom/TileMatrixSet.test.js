@@ -27,7 +27,7 @@
  */
 import CustomMatchers from "../CustomMatchers.test.js";
 import { Sector, TileMatrix, TileMatrixSet } from "../../src/WorldWind.js";
-
+import { beforeAll, beforeEach, describe, expect, it } from "vitest";
 
     beforeEach(function () {
         jasmine.addMatchers(CustomMatchers);

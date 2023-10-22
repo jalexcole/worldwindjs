@@ -26,6 +26,7 @@
  * PDF found in code  directory.
  */
 import { Frustum, Matrix, Plane, Vec3 } from "../../src/WorldWind";
+import { beforeEach, describe,expect, it } from "vitest";
 
 describe("Frustum Tests", function () {
   describe("Frustum constructor", function () {

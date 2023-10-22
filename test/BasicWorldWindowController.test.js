@@ -30,7 +30,7 @@ import { Globe2D, LookAt, Vec2 } from "../src/WorldWind.js";
 
 import { describe } from "vitest";
 import TestUtils from "./util/TestUtils.test.js";
-
+import { describe, expect, it } from "vitest";
 
 
 // var mockGlobe = new Globe2D();

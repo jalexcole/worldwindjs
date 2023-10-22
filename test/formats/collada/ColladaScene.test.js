@@ -35,8 +35,7 @@ import {
   ProjectionWgs84,
   Vec3,
 } from "../../../src/WorldWind";
-
-import { describe, expect, it } from "vitest";
+import { beforeAll, beforeEach, describe,expect, it } from "vitest";
 describe("ColladaScene calculation and data manipulation testing", function () {
   it("Should properly calculate new normals and create proper vertex order", function () {
     var indices = [

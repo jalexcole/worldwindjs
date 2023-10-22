@@ -29,7 +29,7 @@
 import { KmlDocument } from "../../../../src/WorldWind.js";
 import { KmlPlacemark } from "../../../../src/WorldWind.js";
 import { XMLDocument } from "../../../../src/WorldWind.js";
-
+import { beforeAll, beforeEach, describe,expect, it } from "vitest";
 describe("KmlDocumentTest", function () {
   var validKml =
     '<?xml version="1.0" encoding="UTF-8"?>' +

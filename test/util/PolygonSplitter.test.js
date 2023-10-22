@@ -28,6 +28,7 @@
 import { PolygonSplitter } from "../../src/WorldWind.js";
 import PolygonSplitterData from "./PolygonSplitterData.test.js";
 
+import { beforeEach, describe,expect, it } from "vitest";
 
         describe('spilt polygons', function () {
 

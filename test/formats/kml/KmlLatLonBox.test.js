@@ -26,8 +26,7 @@
  * PDF found in code  directory.
  */
 import { KmlLatLonBox, XmlDocument } from "../../../src/WorldWind";
-import { describe, expect, it } from "vitest";
-
+import { beforeAll, beforeEach, describe,expect, it } from "vitest";
     describe("KmlLatLonBox test", function () {
             var validKml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
                 "<kml xmlns=\"http://www.opengis.net/kml/2.2\">" +

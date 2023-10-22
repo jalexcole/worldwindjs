@@ -27,7 +27,7 @@
  */
 import CustomMatchers from "./TileMatrixSet.test.js";
 import { Sector, TileMatrix } from "../../src/WorldWind.js";
-
+import { beforeEach, describe,expect, it } from "vitest";
 
 
     beforeEach(function () {

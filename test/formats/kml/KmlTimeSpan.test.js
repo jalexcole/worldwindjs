@@ -26,7 +26,7 @@
  * PDF found in code  directory.
  */
 import { KmlTimeSpan, XMLDocument } from "../../../src/WorldWind";
-
+import { beforeAll, beforeEach, describe,expect, it } from "vitest";
 describe("KmlTimeSpanTest", function () {
   var validTimeSpanXml =
     '<?xml version="1.0" encoding="UTF-8"?>' +

@@ -28,6 +28,8 @@
 
 import { Vec2 } from "../../src/WorldWind.js";
 
+import { describe, expect, it } from "vitest";
+
 describe("Vec2Test", function () {
   it("Should have the correct two components", function () {
     var vec2 = new Vec2(9, 8);
@@ -112,86 +114,86 @@ describe("Vec2Test", function () {
 
   describe("#Vector interpolation", function () {
     it("Interpolates with an integer weight", function () {
-      var vec2_a = new WorldWind.Vec2(2, 3);
-      var vec2_b = new WorldWind.Vec2(4, 6);
-      var expected_vec2 = new WorldWind.Vec2(12, 18);
+      var vec2_a = new Vec2(2, 3);
+      var vec2_b = new Vec2(4, 6);
+      var expected_vec2 = new Vec2(12, 18);
       expect(vec2_a.mix(vec2_b, 5)).toEqual(expected_vec2);
     });
 
     it("Interpolates with a non integer weight", function () {
-      var vec2_a = new WorldWind.Vec2(2, 3);
-      var vec2_b = new WorldWind.Vec2(4, 6);
-      var expected_vec2 = new WorldWind.Vec2(3, 4.5);
+      var vec2_a = new Vec2(2, 3);
+      var vec2_b = new Vec2(4, 6);
+      var expected_vec2 = new Vec2(3, 4.5);
       expect(vec2_a.mix(vec2_b, 0.5)).toEqual(expected_vec2);
     });
   });
 
   it("Negates the components of the current vector", function () {
-    var vec2_a = new WorldWind.Vec2(2, 3);
-    var expected_vec2 = new WorldWind.Vec2(-2, -3);
+    var vec2_a = new Vec2(2, 3);
+    var expected_vec2 = new Vec2(-2, -3);
     expect(vec2_a.negate()).toEqual(expected_vec2);
   });
 
   it("Computes the scalar dot product of the current vector and a specified one", function () {
-    var vec2_a = new WorldWind.Vec2(2, 3);
-    var vec2_b = new WorldWind.Vec2(4, 5);
+    var vec2_a = new Vec2(2, 3);
+    var vec2_b = new Vec2(4, 5);
     var expected = 23;
     expect(vec2_a.dot(vec2_b)).toEqual(expected);
   });
 
   it("Computes the squared magnitude of this vector", function () {
-    var vec2_a = new WorldWind.Vec2(2, 3);
+    var vec2_a = new Vec2(2, 3);
     expect(vec2_a.magnitudeSquared()).toEqual(13);
   });
 
   describe("#Magnitude of a vector", function () {
     it("Computes the magnitude with full positive components", function () {
-      var vec2 = new WorldWind.Vec2(6, 8);
+      var vec2 = new Vec2(6, 8);
       expect(vec2.magnitude()).toEqual(10);
     });
 
     it("Computes the magnitude with a negative component", function () {
-      var vec2 = new WorldWind.Vec2(4, -3);
+      var vec2 = new Vec2(4, -3);
       expect(vec2.magnitude()).toEqual(5);
     });
   });
 
   it("Normalize this vector to a unit vector", function () {
-    var vec2 = new WorldWind.Vec2(3, 4);
+    var vec2 = new Vec2(3, 4);
     var normalized_vec2 = vec2.normalize();
     expect(normalized_vec2[0]).toBeCloseTo(0.6, 10);
     expect(normalized_vec2[1]).toBeCloseTo(0.8, 10);
   });
 
   it("Computes the squared distance from a vector to a specified vector", function () {
-    var vec2_a = new WorldWind.Vec2(2, 3);
-    var vec2_b = new WorldWind.Vec2(4, 5);
+    var vec2_a = new Vec2(2, 3);
+    var vec2_b = new Vec2(4, 5);
     expect(vec2_a.distanceToSquared(vec2_b)).toEqual(8);
     expect(vec2_a.distanceToSquared(vec2_a)).toEqual(0);
   });
 
   it("Computes the distance from a vector to a specified vector", function () {
-    var vec2_a = new WorldWind.Vec2(1, 2);
-    var vec2_b = new WorldWind.Vec2(2, 4);
+    var vec2_a = new Vec2(1, 2);
+    var vec2_b = new Vec2(2, 4);
     expect(vec2_a.distanceTo(vec2_b)).toEqual(Math.sqrt(5));
   });
 
   it("Creates a Vec3 using this vector's X and Y components and a Z component of 0", function () {
-    var vec2 = new WorldWind.Vec2(2, 3);
+    var vec2 = new Vec2(2, 3);
     var vec3 = vec2.toVec3();
-    expect(vec3).toEqual(new WorldWind.Vec3(2, 3, 0));
+    expect(vec3).toEqual(new Vec3(2, 3, 0));
   });
 
   it("Swap the components of the current vector with another one", function () {
-    var vec2_a = new WorldWind.Vec2(1, 2);
-    var vec2_b = new WorldWind.Vec2(2, 4);
+    var vec2_a = new Vec2(1, 2);
+    var vec2_b = new Vec2(2, 4);
     vec2_a.swap(vec2_b);
-    expect(vec2_a).toEqual(new WorldWind.Vec2(2, 4));
-    expect(vec2_b).toEqual(new WorldWind.Vec2(1, 2));
+    expect(vec2_a).toEqual(new Vec2(2, 4));
+    expect(vec2_b).toEqual(new Vec2(1, 2));
   });
 
   it("Returns a string representation of this vector", function () {
-    var vec2 = new WorldWind.Vec2(1, 2);
+    var vec2 = new Vec2(1, 2);
     expect(vec2.toString()).toEqual("(1, 2)");
   });
 });

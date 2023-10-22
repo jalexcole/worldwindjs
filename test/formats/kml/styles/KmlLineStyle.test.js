@@ -26,7 +26,7 @@
  * PDF found in code  directory.
  */
 import { KmlLineStyle, XMLDocument } from "../../../../src/WorldWind";
-
+import { beforeAll, beforeEach, describe,expect, it } from "vitest";
 
     describe("KmlLineStyle", function(){
 

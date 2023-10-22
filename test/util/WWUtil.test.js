@@ -28,7 +28,7 @@
 
 
 import { WWUtil } from "../../src/WorldWind.js";
-
+import { describe, expect, assertTrue, assertFalse, it } from "vitest";
 describe("WWUtil-arrayEquals", function () {
   if (
     ("testEqualArrays",

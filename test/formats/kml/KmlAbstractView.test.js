@@ -30,7 +30,7 @@ import KmlAbstractView from "../../../src/WorldWind.js";
 import KmlTimeSpan from "../../../src/WorldWind.js";
 import { XMLDocument } from "../../../src/WorldWind.js";
 
-
+import { beforeAll, beforeEach, describe,expect, it } from "vitest";
     describe("KmlAbstractViewTest", function () {
         var validKml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
             "<kml xmlns=\"http://www.opengis.net/kml/2.2\">" +

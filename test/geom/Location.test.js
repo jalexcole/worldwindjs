@@ -26,6 +26,7 @@
  * PDF found in code  directory.
  */
 import { Angle, ElevationModel, EarthElevationModel,Globe, Location } from "../../src/WorldWind";
+import { beforeEach, describe,expect, it } from "vitest";
 
 
 

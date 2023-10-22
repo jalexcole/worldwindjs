@@ -29,7 +29,7 @@
 import ElevationModel from "../src/WorldWind.js";
 import Globe from "../src/WorldWind.js";
 
-import { describe } from "vitest";
+import { describe, expect, it } from "vitest";
 import TestUtils from "test/util/TestUtils.test.js";
 
 

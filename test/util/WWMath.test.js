@@ -26,7 +26,7 @@
  * PDF found in code  directory.
  */
 import { Vec3, WWMath } from "../../src/WorldWind.js";
-import { describe, it } from "vitest";
+import { describe, expect, it } from "vitest";
 
 describe("WWMath test", function () {
   describe("normalizeAngle360 test", function () {

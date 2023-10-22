@@ -26,6 +26,7 @@
  * PDF found in code  directory.
  */
 import Color from "../../src/WorldWind.js";
+import { beforeEach, describe,expect, it } from "vitest";
 
 describe("Color-colorFromHex", function () {
   it("testValidWhiteHex", function () {

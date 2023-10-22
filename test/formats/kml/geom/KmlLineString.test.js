@@ -26,7 +26,7 @@
  * PDF found in code  directory.
  */
 import { KmlLineString, Position, XMLDocument, WorldWind } from "../../../../src/WorldWind";
-
+import { beforeAll, beforeEach, describe,expect, it } from "vitest";
     describe("KmlLineString", function () {
 
         var kmlContainingLineString = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +

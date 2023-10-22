@@ -5,6 +5,8 @@
 import Location from "../../src/geom/Location.js";
 import HashMap from "../../src/util/HashMap.js";
 
+
+
 function transformOutputData(rawContours) {
   return rawContours.map(function (contour) {
     var polygons = contour.polygons.map(function (polygon) {

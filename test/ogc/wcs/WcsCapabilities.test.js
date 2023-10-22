@@ -26,6 +26,7 @@
  * PDF found in code  directory.
  */
 import WcsCapabilities from "../../../src/WorldWind.js";
+import { beforeAll, beforeEach, describe,expect, it } from "vitest";
 
 describe("Constructor testing", function () {
   it("should throw an exception when nothing is provided as an argument", function () {

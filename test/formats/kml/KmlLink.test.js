@@ -27,7 +27,7 @@
  */
 import KmlFileCache from "../../../src/formats/kml/KmlFileCache";
 import { KmlLink, XMLDocument } from "../../../src/WorldWind";
-
+import { beforeAll, beforeEach, describe,expect, it } from "vitest";
     describe ("KmlLinkTest",function () {
             var validKml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
                 "<kml xmlns=\"http://www.opengis.net/kml/2.2\">" +

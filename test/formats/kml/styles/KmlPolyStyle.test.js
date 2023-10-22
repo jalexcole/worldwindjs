@@ -26,7 +26,7 @@
  * PDF found in code  directory.
  */
 import { KmlPolyStyle, XMLDocument } from "../../../../src/WorldWind";
-
+import { beforeAll, beforeEach, describe,expect, it } from "vitest";
         describe ("KmlPolyStyle", function(){
 
         var validKml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +

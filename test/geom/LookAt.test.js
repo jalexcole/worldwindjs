@@ -21,6 +21,7 @@ import {
   Position,
 } from "../../src/WorldWind.js";
 import TestUtils from "../util/TestUtils.test.js";
+import { beforeEach, describe,expect, it } from "vitest";
 
 var mockGlobe = new Globe(new ElevationModel());
 var wwd = TestUtils.getMockWwd(mockGlobe);

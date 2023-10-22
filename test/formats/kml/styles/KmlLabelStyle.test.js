@@ -26,7 +26,7 @@
  * PDF found in code  directory.
  */
 import { KmlLabelStyle, XMLDocument } from "../../../../src/WorldWind";
-
+import { beforeAll, beforeEach, describe,expect, it } from "vitest";
 
     describe ("KmlLabelStyle", function(){
     var validKml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +

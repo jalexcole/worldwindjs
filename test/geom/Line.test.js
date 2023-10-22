@@ -27,6 +27,7 @@
  */
 
 import { Line, Vec3 } from "../../src/WorldWind";
+import { beforeEach, describe,expect, it } from "vitest";
 
 describe("Line Tests", function () {
   describe("Line Constructor", function () {

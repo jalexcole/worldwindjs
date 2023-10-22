@@ -26,7 +26,7 @@
  * PDF found in code  directory.
  */
 import { KmlPoint, XmlDocument } from "../../../../src/WorldWind";
-
+import { beforeAll, beforeEach, describe,expect, it } from "vitest";
     describe("KmlPointTest",function() {
             var kmlFile = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
                 "<kml xmlns=\"http://www.opengis.net/kml/2.2\">" +

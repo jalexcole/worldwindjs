@@ -26,7 +26,7 @@
  * PDF found in code  directory.
  */
 import { KmlObject, KmlPoint, XmlDocument } from "../../../src/WorldWind";
-
+import { beforeAll, beforeEach, describe,expect, it } from "vitest";
 describe("KmlObjectTestCase", function () {
   describe("testUndefinedNode", function () {
     it("should raise an exception", function () {

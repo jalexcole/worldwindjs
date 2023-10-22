@@ -26,6 +26,7 @@
  * PDF found in code  directory.
  */
 import { Angle, Globe, EarthElevationModel, ElevationModel, Matrix, Plane, Rectangle, Vec3 } from "../../src/WorldWind.js";
+import { beforeEach, describe,expect, it } from "vitest";
 
 
 

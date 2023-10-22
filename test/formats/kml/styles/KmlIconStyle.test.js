@@ -27,7 +27,7 @@
  */
 import KmlFileCache from "../../../../src/formats/kml/KmlFileCache";
 import { KmlIconStyle,XMLDocument } from "../../../../src/WorldWind";
-
+import { beforeAll, beforeEach, describe,expect, it } from "vitest";
 
     describe ("KmlIconStyle", function (){
 

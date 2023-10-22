@@ -29,6 +29,7 @@ import KmlFileCache from "../../../src/WorldWind.js";
 import KmlIcon from "../../../src/WorldWind.js";
 import { XMLDocument } from "../../../src/WorldWind.js";
 import { describe, expect, it } from "vitest";
+import { beforeAll, beforeEach, describe,expect, it } from "vitest";
 describe("KmlIconTest", function () {
   var validKml =
     '<?xml version="1.0" encoding="UTF-8"?>' +
