@@ -25,8 +25,8 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
-import Logger from "../util/Logger.js";
 import ArgumentError from "../error/ArgumentError.js";
+import Logger from "../util/Logger.js";
 
 /**
  * Constructs a three-component vector.
@@ -423,10 +423,10 @@ Vec3.prototype.multiplyByMatrix = function (matrix) {
   }
 
   var x =
-      matrix[0] * this[0] +
-      matrix[1] * this[1] +
-      matrix[2] * this[2] +
-      matrix[3],
+    matrix[0] * this[0] +
+    matrix[1] * this[1] +
+    matrix[2] * this[2] +
+    matrix[3],
     y =
       matrix[4] * this[0] +
       matrix[5] * this[1] +
@@ -633,6 +633,4 @@ Vec3.prototype.toString = function () {
   return "(" + this[0] + ", " + this[1] + ", " + this[2] + ")";
 };
 
-export default {
-  Vec3,
-};
+export default Vec3;

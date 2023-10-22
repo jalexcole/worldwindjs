@@ -25,13 +25,13 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
-import Angle from "../geom/Angle";
 import ArgumentError from "../error/ArgumentError";
-import GeographicProjection from "./GeographicProjection";
-import Logger from "../util/Logger";
+import Angle from "../geom/Angle";
 import Position from "../geom/Position";
 import Vec3 from "../geom/Vec3";
+import Logger from "../util/Logger";
 import WWMath from "../util/WWMath";
+import GeographicProjection from "./GeographicProjection";
 
 /**
  * Constructs a WGS84 ellipsoid
@@ -40,7 +40,7 @@ import WWMath from "../util/WWMath";
  * @augments GeographicProjection
  * @classdesc Represents a WGS84 ellipsoid.
  */
-var ProjectionWgs84 = function () {
+export function ProjectionWgs84() {
   GeographicProjection.call(this, "WGS84", false, null);
 
   this.is2D = false;
@@ -403,4 +403,4 @@ ProjectionWgs84.prototype.surfaceNormalAtPoint = function (
   return result.normalize();
 };
 
-export default ProjectionWgs84;
+

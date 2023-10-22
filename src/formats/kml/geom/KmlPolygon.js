@@ -25,15 +25,13 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
-import Color from "../../../util/Color";
-import KmlElements from "../KmlElements";
-import { KmlGeometry } from "./KmlGeometry.js";
-import KmlLinearRing from "./KmlLinearRing";
-import KmlStyle from "../styles/KmlStyle";
-import KmlNodeTransformers from "../util/KmlNodeTransformers";
 import Polygon from "../../../shapes/Polygon.js";
 import ShapeAttributes from "../../../shapes/ShapeAttributes";
 import SurfacePolygon from "../../../shapes/SurfacePolygon";
+import KmlElements from "../KmlElements";
+import KmlStyle from "../styles/KmlStyle";
+import KmlGeometry from "./KmlGeometry.js";
+import KmlLinearRing from "./KmlLinearRing";
 
 /**
  * Constructs an KmlPolygon. Application usually don't call this constructor. It is called by {@link KmlFile} as
@@ -156,7 +154,7 @@ Object.defineProperties(KmlPolygon.prototype, {
 KmlPolygon.prototype.createPolygon = function (styles, fileCache) {
   console.log(
     this.kmlInnerBoundary &&
-      this.kmlInnerBoundary.kmlAltitudeMode === WorldWind.CLAMP_TO_GROUND
+    this.kmlInnerBoundary.kmlAltitudeMode === WorldWind.CLAMP_TO_GROUND
   );
   // TODO: KML boundaries are displaying graphic glitches when the camera is zoomed out
   if (

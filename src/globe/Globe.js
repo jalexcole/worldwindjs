@@ -25,38 +25,38 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
-import Angle from "../geom/Angle";
+import WorldWind from "../WorldWind.js";
 import ArgumentError from "../error/ArgumentError";
+import Angle from "../geom/Angle";
 import BoundingBox from "../geom/BoundingBox";
-import ElevationModel from "./ElevationModel";
-import Logger from "../util/Logger";
 import Position from "../geom/Position";
-import ProjectionWgs84 from "../projections/ProjectionWgs84";
 import Sector from "../geom/Sector";
-import Tessellator from "./Tessellator";
 import Vec3 from "../geom/Vec3";
-import WWMath from "../util/WWMath";
+import { ProjectionWgs84 } from "../projections/ProjectionWgs84";
+import Logger from "../util/Logger";
+import ElevationModel from "./ElevationModel";
+import Tessellator from "./Tessellator";
 
 /**
-         * Constructs an ellipsoidal Globe with default radii for Earth (WGS84).
-         * @alias Globe
-         * @constructor
-         * @classdesc Represents an ellipsoidal globe. The default configuration represents Earth but may be changed.
-         * To configure for another planet, set the globe's equatorial and polar radii properties and its
-         * eccentricity-squared property.
-         * <p>
-         * A globe uses a Cartesian coordinate system whose origin is at the globe's center. It's Y axis points to the
-         * north pole, the Z axis points to the intersection of the prime meridian and the equator,
-         * and the X axis completes a right-handed coordinate system, is in the equatorial plane and 90 degrees east
-         * of the Z axis.
-         * <p>
-         *     All Cartesian coordinates and elevations are in meters.
+  * Constructs an ellipsoidal Globe with default radii for Earth (WGS84).
+  * @alias Globe
+  * @constructor
+  * @classdesc Represents an ellipsoidal globe. The default configuration represents Earth but may be changed.
+  * To configure for another planet, set the globe's equatorial and polar radii properties and its
+  * eccentricity-squared property.
+  * <p>
+  * A globe uses a Cartesian coordinate system whose origin is at the globe's center. It's Y axis points to the
+  * north pole, the Z axis points to the intersection of the prime meridian and the equator,
+  * and the X axis completes a right-handed coordinate system, is in the equatorial plane and 90 degrees east
+  * of the Z axis.
+  * <p>
+  *     All Cartesian coordinates and elevations are in meters.
 
-         * @param {ElevationModel} elevationModel The elevation model to use for this globe.
-         * @param {GeographicProjection} projection The projection to apply to the globe. May be null or undefined,
-         * in which case no projection is applied and the globe is a WGS84 ellipsoid.
-         * @throws {ArgumentError} If the specified elevation model is null or undefined.
-         */
+  * @param {ElevationModel} elevationModel The elevation model to use for this globe.
+  * @param {GeographicProjection} projection The projection to apply to the globe. May be null or undefined,
+  * in which case no projection is applied and the globe is a WGS84 ellipsoid.
+  * @throws {ArgumentError} If the specified elevation model is null or undefined.
+  */
 var Globe = function (elevationModel, projection) {
   if (!elevationModel) {
     throw new ArgumentError(
@@ -440,10 +440,10 @@ Globe.prototype.radiusAt = function (latitude, longitude) {
     rpm *
     Math.sqrt(
       1.0 +
-        (this.eccentricitySquared * this.eccentricitySquared -
-          2.0 * this.eccentricitySquared) *
-          sinLat *
-          sinLat
+      (this.eccentricitySquared * this.eccentricitySquared -
+        2.0 * this.eccentricitySquared) *
+      sinLat *
+      sinLat
     )
   );
 };

@@ -26,10 +26,10 @@
  * PDF found in code  directory.
  */
 
+import { describe, expect, it } from "vitest";
 import { ProjectionWgs84 } from "../../src/WorldWind";
 import ElevationModel from "../../src/globe/ElevationModel";
 import Globe from "../../src/globe/Globe";
-import { describe, expect, it } from "vitest";
 
 describe("Globe tests", function () {
   // WGS 84 reference values taken from
