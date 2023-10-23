@@ -25,11 +25,11 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
-import KmlFileCache from "../../../src/WorldWind.js";
+import { KmlFileCache } from "../../../src/WorldWind.js";
 import KmlIcon from "../../../src/WorldWind.js";
 import { XMLDocument } from "../../../src/WorldWind.js";
-import { describe, expect, it } from "vitest";
-import { beforeAll, beforeEach, describe,expect, it } from "vitest";
+
+import { beforeAll, beforeEach, describe, expect, it } from "vitest";
 describe("KmlIconTest", function () {
   var validKml =
     '<?xml version="1.0" encoding="UTF-8"?>' +
@@ -55,7 +55,7 @@ describe("KmlIconTest", function () {
   });
   it(
     "should have the X, Y, W, H, Href, RefreshMode, RefreshInterval, ViewRefreshMode, ViewRefreshTime, ViewBoundScale," +
-      "ViewFormat and ViewScale properties",
+    "ViewFormat and ViewScale properties",
     function () {
       expect(link.kmlX).toEqual(0);
       expect(link.kmlY).toEqual(0);

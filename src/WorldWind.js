@@ -96,6 +96,7 @@ export * as KmlCreate from "./formats/kml/util/KmlCreate.js";
 export * as KmlDelete from "./formats/kml/util/KmlDelete.js";
 export * as KmlElementsFactory from "./formats/kml/util/KmlElementsFactory.js";
 export * as KmlElementsFactoryCached from "./formats/kml/util/KmlElementsFactoryCached.js";
+export * as KmlTreeKeyValueCache from "./formats/kml/util/KmlTreeKeyValueCache.js";
 export * as KmlHrefResolver from "./formats/kml/util/KmlHrefResolver.js";
 export * as KmlImagePyramid from "./formats/kml/util/KmlImagePyramid.js";
 export * as KmlItemIcon from "./formats/kml/util/KmlItemIcon.js";
@@ -126,7 +127,7 @@ export * as KmlSubStyle from "./formats/kml/styles/KmlSubStyle.js";
 export * as KmlRemoteFile from "./formats/kml/util/KmlRemoteFile.js";
 export * as KmlScale from "./formats/kml/util/KmlScale.js";
 export * as KmlSchema from "./formats/kml/util/KmlSchema.js";
-export * as KmlTreeKeyValueCache from "./formats/kml/util/KmlTreeKeyValueCache.js";
+
 
 export * as KmzFile from "./formats/kml/KmzFile.js";
 
@@ -153,9 +154,9 @@ export * as PolygonSplitter from "./util/PolygonSplitter.js";
 export * as SunPosition from "./util/SunPosition.js";
 export * as Tile from "./util/Tile.js";
 export * as TileFactory from "./util/TileFactory.js";
-
+export * as WcsCapabilities from "./ogc/wcs/WcsCapabilities.js";
 export * as WorldWindow from "./WorldWindow.js";
-
+export * as WcsCoverageDescriptions from "./ogc/wcs/WcsCoverageDescriptions.js";
 export * as WorldWindowController from "./WorldWindowController.js";
 
 export * as WWMath from "./util/WWMath.js";
@@ -420,18 +421,18 @@ WorldWind.configuration = {
     WWUtil.worldwindlibLocation() || WWUtil.currentUrlSansFilePart() + "/../",
   layerRetrievalQueueSize: 16,
   coverageRetrievalQueueSize: 16,
-  bingLogoPlacement: new Offset(
-    WorldWind.OFFSET_INSET_PIXELS,
-    7,
-    WorldWind.OFFSET_PIXELS,
-    7
-  ),
-  bingLogoAlignment: new Offset(
-    WorldWind.OFFSET_FRACTION,
-    1,
-    WorldWind.OFFSET_FRACTION,
-    0
-  ),
+  // bingLogoPlacement: new Offset(
+  //   WorldWind.OFFSET_INSET_PIXELS,
+  //   7,
+  //   WorldWind.OFFSET_PIXELS,
+  //   7
+  // ),
+  // bingLogoAlignment: new Offset(
+  //   WorldWind.OFFSET_FRACTION,
+  //   1,
+  //   WorldWind.OFFSET_FRACTION,
+  //   0
+  // ),
 };
 
 // /**
@@ -441,6 +442,6 @@ WorldWind.configuration = {
 //  */
 // WorldWind.BingMapsKey = null;
 
-// window.WorldWind = WorldWind;
+window.WorldWind = WorldWind;
 
 export default WorldWind;
