@@ -96,12 +96,12 @@ export * as KmlCreate from "./formats/kml/util/KmlCreate.js";
 export * as KmlDelete from "./formats/kml/util/KmlDelete.js";
 export * as KmlElementsFactory from "./formats/kml/util/KmlElementsFactory.js";
 export * as KmlElementsFactoryCached from "./formats/kml/util/KmlElementsFactoryCached.js";
-export * as KmlTreeKeyValueCache from "./formats/kml/util/KmlTreeKeyValueCache.js";
 export * as KmlHrefResolver from "./formats/kml/util/KmlHrefResolver.js";
 export * as KmlImagePyramid from "./formats/kml/util/KmlImagePyramid.js";
 export * as KmlItemIcon from "./formats/kml/util/KmlItemIcon.js";
 export * as KmlNetworkLinkControl from "./formats/kml/util/KmlNetworkLinkControl.js";
 export * as KmlPair from "./formats/kml/util/KmlPair.js";
+export * as KmlTreeKeyValueCache from "./formats/kml/util/KmlTreeKeyValueCache.js";
 export * as KmlViewVolume from "./formats/kml/util/KmlViewVolume.js";
 export * as Globe2D from "./globe/Globe2D.js";
 export * as HashMap from "./util/HashMap.js";
@@ -138,6 +138,8 @@ export * as Logger from "./util/Logger.js";
 
 export * as LookAt from "./geom/LookAt.js";
 
+export * as WorldWindow from "./WorldWindow.js";
+export * as WorldWindowController from "./WorldWindowController.js";
 export * as Matrix from "./geom/Matrix.js";
 export * as Matrix3 from "./geom/Matrix3.js";
 export * as MeasuredLocation from "./geom/MeasuredLocation.js";
@@ -148,16 +150,14 @@ export * as Sector from "./geom/Sector.js";
 export * as TileMatrix from "./geom/TileMatrix.js";
 export * as TileMatixSet from "./geom/TileMatrixSet.js";
 export * as Vec2 from "./geom/Vec2.js";
-export * as Vec3 from "./geom/Vec3.js";
+export { default as Vec3 } from "./geom/Vec3.js";
+export * as WcsCapabilities from "./ogc/wcs/WcsCapabilities.js";
+export * as WcsCoverageDescriptions from "./ogc/wcs/WcsCoverageDescriptions.js";
 export * from "./projections/ProjectionWgs84.js";
 export * as PolygonSplitter from "./util/PolygonSplitter.js";
 export * as SunPosition from "./util/SunPosition.js";
 export * as Tile from "./util/Tile.js";
 export * as TileFactory from "./util/TileFactory.js";
-export * as WcsCapabilities from "./ogc/wcs/WcsCapabilities.js";
-export * as WorldWindow from "./WorldWindow.js";
-export * as WcsCoverageDescriptions from "./ogc/wcs/WcsCoverageDescriptions.js";
-export * as WorldWindowController from "./WorldWindowController.js";
 
 export * as WWMath from "./util/WWMath.js";
 
