@@ -31,7 +31,7 @@ import {
   XmlDocument,
 } from "../../../../src/WorldWind";
 import KmlNodeTransformers from "../../../../src/formats/kml/util/KmlNodeTransformers";
-
+import { afterEach, beforeEach, describe, it } from "vitest";
 describe("NodeTransformersTest", function () {
   var exampleDocument =
     '<?xml version="1.0" encoding="UTF-8"?>' +

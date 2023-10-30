@@ -30,7 +30,7 @@ import ElevationModel from "../src/WorldWind.js";
 import Globe from "../src/WorldWind.js";
 
 import { describe, expect, it } from "vitest";
-import TestUtils from "test/util/TestUtils.test.js";
+import TestUtils from "./util/TestUtils.test.js";
 
 
 var mockGlobe = new Globe(new ElevationModel());

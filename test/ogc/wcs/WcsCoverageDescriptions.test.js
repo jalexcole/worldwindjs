@@ -28,9 +28,9 @@
 import { Sector, WcsCoverageDescriptions } from "../../../src/WorldWind.js";
 import CustomMatchers from "../../CustomMatchers.test.js";
 import { beforeAll, beforeEach, describe,expect, it } from "vitest";
-beforeEach(function () {
-  jasmine.addMatchers(CustomMatchers);
-});
+// beforeEach(function () {
+//   jasmine.addMatchers(CustomMatchers);
+// });
 
 describe("Constructor testing", function () {
   it("should throw an exception when nothing is provided as an argument", function () {

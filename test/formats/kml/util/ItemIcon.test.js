@@ -27,7 +27,7 @@
  */
 import { KmlItemIcon, XMLDocument } from "../../../../src/WorldWind";
 import KmlFileCache from "../../../../src/formats/kml/KmlFileCache";
-
+import { afterEach, beforeEach, describe, it } from "vitest";
     describe("ItemIconTest", function () {
             var validKml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
                 "<kml xmlns=\"http://www.opengis.net/kml/2.2\">" +

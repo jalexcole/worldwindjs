@@ -27,6 +27,7 @@
  */
 import { XMLDocument } from "../../../../src/WorldWind.js";
 import KmlAttribute from "../../../../src/formats/kml/util/KmlAttribute.js";
+import { afterEach, beforeEach, describe, it } from "vitest";
 describe("KmlAttributeTest", function () {
   var validKml =
     '<?xml version="1.0" encoding="UTF-8"?>' +

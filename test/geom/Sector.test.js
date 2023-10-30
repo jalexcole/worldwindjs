@@ -27,16 +27,15 @@
  */
 
 import {
-  BoundingBox,
   EarthElevationModel,
-  ElevationModel,
   DrawContext,
   Globe,
   Location,
+  Sector,
   Vec3,
 } from "../../src/WorldWind";
 
-import { beforeEach, describe,expect, it } from "vitest";
+import { beforeEach, describe, expect, it } from "vitest";
 
 describe("Sector Tests", function () {
   it("Should construct a Sector", function () {

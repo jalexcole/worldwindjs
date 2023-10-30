@@ -42,9 +42,9 @@ var wwd = TestUtils.getMockWwd(mockGlobe);
 wwd.resetDrawContext();
 var dc = wwd.drawContext;
 
-beforeEach(function () {
-  jasmine.addMatchers(CustomMatchers);
-});
+// beforeEach(function () {
+//   jasmine.addMatchers(CustomMatchers);
+// });
 
 describe("DrawContext Tests", function () {
   // describe("Calculates correct view transforms", function () {

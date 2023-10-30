@@ -30,9 +30,9 @@ import { Sector, TileMatrix } from "../../src/WorldWind.js";
 import { beforeEach, describe,expect, it } from "vitest";
 
 
-    beforeEach(function () {
-        jasmine.addMatchers(CustomMatchers);
-    });
+    // beforeEach(function () {
+    //     jasmine.addMatchers(CustomMatchers);
+    // });
 
     describe("TileMatrix tileSector", function () {
         it("should produce the appropriate sectors matching the row/column index for a global coverage", function () {

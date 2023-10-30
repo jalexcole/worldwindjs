@@ -27,7 +27,7 @@
  */
 
 import { Globe2D, LookAt, Vec2 } from "../src/WorldWind.js";
-
+import DrawContext from "../src/render/DrawContext.js";
 
 import TestUtils from "./util/TestUtils.test.js";
 import { describe, expect, it } from "vitest";

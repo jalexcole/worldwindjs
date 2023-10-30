@@ -29,133 +29,212 @@ import CustomMatchers from "../CustomMatchers.test.js";
 import { Sector, TileMatrix, TileMatrixSet } from "../../src/WorldWind.js";
 import { beforeAll, beforeEach, describe, expect, it } from "vitest";
 
-    beforeEach(function () {
-        jasmine.addMatchers(CustomMatchers);
-    });
+// beforeEach(function () {
+//     jasmine.addMatchers(CustomMatchers);
+// });
 
-    describe("TileMatrixSet fromTilePyramid for global coverage", function () {
-        var sector = Sector.FULL_SPHERE;
-        var matrixWidth = 4;
-        var matrixHeight = 2;
-        var tileWidth = 256;
-        var tileHeight = 256;
-        var numLevels = 10;
+describe("TileMatrixSet fromTilePyramid for global coverage", function () {
+  var sector = Sector.FULL_SPHERE;
+  var matrixWidth = 4;
+  var matrixHeight = 2;
+  var tileWidth = 256;
+  var tileHeight = 256;
+  var numLevels = 10;
 
-        it("should create 10 levels", function () {
-            var tileMatrixSet = TileMatrixSet.fromTilePyramid(sector, matrixWidth, matrixHeight, tileWidth, tileHeight, numLevels);
+  it("should create 10 levels", function () {
+    var tileMatrixSet = TileMatrixSet.fromTilePyramid(
+      sector,
+      matrixWidth,
+      matrixHeight,
+      tileWidth,
+      tileHeight,
+      numLevels
+    );
 
-            expect(tileMatrixSet.entries.length).toBe(10);
-        });
+    expect(tileMatrixSet.entries.length).toBe(10);
+  });
 
-        it("should divide subsequent tile matrices", function () {
-            var tileMatrixSet = TileMatrixSet.fromTilePyramid(sector, matrixWidth, matrixHeight, tileWidth, tileHeight, numLevels);
+  it("should divide subsequent tile matrices", function () {
+    var tileMatrixSet = TileMatrixSet.fromTilePyramid(
+      sector,
+      matrixWidth,
+      matrixHeight,
+      tileWidth,
+      tileHeight,
+      numLevels
+    );
 
-            var previousWidth = matrixWidth, previousHeight = matrixHeight;
-            for (var idx = 1; idx < tileMatrixSet.entries.length; idx++) {
-                expect(tileMatrixSet.entries[idx].matrixWidth).toBe(previousWidth * 2);
-                expect(tileMatrixSet.entries[idx].matrixHeight).toBe(previousHeight * 2);
-                previousWidth = tileMatrixSet.entries[idx].matrixWidth;
-                previousHeight = tileMatrixSet.entries[idx].matrixHeight;
-            }
-        });
+    var previousWidth = matrixWidth,
+      previousHeight = matrixHeight;
+    for (var idx = 1; idx < tileMatrixSet.entries.length; idx++) {
+      expect(tileMatrixSet.entries[idx].matrixWidth).toBe(previousWidth * 2);
+      expect(tileMatrixSet.entries[idx].matrixHeight).toBe(previousHeight * 2);
+      previousWidth = tileMatrixSet.entries[idx].matrixWidth;
+      previousHeight = tileMatrixSet.entries[idx].matrixHeight;
+    }
+  });
 
-        it("should maintain the same geographic region for each TileMatrix", function () {
-            var tileMatrixSet = TileMatrixSet.fromTilePyramid(sector, matrixWidth, matrixHeight, tileWidth, tileHeight, numLevels);
+  it("should maintain the same geographic region for each TileMatrix", function () {
+    var tileMatrixSet = TileMatrixSet.fromTilePyramid(
+      sector,
+      matrixWidth,
+      matrixHeight,
+      tileWidth,
+      tileHeight,
+      numLevels
+    );
 
-            for (var idx = 1; idx < tileMatrixSet.entries.length; idx++) {
-                expect(tileMatrixSet.entries[idx].sector).toBeSector(sector);
-            }
-        });
+    for (var idx = 1; idx < tileMatrixSet.entries.length; idx++) {
+      expect(tileMatrixSet.entries[idx].sector).toBeSector(sector);
+    }
+  });
 
-        it("should always keep the tileWidth and tileHeight consistent", function () {
-            var tileMatrixSet = TileMatrixSet.fromTilePyramid(sector, matrixWidth, matrixHeight, tileWidth, tileHeight, numLevels);
+  it("should always keep the tileWidth and tileHeight consistent", function () {
+    var tileMatrixSet = TileMatrixSet.fromTilePyramid(
+      sector,
+      matrixWidth,
+      matrixHeight,
+      tileWidth,
+      tileHeight,
+      numLevels
+    );
 
-            for (var idx = 1; idx < tileMatrixSet.entries.length; idx++) {
-                expect(tileMatrixSet.entries[idx].tileWidth).toBeSector(tileWidth);
-                expect(tileMatrixSet.entries[idx].tileHeight).toBeSector(tileHeight);
-            }
-        });
-    });
+    for (var idx = 1; idx < tileMatrixSet.entries.length; idx++) {
+      expect(tileMatrixSet.entries[idx].tileWidth).toBeSector(tileWidth);
+      expect(tileMatrixSet.entries[idx].tileHeight).toBeSector(tileHeight);
+    }
+  });
+});
 
-    describe("TileMatrixSet fromTilePyramid for regional coverage", function () {
-        var sector = new Sector(0, 90, 0, 90);
-        var matrixWidth = 2;
-        var matrixHeight = 2;
-        var tileWidth = 256;
-        var tileHeight = 256;
-        var numLevels = 10;
+describe("TileMatrixSet fromTilePyramid for regional coverage", function () {
+  var sector = new Sector(0, 90, 0, 90);
+  var matrixWidth = 2;
+  var matrixHeight = 2;
+  var tileWidth = 256;
+  var tileHeight = 256;
+  var numLevels = 10;
 
-        it("should create 10 levels", function () {
-            var tileMatrixSet = TileMatrixSet.fromTilePyramid(sector, matrixWidth, matrixHeight, tileWidth, tileHeight, numLevels);
+  it("should create 10 levels", function () {
+    var tileMatrixSet = TileMatrixSet.fromTilePyramid(
+      sector,
+      matrixWidth,
+      matrixHeight,
+      tileWidth,
+      tileHeight,
+      numLevels
+    );
 
-            expect(tileMatrixSet.entries.length).toBe(10);
-        });
+    expect(tileMatrixSet.entries.length).toBe(10);
+  });
 
-        it("should divide subsequent tile matrices", function () {
-            var tileMatrixSet = TileMatrixSet.fromTilePyramid(sector, matrixWidth, matrixHeight, tileWidth, tileHeight, numLevels);
+  it("should divide subsequent tile matrices", function () {
+    var tileMatrixSet = TileMatrixSet.fromTilePyramid(
+      sector,
+      matrixWidth,
+      matrixHeight,
+      tileWidth,
+      tileHeight,
+      numLevels
+    );
 
-            var previousWidth = matrixWidth, previousHeight = matrixHeight;
-            for (var idx = 1; idx < tileMatrixSet.entries.length; idx++) {
-                expect(tileMatrixSet.entries[idx].matrixWidth).toBe(previousWidth * 2);
-                expect(tileMatrixSet.entries[idx].matrixHeight).toBe(previousHeight * 2);
-                previousWidth = tileMatrixSet.entries[idx].matrixWidth;
-                previousHeight = tileMatrixSet.entries[idx].matrixHeight;
-            }
-        });
+    var previousWidth = matrixWidth,
+      previousHeight = matrixHeight;
+    for (var idx = 1; idx < tileMatrixSet.entries.length; idx++) {
+      expect(tileMatrixSet.entries[idx].matrixWidth).toBe(previousWidth * 2);
+      expect(tileMatrixSet.entries[idx].matrixHeight).toBe(previousHeight * 2);
+      previousWidth = tileMatrixSet.entries[idx].matrixWidth;
+      previousHeight = tileMatrixSet.entries[idx].matrixHeight;
+    }
+  });
 
-        it("should maintain the same geographic region for each TileMatrix", function () {
-            var tileMatrixSet = TileMatrixSet.fromTilePyramid(sector, matrixWidth, matrixHeight, tileWidth, tileHeight, numLevels);
+  it("should maintain the same geographic region for each TileMatrix", function () {
+    var tileMatrixSet = TileMatrixSet.fromTilePyramid(
+      sector,
+      matrixWidth,
+      matrixHeight,
+      tileWidth,
+      tileHeight,
+      numLevels
+    );
 
-            for (var idx = 1; idx < tileMatrixSet.entries.length; idx++) {
-                expect(tileMatrixSet.entries[idx].sector).toBeSector(sector);
-            }
-        });
+    for (var idx = 1; idx < tileMatrixSet.entries.length; idx++) {
+      expect(tileMatrixSet.entries[idx].sector).toBeSector(sector);
+    }
+  });
 
-        it("should always keep the tileWidth and tileHeight consistent", function () {
-            var tileMatrixSet = TileMatrixSet.fromTilePyramid(sector, matrixWidth, matrixHeight, tileWidth, tileHeight, numLevels);
+  it("should always keep the tileWidth and tileHeight consistent", function () {
+    var tileMatrixSet = TileMatrixSet.fromTilePyramid(
+      sector,
+      matrixWidth,
+      matrixHeight,
+      tileWidth,
+      tileHeight,
+      numLevels
+    );
 
-            for (var idx = 1; idx < tileMatrixSet.entries.length; idx++) {
-                expect(tileMatrixSet.entries[idx].tileWidth).toBeSector(tileWidth);
-                expect(tileMatrixSet.entries[idx].tileHeight).toBeSector(tileHeight);
-            }
-        });
-    });
+    for (var idx = 1; idx < tileMatrixSet.entries.length; idx++) {
+      expect(tileMatrixSet.entries[idx].tileWidth).toBeSector(tileWidth);
+      expect(tileMatrixSet.entries[idx].tileHeight).toBeSector(tileHeight);
+    }
+  });
+});
 
-    describe("TileMatrixSet indexOfMatrixNearest global coverage", function () {
-        var sector = Sector.FULL_SPHERE;
-        var matrixWidth = 4;
-        var matrixHeight = 2;
-        var tileWidth = 256;
-        var tileHeight = 256;
-        var numLevels = 10;
-        var tileMatrixSet = TileMatrixSet.fromTilePyramid(sector, matrixWidth, matrixHeight, tileWidth, tileHeight, numLevels);
+describe("TileMatrixSet indexOfMatrixNearest global coverage", function () {
+  var sector = Sector.FULL_SPHERE;
+  var matrixWidth = 4;
+  var matrixHeight = 2;
+  var tileWidth = 256;
+  var tileHeight = 256;
+  var numLevels = 10;
+  var tileMatrixSet = TileMatrixSet.fromTilePyramid(
+    sector,
+    matrixWidth,
+    matrixHeight,
+    tileWidth,
+    tileHeight,
+    numLevels
+  );
 
-        it("should find the nearest resolution for level 5", function () {
-            var expectedLevel = 5;
-            var calculatedResolutionLevel5 = sector.deltaLatitude() / (tileHeight * Math.pow(matrixHeight, expectedLevel + 1));
+  it("should find the nearest resolution for level 5", function () {
+    var expectedLevel = 5;
+    var calculatedResolutionLevel5 =
+      sector.deltaLatitude() /
+      (tileHeight * Math.pow(matrixHeight, expectedLevel + 1));
 
-            var actualLevel = tileMatrixSet.indexOfMatrixNearest(calculatedResolutionLevel5);
+    var actualLevel = tileMatrixSet.indexOfMatrixNearest(
+      calculatedResolutionLevel5
+    );
 
-            expect(actualLevel).toBe(expectedLevel);
-        });
-    });
+    expect(actualLevel).toBe(expectedLevel);
+  });
+});
 
-    describe("TileMatrixSet indexOfMatrixNearest global coverage", function () {
-        var sector = new Sector(0, 90, 0, 90);
-        var matrixWidth = 4;
-        var matrixHeight = 2;
-        var tileWidth = 256;
-        var tileHeight = 256;
-        var numLevels = 10;
-        var tileMatrixSet = TileMatrixSet.fromTilePyramid(sector, matrixWidth, matrixHeight, tileWidth, tileHeight, numLevels);
+describe("TileMatrixSet indexOfMatrixNearest global coverage", function () {
+  var sector = new Sector(0, 90, 0, 90);
+  var matrixWidth = 4;
+  var matrixHeight = 2;
+  var tileWidth = 256;
+  var tileHeight = 256;
+  var numLevels = 10;
+  var tileMatrixSet = TileMatrixSet.fromTilePyramid(
+    sector,
+    matrixWidth,
+    matrixHeight,
+    tileWidth,
+    tileHeight,
+    numLevels
+  );
 
-        it("should find the nearest resolution for level 5", function () {
-            var expectedLevel = 5;
-            var calculatedResolutionLevel5 = sector.deltaLatitude() / (tileHeight * Math.pow(matrixHeight, expectedLevel + 1));
+  it("should find the nearest resolution for level 5", function () {
+    var expectedLevel = 5;
+    var calculatedResolutionLevel5 =
+      sector.deltaLatitude() /
+      (tileHeight * Math.pow(matrixHeight, expectedLevel + 1));
 
-            var actualLevel = tileMatrixSet.indexOfMatrixNearest(calculatedResolutionLevel5);
+    var actualLevel = tileMatrixSet.indexOfMatrixNearest(
+      calculatedResolutionLevel5
+    );
 
-            expect(actualLevel).toBe(expectedLevel);
-        });
-    });
-
+    expect(actualLevel).toBe(expectedLevel);
+  });
+});

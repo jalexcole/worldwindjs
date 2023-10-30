@@ -33,7 +33,7 @@ import {
   XmlDocument,
 } from "../../../../src/WorldWind";
 import KmlNodeTransformers from "../../../../src/formats/kml/util/KmlNodeTransformers";
-
+import { afterEach, beforeEach, describe, it } from "vitest";
 describe("KmlElementsFactoryCachedTest", function () {
   var factory = new KmlElementsFactoryCached();
   var exampleDocument =

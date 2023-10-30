@@ -26,13 +26,12 @@
  * PDF found in code  directory.
  */
 
-
 export * as BasicWorldWindController from "./BasicWorldWindowController.js";
 export * as AbstractError from "./error/AbstractError.js";
 export * as AAIGridConstants from "./formats/aaigrid/AAIGridConstants.js";
 export * as AAIGridReader from "./formats/aaigrid/AAIGridReader.js";
-export * as Angle from "./geom/Angle.js";
-export * as BoundingBox from "./geom/BoundingBox.js";
+export { default as Angle } from "./geom/Angle.js";
+export { default as BoundingBox } from "./geom/BoundingBox.js";
 export * as Camera from "./geom/Camera.js";
 export * as AsterV2ElevationCoverage from "./globe/AsterV2ElevationCoverage.js";
 export * as AtmosphereLayer from "./layer/AtmosphereLayer.js";
@@ -46,20 +45,22 @@ export * as ByteBuffer from "./util/ByteBuffer.js";
 
 export * as ColladaScene from "./formats/collada/ColladaScene.js";
 export * as CompassLayer from "./layer/CompassLayer.js";
-export * as DrawContext from "./render/DrawContext.js";
+export { default as DrawContext } from "./render/DrawContext.js";
 export * as Compass from "./shapes/Compass.js";
-export * as Color from "./util/Color.js";
+export { default as Color } from "./util/Color.js";
 export * as Date from "./util/Date.js";
+export { default as EarthElevationModel } from "./globe/EarthElevationModel.js";
+export { default as EarthModel } from "./globe/ElevationModel.js";
 export * as Font from "./util/Font.js";
 
 export * as GeoTiffReader from "./formats/geotiff/GeoTiffReader.js";
-export * as Frustum from "./geom/Frustum.js";
-export * as ElevationModel from "./globe/ElevationModel.js";
-export * as Globe from "./globe/Globe.js";
+export { default as Frustum } from "./geom/Frustum.js";
+export { default as ElevationModel } from "./globe/ElevationModel.js";
+export { default as Globe } from "./globe/Globe.js";
 // import Globe2D from "./globe/Globe2D";
 export * as KmlAbstractView from "./formats/kml/KmlAbstractView.js";
 export * as KmlCamera from "./formats/kml/KmlCamera.js";
-export * as KmlFile from "./formats/kml/KmlFile.js";
+export { default as KmlFile } from "./formats/kml/KmlFile.js";
 export * as KmlIcon from "./formats/kml/KmlIcon.js";
 export * as KmlLatLonAltBox from "./formats/kml/KmlLatLonAltBox.js";
 export * as KmlLatLonBox from "./formats/kml/KmlLatLonBox.js";
@@ -94,16 +95,16 @@ export * as KmlAttribute from "./formats/kml/util/KmlAttribute.js";
 export * as KmlChange from "./formats/kml/util/KmlChange.js";
 export * as KmlCreate from "./formats/kml/util/KmlCreate.js";
 export * as KmlDelete from "./formats/kml/util/KmlDelete.js";
-export * as KmlElementsFactory from "./formats/kml/util/KmlElementsFactory.js";
+export { default as KmlElementsFactory } from "./formats/kml/util/KmlElementsFactory.js";
 export * as KmlElementsFactoryCached from "./formats/kml/util/KmlElementsFactoryCached.js";
 export * as KmlHrefResolver from "./formats/kml/util/KmlHrefResolver.js";
 export * as KmlImagePyramid from "./formats/kml/util/KmlImagePyramid.js";
 export * as KmlItemIcon from "./formats/kml/util/KmlItemIcon.js";
 export * as KmlNetworkLinkControl from "./formats/kml/util/KmlNetworkLinkControl.js";
 export * as KmlPair from "./formats/kml/util/KmlPair.js";
-export * as KmlTreeKeyValueCache from "./formats/kml/util/KmlTreeKeyValueCache.js";
+export { default as KmlTreeKeyValueCache } from "./formats/kml/util/KmlTreeKeyValueCache.js";
 export * as KmlViewVolume from "./formats/kml/util/KmlViewVolume.js";
-export * as Globe2D from "./globe/Globe2D.js";
+export { default as Globe2D } from "./globe/Globe2D.js";
 export * as HashMap from "./util/HashMap.js";
 export * as Level from "./util/Level.js";
 
@@ -128,11 +129,10 @@ export * as KmlRemoteFile from "./formats/kml/util/KmlRemoteFile.js";
 export * as KmlScale from "./formats/kml/util/KmlScale.js";
 export * as KmlSchema from "./formats/kml/util/KmlSchema.js";
 
-
 export * as KmzFile from "./formats/kml/KmzFile.js";
 
-export * as Line from "./geom/Line.js";
-export * as Location from "./geom/Location.js";
+export { default as Line } from "./geom/Line.js";
+export { default as Location } from "./geom/Location.js";
 export * as LevelSet from "./util/LevelSet.js";
 export * as Logger from "./util/Logger.js";
 
@@ -140,19 +140,19 @@ export * as LookAt from "./geom/LookAt.js";
 
 export * as WorldWindow from "./WorldWindow.js";
 export * as WorldWindowController from "./WorldWindowController.js";
-export * as Matrix from "./geom/Matrix.js";
-export * as Matrix3 from "./geom/Matrix3.js";
+export { default as Matrix } from "./geom/Matrix.js";
+export { default as Matrix3 } from "./geom/Matrix3.js";
 export * as MeasuredLocation from "./geom/MeasuredLocation.js";
-export * as Plane from "./geom/Plane.js";
-export * as Position from "./geom/Position.js";
-export * as Rectangle from "./geom/Rectangle.js";
-export * as Sector from "./geom/Sector.js";
+export { default as Plane } from "./geom/Plane.js";
+export { default as Position } from "./geom/Position.js";
+export { default as Rectangle } from "./geom/Rectangle.js";
+export { default as Sector } from "./geom/Sector.js";
 export * as TileMatrix from "./geom/TileMatrix.js";
 export * as TileMatixSet from "./geom/TileMatrixSet.js";
-export * as Vec2 from "./geom/Vec2.js";
+export { default as Vec2 } from "./geom/Vec2.js";
 export { default as Vec3 } from "./geom/Vec3.js";
-export * as WcsCapabilities from "./ogc/wcs/WcsCapabilities.js";
-export * as WcsCoverageDescriptions from "./ogc/wcs/WcsCoverageDescriptions.js";
+export { default as WcsCapabilities } from "./ogc/wcs/WcsCapabilities.js";
+export { default as WcsCoverageDescriptions } from "./ogc/wcs/WcsCoverageDescriptions.js";
 export * from "./projections/ProjectionWgs84.js";
 export * as PolygonSplitter from "./util/PolygonSplitter.js";
 export * as SunPosition from "./util/SunPosition.js";
@@ -162,7 +162,7 @@ export * as TileFactory from "./util/TileFactory.js";
 export * as WWMath from "./util/WWMath.js";
 
 export * as WWMessage from "./util/WWMessage.js";
-export * as XMLDocument from "./util/XmlDocument.js";
+export { default as XMLDocument } from "./util/XmlDocument.js";
 import WWUtil from "./util/WWUtil.js";
 
 export { WWUtil } from "./util/WWUtil.js";

@@ -26,7 +26,7 @@
  * PDF found in code  directory.
  */
 
-import Angle from "../../src/WorldWind.js"
+import { Angle } from "../../src/WorldWind.js"
 
 import { beforeEach, describe, expect, it } from "vitest";
 

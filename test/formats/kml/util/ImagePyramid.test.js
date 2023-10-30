@@ -26,7 +26,7 @@
  * PDF found in code  directory.
  */
 import { KmlImagePyramid, XmlDocument } from "../../../../src/WorldWind";
-
+import { afterEach, beforeEach, describe, it } from "vitest";
 describe("KmlImagePyramidTest", function () {
   var index = 0;
 

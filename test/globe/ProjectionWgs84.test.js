@@ -26,7 +26,7 @@
  * PDF found in code  directory.
  */
 import Vec3 from "../../src/geom/Vec3";
-import { beforeAll, beforeEach, describe,expect, it } from "vitest";
+import { beforeAll, beforeEach, describe, expect, it } from "vitest";
 describe("ProjectionWgs84 tests", function () {
   // WGS 84 reference values taken from NGA.STND.0036_1.0.0_WGS84.
   var WGS84_IERS_REFERENCE_MERIDIAN = vec3FromEcef(6378137.0, 0, 0);
@@ -109,22 +109,15 @@ describe("ProjectionWgs84 tests", function () {
     ).normalize();
   }
 
-  beforeEach(function () {
-    jasmine.addMatchers(CustomMatchers);
-  });
+  // beforeEach(function () {
+  //   jasmine.addMatchers(CustomMatchers);
+  // });
 
   it("transforms geographic coordinates to Cartesian at the IERS Reference Meridian (IRM)", function () {
     var wgs84 = new ProjectionWgs84();
     var globe = new Globe(new ElevationModel(), wgs84);
 
-    var result = wgs84.geographicToCartesian(
-      globe,
-      0,
-      0,
-      0,
-      null,
-      new Vec3()
-    );
+    var result = wgs84.geographicToCartesian(globe, 0, 0, 0, null, new Vec3());
 
     // Expect an exact match to the reference value.
     expect(result).toBeVec3(WGS84_IERS_REFERENCE_MERIDIAN);
@@ -264,12 +257,7 @@ describe("ProjectionWgs84 tests", function () {
     var wgs84 = new ProjectionWgs84();
     var globe = new Globe(new ElevationModel(), wgs84);
 
-    var result = wgs84.surfaceNormalAtLocation(
-      globe,
-      0,
-      0,
-      new Vec3()
-    );
+    var result = wgs84.surfaceNormalAtLocation(globe, 0, 0, new Vec3());
 
     // Expect an exact match to the reference value.
     expect(result).toBeVec3(WGS84_IERS_REFERENCE_MERIDIAN_NORMAL);
@@ -279,12 +267,7 @@ describe("ProjectionWgs84 tests", function () {
     var wgs84 = new ProjectionWgs84();
     var globe = new Globe(new ElevationModel(), wgs84);
 
-    var result = wgs84.surfaceNormalAtLocation(
-      globe,
-      90,
-      0,
-      new Vec3()
-    );
+    var result = wgs84.surfaceNormalAtLocation(globe, 90, 0, new Vec3());
 
     // Expect the result to be within fifteen decimal places of the reference value.
     expect(result).toBeCloseToVec3(WGS84_IERS_REFERENCE_POLE_NORMAL, 10);
@@ -340,12 +323,7 @@ describe("ProjectionWgs84 tests", function () {
     var wgs84 = new ProjectionWgs84();
     var globe = new Globe(new ElevationModel(), wgs84);
 
-    var result = wgs84.northTangentAtLocation(
-      globe,
-      0,
-      0,
-      new Vec3()
-    );
+    var result = wgs84.northTangentAtLocation(globe, 0, 0, new Vec3());
 
     // Expect an exact match to the reference value.
     expect(result).toBeVec3(WGS84_IERS_REFERENCE_MERIDIAN_TANGENT);
@@ -355,12 +333,7 @@ describe("ProjectionWgs84 tests", function () {
     var wgs84 = new ProjectionWgs84();
     var globe = new Globe(new ElevationModel(), wgs84);
 
-    var result = wgs84.northTangentAtLocation(
-      globe,
-      90,
-      0,
-      new Vec3()
-    );
+    var result = wgs84.northTangentAtLocation(globe, 90, 0, new Vec3());
 
     // Expect the result to be within fifteen decimal places of the reference value.
     expect(result).toBeCloseToVec3(WGS84_IERS_REFERENCE_POLE_TANGENT, 10);

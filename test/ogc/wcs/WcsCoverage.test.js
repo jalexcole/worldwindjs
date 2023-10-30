@@ -31,37 +31,35 @@ import WcsCoverage from "../../../src/WorldWind.js";
 
 import { beforeEach, describe, expect, it } from "vitest";
 
-    beforeEach(function () {
-        jasmine.addMatchers(CustomMatchers);
+// beforeEach(function () {
+//     jasmine.addMatchers(CustomMatchers);
+// });
+
+describe("WcsCoverage", function () {
+  describe("Elevation Config", function () {
+    WcsCoverage.prototype.determineFormatFromService = function () {
+      return "image/tiff";
+    };
+
+    it("should generate a elevation config", function () {
+      var resolution = 0.0003433227539;
+      var mockSector = new Sector(25, 50, -120, -90);
+      var mockWebCoverageService = {
+        coverageDescriptions: {
+          getSector: function (name) {
+            return mockSector;
+          },
+          getResolution: function (name) {
+            return resolution;
+          },
+        },
+      };
+      var wcsCoverage = new WcsCoverage("id", mockWebCoverageService);
+      var elevationConfig = wcsCoverage.elevationConfig;
+
+      expect(elevationConfig.coverageSector).toBeSector(mockSector);
+      expect(elevationConfig.resolution).toBe(resolution);
+      expect(elevationConfig.retrievalImageFormat).toBe("image/tiff");
     });
-
-    describe("WcsCoverage", function () {
-
-        describe("Elevation Config", function () {
-            WcsCoverage.prototype.determineFormatFromService = function () {
-                return "image/tiff";
-            };
-
-            it ("should generate a elevation config", function () {
-                var resolution = 0.0003433227539;
-                var mockSector = new Sector(25, 50, -120, -90);
-                var mockWebCoverageService = {
-                    coverageDescriptions: {
-                        getSector: function (name) {
-                            return mockSector;
-                        },
-                        getResolution: function (name) {
-                            return resolution;
-                        }
-                    }
-                };
-                var wcsCoverage = new WcsCoverage("id", mockWebCoverageService);
-                var elevationConfig = wcsCoverage.elevationConfig;
-
-                expect(elevationConfig.coverageSector).toBeSector(mockSector);
-                expect(elevationConfig.resolution).toBe(resolution);
-                expect(elevationConfig.retrievalImageFormat).toBe("image/tiff");
-            });
-        });
-    });
-
+  });
+});

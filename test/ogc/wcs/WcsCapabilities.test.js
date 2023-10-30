@@ -25,7 +25,7 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
-import WcsCapabilities from "../../../src/WorldWind.js";
+import { Logger , WcsCapabilities } from "../../../src/WorldWind.js";
 import { beforeAll, beforeEach, describe,expect, it } from "vitest";
 
 describe("Constructor testing", function () {

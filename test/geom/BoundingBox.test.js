@@ -36,9 +36,9 @@ import {
 } from "../../src/WorldWind.js";
 import { beforeEach, describe,expect, it } from "vitest";
 
-beforeEach(function () {
-  jasmine.addMatchers(CustomMatchers);
-});
+// beforeEach(function () {
+//   jasmine.addMatchers(CustomMatchers);
+// });
 
 describe("BoundingBox Tests", function () {
   it("Should have the basic bounding box properties.", function () {

@@ -25,61 +25,83 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
-import { KmlElementsFactory, KmlGeometry, KmlLineString, KmlMultiGeometry, KmlPoint, XMLDocument } from "../../../../src/WorldWind";
+import {
+  KmlElementsFactory,
+  KmlGeometry,
+  KmlLineString,
+  KmlMultiGeometry,
+  KmlPoint,
+  XMLDocument,
+} from "../../../../src/WorldWind.js";
 import KmlNodeTransformers from "../../../../src/formats/kml/util/KmlNodeTransformers";
+import { afterEach, beforeEach, describe, it } from "vitest";
+describe("KmlElementsFactoryTest", function () {
+  var factory = new KmlElementsFactory();
+  var exampleDocument =
+    '<?xml version="1.0" encoding="UTF-8"?>' +
+    '<kml xmlns="http://www.opengis.net/kml/2.2">' +
+    '<MultiGeometry id="7">' +
+    '   <LineString id="8">' +
+    "       <coordinates>10,10,0 20,10,0</coordinates>" +
+    "   </LineString>" +
+    '   <LineString id="9">' +
+    "       <extrude>0</extrude>" +
+    "   </LineString>" +
+    "</MultiGeometry>" +
+    '<Placemark id="11">' +
+    '   <Point id="13">' +
+    "       <extrude>0</extrude>" +
+    "   </Point>" +
+    "</Placemark>" +
+    '<Icon id="10">' +
+    "   <x>10</x>" +
+    "</Icon>" +
+    "</kml>";
+  var document = new XmlDocument(exampleDocument).dom();
 
-	describe("KmlElementsFactoryTest", function () {
-		var factory = new KmlElementsFactory();
-		var exampleDocument = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
-			"<kml xmlns=\"http://www.opengis.net/kml/2.2\">" +
-			"<MultiGeometry id=\"7\">" +
-			"   <LineString id=\"8\">" +
-			"       <coordinates>10,10,0 20,10,0</coordinates>" +
-			"   </LineString>" +
-			"   <LineString id=\"9\">" +
-			"       <extrude>0</extrude>" +
-			"   </LineString>" +
-			"</MultiGeometry>" +
-			"<Placemark id=\"11\">" +
-			"   <Point id=\"13\">" +
-			"       <extrude>0</extrude>" +
-			"   </Point>" +
-			"</Placemark>" +
-			"<Icon id=\"10\">" +
-			"   <x>10</x>" +
-			"</Icon>" +
-			"</kml>";
-		var document = new XmlDocument(exampleDocument).dom();
+  it("should return single primitive", function () {
+    var currentLineString = new KmlLineString({
+      objectNode: document.getElementById("8"),
+    });
+    var retrievedValue = factory.specific(currentLineString, {
+      name: "coordinates",
+      transformer: NodeTransformers.string,
+    });
 
-		it('should return single primitive', function () {
-			var currentLineString = new KmlLineString({objectNode: document.getElementById("8")});
-			var retrievedValue = factory.specific(currentLineString, {name: 'coordinates', transformer: NodeTransformers.string});
+    expect("10,10,0 20,10,0").toEqual(retrievedValue);
+  });
 
-			expect("10,10,0 20,10,0").toEqual(retrievedValue);
-		});
+  it("should return single non primitive", function () {
+    var currentMultiGeometry = new KmlMultiGeometry({
+      objectNode: document.getElementById("7"),
+    });
+    var retrievedValue = factory.specific(currentMultiGeometry, {
+      name: "LineString",
+      transformer: NodeTransformers.kmlObject,
+    });
 
-		it('should return single non primitive', function () {
-			var currentMultiGeometry = new KmlMultiGeometry({objectNode: document.getElementById("7")});
-			var retrievedValue = factory.specific(
-				currentMultiGeometry, {name: 'LineString', transformer: NodeTransformers.kmlObject}
-			);
+    expect(retrievedValue instanceof KmlLineString).toEqual(true);
+  });
 
-			expect(retrievedValue instanceof KmlLineString).toEqual(true);
-		});
+  it("should return any type of element.", function () {
+    var currentMultiGeometry = new KmlMultiGeometry({
+      objectNode: document.getElementById("11"),
+    });
+    var createdElement = factory.any(currentMultiGeometry, {
+      name: KmlGeometry.getTagNames(),
+    });
 
-		it('should return any type of element.', function(){
-			var currentMultiGeometry = new KmlMultiGeometry({objectNode: document.getElementById("11")});
-			var createdElement = factory.any(currentMultiGeometry, {name: KmlGeometry.getTagNames()});
+    expect(createdElement instanceof KmlPoint).toEqual(true);
+  });
 
-			expect(createdElement instanceof KmlPoint).toEqual(true);
-		});
+  it("should return all elements in level", function () {
+    var currentMultiGeometry = new KmlMultiGeometry({
+      objectNode: document.getElementById("7"),
+    });
+    var createdElements = factory.all(currentMultiGeometry);
 
-		it('should return all elements in level', function(){
-			var currentMultiGeometry = new KmlMultiGeometry({objectNode: document.getElementById("7")});
-			var createdElements = factory.all(currentMultiGeometry);
-
-			expect(2).toEqual(createdElements.length);
-			expect(createdElements[0] instanceof KmlLineString).toEqual(true);
-			expect(createdElements[1] instanceof KmlLineString).toEqual(true);
-		});
-	});
+    expect(2).toEqual(createdElements.length);
+    expect(createdElements[0] instanceof KmlLineString).toEqual(true);
+    expect(createdElements[1] instanceof KmlLineString).toEqual(true);
+  });
+});
