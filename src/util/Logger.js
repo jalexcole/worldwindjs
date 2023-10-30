@@ -59,7 +59,7 @@ const Logger = {
    * or Logger.LEVEL_INFO.
    */
   setLoggingLevel: function (level) {
-    loggingLevel = level;
+    this.loggingLevel = level;
   },
 
   /**
@@ -67,7 +67,7 @@ const Logger = {
    * @returns {Number} The current logging level.
    */
   getLoggingLevel: function () {
-    return loggingLevel;
+    return this.loggingLevel;
   },
 
   /**
@@ -77,7 +77,7 @@ const Logger = {
    * @param {String} message The message to log. Nothing is logged if the message is null or undefined.
    */
   log: function (level, message) {
-    if (message && level > 0 && level <= loggingLevel) {
+    if (message && level > 0 && level <= this.loggingLevel) {
       if (level === Logger.LEVEL_SEVERE) {
         console.error(message);
       } else if (level === Logger.LEVEL_WARNING) {
