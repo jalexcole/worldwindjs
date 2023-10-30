@@ -106,9 +106,9 @@ export { default as KmlTreeKeyValueCache } from "./formats/kml/util/KmlTreeKeyVa
 export * as KmlViewVolume from "./formats/kml/util/KmlViewVolume.js";
 export { default as Globe2D } from "./globe/Globe2D.js";
 export * as HashMap from "./util/HashMap.js";
-export * as Level from "./util/Level.js";
+export { default as Level } from "./util/Level.js";
 
-export * as KmlPoint from "./formats/kml/geom/KmlPoint.js";
+export { default as KmlPoint } from "./formats/kml/geom/KmlPoint.js";
 export * as KmlPolygon from "./formats/kml/geom/KmlPolygon.js";
 export * as KmlPolyStyle from "./formats/kml/styles/KmlPolyStyle.js";
 export * as KmlRefreshListener from "./formats/kml/util/KmlRefreshListener.js";
@@ -129,7 +129,7 @@ export * as KmlRemoteFile from "./formats/kml/util/KmlRemoteFile.js";
 export * as KmlScale from "./formats/kml/util/KmlScale.js";
 export * as KmlSchema from "./formats/kml/util/KmlSchema.js";
 
-export * as KmzFile from "./formats/kml/KmzFile.js";
+export { default as KmzFile } from "./formats/kml/KmzFile.js";
 
 export { default as Line } from "./geom/Line.js";
 export { default as Location } from "./geom/Location.js";
@@ -153,8 +153,24 @@ export { default as Vec2 } from "./geom/Vec2.js";
 export { default as Vec3 } from "./geom/Vec3.js";
 export { default as WcsCapabilities } from "./ogc/wcs/WcsCapabilities.js";
 export { default as WcsCoverageDescriptions } from "./ogc/wcs/WcsCoverageDescriptions.js";
+export * as PanRecognizer from "./gesture/PanRecognizer.js";
+export * as Path from "./shapes/Path.js";
+export * as PeriodicTimeSequence from "./util/PeriodicTimeSequence.js";
+export * as PickedObject from "./pick/PickedObject.js";
+export * as PickedObjectList from "./pick/PickedObjectList.js";
+export * as PinchRecognizer from "./gesture/PinchRecognizer.js";
+export * as Placemark from "./shapes/Placemark.js";
+export * as PlacemarkAttributes from "./shapes/PlacemarkAttributes.js";
+export * as Polygon from "./shapes/Polygon.js";
+
+export * as PrjFile from "./formats/shapefile/PrjFile.js";
+export * as ProjectionEquirectangular from "./projections/ProjectionEquirectangular.js";
+export * as ProjectionGnomonic from "./projections/ProjectionGnomonic.js";
+export * as ProjectionMercator from "./projections/ProjectionMercator.js";
+export * as ProjectionPolarEquidistant from "./projections/ProjectionPolarEquidistant.js";
+export * as ProjectionUPS from "./projections/ProjectionUPS.js";
 export * from "./projections/ProjectionWgs84.js";
-export * as PolygonSplitter from "./util/PolygonSplitter.js";
+export { default as PolygonSplitter } from "./util/PolygonSplitter.js";
 export * as SunPosition from "./util/SunPosition.js";
 export * as Tile from "./util/Tile.js";
 export * as TileFactory from "./util/TileFactory.js";
