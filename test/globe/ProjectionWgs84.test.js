@@ -25,6 +25,7 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
+import { Angle, ElevationModel, Globe, Position, ProjectionWgs84 } from "../../src/WorldWind";
 import Vec3 from "../../src/geom/Vec3";
 import { beforeAll, beforeEach, describe, expect, it } from "vitest";
 describe("ProjectionWgs84 tests", function () {
@@ -117,7 +118,7 @@ describe("ProjectionWgs84 tests", function () {
     var wgs84 = new ProjectionWgs84();
     var globe = new Globe(new ElevationModel(), wgs84);
 
-    var result = wgs84.geographicToCartesian(globe, 0, 0, 0, null, new Vec3());
+    var result = wgs84.geographicToCartesian(globe, 0, 0, 0, null, new Vec3(0, 0,0));
 
     // Expect an exact match to the reference value.
     expect(result).toBeVec3(WGS84_IERS_REFERENCE_MERIDIAN);
@@ -154,7 +155,7 @@ describe("ProjectionWgs84 tests", function () {
           pos.longitude,
           pos.altitude,
           null,
-          new Vec3()
+          new Vec3(0,0,0)
         );
 
         // Match the three decimals specified by the reference value. Additional precision is acceptable.

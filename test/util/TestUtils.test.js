@@ -14,8 +14,9 @@
  * limitations under the License.
  */
 
+import BasicWorldWindowController from "../../src/BasicWorldWindowController.js";
 import {
-  BasicWorldWindowController,
+  BasicWorldWindController,
   Camera,
   Globe,
   DrawContext,

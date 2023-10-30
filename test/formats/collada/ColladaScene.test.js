@@ -36,6 +36,7 @@ import {
   Vec3,
 } from "../../../src/WorldWind";
 import { beforeAll, beforeEach, describe,expect, it } from "vitest";
+import ColladaLoader from "../../../src/formats/collada/ColladaLoader";
 describe("ColladaScene calculation and data manipulation testing", function () {
   it("Should properly calculate new normals and create proper vertex order", function () {
     var indices = [
@@ -118,7 +119,7 @@ describe("ColladaScene calculation and data manipulation testing", function () {
   });
 
   it("Should properly compute intersection points with a ray", function () {
-    var colladaLoader = new WorldWind.ColladaLoader(
+    var colladaLoader = new ColladaLoader(
       new Position(44, -96, 10000)
     );
     colladaLoader.init({ dirPath: "../base/test/formats/collada/" });
@@ -156,8 +157,8 @@ describe("ColladaScene calculation and data manipulation testing", function () {
       var pointRay = new Line(origin, direction);
       var intersections = [];
       var globe = new Globe(
-        new WorldWind.ElevationModel(),
-        new WorldWind.ProjectionWgs84()
+        new ElevationModel(),
+        new ProjectionWgs84()
       );
       var intersectionsFound = scene.computePointIntersections(
         globe,

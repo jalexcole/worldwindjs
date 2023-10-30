@@ -25,7 +25,8 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
-import { Promise } from "../../../src/WorldWind";
+// import { Promise } from "../../../src/WorldWind";
+import { Promise } from "es6-promise";
 import WcsCapabilities from "../../../src/ogc/wcs/WcsCapabilities";
 import WebCoverageService from "../../../src/ogc/wcs/WebCoverageService";
 import { beforeAll, beforeEach, describe, expect, it } from "vitest";

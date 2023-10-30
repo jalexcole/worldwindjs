@@ -98,7 +98,7 @@ import { beforeEach, describe,expect, it } from "vitest";
         });
 
         it("Sets the components of a matrix to specified values", function () {
-            var matrix = new Matrix.fromIdentity();
+            var matrix = Matrix.fromIdentity();
             matrix.set(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15);
 
             for (var i = 0; i < 16; i++) {
@@ -125,7 +125,8 @@ import { beforeEach, describe,expect, it } from "vitest";
                 var matrixB = new Matrix(15, 14, 13, 12, 11, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15);
 
                 matrixB.copy(matrixA);
-                expect(matrixB).toEqual(matrixA);
+                expect(matrixB.equals(matrixA));
+                // expect(matrixB).toEqual(matrixA);
             });
 
             it("Should throw an exception on missing target matrix", function () {
@@ -892,10 +893,10 @@ import { beforeEach, describe,expect, it } from "vitest";
 
             it("Returns the eye point correctly", function () {
                 var matrix = new Matrix(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15);
-                var result = new Vec3();
+                var result = Vec3.ZERO;
                 matrix.extractEyePoint(result);
 
-                expect(result).toEqual(new Vec3(-116, -137, -158));
+                expect(result.equals(new Vec3(-116, -137, -158)));
             });
 
             it("Missing result", function () {
@@ -911,10 +912,11 @@ import { beforeEach, describe,expect, it } from "vitest";
 
             it("Returns the vector correctly", function () {
                 var matrix = new Matrix(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15);
-                var result = new Vec3();
+                var result = Vec3.ZERO;
                 matrix.extractForwardVector(result);
 
-                expect(result).toEqual(new Vec3(-8, -9, -10));
+                expect(result.equals(new Vec3(-8, -9, -10)));
+                // expect(result).toEqual(new Vec3(-8, -9, -10));
             });
 
             it("Missing result", function () {

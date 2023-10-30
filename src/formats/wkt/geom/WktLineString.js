@@ -30,6 +30,7 @@ import ShapeAttributes from "../../../shapes/ShapeAttributes";
 import SurfacePolyline from "../../../shapes/SurfacePolyline";
 import WktElements from "../WktElements.js";
 import WktType from "../WktType.js";
+import WktObject from "./WktObject";
 
 /**
  * It represents WKT LineString.

@@ -28,7 +28,7 @@
 
 import { Angle } from "../../src/WorldWind.js"
 
-import { beforeEach, describe, expect, it } from "vitest";
+import { describe, expect, it } from "vitest";
 
 describe("AngleTest", function () {
 

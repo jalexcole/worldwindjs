@@ -40,7 +40,7 @@ import GeographicProjection from "./GeographicProjection";
  * @augments GeographicProjection
  * @classdesc Represents a WGS84 ellipsoid.
  */
-export function ProjectionWgs84() {
+function ProjectionWgs84() {
   GeographicProjection.call(this, "WGS84", false, null);
 
   this.is2D = false;
@@ -403,4 +403,4 @@ ProjectionWgs84.prototype.surfaceNormalAtPoint = function (
   return result.normalize();
 };
 
-
+export default ProjectionWgs84;

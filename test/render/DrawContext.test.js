@@ -36,6 +36,7 @@ import CustomMatchers from "../CustomMatchers.test";
 import TestUtils from "../util/TestUtils.test";
 
 import { beforeEach, describe, expect, it } from "vitest";
+import { ElevationModel } from "../../src/WorldWind";
 var dummyParam = "dummy";
 var mockGlobe = new Globe(new ElevationModel());
 var wwd = TestUtils.getMockWwd(mockGlobe);
@@ -166,7 +167,7 @@ describe("DrawContext Tests", function () {
       var result = new Vec2(0, 0);
       var expectedResult = new Vec2(2.5, 779);
       dc.convertPointToViewport(windowPoint, result);
-      expect(result).toBeCloseToVec2(expectedResult, 2);
+      expect(result).toBeCloseTo(expectedResult, 2);
     });
   });
 

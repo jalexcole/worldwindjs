@@ -27,7 +27,7 @@
  */
 
 import LevelSet from "../../../src/util/LevelSet";
-import { Promise } from "../../../src/WorldWind";
+
 import Sector from "../../../src/geom/Sector";
 import { Tile } from "../../../src/WorldWind";
 import WcsUrlBuilder from "../../../src/ogc/wcs/WcsUrlBuilder";

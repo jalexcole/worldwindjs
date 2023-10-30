@@ -26,8 +26,8 @@
  * PDF found in code  directory.
  */
 
-import ElevationModel from "../src/WorldWind.js";
-import Globe from "../src/WorldWind.js";
+import {ElevationModel} from "../src/WorldWind.js";
+import {Globe} from "../src/WorldWind.js";
 
 import { describe, expect, it } from "vitest";
 import TestUtils from "./util/TestUtils.test.js";

@@ -52,6 +52,10 @@ import Terrain from "./globe/Terrain";
 import Vec2 from "./geom/Vec2";
 import Vec3 from "./geom/Vec3";
 import WWMath from "./util/WWMath";
+import ElevationModel from "./globe/ElevationModel";
+import Layer from "./layer/Layer";
+import WorldWindowController from "./WorldWindowController";
+import WorldWind from "./WorldWind";
 
 /**
  * Constructs a WorldWind window for an HTML canvas.

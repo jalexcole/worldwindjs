@@ -36,10 +36,12 @@ import {
   WktMultiPoint,
   WktPoint,
   WktTriangle,
-} from "../../../src/WorldWind";
+} from "../../../src/WorldWind.js";
 
 import { default as  WktTokens} from "../../../src/formats/wkt/WktTokens.js"
 import { beforeAll, beforeEach, describe, expect, it } from "vitest";
+import WktPolygon from "../../../src/formats/wkt/geom/WktPolygon.js";
+import WktMultiPolygon from "../../../src/formats/wkt/geom/WktMultiPolygon.js";
 
 describe("WktTokens", function () {
   describe("Point", function () {
