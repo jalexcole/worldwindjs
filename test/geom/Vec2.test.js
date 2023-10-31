@@ -27,7 +27,7 @@
  */
 
 import { Vec2 } from "../../src/WorldWind.js";
-
+import {Vec3} from "../../src/WorldWind.js";
 import { describe, expect, it } from "vitest";
 
 describe("Vec2Test", function () {
@@ -41,7 +41,7 @@ describe("Vec2Test", function () {
     it("sets vector equal to different vector", function () {
       var vec2 = new Vec2();
       vec2.set(2, 3);
-      expect(vec2).toEqual(new Vec2(2, 3));
+      expect(vec2.equals(new Vec2(2, 3)));
     });
 
     it("sets vector and verify by components", function () {

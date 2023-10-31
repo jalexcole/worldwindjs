@@ -33,7 +33,7 @@ import Position from "../geom/Position";
 import Sector from "../geom/Sector";
 import Vec3 from "../geom/Vec3";
 import GeographicProjection from "../projections/GeographicProjection.js";
-import { ProjectionWgs84 } from "../projections/ProjectionWgs84";
+import  ProjectionWgs84  from "../projections/ProjectionWgs84";
 import Logger from "../util/Logger";
 import ElevationModel from "./ElevationModel";
 import Tessellator from "./Tessellator";

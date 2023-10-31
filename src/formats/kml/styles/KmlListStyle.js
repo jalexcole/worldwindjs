@@ -28,7 +28,7 @@
 import KmlItemIcon from "../util/KmlItemIcon.js";
 import KmlElements from "../KmlElements";
 import KmlSubStyle from "./KmlSubStyle";
-import KmlNodeTransformers from "../util/KmlNodeTransformers";
+import NodeTransformers from "../util/KmlNodeTransformers";
 
 /**
  * Constructs an KmlListStyle. Applications usually don't call this constructor. It is called by {@link KmlFile} as

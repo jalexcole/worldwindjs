@@ -31,6 +31,8 @@ import SurfacePolygon from "../../../shapes/SurfacePolygon";
 import WktElements from "../WktElements";
 import WktObject from "./WktObject";
 import "../WktType";
+import SurfacePolyline from "../../../shapes/SurfacePolyline";
+import WktType from "../WktType";
 /**
  * It represents triangle.
  * @alias WktTriangle

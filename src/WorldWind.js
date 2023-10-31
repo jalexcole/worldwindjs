@@ -28,9 +28,11 @@
 
 export * as BasicWorldWindController from "./BasicWorldWindowController.js";
 export { default as AbstractError } from "./error/AbstractError.js";
+
 export * as AAIGridConstants from "./formats/aaigrid/AAIGridConstants.js";
 export { default as AAIGridReader } from "./formats/aaigrid/AAIGridReader.js";
 export { default as Angle } from "./geom/Angle.js";
+export {default as ArgumentError} from "./error/ArgumentError.js";
 export { default as BoundingBox } from "./geom/BoundingBox.js";
 export { default as Camera } from "./geom/Camera.js";
 export * as AsterV2ElevationCoverage from "./globe/AsterV2ElevationCoverage.js";
@@ -42,7 +44,19 @@ export * as Annotation from "./shapes/Annotation.js";
 export * as AnnotationAttributes from "./shapes/AnnotationAttributes.js";
 export * as AbsentResourceList from "./util/AbsentResourceList.js";
 export * as ByteBuffer from "./util/ByteBuffer.js";
-
+export { default as BasicProgram } from "./shaders/BasicProgram.js";
+export { default as BasicTextureProgram } from "./shaders/BasicTextureProgram.js";
+export { default as BasicTimeSequence } from "./util/BasicTimeSequence.js";
+export { default as BasicWorldWindowController } from "./BasicWorldWindowController.js"
+export { default as BingAerialLayer } from "./layer/BingAerialLayer.js";
+export { default as BingAerialWithLabelsLayer } from "./layer/BingAerialWithLabelsLayer.js";
+export { default as BingImageryUrlBuilder } from "./util/BingImageryUrlBuilder.js";
+export { default as BingRoadsLayer } from "./layer/BingRoadsLayer.js";
+export { default as BingTiledImageLayer } from "./layer/BingTiledImageLayer.js";
+export { default as BMNGLandsatLayer } from "./layer/BMNGLandsatLayer.js";
+export { default as BMNGLayer } from "./layer/BMNGLayer.js";
+export { default as BMNGOneImageLayer } from "./layer/BMNGOneImageLayer.js";
+export { default as BMNGRestLayer } from "./layer/BMNGRestLayer.js";
 export { default as ColladaScene } from "./formats/collada/ColladaScene.js";
 export * as CompassLayer from "./layer/CompassLayer.js";
 export { default as DrawContext } from "./render/DrawContext.js";
@@ -51,15 +65,19 @@ export { default as Color } from "./util/Color.js";
 export * as Date from "./util/Date.js";
 export { default as EarthElevationModel } from "./globe/EarthElevationModel.js";
 export { default as EarthModel } from "./globe/ElevationModel.js";
-export * as Font from "./util/Font.js";
-
+export { default as Font } from "./util/Font.js";
+export { default as FramebufferTexture } from "./render/FramebufferTexture.js";
+export { default as FramebufferTile } from "./render/FramebufferTile.js";
+export { default as FramebufferTileController } from "./render/FramebufferTileController.js";
+export { default as FrameStatistics } from "./util/FrameStatistics.js";
+export { default as FrameStatisticsLayer } from "./layer/FrameStatisticsLayer.js";
 
 export { default as Frustum } from "./geom/Frustum.js";
 export { default as ElevationModel } from "./globe/ElevationModel.js";
 export { default as GeoTiffReader } from "./formats/geotiff/GeoTiffReader.js";
 export { default as Globe } from "./globe/Globe.js";
 
-// import Globe2D from "./globe/Globe2D";
+
 export { default as KmlAbstractView } from "./formats/kml/KmlAbstractView.js";
 export { default as KmlCamera } from "./formats/kml/KmlCamera.js";
 export { default as KmlFile } from "./formats/kml/KmlFile.js";
@@ -144,13 +162,21 @@ export * as WorldWindow from "./WorldWindow.js";
 export * as WorldWindowController from "./WorldWindowController.js";
 export { default as Matrix } from "./geom/Matrix.js";
 export { default as Matrix3 } from "./geom/Matrix3.js";
-export * as MeasuredLocation from "./geom/MeasuredLocation.js";
+export { default as MeasuredLocation } from "./geom/MeasuredLocation.js";
+export {default as MemoryCache} from "./cache/MemoryCache.js";
+export {default as MemoryCacheListener} from "./cache/MemoryCacheListener.js";
+export {default as MercatorTiledImageLayer} from "./layer/MercatorTiledImageLayer.js";
+export {default as NotYetImplementedError} from "./error/NotYetImplementedError.js";
 export { default as Plane } from "./geom/Plane.js";
 export { default as Position } from "./geom/Position.js";
 export { default as Rectangle } from "./geom/Rectangle.js";
+export {default as Renderable } from "./render/Renderable.js";
+export {default as RenderableLayer } from "./layer/RenderableLayer.js";
+export {default as RestTiledImageLayer } from "./layer/RestTiledImageLayer.js";
 export { default as Sector } from "./geom/Sector.js";
 export * as TileMatrix from "./geom/TileMatrix.js";
 export * as TileMatixSet from "./geom/TileMatrixSet.js";
+export {default as TriangleMesh} from "./shapes/TriangleMesh.js";
 export { default as Vec2 } from "./geom/Vec2.js";
 export { default as Vec3 } from "./geom/Vec3.js";
 export { default as WcsCapabilities } from "./ogc/wcs/WcsCapabilities.js";
@@ -184,10 +210,12 @@ export { default as WktMultiPoint } from "./formats/wkt/geom/WktMultiPoint.js";
 export { default as WktObject } from "./formats/wkt/geom/WktObject.js";
 export { default as WktPoint } from "./formats/wkt/geom/WktPoint.js";
 export { default as WktTriangle } from "./formats/wkt/geom/WktTriangle.js";
-export * as WWMath from "./util/WWMath.js";
+export { default as WWMath} from "./util/WWMath.js";
 
 export * as WWMessage from "./util/WWMessage.js";
 export { default as XmlDocument } from "./util/XmlDocument.js";
+import MemoryCache from "./cache/MemoryCache.js";
+import Offset from "./util/Offset.js";
 import WWUtil from "./util/WWUtil.js";
 
 export { WWUtil } from "./util/WWUtil.js";
@@ -446,18 +474,18 @@ WorldWind.configuration = {
     WWUtil.worldwindlibLocation() || WWUtil.currentUrlSansFilePart() + "/../",
   layerRetrievalQueueSize: 16,
   coverageRetrievalQueueSize: 16,
-  // bingLogoPlacement: new Offset(
-  //   WorldWind.OFFSET_INSET_PIXELS,
-  //   7,
-  //   WorldWind.OFFSET_PIXELS,
-  //   7
-  // ),
-  // bingLogoAlignment: new Offset(
-  //   WorldWind.OFFSET_FRACTION,
-  //   1,
-  //   WorldWind.OFFSET_FRACTION,
-  //   0
-  // ),
+  bingLogoPlacement: new Offset(
+    WorldWind.OFFSET_INSET_PIXELS,
+    7,
+    WorldWind.OFFSET_PIXELS,
+    7
+  ),
+  bingLogoAlignment: new Offset(
+    WorldWind.OFFSET_FRACTION,
+    1,
+    WorldWind.OFFSET_FRACTION,
+    0
+  ),
 };
 
 // /**

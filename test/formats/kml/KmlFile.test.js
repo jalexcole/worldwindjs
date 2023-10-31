@@ -27,27 +27,27 @@
  */
 var WorldWind = {};
 
-import KmlFile from "../../../src/WorldWind.js";
-import { beforeAll, beforeEach, describe,expect, it } from "vitest";
-    WorldWind.KmlFile = KmlFile;
+import { KmlFile } from "../../../src/WorldWind.js";
+import { beforeAll, beforeEach, describe, expect, it } from "vitest";
+WorldWind.KmlFile = KmlFile;
 
-    describe("KmlFile", function () {
-        describe("testLoadingKmlFromRelativeRemote", function () {
-            var kmlLocation = "../base/examples/data/KML_Samples.kml";
-            var loadedFile = false;
+describe("KmlFile", function () {
+    describe("testLoadingKmlFromRelativeRemote", function () {
+        var kmlLocation = "../base/examples/data/KML_Samples.kml";
+        var loadedFile = false;
 
-            beforeEach(function (done) {
-                new KmlFile(kmlLocation).then(function () {
-                    loadedFile = true;
-                    done();
-                }).catch(function (err) {
-                    done(err);
-                });
-            });
-
-            it('should be loaded from a remote document', function () {
-                expect(loadedFile).toEqual(true);
+        beforeEach(function (done) {
+            new KmlFile(kmlLocation, []).then(function () {
+                loadedFile = true;
+                done();
+            }).catch(function (err) {
+                done(err);
             });
         });
+
+        it('should be loaded from a remote document', function () {
+            expect(loadedFile).toEqual(true);
+        });
     });
+});
 

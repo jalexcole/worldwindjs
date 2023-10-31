@@ -26,7 +26,7 @@
  * PDF found in code  directory.
  */
 
-import { KmlListStyle, KmlItemIcon, XMLDocument } from "../../../../src/WorldWind";
+import { KmlListStyle, KmlItemIcon, XmlDocument } from "../../../../src/WorldWind";
 import { beforeAll, beforeEach, describe,expect, it } from "vitest";
     describe ("KmlListStyleTest", function(){
 

@@ -27,9 +27,12 @@
  */
 import Placemark from "../../../shapes/Placemark";
 import PlacemarkAttributes from "../../../shapes/PlacemarkAttributes";
+import Position from "../../../geom/Position.js";
 import WktElements from "../WktElements";
 import WktObject from "./WktObject";
 import WktType from "../WktType";
+import Offset from "../../../util/Offset";
+import WorldWind from "../../../WorldWind";
 
 /**
  * It represents Point
@@ -53,29 +56,29 @@ WktPoint.prototype.shapes = function () {
 
 /**
  * Default Placemark implementation for the Point and MultiPoint.
- * @param coordinates {Location|Position} Location or Position for the Placemark
+ * @param coordinates {Location | Position} Location or Position for the Placemark
  * @return {Placemark} Placemark to be displayed on the map.
  */
 WktPoint.placemark = function (coordinates) {
   var placemarkAttributes = new PlacemarkAttributes(null);
-  placemarkAttributes.imageScale = 1;
-  placemarkAttributes.imageOffset = new WorldWind.Offset(
+  placemarkAttributes._imageScale = 1;
+  placemarkAttributes._imageOffset = new Offset(
     WorldWind.OFFSET_FRACTION,
     0.3,
     WorldWind.OFFSET_FRACTION,
     0.0
   );
-  placemarkAttributes.imageColor = WorldWind.Color.WHITE;
-  placemarkAttributes.labelAttributes.offset = new WorldWind.Offset(
+  placemarkAttributes._imageColor = WorldWind.Color.WHITE;
+  placemarkAttributes._labelAttributes._offset = new Offset(
     WorldWind.OFFSET_FRACTION,
     0.5,
     WorldWind.OFFSET_FRACTION,
     1.0
   );
-  placemarkAttributes.labelAttributes.color = WorldWind.Color.YELLOW;
-  placemarkAttributes.drawLeaderLine = true;
-  placemarkAttributes.leaderLineAttributes.outlineColor = WorldWind.Color.RED;
-  placemarkAttributes.imageSource =
+  placemarkAttributes._labelAttributes._color = WorldWind.Color.YELLOW;
+  placemarkAttributes._drawLeaderLine = true;
+  placemarkAttributes._leaderLineAttributes._outlineColor = WorldWind.Color.RED;
+  placemarkAttributes._imageSource =
     WorldWind.configuration.baseUrl + "images/pushpins/castshadow-purple.png";
 
   var placemark = new Placemark(coordinates, true, placemarkAttributes);
