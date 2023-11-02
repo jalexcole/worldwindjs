@@ -36,6 +36,7 @@ import Position from "../../../geom/Position";
 import ShapeAttributes from "../../../shapes/ShapeAttributes";
 import SurfacePolyline from "../../../shapes/SurfacePolyline";
 import WWUtil from "../../../util/WWUtil";
+import WorldWind from "../../../WorldWind";
 
 /**
  * Constructs an KmlLineString object.  Applications shouldn't use this constructor. It is used by
@@ -119,7 +120,7 @@ Object.defineProperties(KmlLineString.prototype, {
     get: function () {
       return this._factory.specific(this, {
         name: "coordinates",
-        transformer: NodeTransformers.positions,
+        transformer: KmlNodeTransformers.positions,
       });
     },
   },

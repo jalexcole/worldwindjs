@@ -40,6 +40,8 @@ import KmlRefreshListener from "./util/KmlRefreshListener";
 import KmlRemoteFile from "./util/KmlRemoteFile";
 import XmlDocument from "../../util/XmlDocument";
 import WWUtil from "../../util/WWUtil";
+import KmlStyleResolver from "./util/KmlStyleResolver";
+import KmlControls from "./controls/KmlControls";
 
 // TODO: Make sure that the KmlFile is also rendered as a part of this hierarchy and not added to the layer.
 /**
@@ -69,8 +71,8 @@ var KmlFile = function (url, controls) {
   // Default values.
   this._controls = controls || null;
   this._fileCache = new KmlFileCache();
-  this._styleResolver = new StyleResolver(this._fileCache);
-  this._listener = new RefreshListener();
+  this._styleResolver = new KmlStyleResolver(this._fileCache);
+  this._listener = new KmlRefreshListener();
   this._headers = null;
 
   return this.requestRemote(url)
@@ -162,7 +164,7 @@ KmlFile.prototype.requestRemote = function (url) {
     options.ajax = true;
   }
 
-  return new RemoteFile(options).get();
+  return new KmlRemoteFile(options).get();
 };
 
 /**

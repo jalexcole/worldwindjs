@@ -91,7 +91,7 @@ Object.defineProperties(KmlNetworkLinkControl.prototype, {
     get: function () {
       return this._factory.specific(this, {
         name: "cookie",
-        transformer: NodeTransformers.string,
+        transformer: KmlNodeTransformers.string,
       });
     },
   },
@@ -107,7 +107,7 @@ Object.defineProperties(KmlNetworkLinkControl.prototype, {
     get: function () {
       return this._factory.specific(this, {
         name: "message",
-        transformer: NodeTransformers.string,
+        transformer: KmlNodeTransformers.string,
       });
     },
   },
@@ -123,7 +123,7 @@ Object.defineProperties(KmlNetworkLinkControl.prototype, {
     get: function () {
       return this._factory.specific(this, {
         name: "linkName",
-        transformer: NodeTransformers.string,
+        transformer: KmlNodeTransformers.string,
       });
     },
   },
@@ -140,7 +140,7 @@ Object.defineProperties(KmlNetworkLinkControl.prototype, {
     get: function () {
       return this._factory.specific(this, {
         name: "linkDescription",
-        transformer: NodeTransformers.string,
+        transformer: KmlNodeTransformers.string,
       });
     },
   },
@@ -157,7 +157,7 @@ Object.defineProperties(KmlNetworkLinkControl.prototype, {
     get: function () {
       return this._factory.specific(this, {
         name: "linkSnippet",
-        transformer: NodeTransformers.string,
+        transformer: KmlNodeTransformers.string,
       });
     },
   },
@@ -173,7 +173,7 @@ Object.defineProperties(KmlNetworkLinkControl.prototype, {
     get: function () {
       return this._factory.specific(this, {
         name: "expires",
-        transformer: NodeTransformers.date,
+        transformer: KmlNodeTransformers.date,
       });
     },
   },
@@ -183,12 +183,12 @@ Object.defineProperties(KmlNetworkLinkControl.prototype, {
    * that has previously been loaded with a network link. See <Update>.
    * @memberof KmlNetworkLinkControl.prototype
    * @readonly
-   * @type {Update}
+   * @type {KmlUpdate}
    */
   Update: {
     get: function () {
       return this._factory.any(this, {
-        name: Update.prototype.getTagNames(),
+        name: KmlUpdate.prototype.getTagNames(),
       });
     },
   },
@@ -197,7 +197,7 @@ Object.defineProperties(KmlNetworkLinkControl.prototype, {
    * Either Camera or LookAt which will be used to fly to the location whenever the
    * @memberof KmlNetworkLinkControl.prototype
    * @readonly
-   * @type {AbstractView}
+   * @type {KmlAbstractView}
    */
   AbstractView: {
     get: function () {

@@ -29,6 +29,7 @@ import KmlHrefResolver from "./KmlHrefResolver";
 import KmlElements from "../KmlElements";
 import KmlObject from "../KmlObject";
 import KmlNodeTransformers from "./KmlNodeTransformers";
+import KmlFileCache from "../KmlFileCache";
 
 
     /**
@@ -72,7 +73,7 @@ import KmlNodeTransformers from "./KmlNodeTransformers";
      */
     KmlItemIcon.prototype.kmlHref = function(fileCache) {
         return new HrefResolver(
-            this._factory.specific(this, {name: 'href', transformer: NodeTransformers.string}), fileCache
+            this._factory.specific(this, {name: 'href', transformer: KmlNodeTransformers.string}), fileCache
         ).url();
     };
 

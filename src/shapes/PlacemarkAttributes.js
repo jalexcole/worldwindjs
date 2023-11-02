@@ -31,6 +31,7 @@ import Font from "../util/Font";
 import Offset from "../util/Offset";
 import ShapeAttributes from "../shapes/ShapeAttributes";
 import TextAttributes from "./TextAttributes";
+import WorldWind from "../WorldWind";
 
 /**
  * Constructs a placemark attributes bundle.

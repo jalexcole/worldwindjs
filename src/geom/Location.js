@@ -27,10 +27,13 @@
  */
 import Angle from "./Angle";
 import ArgumentError from "../error/ArgumentError";
+import Globe from "../globe/Globe.js";
 import Logger from "../util/Logger";
 import Plane from "./Plane";
+import Position from "./Position.js"
 import Vec3 from "./Vec3";
 import WWMath from "../util/WWMath";
+import WorldWind from "../WorldWind";
 
 /**
  * Constructs a location from a specified latitude and longitude in degrees.
@@ -1191,7 +1194,7 @@ Location.intersectionWithMeridian = function (p1, p2, meridian, globe) {
   }
 
   // TODO: unable to simply create a new Position(0, 0, 0)
-  var pos = new WorldWind.Position(0, 0, 0);
+  var pos = new Position(0, 0, 0);
   globe.computePositionFromPoint(
     intersectionPoint[0],
     intersectionPoint[1],

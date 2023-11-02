@@ -25,6 +25,7 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
+import WorldWind from "../WorldWind";
 import Color from "../util/Color";
 import Font from "../util/Font";
 import Offset from "../util/Offset";
