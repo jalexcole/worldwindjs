@@ -31,7 +31,7 @@ import {
   XmlDocument,
 } from "../../../../src/WorldWind";
 import KmlNodeTransformers from "../../../../src/formats/kml/util/KmlNodeTransformers";
-import { afterEach, beforeEach, describe, it } from "vitest";
+import { afterEach, beforeEach,expect, describe, it } from "vitest";
 describe("NodeTransformersTest", function () {
   var exampleDocument =
     '<?xml version="1.0" encoding="UTF-8"?>' +
@@ -60,43 +60,43 @@ describe("NodeTransformersTest", function () {
 
   it("should correctly return the value of the node", function () {
     var node = document.getElementById("8");
-    var result = NodeTransformers.string(node.childNodes[1]);
+    var result = KmlNodeTransformers.string(node.childNodes[1]);
     expect("10,10,0 20,10,0").toEqual(result);
   });
 
   it("should correctly retrieve the number from the node", function () {
     var node = document.getElementById("10");
-    var result = NodeTransformers.number(node.childNodes[1]);
+    var result = KmlNodeTransformers.number(node.childNodes[1]);
     expect(10).toEqual(result);
   });
 
   it("should correctly retrieve the boolean from the node", function () {
     var node = document.getElementById("9");
-    var result = NodeTransformers.boolean(node.childNodes[1]);
+    var result = KmlNodeTransformers.boolean(node.childNodes[1]);
     expect(false).toEqual(result);
   });
 
   it("should correctly retrieve the associated element", function () {
     var node = document.getElementById("8");
-    var result = NodeTransformers.kmlObject(node);
+    var result = KmlNodeTransformers.kmlObject(node);
     expect(result instanceof KmlLineString).toBeTruthy();
   });
 
   it("should correctly retrieve the value of the attribute", function () {
     var node = document.getElementById("11");
-    var result = NodeTransformers.attribute("id")(node);
+    var result = KmlNodeTransformers.attribute("id")(node);
     expect("11").toEqual(result);
   });
 
   it("should retrieve the position", function () {
     var node = document.getElementById("8");
-    var result = NodeTransformers.positions(node.childNodes[1]);
+    var result = KmlNodeTransformers.positions(node.childNodes[1]);
     expect(result.length).toEqual(2);
   });
 
   it("should retrieve LinearRing", function () {
     var node = document.getElementById("7");
-    var result = NodeTransformers.linearRing(node);
+    var result = KmlNodeTransformers.linearRing(node);
     expect(result instanceof KmlLinearRing).toBeTruthy();
   });
 });

@@ -38,7 +38,7 @@ import { describe, expect, it } from "vitest";
                 "</Pair>" +
                 "</kml>";
             var kmlRepresentation = new XmlDocument(validKml).dom();
-            var scale = new Pair({objectNode:
+            var scale = new KmlPair({objectNode:
                 kmlRepresentation.getElementsByTagName("Pair")[0]});
         it('should have the Key, StyleUrl properties and the prototype property of KmlStyle', function(){
             expect(scale.kmlKey).toBe('normal');

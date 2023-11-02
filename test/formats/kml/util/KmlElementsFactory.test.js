@@ -31,7 +31,7 @@ import {
   KmlLineString,
   KmlMultiGeometry,
   KmlPoint,
-  XMLDocument,
+  XmlDocument,
 } from "../../../../src/WorldWind.js";
 import KmlNodeTransformers from "../../../../src/formats/kml/util/KmlNodeTransformers";
 import { afterEach, beforeEach, describe, it } from "vitest";
@@ -65,7 +65,7 @@ describe("KmlElementsFactoryTest", function () {
     });
     var retrievedValue = factory.specific(currentLineString, {
       name: "coordinates",
-      transformer: NodeTransformers.string,
+      transformer: KmlNodeTransformers.string,
     });
 
     expect("10,10,0 20,10,0").toEqual(retrievedValue);
@@ -77,7 +77,7 @@ describe("KmlElementsFactoryTest", function () {
     });
     var retrievedValue = factory.specific(currentMultiGeometry, {
       name: "LineString",
-      transformer: NodeTransformers.kmlObject,
+      transformer: KmlNodeTransformers.kmlObject,
     });
 
     expect(retrievedValue instanceof KmlLineString).toEqual(true);

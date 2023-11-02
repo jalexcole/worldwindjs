@@ -33,7 +33,7 @@ import { describe, expect, it } from "vitest";
 import TestUtils from "./util/TestUtils.test.js";
 
 
-var mockGlobe = new Globe(new ElevationModel());
+var mockGlobe = new Globe(new ElevationModel() , null);
 var wwd = TestUtils.getMockWwd(mockGlobe);
 wwd.resetDrawContext();
 

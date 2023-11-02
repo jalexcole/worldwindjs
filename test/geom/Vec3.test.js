@@ -48,13 +48,13 @@ describe("Vec3Test", function () {
   it("Should return the average of a vector", function () {
     var vec3_a = new Vec3(1, 2, 3);
     var vec3_b = new Vec3(3, 2, 1);
-    var vec3_average = Vec3.average([vec3_a, vec3_b], new Vec3());
+    var vec3_average = Vec3.average([vec3_a, vec3_b], Vec3.ZERO);
     expect(vec3_average).toEqual(new Vec3(2, 2, 2));
   });
 
   it("Should return the average a specified array of points packed into a single array", function () {
     var pointArray = [1, 2, 3, 3, 2, 1];
-    expect(Vec3.averageOfBuffer(pointArray, new Vec3())).toEqual(
+    expect(Vec3.averageOfBuffer(pointArray, Vec3.ZERO)).toEqual(
       new Vec3(2, 2, 2)
     );
   });
@@ -137,13 +137,13 @@ describe("Vec3Test", function () {
 
   describe("#Set components", function () {
     it("sets vector equal to different vector", function () {
-      var vec3 = new Vec3();
+      var vec3 = Vec3.ZERO;
       vec3.set(2, 3, 4);
       expect(vec3).toEqual(new Vec3(2, 3, 4));
     });
 
     it("sets vector and verify by components", function () {
-      var vec3 = new Vec3();
+      var vec3 = Vec3.ZERO;
       vec3.set(5, 6, 7);
       expect(vec3[0]).toEqual(5);
       expect(vec3[1]).toEqual(6);
@@ -152,7 +152,7 @@ describe("Vec3Test", function () {
   });
 
   it("Copies the component of a Vec3", function () {
-    var destination = new Vec3();
+    var destination = Vec3.ZERO;
     var source = new Vec3(2, 3, 4);
     destination.copy(source);
     expect(destination).toEqual(source);
@@ -221,7 +221,7 @@ describe("Vec3Test", function () {
     it("Interpolates with an integer weight", function () {
       var vec3_a = new Vec3(2, 3, 4);
       var vec3_b = new Vec3(4, 6, 8);
-      var expected_vec3 = new WorldWind.Vec3(12, 18, 24);
+      var expected_vec3 = new Vec3(12, 18, 24);
       expect(vec3_a.mix(vec3_b, 5)).toEqual(expected_vec3);
     });
 

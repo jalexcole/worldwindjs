@@ -26,7 +26,7 @@
  * PDF found in code  directory.
  */
 
-import { KmlViewVolume, XMLDocument } from "../../../../src/WorldWind.js";
+import { KmlViewVolume, XmlDocument } from "../../../../src/WorldWind.js";
 import { describe, beforeEach, afterEach } from "vitest";
 describe("KmlViewVolumeTest", function () {
   var index = 0;

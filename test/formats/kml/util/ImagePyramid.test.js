@@ -56,7 +56,7 @@ describe("KmlImagePyramidTest", function () {
     "</ImagePyramid>" +
     "</kml>";
   var kmlRepresentation = new XmlDocument(validKml).dom();
-  var imagePyramid = new ImagePyramid({
+  var imagePyramid = new KmlImagePyramid({
     objectNode: kmlRepresentation.getElementsByTagName("ImagePyramid")[0],
   });
 

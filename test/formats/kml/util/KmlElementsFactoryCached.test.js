@@ -33,7 +33,7 @@ import {
   XmlDocument,
 } from "../../../../src/WorldWind";
 import KmlNodeTransformers from "../../../../src/formats/kml/util/KmlNodeTransformers";
-import { afterEach, beforeEach, describe, it } from "vitest";
+import { afterEach, beforeEach, describe,expect, it } from "vitest";
 describe("KmlElementsFactoryCachedTest", function () {
   var factory = new KmlElementsFactoryCached();
   var exampleDocument =
@@ -93,11 +93,11 @@ describe("KmlElementsFactoryCachedTest", function () {
     });
     var createdElement = factory.specific(currentMultiGeometry, {
       name: "Point",
-      transformer: NodeTransformers.kmlObject,
+      transformer: KmlNodeTransformers.kmlObject,
     });
     var createdElementFromCache = factory.specific(currentMultiGeometry, {
       name: "Point",
-      transformer: NodeTransformers.kmlObject,
+      transformer: KmlNodeTransformers.kmlObject,
     });
 
     expect(createdElement === createdElementFromCache).toBeTruthy();
@@ -109,11 +109,11 @@ describe("KmlElementsFactoryCachedTest", function () {
     });
     factory.specific(currentLineString, {
       name: "coordinatesSpecific",
-      transformer: NodeTransformers.string,
+      transformer: KmlNodeTransformers.string,
     });
     var retrievedValue = factory.specific(currentLineString, {
       name: "coordinates",
-      transformer: NodeTransformers.string,
+      transformer: KmlNodeTransformers.string,
     });
 
     expect("10,10,0 20,10,0").toEqual(retrievedValue);

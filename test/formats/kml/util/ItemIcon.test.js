@@ -25,7 +25,7 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
-import { KmlItemIcon, XMLDocument } from "../../../../src/WorldWind";
+import { KmlItemIcon, XmlDocument } from "../../../../src/WorldWind";
 import KmlFileCache from "../../../../src/formats/kml/KmlFileCache";
 import { afterEach, beforeEach, describe, it } from "vitest";
     describe("ItemIconTest", function () {
@@ -37,7 +37,7 @@ import { afterEach, beforeEach, describe, it } from "vitest";
                 "</ItemIcon>" +
                 "</kml>";
             var kmlRepresentation = new XmlDocument(validKml).dom();
-            var scale = new ItemIcon({objectNode:
+            var scale = new KmlItemIcon({objectNode:
                 kmlRepresentation.getElementsByTagName("ItemIcon")[0]});
         it ('should have the State and Href properties', function(){
             expect(scale.kmlState).toEqual("open");

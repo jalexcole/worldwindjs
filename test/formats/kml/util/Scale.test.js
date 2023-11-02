@@ -37,7 +37,7 @@ import { afterEach, beforeEach, describe, it } from "vitest";
                 "</Scale>" +
                 "</kml>";
             var kmlRepresentation = new XmlDocument(validKml).dom();
-            var scale = new Scale({objectNode:
+            var scale = new KmlScale({objectNode:
                 kmlRepresentation.getElementsByTagName("Scale")[0]});
         it('should have the X, Y and Z properties',function(){
             expect(scale.kmlX).toBe(1);
