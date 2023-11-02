@@ -33,6 +33,7 @@ import Logger from "../util/Logger";
 import MemoryCache from "../cache/MemoryCache";
 import Sector from "../geom/Sector";
 import Tile from "../util/Tile";
+import DrawContext from "./DrawContext";
 
 /**
  * Constructs a framebuffer tile controller.

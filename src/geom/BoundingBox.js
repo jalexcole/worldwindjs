@@ -37,6 +37,8 @@ import Sector from "./Sector";
 import Vec3 from "./Vec3";
 import WWMath from "../util/WWMath";
 import WWUtil from "../util/WWUtil";
+import Globe from "../globe/Globe";
+import DrawContext from "../render/DrawContext";
 
 /**
  * Constructs a unit bounding box.
@@ -262,7 +264,7 @@ BoundingBox.prototype.setToPoints = function (points) {
  * @throws {ArgumentError} If the specified list of points is null, undefined or empty.
  */
 BoundingBox.prototype.setToVec3Points = function (points) {
-  if (!points || points.length === 0) {
+  if (!points || points.size() === 0) {
     throw new ArgumentError(
       Logger.logMessage(
         Logger.LEVEL_SEVERE,
@@ -273,8 +275,8 @@ BoundingBox.prototype.setToVec3Points = function (points) {
     );
   }
 
-  var pointList = new Float32Array(points.length * 3);
-  for (var i = 0; i < points.length; i++) {
+  var pointList = new Float32Array(points.size() * 3);
+  for (var i = 0; i < points.size(); i++) {
     var point = points[i];
     for (var j = 0; j < 3; j++) {
       pointList[i * 3 + j] = point[j];

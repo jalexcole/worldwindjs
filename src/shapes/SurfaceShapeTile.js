@@ -32,6 +32,8 @@ import Logger from "../util/Logger";
 import Sector from "../geom/Sector";
 import Texture from "../render/Texture";
 import TextureTile from "../render/TextureTile";
+import SurfaceShape from "./SurfaceShape";
+import DrawContext from "../render/DrawContext";
 
 /**
  * Constructs a surface shape tile.

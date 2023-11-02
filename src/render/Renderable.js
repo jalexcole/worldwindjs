@@ -27,6 +27,7 @@
  */
 import Logger from "../util/Logger";
 import UnsupportedOperationError from "../error/UnsupportedOperationError";
+import DrawContext from "./DrawContext";
 
 /**
  * Constructs a base renderable.

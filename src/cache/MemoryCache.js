@@ -27,6 +27,7 @@
  */
 import ArgumentError from "../error/ArgumentError";
 import Logger from "../util/Logger";
+import MemoryCacheListener from "./MemoryCacheListener";
 
 /**
  * Constructs a memory cache of a specified size.

@@ -27,6 +27,7 @@
  */
 import Logger from "../util/Logger";
 import UnsupportedOperationError from "../error/UnsupportedOperationError";
+import DrawContext from "./DrawContext";
 
 /**
  * Applications must not call this constructor. It is an interface class and is not meant to be instantiated

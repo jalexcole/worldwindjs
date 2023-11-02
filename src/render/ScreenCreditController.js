@@ -32,6 +32,7 @@ import Layer from "../layer/Layer";
 import Logger from "../util/Logger";
 import Offset from "../util/Offset";
 import ScreenText from "../shapes/ScreenText";
+import WorldWind from "../WorldWind";
 
 /**
  * Constructs a screen credit controller.

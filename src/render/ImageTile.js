@@ -29,6 +29,10 @@ import ArgumentError from "../error/ArgumentError";
 import Logger from "../util/Logger";
 import TextureTile from "./TextureTile";
 import Tile from "../util/Tile";
+import Sector from "../geom/Sector";
+import Level from "../util/Level";
+import Matrix from "../geom/Matrix";
+import DrawContext from "./DrawContext";
 
 /**
  * Constructs an image tile.

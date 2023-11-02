@@ -35,6 +35,7 @@ import Logger from "../util/Logger";
 import Matrix from "../geom/Matrix";
 import Texture from "./Texture";
 import Vec2 from "../geom/Vec2";
+import DrawContext from "./DrawContext";
 
 
         /**
@@ -44,7 +45,7 @@ import Vec2 from "../geom/Vec2";
          * @classdesc Provides methods useful for displaying text. An instance of this class is attached to the
          * WorldWindow {@link DrawContext} and is not intended to be used independently of that. Applications typically do
          * not create instances of this class.
-         * @param {drawContext} drawContext The current draw context. Typically the same draw context that TextRenderer
+         * @param {DrawContext} drawContext The current draw context. Typically the same draw context that TextRenderer
          * is attached to.
          * @throws {ArgumentError} If the specified draw context is null or undefined.
          */

@@ -31,6 +31,7 @@ import ImageSource from "../util/ImageSource";
 import Logger from "../util/Logger";
 import MemoryCache from "./MemoryCache";
 import Texture from "../render/Texture";
+import WorldWind from "../WorldWind";
 
 /**
  * Constructs a GPU resource cache for a specified size and low-water value.

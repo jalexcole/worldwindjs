@@ -31,6 +31,9 @@ import Logger from "../util/Logger";
 import Matrix from "../geom/Matrix";
 import Rectangle from "../geom/Rectangle";
 import TextureTile from "./TextureTile";
+import Sector from "../geom/Sector";
+import Level from "../util/Level";
+import DrawContext from "./DrawContext";
 
 /**
  * Constructs a framebuffer tile.
