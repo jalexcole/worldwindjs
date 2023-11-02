@@ -32,7 +32,7 @@ export { default as AbstractError } from "./error/AbstractError.js";
 export * as AAIGridConstants from "./formats/aaigrid/AAIGridConstants.js";
 export { default as AAIGridReader } from "./formats/aaigrid/AAIGridReader.js";
 export { default as Angle } from "./geom/Angle.js";
-export {default as ArgumentError} from "./error/ArgumentError.js";
+export { default as ArgumentError } from "./error/ArgumentError.js";
 export { default as BoundingBox } from "./geom/BoundingBox.js";
 export { default as Camera } from "./geom/Camera.js";
 export * as AsterV2ElevationCoverage from "./globe/AsterV2ElevationCoverage.js";
@@ -82,6 +82,7 @@ export { default as KmlAbstractView } from "./formats/kml/KmlAbstractView.js";
 export { default as KmlCamera } from "./formats/kml/KmlCamera.js";
 export { default as KmlFile } from "./formats/kml/KmlFile.js";
 export { default as KmlIcon } from "./formats/kml/KmlIcon.js";
+export {default as KmlLabelStyle } from "./formats/kml/styles/KmlLabelStyle.js";
 export { default as KmlLatLonAltBox } from "./formats/kml/KmlLatLonAltBox.js";
 export { default as KmlLatLonBox } from "./formats/kml/KmlLatLonBox.js";
 export { default as KmlLatLonQuad } from "./formats/kml/KmlLatLonQuad.js";
@@ -163,26 +164,26 @@ export * as WorldWindowController from "./WorldWindowController.js";
 export { default as Matrix } from "./geom/Matrix.js";
 export { default as Matrix3 } from "./geom/Matrix3.js";
 export { default as MeasuredLocation } from "./geom/MeasuredLocation.js";
-export {default as MemoryCache} from "./cache/MemoryCache.js";
-export {default as MemoryCacheListener} from "./cache/MemoryCacheListener.js";
-export {default as MercatorTiledImageLayer} from "./layer/MercatorTiledImageLayer.js";
-export {default as NotYetImplementedError} from "./error/NotYetImplementedError.js";
+export { default as MemoryCache } from "./cache/MemoryCache.js";
+export { default as MemoryCacheListener } from "./cache/MemoryCacheListener.js";
+export { default as MercatorTiledImageLayer } from "./layer/MercatorTiledImageLayer.js";
+export { default as NotYetImplementedError } from "./error/NotYetImplementedError.js";
 export { default as Plane } from "./geom/Plane.js";
 export { default as Position } from "./geom/Position.js";
 export { default as Rectangle } from "./geom/Rectangle.js";
-export {default as Renderable } from "./render/Renderable.js";
-export {default as RenderableLayer } from "./layer/RenderableLayer.js";
-export {default as RestTiledImageLayer } from "./layer/RestTiledImageLayer.js";
+export { default as Renderable } from "./render/Renderable.js";
+export { default as RenderableLayer } from "./layer/RenderableLayer.js";
+export { default as RestTiledImageLayer } from "./layer/RestTiledImageLayer.js";
 export { default as Sector } from "./geom/Sector.js";
-export * as TileMatrix from "./geom/TileMatrix.js";
-export * as TileMatixSet from "./geom/TileMatrixSet.js";
-export {default as TriangleMesh} from "./shapes/TriangleMesh.js";
+export { default as TileMatrix } from "./geom/TileMatrix.js";
+export { default as TileMatixSet } from "./geom/TileMatrixSet.js";
+export { default as TriangleMesh } from "./shapes/TriangleMesh.js";
 export { default as Vec2 } from "./geom/Vec2.js";
 export { default as Vec3 } from "./geom/Vec3.js";
 export { default as WcsCapabilities } from "./ogc/wcs/WcsCapabilities.js";
 export { default as WcsCoverageDescriptions } from "./ogc/wcs/WcsCoverageDescriptions.js";
 export * as PanRecognizer from "./gesture/PanRecognizer.js";
-export * as Path from "./shapes/Path.js";
+export { default as Path } from "./shapes/Path.js";
 export * as PeriodicTimeSequence from "./util/PeriodicTimeSequence.js";
 export * as PickedObject from "./pick/PickedObject.js";
 export * as PickedObjectList from "./pick/PickedObjectList.js";
@@ -210,7 +211,7 @@ export { default as WktMultiPoint } from "./formats/wkt/geom/WktMultiPoint.js";
 export { default as WktObject } from "./formats/wkt/geom/WktObject.js";
 export { default as WktPoint } from "./formats/wkt/geom/WktPoint.js";
 export { default as WktTriangle } from "./formats/wkt/geom/WktTriangle.js";
-export { default as WWMath} from "./util/WWMath.js";
+export { default as WWMath } from "./util/WWMath.js";
 
 export * as WWMessage from "./util/WWMessage.js";
 export { default as XmlDocument } from "./util/XmlDocument.js";
@@ -224,127 +225,127 @@ export { WWUtil } from "./util/WWUtil.js";
  * @exports WorldWind
  * @global
  */
-var WorldWind = {
+class WorldWind {
   /**
    * The WorldWind version number.
    * @default "0.9.0"
    * @constant
    */
-  VERSION: "1.6.90",
+  static VERSION = "1.6.90";
 
   // PLEASE KEEP THE ENTRIES BELOW IN ALPHABETICAL ORDER
   /**
    * Indicates an altitude mode relative to the globe's ellipsoid.
    * @constant
    */
-  ABSOLUTE: "absolute",
+  static ABSOLUTE = "absolute";
 
   /**
    * Indicates that a redraw callback has been called immediately after a redraw.
    * @constant
    */
-  AFTER_REDRAW: "afterRedraw",
+  static AFTER_REDRAW = "afterRedraw";
 
   /**
    * Indicates that a redraw callback has been called immediately before a redraw.
    * @constant
    */
-  BEFORE_REDRAW: "beforeRedraw",
+  static BEFORE_REDRAW = "beforeRedraw";
 
   /**
    * The BEGAN gesture recognizer state. Continuous gesture recognizers transition to this state from the
    * POSSIBLE state when the gesture is first recognized.
    * @constant
    */
-  BEGAN: "began",
+  static BEGAN = "began";
 
   /**
    * The CANCELLED gesture recognizer state. Continuous gesture recognizers may transition to this state from
    * the BEGAN state or the CHANGED state when the touch events are cancelled.
    * @constant
    */
-  CANCELLED: "cancelled",
+  static CANCELLED = "cancelled";
 
   /**
    * The CHANGED gesture recognizer state. Continuous gesture recognizers transition to this state from the
    * BEGAN state or the CHANGED state, whenever an input event indicates a change in the gesture.
    * @constant
    */
-  CHANGED: "changed",
+  static CHANGED = "changed";
 
   /**
    * Indicates an altitude mode always on the terrain.
    * @constant
    */
-  CLAMP_TO_GROUND: "clampToGround",
+  static CLAMP_TO_GROUND = "clampToGround";
 
   /**
    * The radius of Earth.
    * @constant
    * @deprecated Use WGS84_SEMI_MAJOR_AXIS instead.
    */
-  EARTH_RADIUS: 6371e3,
+  static EARTH_RADIUS = 6371e3;
 
   /**
    * Indicates the cardinal direction east.
    * @constant
    */
-  EAST: "east",
+  static EAST = "east";
 
   /**
    * The ENDED gesture recognizer state. Continuous gesture recognizers transition to this state from either
    * the BEGAN state or the CHANGED state when the current input no longer represents the gesture.
    * @constant
    */
-  ENDED: "ended",
+  static ENDED = "ended";
 
   /**
    * The FAILED gesture recognizer state. Gesture recognizers transition to this state from the POSSIBLE state
    * when the gesture cannot be recognized given the current input.
    * @constant
    */
-  FAILED: "failed",
+  static FAILED = "failed";
 
   /**
    * Indicates a linear filter.
    * @constant
    */
-  FILTER_LINEAR: "filter_linear",
+  static FILTER_LINEAR = "filter_linear";
 
   /**
    * Indicates a nearest neighbor filter.
    * @constant
    */
-  FILTER_NEAREST: "filter_nearest",
+  static FILTER_NEAREST = "filter_nearest";
 
   /**
    * Indicates a great circle path.
    * @constant
    */
-  GREAT_CIRCLE: "greatCircle",
+  static GREAT_CIRCLE = "greatCircle";
 
   /**
    * Indicates a linear, straight line path.
    * @constant
    */
-  LINEAR: "linear",
+  static LINEAR = "linear";
 
   /**
    * Indicates a multi-point shape, typically within a shapefile.
    */
-  MULTI_POINT: "multiPoint",
+  static MULTI_POINT = "multiPoint";
 
   /**
    * Indicates the cardinal direction north.
    * @constant
    */
-  NORTH: "north",
+  static NORTH = "north";
 
   /**
    * Indicates a null shape, typically within a shapefile.
    * @constant
    */
-  NULL: "null",
+  static NULL = "null";
 
   /**
    * Indicates that the associated parameters are fractional values of the virtual rectangle's width or
@@ -352,36 +353,36 @@ var WorldWind = {
    * opposite its origin.
    * @constant
    */
-  OFFSET_FRACTION: "fraction",
+  static OFFSET_FRACTION = "fraction";
 
   /**
    * Indicates that the associated parameters are in units of pixels relative to the virtual rectangle's
    * corner opposite its origin corner.
    * @constant
    */
-  OFFSET_INSET_PIXELS: "insetPixels",
+  static OFFSET_INSET_PIXELS = "insetPixels";
 
   /**
    * Indicates that the associated parameters are in units of pixels relative to the virtual rectangle's
    * origin.
    * @constant
    */
-  OFFSET_PIXELS: "pixels",
+  static OFFSET_PIXELS = "pixels";
 
   /**
    * Indicates a point shape, typically within a shapefile.
    */
-  POINT: "point",
+  static POINT = "point";
 
   /**
    * Indicates a polyline shape, typically within a shapefile.
    */
-  POLYLINE: "polyline",
+  static POLYLINE = "polyline";
 
   /**
    * Indicates a polygon shape, typically within a shapefile.
    */
-  POLYGON: "polygon",
+  static POLYGON = "polygon";
 
   /**
    * The POSSIBLE gesture recognizer state. Gesture recognizers in this state are idle when there is no input
@@ -389,72 +390,71 @@ var WorldWind = {
    * state.
    * @constant
    */
-  POSSIBLE: "possible",
+  static POSSIBLE = "possible";
 
   /**
    * The RECOGNIZED gesture recognizer state. Discrete gesture recognizers transition to this state from the
    * POSSIBLE state when the gesture is recognized.
    * @constant
    */
-  RECOGNIZED: "recognized",
+  static RECOGNIZED = "recognized";
 
   /**
    * The event name of WorldWind redraw events.
    */
-  REDRAW_EVENT_TYPE: "WorldWindRedraw",
+  static REDRAW_EVENT_TYPE = "WorldWindRedraw";
 
   /**
    * Indicates that the related value is specified relative to the globe.
    * @constant
    */
-  RELATIVE_TO_GLOBE: "relativeToGlobe",
+  static RELATIVE_TO_GLOBE = "relativeToGlobe";
 
   /**
    * Indicates an altitude mode relative to the terrain.
    * @constant
    */
-  RELATIVE_TO_GROUND: "relativeToGround",
+  static RELATIVE_TO_GROUND = "relativeToGround";
 
   /**
    * Indicates that the related value is specified relative to the plane of the screen.
    * @constant
    */
-  RELATIVE_TO_SCREEN: "relativeToScreen",
+  static RELATIVE_TO_SCREEN = "relativeToScreen";
 
   /**
    * Indicates a rhumb path -- a path of constant bearing.
    * @constant
    */
-  RHUMB_LINE: "rhumbLine",
+  static RHUMB_LINE = "rhumbLine";
 
   /**
    * Indicates the cardinal direction south.
    * @constant
    */
-  SOUTH: "south",
+  static SOUTH = "south";
 
   /**
    * Indicates the cardinal direction west.
    * @constant
    */
-  WEST: "west",
+  static WEST = "west";
 
   /**
    * WGS 84 reference value for Earth's semi-major axis: 6378137.0. Taken from NGA.STND.0036_1.0.0_WGS84,
    * section 3.4.1.
    * @constant
    */
-  WGS84_SEMI_MAJOR_AXIS: 6378137.0,
+  static WGS84_SEMI_MAJOR_AXIS = 6378137.0;
 
   /**
    * WGS 84 reference value for Earth's inverse flattening: 298.257223563. Taken from
    * NGA.STND.0036_1.0.0_WGS84, section 3.4.2.
    * @constant
    */
-  WGS84_INVERSE_FLATTENING: 298.257223563,
-};
+  static WGS84_INVERSE_FLATTENING = 298.257223563;
 
-/**
+  /**
  * Holds configuration parameters for WorldWind. Applications may modify these parameters prior to creating
  * their first WorldWind objects. Configuration properties are:
  * <ul>
@@ -468,33 +468,37 @@ var WorldWind = {
  * </ul>
  * @type {{gpuCacheSize: number}}
  */
-WorldWind.configuration = {
-  gpuCacheSize: 250e6,
-  baseUrl:
-    WWUtil.worldwindlibLocation() || WWUtil.currentUrlSansFilePart() + "/../",
-  layerRetrievalQueueSize: 16,
-  coverageRetrievalQueueSize: 16,
-  bingLogoPlacement: new Offset(
-    WorldWind.OFFSET_INSET_PIXELS,
-    7,
-    WorldWind.OFFSET_PIXELS,
-    7
-  ),
-  bingLogoAlignment: new Offset(
-    WorldWind.OFFSET_FRACTION,
-    1,
-    WorldWind.OFFSET_FRACTION,
-    0
-  ),
+  static configuration = {
+    gpuCacheSize: 250e6,
+    baseUrl:
+      WWUtil.worldwindlibLocation() || WWUtil.currentUrlSansFilePart() + "/../",
+    layerRetrievalQueueSize: 16,
+    coverageRetrievalQueueSize: 16,
+    bingLogoPlacement: new Offset(
+      WorldWind.OFFSET_INSET_PIXELS,
+      7,
+      WorldWind.OFFSET_PIXELS,
+      7
+    ),
+    bingLogoAlignment: new Offset(
+      WorldWind.OFFSET_FRACTION,
+      1,
+      WorldWind.OFFSET_FRACTION,
+      0
+    ),
+  };
+  // /**
+  //  * Indicates the Bing Maps key to use when requesting Bing Maps resources.
+  //  * @type {String}
+  //  * @default null
+  //  */
+  // WorldWind.BingMapsKey = null;
+
+  // window.WorldWind = WorldWind;
+
 };
 
-// /**
-//  * Indicates the Bing Maps key to use when requesting Bing Maps resources.
-//  * @type {String}
-//  * @default null
-//  */
-// WorldWind.BingMapsKey = null;
 
-window.WorldWind = WorldWind;
+
 
 export default WorldWind;

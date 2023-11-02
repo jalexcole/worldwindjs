@@ -1948,43 +1948,50 @@ class WorldWindow {
 
     return new Line(origin, direction);
   }
+
+
+
+  
+    /**
+     * An array of functions to call during ordered rendering prior to rendering the ordered renderables.
+     * Each function is passed one argument, the current draw context. The function may modify the
+     * ordered renderables in the draw context's ordered renderable list, which has been sorted from front
+     * to back when the filter function is called. Ordered rendering filters are typically used to apply
+     * decluttering. The default set of filter functions contains one function that declutters shapes with
+     * declutter group ID of 1 ({@link GeographicText} by default) and one function that declutters shapes
+     * with declutter group ID 2 ({@link Placemark} by default). Applications can add functions to this
+     * array or remove them.
+     * @type {Function[]}
+     * @default [WorldWindow.declutter]{@link WorldWindow#declutter} with a group ID of 1
+     * @readonly
+     * @memberof WorldWindow.prototype
+     */
+    orderedRenderingFilters =this._orderedRenderingFilters;
+    //   get = function () {
+    //     return this._orderedRenderingFilters;
+    //   },
+      
+    // },
+    /**
+     * The list of callbacks to call immediately before and immediately after performing a redraw. The callbacks
+     * have two arguments: this WorldWindow and the redraw stage, e.g., <code style='white-space:nowrap'>redrawCallback(worldWindow, stage);</code>.
+     * The stage will be either WorldWind.BEFORE_REDRAW or WorldWind.AFTER_REDRAW indicating whether the
+     * callback has been called either immediately before or immediately after a redraw, respectively.
+     * Applications may add functions to this array or remove them.
+     * @type {Function[]}
+     * @readonly
+     * @memberof WorldWindow.prototype
+     */
+    redrawCallbacks = this._redrawCallbacks;
+
+    // redrawCallbacks: {
+    //   get: function () {
+    //     return this._redrawCallbacks;
+    //   },
+    // },
+  
 }
 
-Object.defineProperties(WorldWindow.prototype, {
-  /**
-   * An array of functions to call during ordered rendering prior to rendering the ordered renderables.
-   * Each function is passed one argument, the current draw context. The function may modify the
-   * ordered renderables in the draw context's ordered renderable list, which has been sorted from front
-   * to back when the filter function is called. Ordered rendering filters are typically used to apply
-   * decluttering. The default set of filter functions contains one function that declutters shapes with
-   * declutter group ID of 1 ({@link GeographicText} by default) and one function that declutters shapes
-   * with declutter group ID 2 ({@link Placemark} by default). Applications can add functions to this
-   * array or remove them.
-   * @type {Function[]}
-   * @default [WorldWindow.declutter]{@link WorldWindow#declutter} with a group ID of 1
-   * @readonly
-   * @memberof WorldWindow.prototype
-   */
-  orderedRenderingFilters: {
-    get: function () {
-      return this._orderedRenderingFilters;
-    },
-  },
-  /**
-   * The list of callbacks to call immediately before and immediately after performing a redraw. The callbacks
-   * have two arguments: this WorldWindow and the redraw stage, e.g., <code style='white-space:nowrap'>redrawCallback(worldWindow, stage);</code>.
-   * The stage will be either WorldWind.BEFORE_REDRAW or WorldWind.AFTER_REDRAW indicating whether the
-   * callback has been called either immediately before or immediately after a redraw, respectively.
-   * Applications may add functions to this array or remove them.
-   * @type {Function[]}
-   * @readonly
-   * @memberof WorldWindow.prototype
-   */
-  redrawCallbacks: {
-    get: function () {
-      return this._redrawCallbacks;
-    },
-  },
-});
+
 
 export default WorldWindow;
