@@ -26,21 +26,19 @@
  * PDF found in code  directory.
  */
 
-import AbstractShape from "./AbstractShape";
 import ArgumentError from "../error/ArgumentError";
-import BasicTextureProgram from "../shaders/BasicTextureProgram";
 import BoundingBox from "../geom/BoundingBox";
-import Color from "../util/Color";
-import ImageSource from "../util/ImageSource";
-import Location from "../geom/Location";
-import Logger from "../util/Logger";
-import Matrix from "../geom/Matrix";
-import PickedObject from "../pick/PickedObject";
 import Position from "../geom/Position";
-import ShapeAttributes from "./ShapeAttributes";
-import SurfacePolygon from "./SurfacePolygon";
 import Vec2 from "../geom/Vec2";
 import Vec3 from "../geom/Vec3";
+import PickedObject from "../pick/PickedObject";
+import BasicTextureProgram from "../shaders/BasicTextureProgram";
+import ImageSource from "../util/ImageSource";
+import Logger from "../util/Logger";
+import libtess from "../util/libtess";
+import AbstractShape from "./AbstractShape";
+import ShapeAttributes from "./ShapeAttributes";
+import SurfacePolygon from "./SurfacePolygon";
 
 /**
  * Constructs a Polygon.

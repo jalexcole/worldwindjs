@@ -25,6 +25,7 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
+var keys = {};
 
 //noinspection UnnecessaryLocalVariableJS
 /**
@@ -37,7 +38,7 @@ var KmlElements = {
   /**
    * Internal storage for all key-values pairs
    */
-  keys: {},
+  keys,
 
   /**
    * Adds key representing name of the node and constructor to be used.
