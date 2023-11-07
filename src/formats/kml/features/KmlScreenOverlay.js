@@ -64,7 +64,7 @@ Object.defineProperties(KmlScreenOverlay.prototype, {
     get: function () {
       return this._factory.specific(this, {
         name: "rotation",
-        transformer: KmlNodeTransformers.number,
+        transformer: NodeTransformers.number,
       });
     },
   },
@@ -80,7 +80,7 @@ Object.defineProperties(KmlScreenOverlay.prototype, {
     get: function () {
       return this._factory.specific(this, {
         name: "overlayXY",
-        transformer: KmlNodeTransformers.attribute("x"),
+        transformer: NodeTransformers.attribute("x"),
         attribute: "kmlOverlayXYx",
       });
     },
@@ -97,7 +97,7 @@ Object.defineProperties(KmlScreenOverlay.prototype, {
     get: function () {
       return this._factory.specific(this, {
         name: "overlayXY",
-        transformer: KmlNodeTransformers.attribute("y"),
+        transformer: NodeTransformers.attribute("y"),
         attribute: "kmlOverlayXYy",
       });
     },
@@ -115,7 +115,7 @@ Object.defineProperties(KmlScreenOverlay.prototype, {
     get: function () {
       return this._factory.specific(this, {
         name: "overlayXY",
-        transformer: KmlNodeTransformers.attribute("xunits"),
+        transformer: NodeTransformers.attribute("xunits"),
         attribute: "kmlOverlayXYxunits",
       });
     },
@@ -133,7 +133,7 @@ Object.defineProperties(KmlScreenOverlay.prototype, {
     get: function () {
       return this._factory.specific(this, {
         name: "overlayXY",
-        transformer: KmlNodeTransformers.attribute("yunits"),
+        transformer: NodeTransformers.attribute("yunits"),
         attribute: "kmlOverlayXYyunits",
       });
     },
@@ -150,7 +150,7 @@ Object.defineProperties(KmlScreenOverlay.prototype, {
     get: function () {
       return this._factory.specific(this, {
         name: "screenXY",
-        transformer: KmlNodeTransformers.attribute("x"),
+        transformer: NodeTransformers.attribute("x"),
         attribute: "kmlScreenXYx",
       });
     },
@@ -167,7 +167,7 @@ Object.defineProperties(KmlScreenOverlay.prototype, {
     get: function () {
       return this._factory.specific(this, {
         name: "screenXY",
-        transformer: KmlNodeTransformers.attribute("y"),
+        transformer: NodeTransformers.attribute("y"),
         attribute: "kmlScreenXYy",
       });
     },
@@ -186,7 +186,7 @@ Object.defineProperties(KmlScreenOverlay.prototype, {
     get: function () {
       return this._factory.specific(this, {
         name: "screenXY",
-        transformer: KmlNodeTransformers.attribute("xunits"),
+        transformer: NodeTransformers.attribute("xunits"),
         attribute: "kmlScreenXYxunits",
       });
     },
@@ -204,7 +204,7 @@ Object.defineProperties(KmlScreenOverlay.prototype, {
     get: function () {
       return this._factory.specific(this, {
         name: "screenXY",
-        transformer: KmlNodeTransformers.attribute("yunits"),
+        transformer: NodeTransformers.attribute("yunits"),
         attribute: "kmlScreenXYyunits",
       });
     },
@@ -220,7 +220,7 @@ Object.defineProperties(KmlScreenOverlay.prototype, {
     get: function () {
       return this._factory.specific(this, {
         name: "rotationXY",
-        transformer: KmlNodeTransformers.attribute("x"),
+        transformer: NodeTransformers.attribute("x"),
         attribute: "kmlRotationXYx",
       });
     },
@@ -236,7 +236,7 @@ Object.defineProperties(KmlScreenOverlay.prototype, {
     get: function () {
       return this._factory.specific(this, {
         name: "rotationXY",
-        transformer: KmlNodeTransformers.attribute("y"),
+        transformer: NodeTransformers.attribute("y"),
         attribute: "kmlRotationXYy",
       });
     },
@@ -255,7 +255,7 @@ Object.defineProperties(KmlScreenOverlay.prototype, {
     get: function () {
       return this._factory.specific(this, {
         name: "rotationXY",
-        transformer: KmlNodeTransformers.attribute("xunits"),
+        transformer: NodeTransformers.attribute("xunits"),
         attribute: "kmlRotationXYxunits",
       });
     },
@@ -273,7 +273,7 @@ Object.defineProperties(KmlScreenOverlay.prototype, {
     get: function () {
       return this._factory.specific(this, {
         name: "rotationXY",
-        transformer: KmlNodeTransformers.attribute("yunits"),
+        transformer: NodeTransformers.attribute("yunits"),
         attribute: "kmlRotationXYyunits",
       });
     },
@@ -291,7 +291,7 @@ Object.defineProperties(KmlScreenOverlay.prototype, {
     get: function () {
       return this._factory.specific(this, {
         name: "size",
-        transformer: KmlNodeTransformers.attribute("x"),
+        transformer: NodeTransformers.attribute("x"),
         attribute: "kmlSizex",
       });
     },
@@ -309,7 +309,7 @@ Object.defineProperties(KmlScreenOverlay.prototype, {
     get: function () {
       return this._factory.specific(this, {
         name: "size",
-        transformer: KmlNodeTransformers.attribute("y"),
+        transformer: NodeTransformers.attribute("y"),
         attribute: "kmlSizey",
       });
     },
@@ -328,7 +328,7 @@ Object.defineProperties(KmlScreenOverlay.prototype, {
     get: function () {
       return this._factory.specific(this, {
         name: "size",
-        transformer: KmlNodeTransformers.attribute("xunits"),
+        transformer: NodeTransformers.attribute("xunits"),
         attribute: "kmlSizexunits",
       });
     },
@@ -346,7 +346,7 @@ Object.defineProperties(KmlScreenOverlay.prototype, {
     get: function () {
       return this._factory.specific(this, {
         name: "size",
-        transformer: KmlNodeTransformers.attribute("yunits"),
+        transformer: NodeTransformers.attribute("yunits"),
         attribute: "kmlSizeyunits",
       });
     },

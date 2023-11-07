@@ -58,7 +58,7 @@ import KmlNodeTransformers from "./KmlNodeTransformers";
          */
         kmlKey: {
             get: function() {
-                return this._factory.specific(this, {name: 'key', transformer: KmlNodeTransformers.string});
+                return this._factory.specific(this, {name: 'key', transformer: NodeTransformers.string});
             }
         },
 
@@ -70,7 +70,7 @@ import KmlNodeTransformers from "./KmlNodeTransformers";
          */
         kmlStyleUrl: {
             get: function() {
-                return this._factory.specific(this, {name: 'styleUrl', transformer: KmlNodeTransformers.string});
+                return this._factory.specific(this, {name: 'styleUrl', transformer: NodeTransformers.string});
             }
         },
 

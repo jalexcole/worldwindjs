@@ -69,7 +69,7 @@ Object.defineProperties(KmlLineString.prototype, {
       return (
         this._factory.specific(this, {
           name: "extrude",
-          transformer: KmlNodeTransformers.boolean,
+          transformer: NodeTransformers.boolean,
         }) || false
       );
     },
@@ -86,7 +86,7 @@ Object.defineProperties(KmlLineString.prototype, {
       return (
         this._factory.specific(this, {
           name: "tessellate",
-          transformer: KmlNodeTransformers.boolean,
+          transformer: NodeTransformers.boolean,
         }) || false
       );
     },
@@ -104,7 +104,7 @@ Object.defineProperties(KmlLineString.prototype, {
       return (
         this._factory.specific(this, {
           name: "altitudeMode",
-          transformer: KmlNodeTransformers.string,
+          transformer: NodeTransformers.string,
         }) || WorldWind.ABSOLUTE
       );
     },

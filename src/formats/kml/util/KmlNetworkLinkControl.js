@@ -58,7 +58,7 @@ Object.defineProperties(KmlNetworkLinkControl.prototype, {
     get: function () {
       return this._factory.specific(this, {
         name: "minRefreshPeriod",
-        transformer: KmlNodeTransformers.number,
+        transformer: NodeTransformers.number,
       });
     },
   },
@@ -74,7 +74,7 @@ Object.defineProperties(KmlNetworkLinkControl.prototype, {
     get: function () {
       return this._factory.specific(this, {
         name: "maxSessionLength",
-        transformer: KmlNodeTransformers.number,
+        transformer: NodeTransformers.number,
       });
     },
   },

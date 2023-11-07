@@ -26,23 +26,17 @@
  * PDF found in code  directory.
  */
 
-// import {
-//   EarthElevationModel,
-//   DrawContext,
-//   Globe,
-//   Location,
-//   Sector,
-//   Vec3,
-// } from "../../src/WorldWind";
+import {
+  EarthElevationModel,
+  DrawContext,
+  Globe,
+  Location,
+  Sector,
+  Vec3,
+} from "../../src/WorldWind";
 
 import { beforeEach, describe, expect, it } from "vitest";
-import Sector from "../../src/geom/Sector";
-import Location from "../../src/geom/Location.js";
-import Vec3 from "../../src/geom/Vec3.js";
-import EarthElevationMode from "../../src/globe/EarthElevationModel.js";
-import DrawContext from "../../src/render/DrawContext.js";
-import Globe from "../../src/globe/Globe.js";
-import EarthElevationModel from "../../src/globe/EarthElevationModel.js";
+
 describe("Sector Tests", function () {
   it("Should construct a Sector", function () {
     var sector = new Sector(37, 39, 13, 18);

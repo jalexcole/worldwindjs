@@ -60,7 +60,7 @@ Object.defineProperties(KmlCamera.prototype, {
     get: function () {
       return this._factory.specific(this, {
         name: "longitude",
-        transformer: KmlNodeTransformers.string,
+        transformer: NodeTransformers.string,
       });
     },
   },
@@ -76,7 +76,7 @@ Object.defineProperties(KmlCamera.prototype, {
     get: function () {
       return this._factory.specific(this, {
         name: "latitude",
-        transformer: KmlNodeTransformers.string,
+        transformer: NodeTransformers.string,
       });
     },
   },
@@ -92,7 +92,7 @@ Object.defineProperties(KmlCamera.prototype, {
     get: function () {
       return this._factory.specific(this, {
         name: "altitude",
-        transformer: KmlNodeTransformers.string,
+        transformer: NodeTransformers.string,
       });
     },
   },
@@ -108,7 +108,7 @@ Object.defineProperties(KmlCamera.prototype, {
     get: function () {
       return this._factory.specific(this, {
         name: "heading",
-        transformer: KmlNodeTransformers.string,
+        transformer: NodeTransformers.string,
       });
     },
   },
@@ -127,7 +127,7 @@ Object.defineProperties(KmlCamera.prototype, {
     get: function () {
       return this._factory.specific(this, {
         name: "tilt",
-        transformer: KmlNodeTransformers.string,
+        transformer: NodeTransformers.string,
       });
     },
   },
@@ -142,7 +142,7 @@ Object.defineProperties(KmlCamera.prototype, {
     get: function () {
       return this._factory.specific(this, {
         name: "roll",
-        transformer: KmlNodeTransformers.string,
+        transformer: NodeTransformers.string,
       });
     },
   },
@@ -165,7 +165,7 @@ Object.defineProperties(KmlCamera.prototype, {
     get: function () {
       return this._factory.specific(this, {
         name: "altitudeMode",
-        transformer: KmlNodeTransformers.string,
+        transformer: NodeTransformers.string,
       });
     },
   },

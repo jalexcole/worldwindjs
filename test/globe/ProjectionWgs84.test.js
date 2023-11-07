@@ -25,14 +25,9 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
-// import { Angle, ElevationModel, Globe, Position, ProjectionWgs84 } from "../../src/WorldWind";
-import Angle from "../../src/geom/Angle";
-import Position from "../../src/geom/Position";
+import { Angle, ElevationModel, Globe, Position, ProjectionWgs84 } from "../../src/WorldWind";
 import Vec3 from "../../src/geom/Vec3";
 import { beforeAll, beforeEach, describe, expect, it } from "vitest";
-import ProjectionWgs84 from "../../src/projections/ProjectionWgs84";
-import Globe from "../../src/globe/Globe";
-import ElevationModel from "../../src/globe/ElevationModel";
 describe("ProjectionWgs84 tests", function () {
   // WGS 84 reference values taken from NGA.STND.0036_1.0.0_WGS84.
   var WGS84_IERS_REFERENCE_MERIDIAN = vec3FromEcef(6378137.0, 0, 0);

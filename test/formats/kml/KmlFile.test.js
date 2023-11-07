@@ -27,9 +27,8 @@
  */
 var WorldWind = {};
 
-// import { KmlFile } from "../../../src/WorldWind.js";
+import { KmlFile } from "../../../src/WorldWind.js";
 import { beforeAll, beforeEach, describe, expect, it } from "vitest";
-import KmlFile from "../../../src/formats/kml/KmlFile";
 WorldWind.KmlFile = KmlFile;
 
 describe("KmlFile", function () {

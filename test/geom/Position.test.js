@@ -25,10 +25,8 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
-// import { Angle, Position } from "../../src/WorldWind.js";
+import { Angle, Position } from "../../src/WorldWind.js";
 import { beforeEach, describe,expect, it } from "vitest";
-import Position from "../../src/geom/Position";
-import Angle from "../../src/geom/Angle";
 
 describe("Position Tests", function () {
   it("Should construct a Position correctly", function () {

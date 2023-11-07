@@ -58,7 +58,7 @@ Object.defineProperties(KmlViewVolume.prototype, {
     get: function () {
       return this._factory.specific(this, {
         name: "leftFov",
-        transformer: KmlNodeTransformers.number,
+        transformer: NodeTransformers.number,
       });
     },
   },
@@ -73,7 +73,7 @@ Object.defineProperties(KmlViewVolume.prototype, {
     get: function () {
       return this._factory.specific(this, {
         name: "rightFov",
-        transformer: KmlNodeTransformers.number,
+        transformer: NodeTransformers.number,
       });
     },
   },
@@ -88,7 +88,7 @@ Object.defineProperties(KmlViewVolume.prototype, {
     get: function () {
       return this._factory.specific(this, {
         name: "bottomFov",
-        transformer: KmlNodeTransformers.number,
+        transformer: NodeTransformers.number,
       });
     },
   },
@@ -103,7 +103,7 @@ Object.defineProperties(KmlViewVolume.prototype, {
     get: function () {
       return this._factory.specific(this, {
         name: "topFov",
-        transformer: KmlNodeTransformers.number,
+        transformer: NodeTransformers.number,
       });
     },
   },
@@ -121,7 +121,7 @@ Object.defineProperties(KmlViewVolume.prototype, {
     get: function () {
       return this._factory.specific(this, {
         name: "near",
-        transformer: KmlNodeTransformers.string,
+        transformer: NodeTransformers.string,
       });
     },
   },

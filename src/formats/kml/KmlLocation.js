@@ -58,7 +58,7 @@ Object.defineProperties(KmlLocation.prototype, {
     get: function () {
       return this._factory.specific(this, {
         name: "longitude",
-        transformer: KmlNodeTransformers.string,
+        transformer: NodeTransformers.string,
       });
     },
   },
@@ -73,7 +73,7 @@ Object.defineProperties(KmlLocation.prototype, {
     get: function () {
       return this._factory.specific(this, {
         name: "latitude",
-        transformer: KmlNodeTransformers.string,
+        transformer: NodeTransformers.string,
       });
     },
   },
@@ -88,7 +88,7 @@ Object.defineProperties(KmlLocation.prototype, {
     get: function () {
       return this._factory.specific(this, {
         name: "altitude",
-        transformer: KmlNodeTransformers.string,
+        transformer: NodeTransformers.string,
       });
     },
   },

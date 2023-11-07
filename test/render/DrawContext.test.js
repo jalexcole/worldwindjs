@@ -26,12 +26,17 @@
  * PDF found in code  directory.
  */
 
-import Vec2 from "../../src/geom/Vec2";
+import ElevationCoverage from "../../src/globe/ElevationCoverage";
 import Globe from "../../src/globe/Globe";
+import Matrix from "../../src/geom/Matrix";
+import Plane from "../../src/geom/Plane";
+import Vec2 from "../../src/geom/Vec2";
+import Vec3 from "../../src/geom/Vec3";
+import CustomMatchers from "../CustomMatchers.test";
 import TestUtils from "../util/TestUtils.test";
 
-import { describe, expect, it } from "vitest";
-import ElevationModel from "../../src/globe/ElevationModel.js";
+import { beforeEach, describe, expect, it } from "vitest";
+import { ElevationModel } from "../../src/WorldWind";
 var dummyParam = "dummy";
 var mockGlobe = new Globe(new ElevationModel());
 var wwd = TestUtils.getMockWwd(mockGlobe);

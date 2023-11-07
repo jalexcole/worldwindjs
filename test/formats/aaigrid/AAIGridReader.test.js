@@ -26,9 +26,8 @@
  * PDF found in code  directory.
  */
 
-// import { AAIGridReader } from "../../../src/WorldWind";
+import { AAIGridReader } from "../../../src/WorldWind";
 import { beforeAll, beforeEach, describe,expect, it } from "vitest";
-import AAIGridReader from "../../../src/formats/aaigrid/AAIGridReader";
 
 describe("AAIGridReader parsing", function () {
   it("should parse a string data source with int values", function () {

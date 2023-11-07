@@ -155,7 +155,7 @@ KmlElementsFactoryCached.prototype.any = function (element, options) {
  * @returns {String} Value representing the key.
  */
 KmlElementsFactoryCached.prototype.cacheKey = function (node, prefix) {
-  var idAttribute = new KmlAttribute(node, "id");
+  var idAttribute = new Attribute(node, "id");
   if (!idAttribute.exists()) {
     idAttribute.save(WWUtil.guid());
   }

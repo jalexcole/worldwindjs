@@ -57,7 +57,7 @@ import KmlNodeTransformers from "./KmlNodeTransformers";
          */
         kmlX: {
             get: function() {
-                return this._factory.specific(this, {name: 'x', transformer: KmlNodeTransformers.number});
+                return this._factory.specific(this, {name: 'x', transformer: NodeTransformers.number});
             }
         },
 
@@ -69,7 +69,7 @@ import KmlNodeTransformers from "./KmlNodeTransformers";
          */
         kmlY: {
             get: function() {
-                return this._factory.specific(this, {name: 'y', transformer: KmlNodeTransformers.number});
+                return this._factory.specific(this, {name: 'y', transformer: NodeTransformers.number});
             }
         },
 
@@ -81,7 +81,7 @@ import KmlNodeTransformers from "./KmlNodeTransformers";
          */
         kmlZ: {
             get: function() {
-                return this._factory.specific(this, {name: 'z', transformer: KmlNodeTransformers.number});
+                return this._factory.specific(this, {name: 'z', transformer: NodeTransformers.number});
             }
         }
     });

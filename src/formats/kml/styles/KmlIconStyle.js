@@ -61,7 +61,7 @@ Object.defineProperties(KmlIconStyle.prototype, {
     get: function () {
       return this._factory.specific(this, {
         name: "scale",
-        transformer: KmlNodeTransformers.number,
+        transformer: NodeTransformers.number,
       });
     },
   },
@@ -76,7 +76,7 @@ Object.defineProperties(KmlIconStyle.prototype, {
     get: function () {
       return this._factory.specific(this, {
         name: "heading",
-        transformer: KmlNodeTransformers.number,
+        transformer: NodeTransformers.number,
       });
     },
   },
@@ -106,7 +106,7 @@ Object.defineProperties(KmlIconStyle.prototype, {
     get: function () {
       return this._factory.specific(this, {
         name: "hotSpot",
-        transformer: KmlNodeTransformers.attribute("x"),
+        transformer: NodeTransformers.attribute("x"),
       });
     },
   },
@@ -122,7 +122,7 @@ Object.defineProperties(KmlIconStyle.prototype, {
     get: function () {
       return this._factory.specific(this, {
         name: "hotSpot",
-        transformer: KmlNodeTransformers.attribute("y"),
+        transformer: NodeTransformers.attribute("y"),
       });
     },
   },
@@ -139,7 +139,7 @@ Object.defineProperties(KmlIconStyle.prototype, {
     get: function () {
       return this._factory.specific(this, {
         name: "hotSpot",
-        transformer: KmlNodeTransformers.attribute("xunits"),
+        transformer: NodeTransformers.attribute("xunits"),
       });
     },
   },
@@ -156,7 +156,7 @@ Object.defineProperties(KmlIconStyle.prototype, {
     get: function () {
       return this._factory.specific(this, {
         name: "hotSpot",
-        transformer: KmlNodeTransformers.attribute("yunits"),
+        transformer: NodeTransformers.attribute("yunits"),
       });
     },
   },

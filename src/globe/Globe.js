@@ -25,8 +25,7 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
-console.log("Globe");
-// import WorldWind from "../WorldWind.js";
+import WorldWind from "../WorldWind.js";
 import ArgumentError from "../error/ArgumentError";
 import Angle from "../geom/Angle";
 import BoundingBox from "../geom/BoundingBox";
@@ -34,7 +33,7 @@ import Position from "../geom/Position";
 import Sector from "../geom/Sector";
 import Vec3 from "../geom/Vec3";
 import GeographicProjection from "../projections/GeographicProjection.js";
-import ProjectionWgs84 from "../projections/ProjectionWgs84";
+import  ProjectionWgs84  from "../projections/ProjectionWgs84";
 import Logger from "../util/Logger";
 import ElevationModel from "./ElevationModel";
 import Tessellator from "./Tessellator";
@@ -55,7 +54,7 @@ import Tessellator from "./Tessellator";
   *     All Cartesian coordinates and elevations are in meters.
 
   * @param {ElevationModel} elevationModel The elevation model to use for this globe.
-  * @param {GeographicProjection} [projection] The projection to apply to the globe. May be null or undefined,
+  * @param {GeographicProjection} projection The projection to apply to the globe. May be null or undefined,
   * in which case no projection is applied and the globe is a WGS84 ellipsoid.
   * @throws {ArgumentError} If the specified elevation model is null or undefined.
   */
@@ -892,7 +891,5 @@ Globe.prototype.horizonDistance = function (altitude) {
     ? Math.sqrt(altitude * (2 * this.equatorialRadius + altitude))
     : 0;
 };
-
-console.log("Globe", Globe)
 
 export default Globe;

@@ -25,8 +25,7 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
-
-import PolygonSplitter from "../../src/util/PolygonSplitter.js";
+import { PolygonSplitter } from "../../src/WorldWind.js";
 import PolygonSplitterData from "./PolygonSplitterData.test.js";
 
 import { beforeEach, describe,expect, it } from "vitest";

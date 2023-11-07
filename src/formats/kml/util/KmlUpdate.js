@@ -49,7 +49,7 @@ Object.defineProperties(KmlUpdate.prototype, {
     get: function () {
       return this._factory.specific(this, {
         name: "minRefreshPeriod",
-        transformer: KmlNodeTransformers.number,
+        transformer: NodeTransformers.number,
       });
     },
   },

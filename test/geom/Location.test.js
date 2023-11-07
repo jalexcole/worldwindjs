@@ -25,11 +25,7 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
-import WorldWind from "../../src/WorldWind";
-import Angle from "../../src/geom/Angle.js";
-import EarthElevationModel from "../../src/globe/EarthElevationModel.js";
-import Globe from "../../src/globe/Globe.js";
-import Location from "../../src/geom/Location.js";
+import WorldWind, { Angle, ElevationModel, EarthElevationModel,Globe, Location } from "../../src/WorldWind";
 import { beforeEach, describe,expect, it } from "vitest";
 
 

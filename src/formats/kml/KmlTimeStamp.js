@@ -59,7 +59,7 @@ import KmlNodeTransformers from "./util/KmlNodeTransformers";
          */
         kmlWhen: {
             get: function () {
-                return this._factory.specific(this, {name: 'when', transformer: KmlNodeTransformers.date});
+                return this._factory.specific(this, {name: 'when', transformer: NodeTransformers.date});
             }
         }
     });

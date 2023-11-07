@@ -26,10 +26,8 @@
  * PDF found in code  directory.
  */
 import KmlFileCache from "../../../src/formats/kml/KmlFileCache";
-// import { KmlLink, XmlDocument } from "../../../src/WorldWind";
+import { KmlLink, XmlDocument } from "../../../src/WorldWind";
 import { beforeAll, beforeEach, describe,expect, it } from "vitest";
-import XmlDocument from "../../../src/util/XmlDocument";
-import KmlLink from "../../../src/formats/kml/KmlLink";
     describe ("KmlLinkTest",function () {
             var validKml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
                 "<kml xmlns=\"http://www.opengis.net/kml/2.2\">" +

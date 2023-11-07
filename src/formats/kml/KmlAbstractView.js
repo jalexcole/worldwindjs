@@ -28,7 +28,6 @@
 import KmlObject from "./KmlObject";
 import KmlElements from "./KmlElements";
 import KmlTreePrimitive from "./KmlTimePrimitive";
-import KmlTimePrimitive from "./KmlTimePrimitive";
 
 // TODO Fix to use current implementations.
 ("use strict");
