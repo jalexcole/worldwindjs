@@ -83,7 +83,7 @@ Object.defineProperties(KmlObject.prototype, {
    */
   id: {
     get: function () {
-      return new KmlAttribute(this.node, "id").value();
+      return new Attribute(this.node, "id").value();
     },
   },
 

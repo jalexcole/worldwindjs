@@ -26,13 +26,10 @@
  * PDF found in code  directory.
  */
 
-// import { KmlDocument } from "../../../../src/WorldWind.js";
-// import { KmlPlacemark } from "../../../../src/WorldWind.js";
-// import { XmlDocument } from "../../../../src/WorldWind.js";
+import { KmlDocument } from "../../../../src/WorldWind.js";
+import { KmlPlacemark } from "../../../../src/WorldWind.js";
+import { XmlDocument } from "../../../../src/WorldWind.js";
 import { beforeAll, beforeEach, describe,expect, it } from "vitest";
-import XmlDocument from "../../../../src/util/XmlDocument";
-import KmlDocument from "../../../../src/formats/kml/features/KmlDocument";
-import KmlPlacemark from "../../../../src/formats/kml/features/KmlPlacemark";
 describe("KmlDocumentTest", function () {
   var validKml =
     '<?xml version="1.0" encoding="UTF-8"?>' +

@@ -25,11 +25,8 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
-// import { KmlStyleMap, KmlPair, XMLDocument } from "../../../../src/WorldWind";
+import { KmlStyleMap, KmlPair, XMLDocument } from "../../../../src/WorldWind";
 import { beforeAll, beforeEach, describe,expect, it } from "vitest";
-import XmlDocument from "../../../../src/util/XmlDocument";
-import KmlStyleMap from "../../../../src/formats/kml/styles/KmlStyleMap";
-import KmlPair from "../../../../src/formats/kml/util/KmlPair";
     describe("KmlStyleMapTest",function(){
 
             var validKml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
@@ -43,7 +40,7 @@ import KmlPair from "../../../../src/formats/kml/util/KmlPair";
                 kmlRepresentation.getElementsByTagName("StyleMap")[0]});
         it("should have the prototype properties of Pair", function(){
             console.log(styleMap.kmlPairs[0]);
-            expect(styleMap.kmlPairs[0] instanceof KmlPair).toBeTruthy();
+            expect(styleMap.kmlPairs[0] instanceof Pair).toBeTruthy();
         });
 
         });

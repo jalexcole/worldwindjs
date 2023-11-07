@@ -36,51 +36,51 @@ import Logger from "./Logger";
  * @constructor
  */
 export class XmlDocument {
-  constructor(document) {
+    constructor(document) {
+        /**
+         * Retrieved textual representation of the document.
+         */
+        this._document = document;
+    }
+    static isValid(document) {
+        // TODO refactor.
+        try {
+            new XmlDocument(document).dom();
+            return true;
+        } catch (e) {
+            return false;
+        }
+    }
     /**
-     * Retrieved textual representation of the document.
+     * This method abstracts parsing of XmlDocument away form users of this class. It should work in all browsers
+     * since IE5
+     * @returns {Document} Parsed dom.
      */
-    this._document = document;
-  }
-  static isValid(document) {
-    // TODO refactor.
-    try {
-      new XmlDocument(document).dom();
-      return true;
-    } catch (e) {
-      return false;
+    dom() {
+        if (DOMParser) {
+            var parser = new DOMParser();
+            var parsedDocument = parser.parseFromString(this._document, "text/xml");
+            if (parsedDocument.getElementsByTagName("parsererror").length ||
+                !parsedDocument) {
+                throw new ArgumentError(
+                    Logger.logMessage(
+                        Logger.LEVEL_SEVERE,
+                        "XmlDocument",
+                        "dom",
+                        "Invalid XML document. " +
+                        parsedDocument.getElementsByTagName("parsererror")[0].innerHTML
+                    )
+                );
+            }
+            return parsedDocument;
+        } else {
+            // Support for IE6
+            var xmlDoc = new ActiveXObject("Microsoft.XMLDOM");
+            xmlDoc.async = false;
+            xmlDoc.loadXML(text);
+            return xmlDoc;
+        }
     }
-  }
-  /**
-   * This method abstracts parsing of XmlDocument away form users of this class. It should work in all browsers
-   * since IE5
-   * @returns {Document} Parsed dom.
-   */
-  dom() {
-    if (DOMParser) {
-      var parser = new DOMParser();
-      var parsedDocument = parser.parseFromString(this._document, "application/xhtml+xml");
-      if (parsedDocument.getElementsByTagName("parsererror").length ||
-        !parsedDocument) {
-        throw new ArgumentError(
-          Logger.logMessage(
-            Logger.LEVEL_SEVERE,
-            "XmlDocument",
-            "dom",
-            "Invalid XML document. " +
-            parsedDocument.getElementsByTagName("parsererror")[0].innerHTML
-          )
-        );
-      }
-      return parsedDocument;
-    } else {
-      // Support for IE6
-      var xmlDoc = new ActiveXObject("Microsoft.XMLDOM");
-      xmlDoc.async = false;
-      xmlDoc.loadXML(text);
-      return xmlDoc;
-    }
-  }
 }
 
 

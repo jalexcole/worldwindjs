@@ -25,10 +25,8 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
-// import { Vec3, WWMath } from "../../src/WorldWind.js";
+import { Vec3, WWMath } from "../../src/WorldWind.js";
 import { describe, expect, it } from "vitest";
-import WWMath from "../../src/util/WWMath";
-import Vec3 from "../../src/geom/Vec3";
 
 describe("WWMath test", function () {
   describe("normalizeAngle360 test", function () {

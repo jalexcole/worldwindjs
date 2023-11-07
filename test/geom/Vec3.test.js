@@ -27,8 +27,7 @@
  */
 
 import { describe, expect, it } from "vitest";
-import Vec3 from "../../src/geom/Vec3";
-// import { Vec3 } from "../../src/WorldWind.js";
+import { Vec3 } from "../../src/WorldWind.js";
 // import Vec3 from "../../src/geom/Vec3.js";
 console.log("Vec3", Vec3);
 describe("Vec3Test", function () {

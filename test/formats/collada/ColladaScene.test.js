@@ -25,26 +25,18 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
-// import {
-//   ColladaScene,
-//   ElevationModel,
-//   Globe,
-//   Line,
-//   Matrix,
-//   Position,
-//   ProjectionWgs84,
-//   Vec3,
-// } from "../../../src/WorldWind";
+import {
+  ColladaScene,
+  ElevationModel,
+  Globe,
+  Line,
+  Matrix,
+  Position,
+  ProjectionWgs84,
+  Vec3,
+} from "../../../src/WorldWind";
 import { beforeAll, beforeEach, describe,expect, it } from "vitest";
 import ColladaLoader from "../../../src/formats/collada/ColladaLoader";
-import ColladaScene from "../../../src/formats/collada/ColladaScene";
-import Position from "../../../src/geom/Position";
-import Matrix from "../../../src/geom/Matrix";
-import Vec3 from "../../../src/geom/Vec3";
-import Line from "../../../src/geom/Line";
-import Globe from "../../../src/globe/Globe";
-import ElevationModel from "../../../src/globe/ElevationModel";
-import ProjectionWgs84 from "../../../src/projections/ProjectionWgs84";
 describe("ColladaScene calculation and data manipulation testing", function () {
   it("Should properly calculate new normals and create proper vertex order", function () {
     var indices = [

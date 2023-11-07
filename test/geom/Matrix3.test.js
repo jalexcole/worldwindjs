@@ -25,10 +25,8 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
-// import { Matrix3, Sector } from "../../src/WorldWind.js";
+import { Matrix3, Sector } from "../../src/WorldWind.js";
 import { beforeEach, describe, expect, it } from "vitest";
-import Matrix3 from "../../src/geom/Matrix3";
-import Sector from "../../src/geom/Sector";
 
 
 

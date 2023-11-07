@@ -25,16 +25,8 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
-// import { KmlStyle, KmlIconStyle, KmlLabelStyle, KmlLineStyle, KmlPolyStyle, KmlBalloonStyle, KmlListStyle, XmlDocument } from "../../../../src/WorldWind";
+import { KmlStyle, KmlIconStyle, KmlLabelStyle, KmlLineStyle, KmlPolyStyle, KmlBalloonStyle, KmlListStyle, XmlDocument } from "../../../../src/WorldWind";
 import { beforeAll, beforeEach, describe,expect, it } from "vitest";
-import XmlDocument from "../../../../src/util/XmlDocument";
-import KmlStyle from "../../../../src/formats/kml/styles/KmlStyle";
-import KmlIconStyle from "../../../../src/formats/kml/styles/KmlIconStyle";
-import KmlLabelStyle from "../../../../src/formats/kml/styles/KmlLabelStyle";
-import KmlLineStyle from "../../../../src/formats/kml/styles/KmlLineStyle";
-import KmlPolyStyle from "../../../../src/formats/kml/styles/KmlPolyStyle";
-import KmlBalloonStyle from "../../../../src/formats/kml/styles/KmlBalloonStyle";
-import KmlListStyle from "../../../../src/formats/kml/styles/KmlListStyle";
     describe("KmlStyleTest",function(){
 
             var validKml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +

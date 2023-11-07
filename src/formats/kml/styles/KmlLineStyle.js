@@ -58,7 +58,7 @@ Object.defineProperties(KmlLineStyle.prototype, {
     get: function () {
       return this._factory.specific(this, {
         name: "width",
-        transformer: KmlNodeTransformers.number,
+        transformer: NodeTransformers.number,
       });
     },
   },
@@ -73,7 +73,7 @@ Object.defineProperties(KmlLineStyle.prototype, {
     get: function () {
       return this._factory.specific(this, {
         name: "gx:outerColor",
-        transformer: KmlNodeTransformers.string,
+        transformer: NodeTransformers.string,
       });
     },
   },
@@ -89,7 +89,7 @@ Object.defineProperties(KmlLineStyle.prototype, {
     get: function () {
       return this._factory.specific(this, {
         name: "gx:outerWidth",
-        transformer: KmlNodeTransformers.number,
+        transformer: NodeTransformers.number,
       });
     },
   },
@@ -104,7 +104,7 @@ Object.defineProperties(KmlLineStyle.prototype, {
     get: function () {
       return this._factory.specific(this, {
         name: "gx:physicalWidth",
-        transformer: KmlNodeTransformers.number,
+        transformer: NodeTransformers.number,
       });
     },
   },
@@ -121,7 +121,7 @@ Object.defineProperties(KmlLineStyle.prototype, {
     get: function () {
       return this._factory.specific(this, {
         name: "gx:labelVisibility",
-        transformer: KmlNodeTransformers.boolean,
+        transformer: NodeTransformers.boolean,
       });
     },
   },

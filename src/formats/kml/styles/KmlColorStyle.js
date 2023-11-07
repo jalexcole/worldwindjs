@@ -58,7 +58,7 @@ Object.defineProperties(KmlColorStyle.prototype, {
     get: function () {
       return this._factory.specific(this, {
         name: "color",
-        transformer: KmlNodeTransformers.string,
+        transformer: NodeTransformers.string,
       });
     },
   },
@@ -74,7 +74,7 @@ Object.defineProperties(KmlColorStyle.prototype, {
     get: function () {
       return this._factory.specific(this, {
         name: "colorMode",
-        transformer: KmlNodeTransformers.string,
+        transformer: NodeTransformers.string,
       });
     },
   },

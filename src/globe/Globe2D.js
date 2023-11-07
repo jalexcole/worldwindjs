@@ -26,10 +26,10 @@
  * PDF found in code  directory.
  */
 
-import ProjectionEquirectangular from "../projections/ProjectionEquirectangular";
 import ElevationModel from "./ElevationModel";
-import Globe from "./Globe.js";
-console.log("Globe2 Globe", Globe);
+import Globe from "./Globe";
+import ProjectionEquirectangular from "../projections/ProjectionEquirectangular";
+
 /**
  * Constructs a 2D globe with a default {@link ElevationModel} and
  * [equirectangular projection]{@link ProjectionEquirectangular}.
@@ -40,7 +40,6 @@ console.log("Globe2 Globe", Globe);
  * The default rectangular projection scrolls longitudinally.
  */
 var Globe2D = function () {
-  console.log("Inside Globe2D")
   Globe.call(this, new ElevationModel(), new ProjectionEquirectangular());
 };
 

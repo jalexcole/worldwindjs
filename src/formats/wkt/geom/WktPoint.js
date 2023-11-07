@@ -25,7 +25,6 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
-import Color from "../../../util/Color.js";
 import Placemark from "../../../shapes/Placemark";
 import PlacemarkAttributes from "../../../shapes/PlacemarkAttributes";
 import Position from "../../../geom/Position.js";
@@ -69,16 +68,16 @@ WktPoint.placemark = function (coordinates) {
     WorldWind.OFFSET_FRACTION,
     0.0
   );
-  placemarkAttributes._imageColor = Color.WHITE;
+  placemarkAttributes._imageColor = WorldWind.Color.WHITE;
   placemarkAttributes._labelAttributes._offset = new Offset(
     WorldWind.OFFSET_FRACTION,
     0.5,
     WorldWind.OFFSET_FRACTION,
     1.0
   );
-  placemarkAttributes._labelAttributes._color = Color.YELLOW;
+  placemarkAttributes._labelAttributes._color = WorldWind.Color.YELLOW;
   placemarkAttributes._drawLeaderLine = true;
-  placemarkAttributes._leaderLineAttributes._outlineColor = Color.RED;
+  placemarkAttributes._leaderLineAttributes._outlineColor = WorldWind.Color.RED;
   placemarkAttributes._imageSource =
     WorldWind.configuration.baseUrl + "images/pushpins/castshadow-purple.png";
 

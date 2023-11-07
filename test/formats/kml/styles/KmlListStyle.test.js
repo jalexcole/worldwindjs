@@ -26,11 +26,8 @@
  * PDF found in code  directory.
  */
 
-// import { KmlListStyle, KmlItemIcon, XmlDocument } from "../../../../src/WorldWind";
+import { KmlListStyle, KmlItemIcon, XmlDocument } from "../../../../src/WorldWind";
 import { beforeAll, beforeEach, describe,expect, it } from "vitest";
-import XmlDocument from "../../../../src/util/XmlDocument";
-import KmlListStyle from "../../../../src/formats/kml/styles/KmlListStyle";
-import KmlItemIcon from "../../../../src/formats/kml/util/KmlItemIcon";
     describe ("KmlListStyleTest", function(){
 
     var validKml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
@@ -50,7 +47,7 @@ import KmlItemIcon from "../../../../src/formats/kml/util/KmlItemIcon";
                 expect(listStyle.kmlListItemType).toEqual('check');
                 expect(listStyle.kmlBgColor).toEqual('ffffffff');
                 console.log(listStyle.kmlItemIcon);
-                expect(listStyle.kmlItemIcon instanceof KmlItemIcon).toBeTruthy();
+                expect(listStyle.kmlItemIcon instanceof ItemIcon).toBeTruthy();
 
             });
 

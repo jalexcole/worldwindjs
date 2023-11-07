@@ -25,9 +25,8 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
-// import { KmlTreeKeyValueCache } from "../../../../src/WorldWind.js";
+import { KmlTreeKeyValueCache } from "../../../../src/WorldWind.js";
 import { describe, beforeEach, it, expect } from "vitest";
-import KmlTreeKeyValueCache from "../../../../src/formats/kml/util/KmlTreeKeyValueCache";
 describe("TreKeyValueCacheTest", function () {
   describe("#retrieval", function () {
     var cache;

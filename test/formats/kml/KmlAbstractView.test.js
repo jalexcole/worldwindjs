@@ -26,14 +26,11 @@
  * PDF found in code  directory.
  */
 
-// import KmlAbstractView from "../../../src/WorldWind.js";
-// import KmlTimeSpan from "../../../src/WorldWind.js";
-// import { XmlDocument } from "../../../src/WorldWind.js";
+import KmlAbstractView from "../../../src/WorldWind.js";
+import KmlTimeSpan from "../../../src/WorldWind.js";
+import { XmlDocument } from "../../../src/WorldWind.js";
 
 import { beforeAll, beforeEach, describe,expect, it } from "vitest";
-import XmlDocument from "../../../src/util/XmlDocument";
-import KmlTimeSpan from "../../../src/formats/kml/KmlTimeSpan";
-import KmlAbstractView from "../../../src/formats/kml/KmlAbstractView";
     describe("KmlAbstractViewTest", function () {
         var validKml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
             "<kml xmlns=\"http://www.opengis.net/kml/2.2\">" +

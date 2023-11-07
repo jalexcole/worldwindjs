@@ -61,7 +61,7 @@ Object.defineProperties(KmlLookAt.prototype, {
     get: function () {
       return this._factory.specific(this, {
         name: "longitude",
-        transformer: KmlNodeTransformers.number,
+        transformer: NodeTransformers.number,
       });
     },
   },
@@ -77,7 +77,7 @@ Object.defineProperties(KmlLookAt.prototype, {
     get: function () {
       return this._factory.specific(this, {
         name: "latitude",
-        transformer: KmlNodeTransformers.number,
+        transformer: NodeTransformers.number,
       });
     },
   },
@@ -92,7 +92,7 @@ Object.defineProperties(KmlLookAt.prototype, {
     get: function () {
       return this._factory.specific(this, {
         name: "altitude",
-        transformer: KmlNodeTransformers.number,
+        transformer: NodeTransformers.number,
       });
     },
   },
@@ -108,7 +108,7 @@ Object.defineProperties(KmlLookAt.prototype, {
     get: function () {
       return this._factory.specific(this, {
         name: "heading",
-        transformer: KmlNodeTransformers.number,
+        transformer: NodeTransformers.number,
       });
     },
   },
@@ -126,7 +126,7 @@ Object.defineProperties(KmlLookAt.prototype, {
     get: function () {
       return this._factory.specific(this, {
         name: "tilt",
-        transformer: KmlNodeTransformers.number,
+        transformer: NodeTransformers.number,
       });
     },
   },
@@ -142,7 +142,7 @@ Object.defineProperties(KmlLookAt.prototype, {
     get: function () {
       return this._factory.specific(this, {
         name: "range",
-        transformer: KmlNodeTransformers.number,
+        transformer: NodeTransformers.number,
       });
     },
   },
@@ -160,7 +160,7 @@ Object.defineProperties(KmlLookAt.prototype, {
     get: function () {
       return this._factory.specific(this, {
         name: "altitudeMode",
-        transformer: KmlNodeTransformers.string,
+        transformer: NodeTransformers.string,
       });
     },
   },

@@ -26,11 +26,8 @@
  * PDF found in code  directory.
  */
 
-// import { KmlPair, KmlStyle, XmlDocument } from "../../../../src/WorldWind";
+import { KmlPair, KmlStyle, XmlDocument } from "../../../../src/WorldWind";
 import { describe, expect, it } from "vitest";
-import XmlDocument from "../../../../src/util/XmlDocument";
-import KmlPair from "../../../../src/formats/kml/util/KmlPair";
-import KmlStyle from "../../../../src/formats/kml/styles/KmlStyle";
     describe ("KmlPairTest", function () {
             var validKml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
                 "<kml xmlns=\"http://www.opengis.net/kml/2.2\">" +

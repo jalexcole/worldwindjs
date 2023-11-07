@@ -29,12 +29,11 @@
 import LevelSet from "../../../src/util/LevelSet";
 
 import Sector from "../../../src/geom/Sector";
-// import { Tile } from "../../../src/WorldWind";
+import { Tile } from "../../../src/WorldWind";
 import WcsUrlBuilder from "../../../src/ogc/wcs/WcsUrlBuilder";
 import WcsCapabilities from "../../../src/ogc/wcs/WcsCapabilities";
 import WebCoverageService from "../../../src/ogc/wcs/WebCoverageService.js";
 import { beforeAll, beforeEach, describe,expect, it } from "vitest";
-import Tile from "../../../src/util/Tile";
 
     describe("1.0.0 WCS Url Builder", function () {
 

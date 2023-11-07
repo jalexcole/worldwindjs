@@ -14,17 +14,14 @@
  * limitations under the License.
  */
 
-// import {
-//   Camera,
-//   ElevationModel,
-//   Globe,
-//   LookAt,
-//   Matrix,
-//   Position,
-// } from "../../src/WorldWind.js";
-import Camera from "../../src/geom/Camera.js";
-import ElevationModel from "../../src/globe/ElevationModel.js";
-import Globe from "../../src/globe/Globe.js";
+import {
+  Camera,
+  ElevationModel,
+  Globe,
+  LookAt,
+  Matrix,
+  Position,
+} from "../../src/WorldWind.js";
 import TestUtils from "../util/TestUtils.test.js";
 import { beforeEach, describe,expect, it } from "vitest";
 
