@@ -64,7 +64,7 @@ Object.defineProperties(KmlLod.prototype, {
     get: function () {
       return this._factory.specific(this, {
         name: "minLodPixels",
-        transformer: NodeTransformers.number,
+        transformer: KmlNodeTransformers.number,
       });
     },
   },
@@ -80,7 +80,7 @@ Object.defineProperties(KmlLod.prototype, {
     get: function () {
       return this._factory.specific(this, {
         name: "maxLodPixels",
-        transformer: NodeTransformers.number,
+        transformer: KmlNodeTransformers.number,
       });
     },
   },
@@ -96,7 +96,7 @@ Object.defineProperties(KmlLod.prototype, {
     get: function () {
       return this._factory.specific(this, {
         name: "minFadeExtent",
-        transformer: NodeTransformers.number,
+        transformer: KmlNodeTransformers.number,
       });
     },
   },
@@ -112,7 +112,7 @@ Object.defineProperties(KmlLod.prototype, {
     get: function () {
       return this._factory.specific(this, {
         name: "maxFadeExtent",
-        transformer: NodeTransformers.number,
+        transformer: KmlNodeTransformers.number,
       });
     },
   },

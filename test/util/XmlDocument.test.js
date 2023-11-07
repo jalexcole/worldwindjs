@@ -26,8 +26,9 @@
  * PDF found in code  directory.
  */
 
-import { XmlDocument } from "../../src/WorldWind.js";
+// import { XmlDocument } from "../../src/WorldWind.js";
 import { describe, expect, it } from "vitest";
+import XmlDocument from "../../src/util/XmlDocument";
     describe("XmlDocument", function() {
         it("testGettingDomOfValidXml", function() {
             var xmlDocument = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +

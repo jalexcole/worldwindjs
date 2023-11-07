@@ -28,7 +28,7 @@
 import KmlItemIcon from "../util/KmlItemIcon.js";
 import KmlElements from "../KmlElements";
 import KmlSubStyle from "./KmlSubStyle";
-import NodeTransformers from "../util/KmlNodeTransformers";
+import KmlNodeTransformers from "../util/KmlNodeTransformers";
 
 /**
  * Constructs an KmlListStyle. Applications usually don't call this constructor. It is called by {@link KmlFile} as
@@ -64,7 +64,7 @@ Object.defineProperties(KmlListStyle.prototype, {
     get: function () {
       return this._factory.specific(this, {
         name: "bgColor",
-        transformer: NodeTransformers.string,
+        transformer: KmlNodeTransformers.string,
       });
     },
   },
@@ -88,7 +88,7 @@ Object.defineProperties(KmlListStyle.prototype, {
     get: function () {
       return this._factory.specific(this, {
         name: "listItemType",
-        transformer: NodeTransformers.string,
+        transformer: KmlNodeTransformers.string,
       });
     },
   },
@@ -99,12 +99,12 @@ Object.defineProperties(KmlListStyle.prototype, {
    * fetching0, fetching1, and fetching2 modes are used for Network Links.
    * @memberof KmlListStyle.prototype
    * @readonly
-   * @type {ItemIcon}
+   * @type {KmlItemIcon}
    */
   kmlItemIcon: {
     get: function () {
       return this._factory.any(this, {
-        name: ItemIcon.prototype.getTagNames(),
+        name: KmlItemIcon.prototype.getTagNames(),
       });
     },
   },

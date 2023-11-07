@@ -33,7 +33,8 @@ import Plane from "./Plane";
 import Position from "./Position.js"
 import Vec3 from "./Vec3";
 import WWMath from "../util/WWMath";
-import WorldWind from "../WorldWind";
+import Position from "./Position";
+
 
 /**
  * Constructs a location from a specified latitude and longitude in degrees.

@@ -74,7 +74,7 @@ import KmlRefreshListener from "../util/KmlRefreshListener";
          */
         kmlRefreshVisibility: {
             get: function () {
-                return this._factory.specific(this, {name: 'refreshVisibility', transformer: NodeTransformers.boolean});
+                return this._factory.specific(this, {name: 'refreshVisibility', transformer: KmlNodeTransformers.boolean});
             }
         },
 
@@ -91,7 +91,7 @@ import KmlRefreshListener from "../util/KmlRefreshListener";
          */
         kmlFlyToView: {
             get: function () {
-                return this._factory.specific(this, {name: 'flyToView', transformer: NodeTransformers.boolean});
+                return this._factory.specific(this, {name: 'flyToView', transformer: KmlNodeTransformers.boolean});
             }
         },
 

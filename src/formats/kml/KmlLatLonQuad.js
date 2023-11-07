@@ -63,7 +63,7 @@ Object.defineProperties(KmlLatLonQuad.prototype, {
     get: function () {
       return this._factory.specific(this, {
         name: "coordinates",
-        transformer: NodeTransformers.string,
+        transformer: KmlNodeTransformers.string,
       });
     },
   },

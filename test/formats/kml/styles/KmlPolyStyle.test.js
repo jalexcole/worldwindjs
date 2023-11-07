@@ -25,8 +25,10 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
-import { KmlPolyStyle, XmlDocument } from "../../../../src/WorldWind";
+// import { KmlPolyStyle, XmlDocument } from "../../../../src/WorldWind";
 import { beforeAll, beforeEach, describe,expect, it } from "vitest";
+import XmlDocument from "../../../../src/util/XmlDocument";
+import KmlPolyStyle from "../../../../src/formats/kml/styles/KmlPolyStyle";
         describe ("KmlPolyStyle", function(){
 
         var validKml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +

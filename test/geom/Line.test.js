@@ -26,8 +26,10 @@
  * PDF found in code  directory.
  */
 
-import { Line, Vec3 } from "../../src/WorldWind";
+// import { Line, Vec3 } from "../../src/WorldWind";
 import { beforeEach, describe,expect, it } from "vitest";
+import Vec3 from "../../src/geom/Vec3";
+import Line from "../../src/geom/Line";
 
 describe("Line Tests", function () {
   describe("Line Constructor", function () {

@@ -25,7 +25,9 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
-import { Sector, WcsCoverageDescriptions } from "../../../src/WorldWind.js";
+// import { Sector, WcsCoverageDescriptions } from "../../../src/WorldWind.js";
+import Sector from "../../../src/geom/Sector.js";
+import WcsCoverageDescriptions from "../../../src/ogc/wcs/WcsCoverageDescriptions.js";
 import CustomMatchers from "../../CustomMatchers.test.js";
 import { beforeAll, beforeEach, describe,expect, it } from "vitest";
 // beforeEach(function () {

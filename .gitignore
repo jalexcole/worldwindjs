@@ -14,3 +14,7 @@ node_modules/
 
 npm-debug.log
 /nbproject/private/
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/

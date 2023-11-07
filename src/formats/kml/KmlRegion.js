@@ -64,7 +64,7 @@ Object.defineProperties(KmlRegion.prototype, {
     get: function () {
       return this._factory.specific(this, {
         name: KmlLatLonAltBox.prototype.getTagNames(),
-        transformer: NodeTransformers.kmlObject,
+        transformer: KmlNodeTransformers.kmlObject,
       });
     },
   },
@@ -82,7 +82,7 @@ Object.defineProperties(KmlRegion.prototype, {
     get: function () {
       return this._factory.specific(this, {
         name: KmlLod.prototype.getTagNames(),
-        transformer: NodeTransformers.kmlObject,
+        transformer: KmlNodeTransformers.kmlObject,
       });
     },
   },

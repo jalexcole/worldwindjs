@@ -62,7 +62,7 @@ Object.defineProperties(KmlOverlay.prototype, {
     get: function () {
       return this._factory.specific(this, {
         name: "color",
-        transformer: NodeTransformers.string,
+        transformer: KmlNodeTransformers.string,
       });
     },
   },
@@ -78,7 +78,7 @@ Object.defineProperties(KmlOverlay.prototype, {
     get: function () {
       return this._factory.specific(this, {
         name: "drawOrder",
-        transformer: NodeTransformers.string,
+        transformer: KmlNodeTransformers.string,
       });
     },
   },

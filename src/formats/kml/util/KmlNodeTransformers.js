@@ -25,16 +25,17 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
-import KmlAttribute from "./KmlAttribute";
-import KmlElements from "../KmlElements";
 import Position from "../../../geom/Position";
 import WWUtil from "../../../util/WWUtil";
+import KmlElements from "../KmlElements";
+import KmlObject from "../KmlObject";
+import KmlAttribute from "./KmlAttribute";
 
 /**
  * Provides ways for transforming xml nodes to KML objects.
  * @exports KmlNodeTransformers
  */
-var KmlNodeTransformers = function () {};
+var KmlNodeTransformers = function () { };
 
 // Primitives
 /**
@@ -93,8 +94,8 @@ function getTextOfNode(node) {
  * This function retrieves relevant KmlObject to the Node. If there is such element it returns created element,
  * otherwise it returns null
  * @param node {Node} Node to transform
- * @param parent {KmlObject} Parent to current node.
- * @param controls {Array} Array of controls.
+ * @param [parent] {KmlObject} Parent to current node.
+ * @param [controls] {Array} Array of controls.
  * @returns {KmlObject|null} KmlObject representation for the node.
  */
 KmlNodeTransformers.kmlObject = function (node, parent, controls) {
@@ -164,7 +165,7 @@ KmlNodeTransformers.positions = function (node) {
  */
 KmlNodeTransformers.attribute = function (name) {
   return function (node) {
-    return new Attribute(node, name).value();
+    return new KmlAttribute(node, name).value();
   };
 };
 

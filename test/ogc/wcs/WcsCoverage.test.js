@@ -27,9 +27,10 @@
  */
 import CustomMatchers from "../../CustomMatchers.test.js";
 import Sector from "../../../src/geom/Sector.js";
-import WcsCoverage from "../../../src/WorldWind.js";
+// import WcsCoverage from "../../../src/WorldWind.js";
 
 import { beforeEach, describe, expect, it } from "vitest";
+import WcsCoverage from "../../../src/ogc/wcs/WcsCoverage.js";
 
 // beforeEach(function () {
 //     jasmine.addMatchers(CustomMatchers);

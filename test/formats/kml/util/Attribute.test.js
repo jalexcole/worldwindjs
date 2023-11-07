@@ -25,9 +25,10 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
-import { XmlDocument } from "../../../../src/WorldWind.js";
+// import { XmlDocument } from "../../../../src/WorldWind.js";
 import KmlAttribute from "../../../../src/formats/kml/util/KmlAttribute.js";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
+import XmlDocument from "../../../../src/util/XmlDocument.js";
 describe("KmlAttributeTest", function () {
   var validKml =
     '<?xml version="1.0" encoding="UTF-8"?>' +

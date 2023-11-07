@@ -58,7 +58,7 @@ import KmlNodeTransformers from "./util/KmlNodeTransformers";
          */
         kmlHeading: {
             get: function () {
-                return this._factory.specific(this, {name: 'heading', transformer: NodeTransformers.number});
+                return this._factory.specific(this, {name: 'heading', transformer: KmlNodeTransformers.number});
             }
         },
 
@@ -71,7 +71,7 @@ import KmlNodeTransformers from "./util/KmlNodeTransformers";
          */
         kmlTilt: {
             get: function () {
-                return this._factory.specific(this, {name: 'tilt', transformer: NodeTransformers.number});
+                return this._factory.specific(this, {name: 'tilt', transformer: KmlNodeTransformers.number});
             }
         },
 
@@ -84,7 +84,7 @@ import KmlNodeTransformers from "./util/KmlNodeTransformers";
          */
         kmlRoll: {
             get: function () {
-                return this._factory.specific(this, {name: 'roll', transformer: NodeTransformers.number});
+                return this._factory.specific(this, {name: 'roll', transformer: KmlNodeTransformers.number});
             }
         }
     });

@@ -26,8 +26,10 @@
  * PDF found in code  directory.
  */
 
-import { Line, Plane, Vec3 } from "../../src/WorldWind.js";
+// import { Line, Plane, Vec3 } from "../../src/WorldWind.js";
 import { beforeEach, describe,expect, it } from "vitest";
+import Plane from "../../src/geom/Plane";
+import Vec3 from "../../src/geom/Vec3";
 
 
     describe("Plane Tests", function () {

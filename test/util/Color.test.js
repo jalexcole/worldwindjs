@@ -25,7 +25,7 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
-import {Color} from "../../src/WorldWind.js";
+import Color from "../../src/util/Color.js";
 import { beforeEach, describe,expect, it } from "vitest";
 
 describe("Color-colorFromHex", function () {

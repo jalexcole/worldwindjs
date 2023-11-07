@@ -27,8 +27,9 @@
  */
 
 
-import { WWUtil } from "../../src/WorldWind.js";
-import { describe, expect, assertTrue, assertFalse, it } from "vitest";
+// import { WWUtil } from "../../src/WorldWind.js";
+import { describe, expect,assert, assertTrue, assertFalse, it } from "vitest";
+import WWUtil from "../../src/util/WWUtil";
 describe("WWUtil-arrayEquals", function () {
   if (
     ("testEqualArrays",
@@ -36,7 +37,7 @@ describe("WWUtil-arrayEquals", function () {
       var array1 = [1, 2, 3];
       var array2 = [1, 2, 3];
 
-      assertTrue(WWUtil.arrayEquals(array1, array2));
+      expect(WWUtil.arrayEquals(array1, array2)).toBeTruthy();
     })
   );
 

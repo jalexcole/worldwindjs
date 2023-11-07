@@ -61,7 +61,7 @@ import KmlFileCache from "../KmlFileCache";
          */
         kmlState: {
             get: function () {
-                return this._factory.specific(this, {name: 'state', transformer: NodeTransformers.string});
+                return this._factory.specific(this, {name: 'state', transformer: KmlNodeTransformers.string});
             }
         }
     });
@@ -72,7 +72,10 @@ import KmlFileCache from "../KmlFileCache";
      * @returns {String} URL to use.
      */
     KmlItemIcon.prototype.kmlHref = function(fileCache) {
-        return new HrefResolver(
+
+        return new KmlHrefResolver(
+
+
             this._factory.specific(this, {name: 'href', transformer: KmlNodeTransformers.string}), fileCache
         ).url();
     };

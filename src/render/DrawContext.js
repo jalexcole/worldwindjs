@@ -50,15 +50,9 @@ import TextRenderer from "./TextRenderer";
 import Vec2 from "../geom/Vec2";
 import Vec3 from "../geom/Vec3";
 import WWMath from "../util/WWMath";
-import WorldWind from "../WorldWind";
 import SurfaceTileRenderer from "./SurfaceTileRenderer";
-import Terrain from "../globe/Terrain";
-import LookAtNavigator from "../navigate/LookAtNavigator";
-import SurfaceRenderable from "./SurfaceRenderable";
-import OrderedRenderable from "./OrderedRenderable";
-import PickedObject from "../pick/PickedObject";
-import TextAttributes from "../shapes/TextAttributes";
-import Texture from "./Texture";
+
+
 
 /**
  * Constructs a DrawContext. Applications do not call this constructor. A draw context is created by a

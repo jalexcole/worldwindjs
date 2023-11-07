@@ -26,8 +26,10 @@
  * PDF found in code  directory.
  */
 import KmlFileCache from "../../../../src/formats/kml/KmlFileCache";
-import { KmlIconStyle,XmlDocument } from "../../../../src/WorldWind.js";
+// import { KmlIconStyle,XmlDocument } from "../../../../src/WorldWind.js";
 import { beforeAll, beforeEach, describe,expect, it } from "vitest";
+import XmlDocument from "../../../../src/util/XmlDocument";
+import KmlIconStyle from "../../../../src/formats/kml/styles/KmlIconStyle";
 
     describe ("KmlIconStyle", function (){
 

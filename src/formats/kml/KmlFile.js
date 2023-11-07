@@ -43,6 +43,7 @@ import WWUtil from "../../util/WWUtil";
 import KmlStyleResolver from "./util/KmlStyleResolver";
 import KmlControls from "./controls/KmlControls";
 
+
 // TODO: Make sure that the KmlFile is also rendered as a part of this hierarchy and not added to the layer.
 /**
  * Constructs an object for Kml file. Applications usually don't call this constructor.

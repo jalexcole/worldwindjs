@@ -77,7 +77,7 @@ import { Promise } from "es6-promise";
          */
         kmlName: {
             get: function () {
-                return this._factory.specific(this, {name: 'name', transformer: NodeTransformers.string});
+                return this._factory.specific(this, {name: 'name', transformer: KmlNodeTransformers.string});
             }
         },
 
@@ -89,7 +89,7 @@ import { Promise } from "es6-promise";
          */
         kmlVisibility: {
             get: function () {
-                return this._factory.specific(this, {name: 'visibility', transformer: NodeTransformers.boolean});
+                return this._factory.specific(this, {name: 'visibility', transformer: KmlNodeTransformers.boolean});
             }
         },
 
@@ -102,7 +102,7 @@ import { Promise } from "es6-promise";
          */
         kmlOpen: {
             get: function () {
-                return this._factory.specific(this, {name: 'open', transformer: NodeTransformers.boolean});
+                return this._factory.specific(this, {name: 'open', transformer: KmlNodeTransformers.boolean});
             }
         },
 
@@ -114,7 +114,7 @@ import { Promise } from "es6-promise";
          */
         kmlAddress: {
             get: function () {
-                return this._factory.specific(this, {name: 'address', transformer: NodeTransformers.string});
+                return this._factory.specific(this, {name: 'address', transformer: KmlNodeTransformers.string});
             }
         },
 
@@ -126,7 +126,7 @@ import { Promise } from "es6-promise";
          */
         kmlPhoneNumber: {
             get: function () {
-                return this._factory.specific(this, {name: 'phoneNumber', transformer: NodeTransformers.string});
+                return this._factory.specific(this, {name: 'phoneNumber', transformer: KmlNodeTransformers.string});
             }
         },
 
@@ -138,7 +138,7 @@ import { Promise } from "es6-promise";
          */
         kmlDescription: {
             get: function () {
-                return this._factory.specific(this, {name: 'description', transformer: NodeTransformers.string});
+                return this._factory.specific(this, {name: 'description', transformer: KmlNodeTransformers.string});
             }
         },
 
@@ -152,7 +152,7 @@ import { Promise } from "es6-promise";
          */
         kmlStyleUrl: {
             get: function () {
-                return this._factory.specific(this, {name: 'styleUrl', transformer: NodeTransformers.string});
+                return this._factory.specific(this, {name: 'styleUrl', transformer: KmlNodeTransformers.string});
             }
         },
 
@@ -169,7 +169,7 @@ import { Promise } from "es6-promise";
          */
         kmlSnippet: {
             get: function () {
-                return this._factory.specific(this, {name: 'Snippet', transformer: NodeTransformers.string});
+                return this._factory.specific(this, {name: 'Snippet', transformer: KmlNodeTransformers.string});
             }
         },
 

@@ -25,16 +25,22 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
-import {
-  BoundingBox,
-  EarthElevationModel,
-  ElevationModel,
-  Globe,
-  Plane,
-  Sector,
-  Vec3,
-} from "../../src/WorldWind.js";
+// import {
+//   BoundingBox,
+//   EarthElevationModel,
+//   ElevationModel,
+//   Globe,
+//   Plane,
+//   Sector,
+//   Vec3,
+// } from "../../src/WorldWind.js";
 import { beforeEach, describe,expect, it } from "vitest";
+import BoundingBox from "../../src/geom/BoundingBox";
+import Vec3 from "../../src/geom/Vec3";
+import Sector from "../../src/geom/Sector";
+import Globe from "../../src/globe/Globe";
+import EarthElevationModel from "../../src/globe/EarthElevationModel";
+import Plane from "../../src/geom/Plane";
 
 // beforeEach(function () {
 //   jasmine.addMatchers(CustomMatchers);

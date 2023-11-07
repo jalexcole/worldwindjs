@@ -26,9 +26,10 @@
  * PDF found in code  directory.
  */
 
-import { Angle } from "../../src/WorldWind.js"
+// import { Angle } from "../../src/WorldWind.js"
 
 import { describe, expect, it } from "vitest";
+import Angle from "../../src/geom/Angle";
 
 describe("AngleTest", function () {
 

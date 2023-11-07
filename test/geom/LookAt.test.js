@@ -13,13 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import {
-  ElevationModel,
-  Globe,
-  LookAt,
-  Matrix,
-  Position,
-} from "../../src/WorldWind.js";
+// import {
+//   ElevationModel,
+//   Globe,
+//   LookAt,
+//   Matrix,
+//   Position,
+// } from "../../src/WorldWind.js";
+import LookAt from "../../src/geom/LookAt.js";
+import Matrix from "../../src/geom/Matrix.js";
+import Position from "../../src/geom/Position.js";
+import ElevationModel from "../../src/globe/ElevationModel.js";
+import Globe from "../../src/globe/Globe.js";
 import TestUtils from "../util/TestUtils.test.js";
 import { beforeEach, describe,expect, it } from "vitest";
 
