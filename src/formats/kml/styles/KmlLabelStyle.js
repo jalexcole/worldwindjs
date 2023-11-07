@@ -56,7 +56,7 @@ import KmlNodeTransformers from "../util/KmlNodeTransformers";
          */
         kmlScale: {
             get: function() {
-                return this._factory.specific(this, {name: 'scale', transformer: NodeTransformers.number});
+                return this._factory.specific(this, {name: 'scale', transformer: KmlNodeTransformers.number});
             }
         }
     });

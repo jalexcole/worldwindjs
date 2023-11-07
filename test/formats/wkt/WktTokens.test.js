@@ -25,23 +25,33 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
-import {
-  Location,
-  Placemark,
-  Position,
-  SurfacePolyline,
-  WktGeometryCollection,
-  WktLineString,
-  WktMultiLineString,
-  WktMultiPoint,
-  WktPoint,
-  WktTriangle,
-} from "../../../src/WorldWind.js";
+// import {
+//   Location,
+//   Placemark,
+//   Position,
+//   SurfacePolyline,
+//   WktGeometryCollection,
+//   WktLineString,
+//   WktMultiLineString,
+//   WktMultiPoint,
+//   WktPoint,
+//   WktTriangle,
+// } from "../../../src/WorldWind.js";
 
 import { default as  WktTokens} from "../../../src/formats/wkt/WktTokens.js"
 import { beforeAll, beforeEach, describe, expect, it } from "vitest";
 import WktPolygon from "../../../src/formats/wkt/geom/WktPolygon.js";
 import WktMultiPolygon from "../../../src/formats/wkt/geom/WktMultiPolygon.js";
+import WktPoint from "../../../src/formats/wkt/geom/WktPoint.js";
+import Position from "../../../src/geom/Position.js";
+import Location from "../../../src/geom/Location.js";
+import WktLineString from "../../../src/formats/wkt/geom/WktLineString.js";
+import WktTriangle from "../../../src/formats/wkt/geom/WktTriangle.js";
+import WktMultiPoint from "../../../src/formats/wkt/geom/WktMultiPoint.js";
+import WktMultiLineString from "../../../src/formats/wkt/geom/WktMultiLineString.js";
+import WktGeometryCollection from "../../../src/formats/wkt/geom/WktGeometryCollection.js";
+import Placemark from "../../../src/shapes/Placemark.js";
+import SurfacePolyline from "../../../src/shapes/SurfacePolyline.js";
 
 describe("WktTokens", function () {
   describe("Point", function () {

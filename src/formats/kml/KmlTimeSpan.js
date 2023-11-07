@@ -61,7 +61,7 @@ Object.defineProperties(KmlTimeSpan.prototype, {
     get: function () {
       return this._factory.specific(this, {
         name: "begin",
-        transformer: NodeTransformers.date,
+        transformer: KmlNodeTransformers.date,
       });
     },
   },
@@ -76,7 +76,7 @@ Object.defineProperties(KmlTimeSpan.prototype, {
     get: function () {
       return this._factory.specific(this, {
         name: "end",
-        transformer: NodeTransformers.date,
+        transformer: KmlNodeTransformers.date,
       });
     },
   },

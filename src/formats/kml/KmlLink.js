@@ -67,7 +67,7 @@ import KmlNodeTransformers from "./util/KmlNodeTransformers";
          */
         kmlRefreshMode: {
             get: function () {
-                return this._factory.specific(this, {name: 'refreshMode', transformer: NodeTransformers.string});
+                return this._factory.specific(this, {name: 'refreshMode', transformer: KmlNodeTransformers.string});
             }
         },
 
@@ -79,7 +79,7 @@ import KmlNodeTransformers from "./util/KmlNodeTransformers";
          */
         kmlRefreshInterval: {
             get: function () {
-                return this._factory.specific(this, {name: 'refreshInterval', transformer: NodeTransformers.number});
+                return this._factory.specific(this, {name: 'refreshInterval', transformer: KmlNodeTransformers.number});
             }
         },
 
@@ -97,7 +97,7 @@ import KmlNodeTransformers from "./util/KmlNodeTransformers";
          */
         kmlViewRefreshMode: {
             get: function () {
-                return this._factory.specific(this, {name: 'viewRefreshMode', transformer: NodeTransformers.string});
+                return this._factory.specific(this, {name: 'viewRefreshMode', transformer: KmlNodeTransformers.string});
             }
         },
 
@@ -110,7 +110,7 @@ import KmlNodeTransformers from "./util/KmlNodeTransformers";
          */
         kmlViewRefreshTime: {
             get: function () {
-                return this._factory.specific(this, {name: 'viewRefreshTime', transformer: NodeTransformers.number});
+                return this._factory.specific(this, {name: 'viewRefreshTime', transformer: KmlNodeTransformers.number});
             }
         },
 
@@ -124,7 +124,7 @@ import KmlNodeTransformers from "./util/KmlNodeTransformers";
          */
         kmlViewBoundScale: {
             get: function () {
-                return this._factory.specific(this, {name: 'viewBoundScale', transformer: NodeTransformers.number});
+                return this._factory.specific(this, {name: 'viewBoundScale', transformer: KmlNodeTransformers.number});
             }
         },
 
@@ -155,7 +155,7 @@ import KmlNodeTransformers from "./util/KmlNodeTransformers";
          */
         kmlViewFormat: {
             get: function () {
-                return this._factory.specific(this, {name: 'viewFormat', transformer: NodeTransformers.string});
+                return this._factory.specific(this, {name: 'viewFormat', transformer: KmlNodeTransformers.string});
             }
         },
 
@@ -174,7 +174,7 @@ import KmlNodeTransformers from "./util/KmlNodeTransformers";
          */
         kmlHttpQuery: {
             get: function () {
-                return this._factory.specific(this, {name: 'httpQuery', transformer: NodeTransformers.string});
+                return this._factory.specific(this, {name: 'httpQuery', transformer: KmlNodeTransformers.string});
             }
         }
     });
@@ -185,8 +185,8 @@ import KmlNodeTransformers from "./util/KmlNodeTransformers";
      * @returns {String} URL to use
      */
     KmlLink.prototype.kmlHref = function(fileCache){
-        return new HrefResolver(
-            this._factory.specific(this, {name: 'href', transformer: NodeTransformers.string}), fileCache
+        return new KmlHrefResolver(
+            this._factory.specific(this, {name: 'href', transformer: KmlNodeTransformers.string}), fileCache
         ).url();
     };
 

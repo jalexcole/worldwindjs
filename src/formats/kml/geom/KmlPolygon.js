@@ -66,7 +66,7 @@ Object.defineProperties(KmlPolygon.prototype, {
     get: function () {
       return this._factory.specific(this, {
         name: "extrude",
-        transformer: NodeTransformers.boolean,
+        transformer: KmlNodeTransformers.boolean,
       });
     },
   },
@@ -81,7 +81,7 @@ Object.defineProperties(KmlPolygon.prototype, {
     get: function () {
       return this._factory.specific(this, {
         name: "tessellate",
-        transformer: NodeTransformers.boolean,
+        transformer: KmlNodeTransformers.boolean,
       });
     },
   },
@@ -97,7 +97,7 @@ Object.defineProperties(KmlPolygon.prototype, {
     get: function () {
       return this._factory.specific(this, {
         name: "altitudeMode",
-        transformer: NodeTransformers.string,
+        transformer: KmlNodeTransformers.string,
       });
     },
   },
@@ -112,7 +112,7 @@ Object.defineProperties(KmlPolygon.prototype, {
     get: function () {
       return this._factory.specific(this, {
         name: "outerBoundaryIs",
-        transformer: NodeTransformers.linearRing,
+        transformer: KmlNodeTransformers.linearRing,
       });
     },
   },
@@ -127,7 +127,7 @@ Object.defineProperties(KmlPolygon.prototype, {
     get: function () {
       return this._factory.specific(this, {
         name: "innerBoundaryIs",
-        transformer: NodeTransformers.linearRing,
+        transformer: KmlNodeTransformers.linearRing,
       });
     },
   },

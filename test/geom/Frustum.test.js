@@ -25,8 +25,12 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
-import { Frustum, Matrix, Plane, Vec3 } from "../../src/WorldWind";
+// import { Frustum, Matrix, Plane, Vec3 } from "../../src/WorldWind";
 import { beforeEach, describe,expect, it } from "vitest";
+import Plane from "../../src/geom/Plane";
+import Frustum from "../../src/geom/Frustum";
+import Matrix from "../../src/geom/Matrix";
+import Vec3 from "../../src/geom/Vec3";
 
 describe("Frustum Tests", function () {
   describe("Frustum constructor", function () {

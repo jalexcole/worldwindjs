@@ -26,8 +26,10 @@
  * PDF found in code  directory.
  */
 
-import { KmlViewVolume, XmlDocument } from "../../../../src/WorldWind.js";
+// import { KmlViewVolume, XmlDocument } from "../../../../src/WorldWind.js";
 import { describe, beforeEach, afterEach } from "vitest";
+import KmlViewVolume from "../../../../src/formats/kml/util/KmlViewVolume";
+import XmlDocument from "../../../../src/util/XmlDocument";
 describe("KmlViewVolumeTest", function () {
   var index = 0;
 
@@ -57,7 +59,7 @@ describe("KmlViewVolumeTest", function () {
     "   <near>0</near>" +
     "</ViewVolume>" +
     "</kml>";
-  var kmlRepresentation = new XMLDocument(validKml).dom();
+  var kmlRepresentation = new XmlDocument(validKml).dom();
   var viewVolume = new KmlViewVolume({
     objectNode: kmlRepresentation.getElementsByTagName("ViewVolume")[0],
   });

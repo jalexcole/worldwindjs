@@ -31,6 +31,7 @@ import Logger from "../util/Logger";
 import Plane from "./Plane";
 import Vec3 from "./Vec3";
 import WWMath from "../util/WWMath";
+import Position from "./Position";
 
 /**
  * Constructs a location from a specified latitude and longitude in degrees.
@@ -1191,7 +1192,7 @@ Location.intersectionWithMeridian = function (p1, p2, meridian, globe) {
   }
 
   // TODO: unable to simply create a new Position(0, 0, 0)
-  var pos = new WorldWind.Position(0, 0, 0);
+  var pos = new Position(0, 0, 0);
   globe.computePositionFromPoint(
     intersectionPoint[0],
     intersectionPoint[1],

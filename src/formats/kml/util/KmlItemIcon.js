@@ -60,7 +60,7 @@ import KmlNodeTransformers from "./KmlNodeTransformers";
          */
         kmlState: {
             get: function () {
-                return this._factory.specific(this, {name: 'state', transformer: NodeTransformers.string});
+                return this._factory.specific(this, {name: 'state', transformer: KmlNodeTransformers.string});
             }
         }
     });
@@ -71,8 +71,8 @@ import KmlNodeTransformers from "./KmlNodeTransformers";
      * @returns {String} URL to use.
      */
     KmlItemIcon.prototype.kmlHref = function(fileCache) {
-        return new HrefResolver(
-            this._factory.specific(this, {name: 'href', transformer: NodeTransformers.string}), fileCache
+        return new KmlHrefResolver(
+            this._factory.specific(this, {name: 'href', transformer: KmlNodeTransformers.string}), fileCache
         ).url();
     };
 

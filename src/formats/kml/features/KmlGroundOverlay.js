@@ -65,7 +65,7 @@ import SurfaceImage from "../../../shapes/SurfaceImage";
          */
         kmlAltitude: {
             get: function() {
-                return this._factory.specific(this, {name: 'altitude', transformer: NodeTransformers.string});
+                return this._factory.specific(this, {name: 'altitude', transformer: KmlNodeTransformers.string});
             }
         },
 
@@ -77,7 +77,7 @@ import SurfaceImage from "../../../shapes/SurfaceImage";
          */
         kmlAltitudeMode: {
             get: function() {
-                return this._factory.specific(this, {name: 'altitudeMode', transformer: NodeTransformers.string});
+                return this._factory.specific(this, {name: 'altitudeMode', transformer: KmlNodeTransformers.string});
             }
         },
 

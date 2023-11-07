@@ -94,7 +94,7 @@ KmlStyleResolver.prototype.handlePromiseOfFile = function (styleUrl) {
   var file = this._fileCache.retrieve(styleUrl);
   if (!file) {
     // This is an issue of circular dependency again.
-    return new WorldWind.KmlFile({ url: styleUrl }).then(
+    return new KmlFile({ url: styleUrl }).then(
       function (kmlFile) {
         this._fileCache.add(styleUrl, kmlFile);
 

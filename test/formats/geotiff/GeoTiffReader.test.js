@@ -26,8 +26,9 @@
  * PDF found in code  directory.
  */
 
-import { GeoTiffReader } from "../../../src/WorldWind";
+// import { GeoTiffReader } from "../../../src/WorldWind";
 import { beforeAll, beforeEach, describe,expect, it } from "vitest";
+import GeoTiffReader from "../../../src/formats/geotiff/GeoTiffReader";
 describe("GeoTiffReader RGB Parsing", function () {
   var geoTiff;
 

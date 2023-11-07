@@ -26,7 +26,7 @@
  * PDF found in code  directory.
  */
 console.log("Globe");
-import WorldWind from "../WorldWind.js";
+// import WorldWind from "../WorldWind.js";
 import ArgumentError from "../error/ArgumentError";
 import Angle from "../geom/Angle";
 import BoundingBox from "../geom/BoundingBox";

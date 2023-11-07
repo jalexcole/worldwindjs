@@ -57,7 +57,7 @@ import KmlNodeTransformers from "./util/KmlNodeTransformers";
          */
         kmlNorth: {
             get: function () {
-                return this._factory.specific(this, {name: 'north', transformer: NodeTransformers.number});
+                return this._factory.specific(this, {name: 'north', transformer: KmlNodeTransformers.number});
             }
         },
 
@@ -69,7 +69,7 @@ import KmlNodeTransformers from "./util/KmlNodeTransformers";
          */
         kmlSouth: {
             get: function () {
-                return this._factory.specific(this, {name: 'south', transformer: NodeTransformers.number});
+                return this._factory.specific(this, {name: 'south', transformer: KmlNodeTransformers.number});
             }
         },
 
@@ -81,7 +81,7 @@ import KmlNodeTransformers from "./util/KmlNodeTransformers";
          */
         kmlEast: {
             get: function () {
-                return this._factory.specific(this, {name: 'east', transformer: NodeTransformers.number});
+                return this._factory.specific(this, {name: 'east', transformer: KmlNodeTransformers.number});
             }
         },
 
@@ -93,7 +93,7 @@ import KmlNodeTransformers from "./util/KmlNodeTransformers";
          */
         kmlWest: {
             get: function () {
-                return this._factory.specific(this, {name: 'west', transformer: NodeTransformers.number});
+                return this._factory.specific(this, {name: 'west', transformer: KmlNodeTransformers.number});
             }
         },
 
@@ -106,7 +106,7 @@ import KmlNodeTransformers from "./util/KmlNodeTransformers";
          */
         kmlRotation: {
             get: function () {
-                return this._factory.specific(this, {name: 'rotation', transformer: NodeTransformers.string});
+                return this._factory.specific(this, {name: 'rotation', transformer: KmlNodeTransformers.string});
             }
         }
     });

@@ -76,7 +76,7 @@ KmlElementsFactory.prototype.any = function (element, options) {
   var self = this;
   [].forEach.call(parentNode.childNodes, function (node) {
     if (options.name.indexOf(node.nodeName) != -1) {
-      result = NodeTransformers.kmlObject(node, element, self.options.controls);
+      result = KmlNodeTransformers.kmlObject(node, element, self.options.controls);
     }
   });
   return result;
@@ -93,7 +93,7 @@ KmlElementsFactory.prototype.all = function (element) {
   var results = [];
   var self = this;
   [].forEach.call(parentNode.childNodes, function (node) {
-    var createdElement = NodeTransformers.kmlObject(
+    var createdElement = KmlNodeTransformers.kmlObject(
       node,
       element,
       self.options.controls

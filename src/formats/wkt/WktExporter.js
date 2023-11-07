@@ -26,6 +26,15 @@
  * PDF found in code  directory.
  */
 import ArgumentError from "../../error/ArgumentError";
+import Path from "../../shapes/Path";
+import Placemark from "../../shapes/Placemark";
+import Polygon from "../../shapes/Polygon";
+import SurfaceCircle from "../../shapes/SurfaceCircle";
+import SurfaceEllipse from "../../shapes/SurfaceEllipse";
+import SurfacePolygon from "../../shapes/SurfacePolygon";
+import SurfacePolyline from "../../shapes/SurfacePolyline";
+import SurfaceRectangle from "../../shapes/SurfaceRectangle";
+import SurfaceSector from "../../shapes/SurfaceSector";
 import Logger from "../../util/Logger";
 import WktType from "./WktType";
 
@@ -61,31 +70,31 @@ import WktType from "./WktType";
                             "missingRenderable"));
                 }
 
-                if (renderable instanceof WorldWind.Placemark) {
+                if (renderable instanceof Placemark) {
                     return this.exportPlacemark(renderable);
                 }
-                else if (renderable instanceof WorldWind.Path) {
+                else if (renderable instanceof Path) {
                     return this.exportPath(renderable);
                 }
-                else if (renderable instanceof WorldWind.Polygon) {
+                else if (renderable instanceof Polygon) {
                     return this.exportPolygon(renderable);
                 }
-                else if (renderable instanceof WorldWind.SurfacePolyline) {
+                else if (renderable instanceof SurfacePolyline) {
                     return this.exportSurfacePolyline(renderable);
                 }
-                else if (renderable instanceof WorldWind.SurfacePolygon) {
+                else if (renderable instanceof SurfacePolygon) {
                     return this.exportSurfacePolygon(renderable);
                 }
-                else if (renderable instanceof WorldWind.SurfaceEllipse) {
+                else if (renderable instanceof SurfaceEllipse) {
                     return this.exportSurfaceEllipse(renderable);
                 }
-                else if (renderable instanceof WorldWind.SurfaceCircle) {
+                else if (renderable instanceof SurfaceCircle) {
                     return this.exportSurfaceCircle(renderable);
                 }
-                else if (renderable instanceof WorldWind.SurfaceRectangle) {
+                else if (renderable instanceof SurfaceRectangle) {
                     return this.exportSurfaceRectangle(renderable);
                 }
-                else if (renderable instanceof WorldWind.SurfaceSector) {
+                else if (renderable instanceof SurfaceSector) {
                     return this.exportSurfaceSector(renderable);
                 }
                 else {
@@ -155,7 +164,7 @@ import WktType from "./WktType";
              * @returns {String} WKT format.
              */
             exportPlacemark: function (renderable) {
-                if (!(renderable instanceof WorldWind.Placemark)) {
+                if (!(renderable instanceof Placemark)) {
                     throw new ArgumentError(
                         Logger.logMessage(Logger.LEVEL_SEVERE, "WktExporter", "exportPlacemark",
                             "invalidTypeOfRenderable"));
@@ -174,7 +183,7 @@ import WktType from "./WktType";
              * @returns {String} WKT format.
              */
             exportPath: function (renderable) {
-                if (!(renderable instanceof WorldWind.Path)) {
+                if (!(renderable instanceof Path)) {
                     throw new ArgumentError(
                         Logger.logMessage(Logger.LEVEL_SEVERE, "WktExporter", "exportPath",
                             "invalidTypeOfRenderable"));
@@ -197,7 +206,7 @@ import WktType from "./WktType";
              * @returns {String} WKT format.
              */
             exportPolygon: function (renderable) {
-                if (!(renderable instanceof WorldWind.Polygon)) {
+                if (!(renderable instanceof Polygon)) {
                     throw new ArgumentError(
                         Logger.logMessage(Logger.LEVEL_SEVERE, "WktExporter", "exportPolygon",
                             "invalidTypeOfRenderable"));
@@ -242,7 +251,7 @@ import WktType from "./WktType";
              * @returns {String} WKT format.
              */
             exportSurfacePolyline: function (renderable) {
-                if (!(renderable instanceof WorldWind.SurfacePolyline)) {
+                if (!(renderable instanceof SurfacePolyline)) {
                     throw new ArgumentError(
                         Logger.logMessage(Logger.LEVEL_SEVERE, "WktExporter", "exportSurfacePolyline",
                             "invalidTypeOfRenderable"));
@@ -266,7 +275,7 @@ import WktType from "./WktType";
              * @returns {String} WKT format.
              */
             exportSurfacePolygon: function (renderable) {
-                if (!(renderable instanceof WorldWind.SurfacePolygon)) {
+                if (!(renderable instanceof SurfacePolygon)) {
                     throw new ArgumentError(
                         Logger.logMessage(Logger.LEVEL_SEVERE, "WktExporter", "exportSurfacePolygon",
                             "invalidTypeOfRenderable"));
@@ -310,7 +319,7 @@ import WktType from "./WktType";
              * @returns {String} WKT format.
              */
             exportSurfaceEllipse: function (renderable) {
-                if (!(renderable instanceof WorldWind.SurfaceEllipse)) {
+                if (!(renderable instanceof SurfaceEllipse)) {
                     throw new ArgumentError(
                         Logger.logMessage(Logger.LEVEL_SEVERE, "WktExporter", "exportSurfaceEllipse",
                             "invalidTypeOfRenderable"));
@@ -338,7 +347,7 @@ import WktType from "./WktType";
              * @returns {String} WKT format.
              */
             exportSurfaceCircle: function (renderable) {
-                if (!(renderable instanceof WorldWind.SurfaceCircle)) {
+                if (!(renderable instanceof SurfaceCircle)) {
                     throw new ArgumentError(
                         Logger.logMessage(Logger.LEVEL_SEVERE, "WktExporter", "exportSurfaceCircle",
                                 "invalidTypeOfRenderable"));
@@ -366,7 +375,7 @@ import WktType from "./WktType";
              * @returns {String} WKT format.
              */
             exportSurfaceRectangle: function (renderable) {
-                if (!(renderable instanceof WorldWind.SurfaceRectangle)) {
+                if (!(renderable instanceof SurfaceRectangle)) {
                     throw new ArgumentError(
                         Logger.logMessage(Logger.LEVEL_SEVERE, "WktExporter", "exportSurfaceRectangle",
                             "invalidTypeOfRenderable"));
@@ -394,7 +403,7 @@ import WktType from "./WktType";
              * @returns {String} WKT format.
              */
             exportSurfaceSector: function (renderable) {
-                if (!(renderable instanceof WorldWind.SurfaceSector)) {
+                if (!(renderable instanceof SurfaceSector)) {
                     throw new ArgumentError(
                         Logger.logMessage(Logger.LEVEL_SEVERE, "WktExporter", "exportSurfaceSector",
                             "invalidTypeOfRenderable"));

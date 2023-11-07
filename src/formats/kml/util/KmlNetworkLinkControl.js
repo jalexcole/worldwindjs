@@ -58,7 +58,7 @@ Object.defineProperties(KmlNetworkLinkControl.prototype, {
     get: function () {
       return this._factory.specific(this, {
         name: "minRefreshPeriod",
-        transformer: NodeTransformers.number,
+        transformer: KmlNodeTransformers.number,
       });
     },
   },
@@ -74,7 +74,7 @@ Object.defineProperties(KmlNetworkLinkControl.prototype, {
     get: function () {
       return this._factory.specific(this, {
         name: "maxSessionLength",
-        transformer: NodeTransformers.number,
+        transformer: KmlNodeTransformers.number,
       });
     },
   },
@@ -91,7 +91,7 @@ Object.defineProperties(KmlNetworkLinkControl.prototype, {
     get: function () {
       return this._factory.specific(this, {
         name: "cookie",
-        transformer: NodeTransformers.string,
+        transformer: KmlNodeTransformers.string,
       });
     },
   },
@@ -107,7 +107,7 @@ Object.defineProperties(KmlNetworkLinkControl.prototype, {
     get: function () {
       return this._factory.specific(this, {
         name: "message",
-        transformer: NodeTransformers.string,
+        transformer: KmlNodeTransformers.string,
       });
     },
   },
@@ -123,7 +123,7 @@ Object.defineProperties(KmlNetworkLinkControl.prototype, {
     get: function () {
       return this._factory.specific(this, {
         name: "linkName",
-        transformer: NodeTransformers.string,
+        transformer: KmlNodeTransformers.string,
       });
     },
   },
@@ -140,7 +140,7 @@ Object.defineProperties(KmlNetworkLinkControl.prototype, {
     get: function () {
       return this._factory.specific(this, {
         name: "linkDescription",
-        transformer: NodeTransformers.string,
+        transformer: KmlNodeTransformers.string,
       });
     },
   },
@@ -157,7 +157,7 @@ Object.defineProperties(KmlNetworkLinkControl.prototype, {
     get: function () {
       return this._factory.specific(this, {
         name: "linkSnippet",
-        transformer: NodeTransformers.string,
+        transformer: KmlNodeTransformers.string,
       });
     },
   },
@@ -173,7 +173,7 @@ Object.defineProperties(KmlNetworkLinkControl.prototype, {
     get: function () {
       return this._factory.specific(this, {
         name: "expires",
-        transformer: NodeTransformers.date,
+        transformer: KmlNodeTransformers.date,
       });
     },
   },

@@ -61,7 +61,7 @@ import KmlViewVolume from "../util/KmlViewVolume";
          */
         kmlRotation: {
             get: function () {
-                return this._factory.specific(this, {name: 'rotation', transformer: NodeTransformers.string});
+                return this._factory.specific(this, {name: 'rotation', transformer: KmlNodeTransformers.string});
             }
         },
 
@@ -74,7 +74,7 @@ import KmlViewVolume from "../util/KmlViewVolume";
          */
         kmlShape: {
             get: function () {
-                return this._factory.specific(this, {name: 'shape', transformer: NodeTransformers.string});
+                return this._factory.specific(this, {name: 'shape', transformer: KmlNodeTransformers.string});
             }
         },
 
@@ -102,12 +102,12 @@ import KmlViewVolume from "../util/KmlViewVolume";
          * the scene.
          * @memberof KmlPhotoOverlay.prototype
          * @readonly
-         * @type {ViewVolume}
+         * @type {KmlViewVolume}
          */
         kmlViewVolume: {
             get: function () {
                 return this._factory.any(this, {
-                    name: ViewVolume.prototype.getTagNames()
+                    name: KmlViewVolume.prototype.getTagNames()
                 });
             }
         },
@@ -125,12 +125,12 @@ import KmlViewVolume from "../util/KmlViewVolume";
          * include specifications for which tiles to load.
          * @memberof KmlPhotoOverlay.prototype
          * @readonly
-         * @type {ImagePyramid}
+         * @type {KmlImagePyramid}
          */
         kmlImagePyramid: {
             get: function () {
                 return this._factory.any(this, {
-                    name: ImagePyramid.prototype.getTagNames()
+                    name: KmlImagePyramid.prototype.getTagNames()
                 });
             }
         }

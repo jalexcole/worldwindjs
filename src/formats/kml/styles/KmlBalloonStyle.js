@@ -56,7 +56,7 @@ import KmlNodeTransformers from "../util/KmlNodeTransformers";
          */
         kmlBgColor: {
             get: function(){
-                return this._factory.specific(this, {name: 'bgColor', transformer: NodeTransformers.string});
+                return this._factory.specific(this, {name: 'bgColor', transformer: KmlNodeTransformers.string});
             }
         },
 
@@ -68,7 +68,7 @@ import KmlNodeTransformers from "../util/KmlNodeTransformers";
          */
         kmlTextColor: {
             get: function() {
-                return this._factory.specific(this, {name: 'textColor', transformer: NodeTransformers.string});
+                return this._factory.specific(this, {name: 'textColor', transformer: KmlNodeTransformers.string});
             }
         },
 
@@ -80,7 +80,7 @@ import KmlNodeTransformers from "../util/KmlNodeTransformers";
          */
         kmlText: {
             get: function(){
-                return this._factory.specific(this, {name: 'text', transformer: NodeTransformers.string});
+                return this._factory.specific(this, {name: 'text', transformer: KmlNodeTransformers.string});
             }
         },
 
@@ -92,7 +92,7 @@ import KmlNodeTransformers from "../util/KmlNodeTransformers";
          */
         kmlDisplayMode: {
             get: function() {
-                return this._factory.specific(this, {name: 'displayMode', transformer: NodeTransformers.string});
+                return this._factory.specific(this, {name: 'displayMode', transformer: KmlNodeTransformers.string});
             }
         }
     });

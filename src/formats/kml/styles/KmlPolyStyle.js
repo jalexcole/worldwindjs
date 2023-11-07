@@ -59,7 +59,7 @@ Object.defineProperties(KmlPolyStyle.prototype, {
     get: function () {
       return this._factory.specific(this, {
         name: "fill",
-        transformer: NodeTransformers.boolean,
+        transformer: KmlNodeTransformers.boolean,
       });
     },
   },
@@ -74,7 +74,7 @@ Object.defineProperties(KmlPolyStyle.prototype, {
     get: function () {
       return this._factory.specific(this, {
         name: "outline",
-        transformer: NodeTransformers.boolean,
+        transformer: KmlNodeTransformers.boolean,
       });
     },
   },

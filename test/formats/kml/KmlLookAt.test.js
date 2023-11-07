@@ -25,8 +25,10 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
-import { KmlLookAt, XmlDocument } from "../../../src/WorldWind";
+// import { KmlLookAt, XmlDocument } from "../../../src/WorldWind";
 import { beforeAll, beforeEach, describe,expect, it } from "vitest";
+import XmlDocument from "../../../src/util/XmlDocument";
+import KmlLookAt from "../../../src/formats/kml/KmlLookAt";
     describe ("KmlLookAtTest", function () {
             var validKml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
                 "<kml xmlns=\"http://www.opengis.net/kml/2.2\">" +

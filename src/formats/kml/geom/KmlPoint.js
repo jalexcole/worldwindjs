@@ -28,6 +28,7 @@
 import Color from "../../../util/Color";
 import KmlElements from "../KmlElements";
 import KmlGeometry from "./KmlGeometry.js";
+
 import Location from "../../../geom/Location";
 import KmlNodeTransformers from "../util/KmlNodeTransformers";
 import Polygon from "../../../shapes/Polygon";
@@ -66,7 +67,7 @@ Object.defineProperties(KmlPoint.prototype, {
       var coordinates = this._factory
         .specific(this, {
           name: "coordinates",
-          transformer: NodeTransformers.string,
+          transformer: KmlNodeTransformers.string,
         })
         .split(",");
       return new Position(coordinates[1], coordinates[0], coordinates[2] || 0);
@@ -84,7 +85,7 @@ Object.defineProperties(KmlPoint.prototype, {
     get: function () {
       return this._factory.specific(this, {
         name: "extrude",
-        transformer: NodeTransformers.boolean,
+        transformer: KmlNodeTransformers.boolean,
       });
     },
   },
@@ -100,7 +101,7 @@ Object.defineProperties(KmlPoint.prototype, {
     get: function () {
       return this._factory.specific(this, {
         name: "altitudeMode",
-        transformer: NodeTransformers.string,
+        transformer: KmlNodeTransformers.string,
       });
     },
   },

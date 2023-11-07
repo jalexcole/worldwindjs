@@ -28,6 +28,8 @@
 import Position from "../../../geom/Position";
 import WWUtil from "../../../util/WWUtil";
 import KmlElements from "../KmlElements";
+import KmlObject from "../KmlObject";
+import KmlAttribute from "./KmlAttribute";
 
 /**
  * Provides ways for transforming xml nodes to KML objects.
@@ -163,7 +165,7 @@ KmlNodeTransformers.positions = function (node) {
  */
 KmlNodeTransformers.attribute = function (name) {
   return function (node) {
-    return new Attribute(node, name).value();
+    return new KmlAttribute(node, name).value();
   };
 };
 
