@@ -41,6 +41,8 @@ import KmlRemoteFile from "./util/KmlRemoteFile";
 import XmlDocument from "../../util/XmlDocument";
 import WWUtil from "../../util/WWUtil";
 import KmlStyleResolver from "./util/KmlStyleResolver";
+import KmlControls from "./controls/KmlControls";
+
 
 // TODO: Make sure that the KmlFile is also rendered as a part of this hierarchy and not added to the layer.
 /**

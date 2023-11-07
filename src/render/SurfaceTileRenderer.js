@@ -30,6 +30,8 @@ import Logger from "../util/Logger";
 import Matrix from "../geom/Matrix";
 import SurfaceShapeTile from "../shapes/SurfaceShapeTile";
 import SurfaceTileRendererProgram from "../shaders/SurfaceTileRendererProgram";
+import DrawContext from "./DrawContext";
+import SurfaceTile from "./SurfaceTile";
 
 /**
  * Constructs a new surface tile renderer.

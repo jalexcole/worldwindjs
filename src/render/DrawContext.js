@@ -52,6 +52,8 @@ import Vec3 from "../geom/Vec3";
 import WWMath from "../util/WWMath";
 import SurfaceTileRenderer from "./SurfaceTileRenderer";
 
+
+
 /**
  * Constructs a DrawContext. Applications do not call this constructor. A draw context is created by a
  * {@link WorldWindow} during its construction.

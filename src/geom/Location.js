@@ -27,11 +27,14 @@
  */
 import Angle from "./Angle";
 import ArgumentError from "../error/ArgumentError";
+import Globe from "../globe/Globe.js";
 import Logger from "../util/Logger";
 import Plane from "./Plane";
+import Position from "./Position.js"
 import Vec3 from "./Vec3";
 import WWMath from "../util/WWMath";
 import Position from "./Position";
+
 
 /**
  * Constructs a location from a specified latitude and longitude in degrees.

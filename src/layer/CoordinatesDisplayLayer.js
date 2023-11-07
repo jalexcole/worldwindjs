@@ -35,6 +35,8 @@ import ScreenImage from "../shapes/ScreenImage";
 import ScreenText from "../shapes/ScreenText";
 import TextAttributes from "../shapes/TextAttributes";
 import Vec2 from "../geom/Vec2";
+import WorldWind from "../WorldWind";
+import WorldWindow from "../WorldWindow";
 
 /**
  * Constructs a layer that displays the current map coordinates.

@@ -39,6 +39,7 @@ import UnsupportedOperationError from "../error/UnsupportedOperationError";
 import Vec2 from "../geom/Vec2";
 import Vec3 from "../geom/Vec3";
 import WWMath from "../util/WWMath";
+import WorldWind from "../WorldWind";
 
 /**
  * Constructs a text shape. This constructor is intended to be called only by subclasses.

@@ -38,6 +38,7 @@ import MemoryCache from "../cache/MemoryCache";
 import Sector from "../geom/Sector";
 import Tile from "../util/Tile";
 import WWMath from "../util/WWMath";
+import WorldWind from "../WorldWind";
 
 /**
  * Constructs a TiledElevationCoverage

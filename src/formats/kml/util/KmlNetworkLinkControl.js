@@ -183,12 +183,12 @@ Object.defineProperties(KmlNetworkLinkControl.prototype, {
    * that has previously been loaded with a network link. See <Update>.
    * @memberof KmlNetworkLinkControl.prototype
    * @readonly
-   * @type {Update}
+   * @type {KmlUpdate}
    */
   Update: {
     get: function () {
       return this._factory.any(this, {
-        name: Update.prototype.getTagNames(),
+        name: KmlUpdate.prototype.getTagNames(),
       });
     },
   },
@@ -197,7 +197,7 @@ Object.defineProperties(KmlNetworkLinkControl.prototype, {
    * Either Camera or LookAt which will be used to fly to the location whenever the
    * @memberof KmlNetworkLinkControl.prototype
    * @readonly
-   * @type {AbstractView}
+   * @type {KmlAbstractView}
    */
   AbstractView: {
     get: function () {

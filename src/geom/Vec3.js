@@ -633,4 +633,7 @@ Vec3.prototype.toString = function () {
   return "(" + this[0] + ", " + this[1] + ", " + this[2] + ")";
 };
 
+Vec3.prototype.size = function() {
+  return 3;
+}
 export default Vec3;

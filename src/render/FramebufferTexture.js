@@ -28,6 +28,7 @@
 import ArgumentError from "../error/ArgumentError";
 import Logger from "../util/Logger";
 import WWMath from "../util/WWMath";
+import DrawContext from "./DrawContext";
 
 /**
  * Constructs a framebuffer texture with the specified dimensions and an optional depth buffer. Use the

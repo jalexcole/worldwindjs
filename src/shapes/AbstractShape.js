@@ -33,6 +33,7 @@ import Renderable from "../render/Renderable";
 import ShapeAttributes from "./ShapeAttributes";
 import UnsupportedOperationError from "../error/UnsupportedOperationError";
 import Vec3 from "../geom/Vec3";
+import WorldWind from "../WorldWind";
 
 /**
  * Constructs an abstract shape instance. Meant to be called only by subclasses.

@@ -25,11 +25,12 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
-import KmlAttribute from "./KmlAttribute";
+import Attribute from "./KmlAttribute";
 import KmlElements from "../KmlElements";
 import KmlElementsFactory from "./KmlElementsFactory";
 import KmlTreeKeyValueCache from "./KmlTreeKeyValueCache.js";
 import WWUtil from "../../../util/WWUtil";
+import KmlObject from "../KmlObject";
 
 /**
  * More complex factory, which retrieves the values from cache and in case the value isn't present there it

@@ -40,6 +40,7 @@ import Sector from "../geom/Sector";
 import ShapeAttributes from "./ShapeAttributes";
 import UnsupportedOperationError from "../error/UnsupportedOperationError";
 import Vec3 from "../geom/Vec3";
+import WorldWind from "../WorldWind";
 
 /**
  * Constructs a surface shape with an optionally specified bundle of default attributes.
