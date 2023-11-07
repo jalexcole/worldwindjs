@@ -150,7 +150,7 @@ KmlElementsFactoryCached.prototype.any = function (element, options) {
  * It creates cache key based on the node. In case the node doesn't have any id, it also creates id for this
  * element. This id is used for storing the value in the cache.
  * @param node {Node} Node for which generate the key.
- * @param prefix {String|undefined} Prefix for the level
+ * @param [prefix] {String|undefined} Prefix for the level
  * @returns {String} Value representing the key.
  */
 KmlElementsFactoryCached.prototype.cacheKey = function (node, prefix) {
