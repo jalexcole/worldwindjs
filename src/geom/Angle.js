@@ -26,67 +26,67 @@
  * PDF found in code  directory.
  */
 
-var Angle = {
+class Angle {
   /**
    * Conversion factor for degrees to radians.
    * @constant
    */
-  DEGREES_TO_RADIANS: Math.PI / 180.0,
+  static DEGREES_TO_RADIANS = Math.PI / 180.0;
   /**
    * Conversion factor for radians to degrees.
    * @constant
    */
-  RADIANS_TO_DEGREES: 180.0 / Math.PI,
+  static RADIANS_TO_DEGREES= 180.0 / Math.PI;
   /**
    * 2 pi.
    * @constant
    */
-  TWO_PI: 2 * Math.PI,
+  static TWO_PI = 2 * Math.PI;
   /**
    * pi / 2
    * @constant
    */
-  HALF_PI: Math.PI / 2,
+  static HALF_PI = Math.PI / 2;
 
   /**
    * Normalizes a specified value to be within the range of [-180, 180] degrees.
    * @param {Number} degrees The value to normalize, in degrees.
    * @returns {Number} The specified value normalized to [-180, 180] degrees.
    */
-  normalizedDegrees: function (degrees) {
-    var angle = degrees % 360;
+  static normalizedDegrees(degrees) {
+    let angle = degrees % 360;
 
     return angle > 180 ? angle - 360 : angle < -180 ? 360 + angle : angle;
-  },
+  }
 
   /**
    * Normalizes a specified value to be within the range of [-90, 90] degrees.
    * @param {Number} degrees The value to normalize, in degrees.
    * @returns {Number} The specified value normalized to the normal range of latitude.
    */
-  normalizedDegreesLatitude: function (degrees) {
+  static normalizedDegreesLatitude (degrees) {
     var lat = degrees % 180;
 
     return lat > 90 ? 180 - lat : lat < -90 ? -180 - lat : lat;
-  },
+  };
 
   /**
    * Normalizes a specified value to be within the range of [-180, 180] degrees.
    * @param {Number} degrees The value to normalize, in degrees.
    * @returns {Number} The specified value normalized to the normal range of longitude.
    */
-  normalizedDegreesLongitude: function (degrees) {
+  static normalizedDegreesLongitude (degrees) {
     var lon = degrees % 360;
 
     return lon > 180 ? lon - 360 : lon < -180 ? 360 + lon : lon;
-  },
+  }
 
   /**
    * Normalizes a specified value to be within the range of [-Pi, Pi] radians.
    * @param {Number} radians The value to normalize, in radians.
    * @returns {Number} The specified value normalized to [-Pi, Pi] radians.
    */
-  normalizedRadians: function (radians) {
+  static normalizedRadians (radians) {
     var angle = radians % this.TWO_PI;
 
     return angle > Math.PI
@@ -94,14 +94,14 @@ var Angle = {
       : angle < -Math.PI
       ? this.TWO_PI + angle
       : angle;
-  },
+  }
 
   /**
    * Normalizes a specified value to be within the range of [-Pi/2, Pi/2] radians.
    * @param {Number} radians The value to normalize, in radians.
    * @returns {Number} The specified value normalized to the normal range of latitude.
    */
-  normalizedRadiansLatitude: function (radians) {
+  static normalizedRadiansLatitude (radians) {
     var lat = radians % Math.PI;
 
     return lat > this.HALF_PI
@@ -109,14 +109,14 @@ var Angle = {
       : lat < -this.HALF_PI
       ? -Math.PI - lat
       : lat;
-  },
+  }
 
   /**
    * Normalizes a specified value to be within the range of [-Pi, Pi] radians.
    * @param {Number} radians The value to normalize, in radians.
    * @returns {Number} The specified value normalized to the normal range of longitude.
    */
-  normalizedRadiansLongitude: function (radians) {
+  static normalizedRadiansLongitude (radians) {
     var lon = radians % this.TWO_PI;
 
     return lon > Math.PI
@@ -124,50 +124,50 @@ var Angle = {
       : lon < -Math.PI
       ? this.TWO_PI + lon
       : lon;
-  },
+  }
 
   /**
    * Indicates whether a specified value is within the normal range of latitude, [-90, 90].
    * @param {Number} degrees The value to test, in degrees.
    * @returns {Boolean} true if the value is within the normal range of latitude, otherwise false.
    */
-  isValidLatitude: function (degrees) {
+  static isValidLatitude (degrees) {
     return degrees >= -90 && degrees <= 90;
-  },
+  }
 
   /**
    * Indicates whether a specified value is within the normal range of longitude, [-180, 180].
    * @param {Number} degrees The value to test, in degrees.
    * @returns {boolean} true if the value is within the normal range of longitude, otherwise false.
    */
-  isValidLongitude: function (degrees) {
+  static  isValidLongitude (degrees) {
     return degrees >= -180 && degrees <= 180;
-  },
+  }
 
   /**
    * Returns a string representation of a specified value in degrees.
    * @param {Number} degrees The value for which to compute the string.
    * @returns {String} The computed string, which is a decimal degrees value followed by the degree symbol.
    */
-  toString: function (degrees) {
+  static toString (degrees) {
     return degrees.toString() + "\u00B0";
-  },
+  }
 
   /**
    * Returns a decimal degrees string representation of a specified value in degrees.
    * @param {Number} degrees The value for which to compute the string.
    * @returns {String} The computed string, which is a decimal degrees value followed by the degree symbol.
    */
-  toDecimalDegreesString: function (degrees) {
+  static toDecimalDegreesString (degrees) {
     return degrees.toString() + "\u00B0";
-  },
+  }
 
   /**
    * Returns a degrees-minutes-seconds string representation of a specified value in degrees.
    * @param {Number} degrees The value for which to compute the string.
    * @returns {String} The computed string in degrees, minutes and decimal seconds.
    */
-  toDMSString: function (degrees) {
+  static toDMSString (degrees) {
     var sign, temp, d, m, s;
 
     sign = degrees < 0 ? -1 : 1;
@@ -198,14 +198,14 @@ var Angle = {
       s +
       "\u201D"
     );
-  },
+  }
 
   /**
    * Returns a degrees-minutes string representation of a specified value in degrees.
    * @param {Number} degrees The value for which to compute the string.
    * @returns {String} The computed string in degrees and decimal minutes.
    */
-  toDMString: function (degrees) {
+  static toDMString (degrees) {
     var sign, temp, d, m, s, mf;
 
     sign = degrees < 0 ? -1 : 1;
@@ -228,7 +228,7 @@ var Angle = {
     mf = s == 0 ? m : m + s / 60;
 
     return (sign == -1 ? "-" : "") + d + "\u00B0" + " " + mf + "\u2019";
-  },
+  }
 };
 
 export default Angle;

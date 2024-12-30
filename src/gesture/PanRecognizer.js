@@ -26,6 +26,7 @@
  * PDF found in code  directory.
  */
 
+import WorldWindConstants from "../WorldWindConstants";
 import GestureRecognizer from "./GestureRecognizer";
 
 /**
@@ -63,23 +64,23 @@ PanRecognizer.prototype = Object.create(GestureRecognizer.prototype);
 
 // Documented in superclass.
 PanRecognizer.prototype.mouseDown = function (event) {
-  if (this.state == WorldWind.POSSIBLE) {
-    this.state = WorldWind.FAILED; // touch gestures fail upon receiving a mouse event
+  if (this.state == WorldWindConstants.POSSIBLE) {
+    this.state = WorldWindConstants.FAILED; // touch gestures fail upon receiving a mouse event
   }
 };
 
 // Documented in superclass.
 PanRecognizer.prototype.touchMove = function (touch) {
-  if (this.state == WorldWind.POSSIBLE) {
+  if (this.state == WorldWindConstants.POSSIBLE) {
     if (this.shouldInterpret()) {
       if (this.shouldRecognize()) {
-        this.state = WorldWind.BEGAN;
+        this.state = WorldWindConstants.BEGAN;
       } else {
-        this.state = WorldWind.FAILED;
+        this.state = WorldWindConstants.FAILED;
       }
     }
-  } else if (this.state == WorldWind.BEGAN || this.state == WorldWind.CHANGED) {
-    this.state = WorldWind.CHANGED;
+  } else if (this.state == WorldWindConstants.BEGAN || this.state == WorldWindConstants.CHANGED) {
+    this.state = WorldWindConstants.CHANGED;
   }
 };
 
@@ -87,13 +88,13 @@ PanRecognizer.prototype.touchMove = function (touch) {
 PanRecognizer.prototype.touchEnd = function (touch) {
   if (this.touchCount == 0) {
     // last touch ended
-    if (this.state == WorldWind.POSSIBLE) {
-      this.state = WorldWind.FAILED;
+    if (this.state == WorldWindConstants.POSSIBLE) {
+      this.state = WorldWindConstants.FAILED;
     } else if (
-      this.state == WorldWind.BEGAN ||
-      this.state == WorldWind.CHANGED
+      this.state == WorldWindConstants.BEGAN ||
+      this.state == WorldWindConstants.CHANGED
     ) {
-      this.state = WorldWind.ENDED;
+      this.state = WorldWindConstants.ENDED;
     }
   }
 };
@@ -102,13 +103,13 @@ PanRecognizer.prototype.touchEnd = function (touch) {
 PanRecognizer.prototype.touchCancel = function (touch) {
   if (this.touchCount == 0) {
     // last touch cancelled
-    if (this.state == WorldWind.POSSIBLE) {
-      this.state = WorldWind.FAILED;
+    if (this.state == WorldWindConstants.POSSIBLE) {
+      this.state = WorldWindConstants.FAILED;
     } else if (
-      this.state == WorldWind.BEGAN ||
-      this.state == WorldWind.CHANGED
+      this.state == WorldWindConstants.BEGAN ||
+      this.state == WorldWindConstants.CHANGED
     ) {
-      this.state = WorldWind.CANCELLED;
+      this.state = WorldWindConstants.CANCELLED;
     }
   }
 };

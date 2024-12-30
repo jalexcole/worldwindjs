@@ -26,7 +26,9 @@
  * PDF found in code  directory.
  */
 import CustomMatchers from "./TileMatrixSet.test.js";
-import { Sector, TileMatrix } from "../../src/WorldWind.js";
+import Sector from "../../src/geom/Sector.js";
+import TileMatrix from "../../src/geom/TileMatrix.js";
+
 import { beforeEach, describe,expect, it } from "vitest";
 
 

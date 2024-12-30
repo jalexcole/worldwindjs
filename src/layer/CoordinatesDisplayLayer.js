@@ -35,7 +35,7 @@ import ScreenImage from "../shapes/ScreenImage";
 import ScreenText from "../shapes/ScreenText";
 import TextAttributes from "../shapes/TextAttributes";
 import Vec2 from "../geom/Vec2";
-import WorldWind from "../WorldWind";
+
 import WorldWindow from "../WorldWindow";
 
 /**
@@ -89,7 +89,12 @@ var CoordinatesDisplayLayer = function (worldWindow) {
 
   // Intentionally not documented.
   this.latText = new ScreenText(
-    new Offset(WorldWind.OFFSET_PIXELS, 0, WorldWind.OFFSET_PIXELS, 0),
+    new Offset(
+      WorldWindConstants.OFFSET_PIXELS,
+      0,
+      WorldWindConstants.OFFSET_PIXELS,
+      0
+    ),
     " "
   );
   this.latText.attributes = new TextAttributes(null);
@@ -97,7 +102,12 @@ var CoordinatesDisplayLayer = function (worldWindow) {
 
   // Intentionally not documented.
   this.lonText = new ScreenText(
-    new Offset(WorldWind.OFFSET_PIXELS, 0, WorldWind.OFFSET_PIXELS, 0),
+    new Offset(
+      WorldWindConstants.OFFSET_PIXELS,
+      0,
+      WorldWindConstants.OFFSET_PIXELS,
+      0
+    ),
     " "
   );
   this.lonText.attributes = new TextAttributes(null);
@@ -105,7 +115,12 @@ var CoordinatesDisplayLayer = function (worldWindow) {
 
   // Intentionally not documented.
   this.elevText = new ScreenText(
-    new Offset(WorldWind.OFFSET_PIXELS, 0, WorldWind.OFFSET_PIXELS, 0),
+    new Offset(
+      WorldWindConstants.OFFSET_PIXELS,
+      0,
+      WorldWindConstants.OFFSET_PIXELS,
+      0
+    ),
     " "
   );
   this.elevText.attributes = new TextAttributes(null);
@@ -113,7 +128,12 @@ var CoordinatesDisplayLayer = function (worldWindow) {
 
   // Intentionally not documented.
   this.eyeText = new ScreenText(
-    new Offset(WorldWind.OFFSET_PIXELS, 0, WorldWind.OFFSET_PIXELS, 0),
+    new Offset(
+      WorldWindConstants.OFFSET_PIXELS,
+      0,
+      WorldWindConstants.OFFSET_PIXELS,
+      0
+    ),
     " "
   );
   this.eyeText.attributes = new TextAttributes(null);
@@ -121,9 +141,9 @@ var CoordinatesDisplayLayer = function (worldWindow) {
 
   // Intentionally not documented.
   var imageOffset = new Offset(
-      WorldWind.OFFSET_FRACTION,
+      WorldWindConstants.OFFSET_FRACTION,
       0.5,
-      WorldWind.OFFSET_FRACTION,
+      WorldWindConstants.OFFSET_FRACTION,
       0.5
     ),
     imagePath = WorldWind.configuration.baseUrl + "images/crosshair.png";
@@ -173,19 +193,19 @@ CoordinatesDisplayLayer.prototype.doRender = function (dc) {
     // large canvas, align the text with bottom center
     x = canvasWidth / 2 - 50;
     y = 11;
-    yUnitsScreen = WorldWind.OFFSET_PIXELS;
+    yUnitsScreen = WorldWindConstants.OFFSET_PIXELS;
     yUnitsText = 0;
   } else if (canvasWidth > 400) {
     // medium canvas, align the text in the top left
     x = 60;
     y = 5;
-    yUnitsScreen = WorldWind.OFFSET_INSET_PIXELS;
+    yUnitsScreen = WorldWindConstants.OFFSET_INSET_PIXELS;
     yUnitsText = 1;
   } else {
     // small canvas, suppress the eye altitude, align the text in the top left and suppress eye alt
     x = 60;
     y = 5;
-    yUnitsScreen = WorldWind.OFFSET_INSET_PIXELS;
+    yUnitsScreen = WorldWindConstants.OFFSET_INSET_PIXELS;
     yUnitsText = 1;
     hideEyeAlt = true;
   }
@@ -195,15 +215,15 @@ CoordinatesDisplayLayer.prototype.doRender = function (dc) {
     ? this.formatLatitude(terrainPos.latitude)
     : null;
   this.latText.screenOffset = new Offset(
-    WorldWind.OFFSET_PIXELS,
+    WorldWindConstants.OFFSET_PIXELS,
     x,
     yUnitsScreen,
     y
   );
   this.latText.attributes.offset = new Offset(
-    WorldWind.OFFSET_FRACTION,
+    WorldWindConstants.OFFSET_FRACTION,
     1,
-    WorldWind.OFFSET_FRACTION,
+    WorldWindConstants.OFFSET_FRACTION,
     yUnitsText
   );
   this.latText.render(dc);
@@ -213,15 +233,15 @@ CoordinatesDisplayLayer.prototype.doRender = function (dc) {
     ? this.formatLongitude(terrainPos.longitude)
     : null;
   this.lonText.screenOffset = new Offset(
-    WorldWind.OFFSET_PIXELS,
+    WorldWindConstants.OFFSET_PIXELS,
     x,
     yUnitsScreen,
     y
   );
   this.lonText.attributes.offset = new Offset(
-    WorldWind.OFFSET_FRACTION,
+    WorldWindConstants.OFFSET_FRACTION,
     1,
-    WorldWind.OFFSET_FRACTION,
+    WorldWindConstants.OFFSET_FRACTION,
     yUnitsText
   );
   this.lonText.render(dc);
@@ -232,15 +252,15 @@ CoordinatesDisplayLayer.prototype.doRender = function (dc) {
       ? this.formatAltitude(terrainPos.altitude, "m")
       : null;
     this.elevText.screenOffset = new Offset(
-      WorldWind.OFFSET_PIXELS,
+      WorldWindConstants.OFFSET_PIXELS,
       x,
       yUnitsScreen,
       y
     );
     this.elevText.attributes.offset = new Offset(
-      WorldWind.OFFSET_FRACTION,
+      WorldWindConstants.OFFSET_FRACTION,
       1,
-      WorldWind.OFFSET_FRACTION,
+      WorldWindConstants.OFFSET_FRACTION,
       yUnitsText
     );
     this.elevText.render(dc);
@@ -253,15 +273,15 @@ CoordinatesDisplayLayer.prototype.doRender = function (dc) {
       "Eye  " +
       this.formatAltitude(eyePos.altitude, eyePos.altitude < 1000 ? "m" : "km");
     this.eyeText.screenOffset = new Offset(
-      WorldWind.OFFSET_PIXELS,
+      WorldWindConstants.OFFSET_PIXELS,
       x,
       yUnitsScreen,
       y
     );
     this.eyeText.attributes.offset = new Offset(
-      WorldWind.OFFSET_FRACTION,
+      WorldWindConstants.OFFSET_FRACTION,
       0,
-      WorldWind.OFFSET_FRACTION,
+      WorldWindConstants.OFFSET_FRACTION,
       yUnitsText
     );
     this.eyeText.render(dc);
@@ -298,7 +318,7 @@ CoordinatesDisplayLayer.prototype.handleUIEvent = function (event) {
 
 // Intentionally not documented.
 CoordinatesDisplayLayer.prototype.handleRedraw = function (stage) {
-  if (stage !== WorldWind.BEFORE_REDRAW) {
+  if (stage !== WorldWindConstants.BEFORE_REDRAW) {
     return; // ignore after redraw events
   }
 

@@ -40,7 +40,7 @@ import UnsupportedOperationError from "./error/UnsupportedOperationError";
  * @throws {ArgumentError} If the specified WorldWindow is null or undefined.
  */
 class WorldWindowController {
-  constructor(worldWindow) {
+  constructor(worldWindow = WorldWindow) {
     if (!worldWindow) {
       throw new ArgumentError(
         Logger.logMessage(

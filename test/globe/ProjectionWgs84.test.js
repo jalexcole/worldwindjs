@@ -28,6 +28,7 @@
 import { Angle, ElevationModel, Globe, Position, ProjectionWgs84 } from "../../src/WorldWind";
 import Vec3 from "../../src/geom/Vec3";
 import { beforeAll, beforeEach, describe, expect, it } from "vitest";
+
 describe("ProjectionWgs84 tests", function () {
   // WGS 84 reference values taken from NGA.STND.0036_1.0.0_WGS84.
   var WGS84_IERS_REFERENCE_MERIDIAN = vec3FromEcef(6378137.0, 0, 0);
@@ -75,6 +76,11 @@ describe("ProjectionWgs84 tests", function () {
 
   /**
    * Creates a Vec3 in the WorldWind coordinate system from WGS84 ECEF coordinates.
+   * @param {Number} x
+   * @param {Number} y
+   * @param {Number} z
+   * 
+   * @returns {Vec3}
    */
   function vec3FromEcef(x, y, z) {
     return new Vec3(y, z, x);

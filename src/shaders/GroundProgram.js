@@ -43,9 +43,9 @@ import AtmosphereProgram from "./AtmosphereProgram";
  * @throws {ArgumentError} If the shaders cannot be compiled, or linking of
  * the compiled shaders into a program fails.
  */
-var GroundProgram = function (gl) {
-  var vertexShaderSource =
-      "precision mediump int;\n" +
+class GroundProgram extends AtmosphereProgram{
+  constructor(gl) {
+    var vertexShaderSource = "precision mediump int;\n" +
       "const int FRAGMODE_GROUND_PRIMARY_TEX_BLEND = 4;\n" +
       "const int SAMPLE_COUNT = 2;\n" +
       "const float SAMPLES = 2.0;\n" +
@@ -72,7 +72,8 @@ var GroundProgram = function (gl) {
       "uniform float globeRadius;\n" /* The inner (planetary) radius */ +
       "uniform float scale;\n" /* 1 / (atmosphereRadius - globeRadius) */ +
       "uniform float scaleDepth;\n" /* The scale depth (i.e. the altitude at which
-                     the atmosphere's average density is found) */ +
+                       the atmosphere's average density is found) */
+      +
       "uniform float scaleOverScaleDepth;\n" /* fScale / fScaleDepth */ +
       "uniform float opacity;\n" /* The opacity of the ground texture */ +
       "attribute vec4 vertexPoint;\n" +
@@ -141,36 +142,35 @@ var GroundProgram = function (gl) {
       /* Transform the vertex texture coordinate by the tex coord matrix */
       "        texCoord = (texCoordMatrix * vec3(vertexTexCoord, 1.0)).st;\n" +
       "    }\n" +
-      "}",
-    fragmentShaderSource =
-      "precision mediump float;\n" +
-      "precision mediump int;\n" +
-      "const int FRAGMODE_GROUND_PRIMARY = 2;\n" +
-      "const int FRAGMODE_GROUND_SECONDARY = 3;\n" +
-      "const int FRAGMODE_GROUND_PRIMARY_TEX_BLEND = 4;\n" +
-      "uniform int fragMode;\n" +
-      "uniform sampler2D texSampler;\n" +
-      "varying vec3 primaryColor;\n" +
-      "varying vec3 secondaryColor;\n" +
-      "varying vec2 texCoord;\n" +
-      "void main (void)\n" +
-      "{\n" +
-      "    if (fragMode == FRAGMODE_GROUND_PRIMARY) {\n" +
-      "        gl_FragColor = vec4(primaryColor, 1.0);\n" +
-      "    } else if (fragMode == FRAGMODE_GROUND_SECONDARY) {\n" +
-      "        gl_FragColor = vec4(secondaryColor, 1.0);\n" +
-      "    } else if (fragMode == FRAGMODE_GROUND_PRIMARY_TEX_BLEND) {\n" +
-      "        vec4 texColor = texture2D(texSampler, texCoord);\n" +
-      "        gl_FragColor = vec4(primaryColor + texColor.rgb * (1.0 - secondaryColor), 1.0);\n" +
-      "    }\n" +
-      "}";
+      "}", fragmentShaderSource = "precision mediump float;\n" +
+        "precision mediump int;\n" +
+        "const int FRAGMODE_GROUND_PRIMARY = 2;\n" +
+        "const int FRAGMODE_GROUND_SECONDARY = 3;\n" +
+        "const int FRAGMODE_GROUND_PRIMARY_TEX_BLEND = 4;\n" +
+        "uniform int fragMode;\n" +
+        "uniform sampler2D texSampler;\n" +
+        "varying vec3 primaryColor;\n" +
+        "varying vec3 secondaryColor;\n" +
+        "varying vec2 texCoord;\n" +
+        "void main (void)\n" +
+        "{\n" +
+        "    if (fragMode == FRAGMODE_GROUND_PRIMARY) {\n" +
+        "        gl_FragColor = vec4(primaryColor, 1.0);\n" +
+        "    } else if (fragMode == FRAGMODE_GROUND_SECONDARY) {\n" +
+        "        gl_FragColor = vec4(secondaryColor, 1.0);\n" +
+        "    } else if (fragMode == FRAGMODE_GROUND_PRIMARY_TEX_BLEND) {\n" +
+        "        vec4 texColor = texture2D(texSampler, texCoord);\n" +
+        "        gl_FragColor = vec4(primaryColor + texColor.rgb * (1.0 - secondaryColor), 1.0);\n" +
+        "    }\n" +
+        "}";
 
-  // Call to the superclass, which performs shader program compiling and linking.
-  AtmosphereProgram.call(this, gl, vertexShaderSource, fragmentShaderSource, [
-    "vertexPoint",
-    "vertexTexCoord",
-  ]);
-};
+    // Call to the superclass, which performs shader program compiling and linking.
+    AtmosphereProgram.call(this, gl, vertexShaderSource, fragmentShaderSource, [
+      "vertexPoint",
+      "vertexTexCoord",
+    ]);
+  }
+}
 
 /**
  * A string that uniquely identifies this program.
@@ -180,6 +180,6 @@ var GroundProgram = function (gl) {
 GroundProgram.key = "WorldWindGroundProgram";
 
 // Inherit from AtmosphereProgram.
-GroundProgram.prototype = Object.create(AtmosphereProgram.prototype);
+// GroundProgram.prototype = Object.create(AtmosphereProgram.prototype);
 
 export default GroundProgram;

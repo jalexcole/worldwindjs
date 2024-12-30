@@ -40,18 +40,20 @@ import KmlElements from "../KmlElements";
  * @see https://developers.google.com/kml/documentation/kmlreference#folder
  * @augments KmlContainer
  */
-var KmlFolder = function (options) {
-  KmlContainer.call(this, options);
-};
+class KmlFolder extends KmlContainer{
+  constructor(options) {
+    super(options);
+  }
+  /**
+   * @inheritDoc
+   */
+  getTagNames() {
+    return ["Folder"];
+  }
+}
 
-KmlFolder.prototype = Object.create(KmlContainer.prototype);
 
-/**
- * @inheritDoc
- */
-KmlFolder.prototype.getTagNames = function () {
-  return ["Folder"];
-};
+
 
 KmlElements.addKey(KmlFolder.prototype.getTagNames()[0], KmlFolder);
 

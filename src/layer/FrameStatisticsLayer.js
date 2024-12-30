@@ -69,22 +69,32 @@ var FrameStatisticsLayer = function (worldWindow) {
   textAttributes.color = Color.GREEN;
   textAttributes.font = new Font(12);
   textAttributes.offset = new Offset(
-    WorldWind.OFFSET_FRACTION,
+    WorldWindConstants.OFFSET_FRACTION,
     0,
-    WorldWind.OFFSET_FRACTION,
+    WorldWindConstants.OFFSET_FRACTION,
     1
   );
 
   // Intentionally not documented.
   this.frameTime = new ScreenText(
-    new Offset(WorldWind.OFFSET_PIXELS, 5, WorldWind.OFFSET_INSET_PIXELS, 5),
+    new Offset(
+      WorldWindConstants.OFFSET_PIXELS,
+      5,
+      WorldWindConstants.OFFSET_INSET_PIXELS,
+      5
+    ),
     " "
   );
   this.frameTime.attributes = textAttributes;
 
   // Intentionally not documented.
   this.frameRate = new ScreenText(
-    new Offset(WorldWind.OFFSET_PIXELS, 5, WorldWind.OFFSET_INSET_PIXELS, 25),
+    new Offset(
+      WorldWindConstants.OFFSET_PIXELS,
+      5,
+      WorldWindConstants.OFFSET_INSET_PIXELS,
+      25
+    ),
     " "
   );
   this.frameRate.attributes = textAttributes;
@@ -110,7 +120,7 @@ FrameStatisticsLayer.prototype.doRender = function (dc) {
 
 // Intentionally not documented.
 FrameStatisticsLayer.prototype.handleRedraw = function (worldWindow, stage) {
-  if (stage !== WorldWind.BEFORE_REDRAW) {
+  if (stage !== WorldWindConstants.BEFORE_REDRAW) {
     return; // ignore after redraw events
   }
 

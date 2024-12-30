@@ -51,6 +51,7 @@ import RenderableLayer from "../../layer/RenderableLayer";
 import ShapeAttributes from "../../shapes/ShapeAttributes";
 import SurfacePolygon from "../../shapes/SurfacePolygon";
 import SurfacePolyline from "../../shapes/SurfacePolyline";
+import WorldWindConstants from "../../WorldWindConstants";
 
 /**
  * Constructs a GeoJSON object for a specified GeoJSON data source. Call [load]{@link GeoJSONParser#load} to
@@ -662,7 +663,7 @@ GeoJSONParser.prototype.addRenderablesForPoint = function (
     if (configuration && configuration.altitudeMode) {
       placemark.altitudeMode = configuration.altitudeMode;
     } else {
-      placemark.altitudeMode = WorldWind.ABSOLUTE;
+      placemark.altitudeMode = WorldWindConstants.ABSOLUTE;
     }
     if (configuration && configuration.name) {
       placemark.label = configuration.name;
@@ -767,7 +768,7 @@ GeoJSONParser.prototype.addRenderablesForMultiPoint = function (
       if (configuration && configuration.altitudeMode) {
         placemark.altitudeMode = configuration.altitudeMode;
       } else {
-        placemark.altitudeMode = WorldWind.ABSOLUTE;
+        placemark.altitudeMode = WorldWindConstants.ABSOLUTE;
       }
       if (configuration && configuration.name) {
         placemark.label = configuration.name;
@@ -867,7 +868,7 @@ GeoJSONParser.prototype.addRenderablesForLineString = function (
     var shape;
     if (
       configuration &&
-      configuration.altitudeMode === WorldWind.CLAMP_TO_GROUND
+      configuration.altitudeMode === WorldWindConstants.CLAMP_TO_GROUND
     ) {
       shape = new SurfacePolyline(
         positions,
@@ -885,7 +886,7 @@ GeoJSONParser.prototype.addRenderablesForLineString = function (
       if (configuration && configuration.altitudeMode) {
         shape.altitudeMode = configuration.altitudeMode;
       } else {
-        shape.altitudeMode = WorldWind.ABSOLUTE;
+        shape.altitudeMode = WorldWindConstants.ABSOLUTE;
       }
     }
     if (configuration && configuration.highlightAttributes) {
@@ -1070,7 +1071,7 @@ GeoJSONParser.prototype.addRenderablesForPolygon = function (
     var shape;
     if (
       configuration &&
-      configuration.altitudeMode === WorldWind.CLAMP_TO_GROUND
+      configuration.altitudeMode === WorldWindConstants.CLAMP_TO_GROUND
     ) {
       shape = new SurfacePolygon(
         pBoundaries,
@@ -1088,7 +1089,7 @@ GeoJSONParser.prototype.addRenderablesForPolygon = function (
       if (configuration && configuration.altitudeMode) {
         shape.altitudeMode = configuration.altitudeMode;
       } else {
-        shape.altitudeMode = WorldWind.ABSOLUTE;
+        shape.altitudeMode = WorldWindConstants.ABSOLUTE;
       }
     }
     if (configuration && configuration.highlightAttributes) {

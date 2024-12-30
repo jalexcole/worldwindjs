@@ -32,92 +32,94 @@
  * @constructor
  * @classdesc Holds a collection of picked objects.
  */
-var PickedObjectList = function () {
+class PickedObjectList {
+  constructor() {
+    /**
+     * The picked objects.
+     * @type {Array}
+     */
+    this.objects = [];
+  }
   /**
-   * The picked objects.
-   * @type {Array}
+   * Indicates whether this list contains picked objects that are not terrain.
+   * @returns {Boolean} true if this list contains objects that are not terrain,
+   * otherwise false.
    */
-  this.objects = [];
-};
-
-/**
- * Indicates whether this list contains picked objects that are not terrain.
- * @returns {Boolean} true if this list contains objects that are not terrain,
- * otherwise false.
- */
-PickedObjectList.prototype.hasNonTerrainObjects = function () {
-  return (
-    this.objects.length > 1 ||
-    (this.objects.length === 1 && this.terrainObject() == null)
-  );
-};
-
-/**
- * Returns the terrain object within this list, if this list contains a terrain object.
- * @returns {PickedObject} The terrain object, or null if this list does not contain a terrain object.
- */
-PickedObjectList.prototype.terrainObject = function () {
-  for (var i = 0, len = this.objects.length; i < len; i++) {
-    if (this.objects[i].isTerrain) {
-      return this.objects[i];
-    }
+  hasNonTerrainObjects() {
+    return (
+      this.objects.length > 1 ||
+      (this.objects.length === 1 && this.terrainObject() == null)
+    );
   }
-
-  return null;
-};
-
-/**
- * Adds a picked object to this list.
- * If the picked object is a terrain object and the list already contains a terrain object, the terrain
- * object in the list is replaced by the specified one.
- * @param {PickedObject} pickedObject The picked object to add. If null, this list remains unchanged.
- */
-PickedObjectList.prototype.add = function (pickedObject) {
-  if (pickedObject) {
-    if (pickedObject.isTerrain) {
-      var terrainObjectIndex = this.objects.length;
-
-      for (var i = 0, len = this.objects.length; i < len; i++) {
-        if (this.objects[i].isTerrain) {
-          terrainObjectIndex = i;
-          break;
-        }
-      }
-
-      this.objects[terrainObjectIndex] = pickedObject;
-    } else {
-      this.objects.push(pickedObject);
-    }
-  }
-};
-
-/**
- * Removes all items from this list.
- */
-PickedObjectList.prototype.clear = function () {
-  this.objects = [];
-};
-
-/**
- * Returns the top-most picked object in this list.
- * @returns {PickedObject} The top-most picked object in this list, or null if this list is empty.
- */
-PickedObjectList.prototype.topPickedObject = function () {
-  var size = this.objects.length;
-
-  if (size > 1) {
-    for (var i = 0; i < size; i++) {
-      if (this.objects[i].isOnTop) {
+  /**
+   * Returns the terrain object within this list, if this list contains a terrain object.
+   * @returns {PickedObject} The terrain object, or null if this list does not contain a terrain object.
+   */
+  terrainObject() {
+    for (var i = 0, len = this.objects.length; i < len; i++) {
+      if (this.objects[i].isTerrain) {
         return this.objects[i];
       }
     }
-  }
 
-  if (size > 0) {
-    return this.objects[0];
+    return null;
   }
+  /**
+   * Adds a picked object to this list.
+   * If the picked object is a terrain object and the list already contains a terrain object, the terrain
+   * object in the list is replaced by the specified one.
+   * @param {PickedObject} pickedObject The picked object to add. If null, this list remains unchanged.
+   */
+  add(pickedObject) {
+    if (pickedObject) {
+      if (pickedObject.isTerrain) {
+        var terrainObjectIndex = this.objects.length;
 
-  return null;
-};
+        for (var i = 0, len = this.objects.length; i < len; i++) {
+          if (this.objects[i].isTerrain) {
+            terrainObjectIndex = i;
+            break;
+          }
+        }
+
+        this.objects[terrainObjectIndex] = pickedObject;
+      } else {
+        this.objects.push(pickedObject);
+      }
+    }
+  }
+  /**
+   * Removes all items from this list.
+   */
+  clear() {
+    this.objects = [];
+  }
+  /**
+   * Returns the top-most picked object in this list.
+   * @returns {PickedObject} The top-most picked object in this list, or null if this list is empty.
+   */
+  topPickedObject() {
+    var size = this.objects.length;
+
+    if (size > 1) {
+      for (var i = 0; i < size; i++) {
+        if (this.objects[i].isOnTop) {
+          return this.objects[i];
+        }
+      }
+    }
+
+    if (size > 0) {
+      return this.objects[0];
+    }
+
+    return null;
+  }
+}
+
+
+
+
+
 
 export default PickedObjectList;

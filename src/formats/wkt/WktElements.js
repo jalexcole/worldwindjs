@@ -32,7 +32,7 @@
      * might happen when there are inter dependencies among objects. It shouldn't happen in case of WKT.
      * @exports WktElements
      */
-    var WktElements = {
-    };
+    class WktElements {
+    }
 
     export default WktElements;

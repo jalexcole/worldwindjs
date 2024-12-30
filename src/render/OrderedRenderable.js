@@ -37,58 +37,60 @@ import DrawContext from "./DrawContext";
  * @classdesc Represents an ordered renderable.
  * This is an interface class and is not meant to be instantiated directly.
  */
-var OrderedRenderable = function () {
+class OrderedRenderable {
+  constructor() {
+    /**
+     * This ordered renderable's display name.
+     * @type {String}
+     * @default Renderable
+     */
+    this.displayName = "Renderable";
+
+    /**
+     * Indicates whether this ordered renderable is enabled.
+     * @type {Boolean}
+     * @default true
+     */
+    this.enabled = true;
+
+    /**
+     * This ordered renderable's distance from the eye point in meters.
+     * @type {Number}
+     * @default Number.MAX_VALUE
+     */
+    this.eyeDistance = Number.MAX_VALUE;
+
+    /**
+     * The time at which this ordered renderable was inserted into the ordered rendering list.
+     * @type {Number}
+     * @default 0
+     */
+    this.insertionTime = 0;
+
+    throw new UnsupportedOperationError(
+      Logger.logMessage(
+        Logger.LEVEL_SEVERE,
+        "OrderedRenderable",
+        "constructor",
+        "abstractInvocation"
+      )
+    );
+  }
   /**
-   * This ordered renderable's display name.
-   * @type {String}
-   * @default Renderable
+   * Renders this ordered renderable.
+   * @param {DrawContext} dc The current draw context.
    */
-  this.displayName = "Renderable";
+  renderOrdered(dc) {
+    throw new UnsupportedOperationError(
+      Logger.logMessage(
+        Logger.LEVEL_SEVERE,
+        "OrderedRenderable",
+        "renderOrdered",
+        "abstractInvocation"
+      )
+    );
+  }
+}
 
-  /**
-   * Indicates whether this ordered renderable is enabled.
-   * @type {Boolean}
-   * @default true
-   */
-  this.enabled = true;
-
-  /**
-   * This ordered renderable's distance from the eye point in meters.
-   * @type {Number}
-   * @default Number.MAX_VALUE
-   */
-  this.eyeDistance = Number.MAX_VALUE;
-
-  /**
-   * The time at which this ordered renderable was inserted into the ordered rendering list.
-   * @type {Number}
-   * @default 0
-   */
-  this.insertionTime = 0;
-
-  throw new UnsupportedOperationError(
-    Logger.logMessage(
-      Logger.LEVEL_SEVERE,
-      "OrderedRenderable",
-      "constructor",
-      "abstractInvocation"
-    )
-  );
-};
-
-/**
- * Renders this ordered renderable.
- * @param {DrawContext} dc The current draw context.
- */
-OrderedRenderable.prototype.renderOrdered = function (dc) {
-  throw new UnsupportedOperationError(
-    Logger.logMessage(
-      Logger.LEVEL_SEVERE,
-      "OrderedRenderable",
-      "renderOrdered",
-      "abstractInvocation"
-    )
-  );
-};
 
 export default OrderedRenderable;

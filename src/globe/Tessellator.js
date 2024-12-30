@@ -443,7 +443,7 @@ Tessellator.prototype.renderTile = function (dc, terrainTile) {
   var level = terrainTile.level,
     neighborLevel;
 
-  neighborLevel = terrainTile.neighborLevel(WorldWind.NORTH);
+  neighborLevel = terrainTile.neighborLevel(WorldWindConstants.NORTH);
   if (neighborLevel && neighborLevel.compare(level) < 0) {
     gl.drawElements(
       prim,
@@ -460,7 +460,7 @@ Tessellator.prototype.renderTile = function (dc, terrainTile) {
     );
   }
 
-  neighborLevel = terrainTile.neighborLevel(WorldWind.SOUTH);
+  neighborLevel = terrainTile.neighborLevel(WorldWindConstants.SOUTH);
   if (neighborLevel && neighborLevel.compare(level) < 0) {
     gl.drawElements(
       prim,
@@ -477,7 +477,7 @@ Tessellator.prototype.renderTile = function (dc, terrainTile) {
     );
   }
 
-  neighborLevel = terrainTile.neighborLevel(WorldWind.WEST);
+  neighborLevel = terrainTile.neighborLevel(WorldWindConstants.WEST);
   if (neighborLevel && neighborLevel.compare(level) < 0) {
     gl.drawElements(
       prim,
@@ -494,7 +494,7 @@ Tessellator.prototype.renderTile = function (dc, terrainTile) {
     );
   }
 
-  neighborLevel = terrainTile.neighborLevel(WorldWind.EAST);
+  neighborLevel = terrainTile.neighborLevel(WorldWindConstants.EAST);
   if (neighborLevel && neighborLevel.compare(level) < 0) {
     gl.drawElements(
       prim,
@@ -712,7 +712,7 @@ Tessellator.prototype.computeIntersections = function (line, tile, results) {
   WWMath.computeTriStripIntersections(line, points, elements, results);
 
   // Compute any intersections with the tile's south border triangles.
-  neighborLevel = tile.neighborLevel(WorldWind.SOUTH);
+  neighborLevel = tile.neighborLevel(WorldWindConstants.SOUTH);
   elements =
     neighborLevel && neighborLevel.compare(level) < 0
       ? this.indicesLoresSouth
@@ -720,7 +720,7 @@ Tessellator.prototype.computeIntersections = function (line, tile, results) {
   WWMath.computeTriStripIntersections(line, points, elements, results);
 
   // Compute any intersections with the tile's west border triangles.
-  neighborLevel = tile.neighborLevel(WorldWind.WEST);
+  neighborLevel = tile.neighborLevel(WorldWindConstants.WEST);
   elements =
     neighborLevel && neighborLevel.compare(level) < 0
       ? this.indicesLoresWest
@@ -728,7 +728,7 @@ Tessellator.prototype.computeIntersections = function (line, tile, results) {
   WWMath.computeTriStripIntersections(line, points, elements, results);
 
   // Compute any intersections with the tile's east border triangles.
-  neighborLevel = tile.neighborLevel(WorldWind.EAST);
+  neighborLevel = tile.neighborLevel(WorldWindConstants.EAST);
   elements =
     neighborLevel && neighborLevel.compare(level) < 0
       ? this.indicesLoresEast
@@ -736,7 +736,7 @@ Tessellator.prototype.computeIntersections = function (line, tile, results) {
   WWMath.computeTriStripIntersections(line, points, elements, results);
 
   // Compute any intersections with the tile's north border triangles.
-  neighborLevel = tile.neighborLevel(WorldWind.NORTH);
+  neighborLevel = tile.neighborLevel(WorldWindConstants.NORTH);
   elements =
     neighborLevel && neighborLevel.compare(level) < 0
       ? this.indicesLoresNorth
@@ -1022,19 +1022,19 @@ Tessellator.prototype.setNeighbors = function (tile) {
   }
 
   tile.setNeighborLevel(
-    WorldWind.NORTH,
+    WorldWindConstants.NORTH,
     northIdx >= 0 ? this.tiles[northIdx].level : null
   );
   tile.setNeighborLevel(
-    WorldWind.SOUTH,
+    WorldWindConstants.SOUTH,
     southIdx >= 0 ? this.tiles[southIdx].level : null
   );
   tile.setNeighborLevel(
-    WorldWind.EAST,
+    WorldWindConstants.EAST,
     eastIdx >= 0 ? this.tiles[eastIdx].level : null
   );
   tile.setNeighborLevel(
-    WorldWind.WEST,
+    WorldWindConstants.WEST,
     westIdx >= 0 ? this.tiles[westIdx].level : null
   );
 };
@@ -1133,10 +1133,10 @@ Tessellator.prototype.regenerateTileGeometry = function (dc, tile) {
 
 Tessellator.prototype.mustAlignNeighborElevations = function (dc, tile) {
   var level = tile.level,
-    northLevel = tile.neighborLevel(WorldWind.NORTH),
-    southLevel = tile.neighborLevel(WorldWind.SOUTH),
-    eastLevel = tile.neighborLevel(WorldWind.EAST),
-    westLevel = tile.neighborLevel(WorldWind.WEST);
+    northLevel = tile.neighborLevel(WorldWindConstants.NORTH),
+    southLevel = tile.neighborLevel(WorldWindConstants.SOUTH),
+    eastLevel = tile.neighborLevel(WorldWindConstants.EAST),
+    westLevel = tile.neighborLevel(WorldWindConstants.WEST);
 
   return (
     (northLevel && northLevel.compare(level) < 0) ||
@@ -1181,7 +1181,7 @@ Tessellator.prototype.alignNeighborElevations = function (
   );
 
   // Use previous level elevations along the north edge when the northern neighbor is lower resolution.
-  neighborLevel = tile.neighborLevel(WorldWind.NORTH);
+  neighborLevel = tile.neighborLevel(WorldWindConstants.NORTH);
   if (neighborLevel && neighborLevel.compare(level) < 0) {
     index = (numLat - 1) * numLon;
     prevIndex = (prevNumLat - 1) * prevNumLon;
@@ -1195,7 +1195,7 @@ Tessellator.prototype.alignNeighborElevations = function (
   }
 
   // Use previous level elevations along the south edge when the southern neighbor is lower resolution.
-  neighborLevel = tile.neighborLevel(WorldWind.SOUTH);
+  neighborLevel = tile.neighborLevel(WorldWindConstants.SOUTH);
   if (neighborLevel && neighborLevel.compare(level) < 0) {
     index = 0;
     prevIndex = 0;
@@ -1209,7 +1209,7 @@ Tessellator.prototype.alignNeighborElevations = function (
   }
 
   // Use previous level elevations along the east edge when the eastern neighbor is lower resolution.
-  neighborLevel = tile.neighborLevel(WorldWind.EAST);
+  neighborLevel = tile.neighborLevel(WorldWindConstants.EAST);
   if (neighborLevel && neighborLevel.compare(level) < 0) {
     index = numLon - 1;
     prevIndex = prevNumLon - 1;
@@ -1228,7 +1228,7 @@ Tessellator.prototype.alignNeighborElevations = function (
   }
 
   // Use previous level elevations along the west edge when the western neighbor is lower resolution.
-  neighborLevel = tile.neighborLevel(WorldWind.WEST);
+  neighborLevel = tile.neighborLevel(WorldWindConstants.WEST);
   if (neighborLevel && neighborLevel.compare(level) < 0) {
     index = 0;
     prevIndex = 0;

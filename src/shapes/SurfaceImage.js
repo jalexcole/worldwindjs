@@ -84,12 +84,12 @@ var SurfaceImage = function (sector, imageSource) {
    * This surface image's resampling mode. Indicates the sampling algorithm used to display this image when it
    * is larger on screen than its native resolution. May be one of:
    * <ul>
-   *  <li>WorldWind.FILTER_LINEAR</li>
-   *  <li>WorldWind.FILTER_NEAREST</li>
+   *  <li>WorldWindConstants.FILTER_LINEAR</li>
+   *  <li>WorldWindConstants.FILTER_NEAREST</li>
    * </ul>
-   * @default WorldWind.FILTER_LINEAR
+   * @default WorldWindConstants.FILTER_LINEAR
    */
-  this.resamplingMode = WorldWind.FILTER_LINEAR;
+  this.resamplingMode = WorldWindConstants.FILTER_LINEAR;
 
   /**
    * This surface image's opacity. When this surface image is drawn, the actual opacity is the product of
@@ -162,7 +162,9 @@ SurfaceImage.prototype.bindTexture = function (dc, texture) {
 
   texture.setTexParameter(
     gl.TEXTURE_MAG_FILTER,
-    this.resamplingMode === WorldWind.FILTER_NEAREST ? gl.NEAREST : gl.LINEAR
+    this.resamplingMode === WorldWindConstants.FILTER_NEAREST
+      ? gl.NEAREST
+      : gl.LINEAR
   );
 
   return texture.bind(dc);

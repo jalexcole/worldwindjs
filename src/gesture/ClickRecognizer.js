@@ -26,6 +26,7 @@
  * PDF found in code  directory.
  */
 import GestureRecognizer from "../gesture/GestureRecognizer";
+import WorldWindConstants from "../WorldWindConstants";
 
 /**
  * Constructs a mouse click gesture recognizer.
@@ -82,12 +83,12 @@ ClickRecognizer.prototype.reset = function () {
 
 // Documented in superclass.
 ClickRecognizer.prototype.mouseDown = function (event) {
-  if (this.state != WorldWind.POSSIBLE) {
+  if (this.state != WorldWindConstants.POSSIBLE) {
     return;
   }
 
   if (this.button != event.button) {
-    this.state = WorldWind.FAILED;
+    this.state = WorldWindConstants.FAILED;
   } else {
     var click = {
       clientX: this.clientX,
@@ -100,7 +101,7 @@ ClickRecognizer.prototype.mouseDown = function (event) {
 
 // Documented in superclass.
 ClickRecognizer.prototype.mouseMove = function (event) {
-  if (this.state != WorldWind.POSSIBLE) {
+  if (this.state != WorldWindConstants.POSSIBLE) {
     return;
   }
 
@@ -108,13 +109,13 @@ ClickRecognizer.prototype.mouseMove = function (event) {
     dy = this.translationY,
     distance = Math.sqrt(dx * dx + dy * dy);
   if (distance > this.maxMouseMovement) {
-    this.state = WorldWind.FAILED;
+    this.state = WorldWindConstants.FAILED;
   }
 };
 
 // Documented in superclass.
 ClickRecognizer.prototype.mouseUp = function (event) {
-  if (this.state != WorldWind.POSSIBLE) {
+  if (this.state != WorldWindConstants.POSSIBLE) {
     return;
   }
 
@@ -126,7 +127,7 @@ ClickRecognizer.prototype.mouseUp = function (event) {
   if (clickCount == this.numberOfClicks) {
     this.clientX = this.clicks[0].clientX;
     this.clientY = this.clicks[0].clientY;
-    this.state = WorldWind.RECOGNIZED;
+    this.state = WorldWindConstants.RECOGNIZED;
   } else {
     this.failAfterDelay(this.maxClickInterval); // fail if the interval between clicks is too long
   }
@@ -134,11 +135,11 @@ ClickRecognizer.prototype.mouseUp = function (event) {
 
 // Documented in superclass.
 ClickRecognizer.prototype.touchStart = function (touch) {
-  if (this.state != WorldWind.POSSIBLE) {
+  if (this.state != WorldWindConstants.POSSIBLE) {
     return;
   }
 
-  this.state = WorldWind.FAILED; // mouse gestures fail upon receiving a touch event
+  this.state = WorldWindConstants.FAILED; // mouse gestures fail upon receiving a touch event
 };
 
 // Intentionally not documented.
@@ -150,8 +151,8 @@ ClickRecognizer.prototype.failAfterDelay = function (delay) {
 
   self.timeout = window.setTimeout(function () {
     self.timeout = null;
-    if (self.state == WorldWind.POSSIBLE) {
-      self.state = WorldWind.FAILED; // fail if we haven't already reached a terminal state
+    if (self.state == WorldWindConstants.POSSIBLE) {
+      self.state = WorldWindConstants.FAILED; // fail if we haven't already reached a terminal state
     }
   }, delay);
 };

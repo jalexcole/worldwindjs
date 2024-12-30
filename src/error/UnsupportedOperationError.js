@@ -37,19 +37,19 @@ import AbstractError from "./AbstractError";
  * @augments AbstractError
  * @param {String} message The message.
  */
-var UnsupportedOperationError = function (message) {
-  AbstractError.call(this, "UnsupportedOperationError", message);
+class UnsupportedOperationError extends AbstractError {
+  constructor(message) {
+    super("UnsupportedOperationError", message);
 
-  var stack;
-  try {
-    //noinspection ExceptionCaughtLocallyJS
-    throw new Error();
-  } catch (e) {
-    stack = e.stack;
+    var stack;
+    try {
+      //noinspection ExceptionCaughtLocallyJS
+      throw new Error();
+    } catch (e) {
+      stack = e.stack;
+    }
+    this.stack = stack;
   }
-  this.stack = stack;
-};
-
-UnsupportedOperationError.prototype = Object.create(AbstractError.prototype);
+}
 
 export default UnsupportedOperationError;

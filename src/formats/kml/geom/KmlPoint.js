@@ -45,13 +45,21 @@ import Position from "../../../geom/Position";
  * @see https://developers.google.com/kml/documentation/kmlreference#point
  * @augments KmlGeometry
  */
-var KmlPoint = function (options) {
-  KmlGeometry.call(this, options);
+class KmlPoint extends KmlGeometry {
+  constructor(options) {
+    super(options);
 
-  this._shape = null;
-};
+    this._shape = null;
+  }
+  /**
+   * @inheritDoc
+   */
+  getTagNames() {
+    return ["Point"];
+  }
+}
 
-KmlPoint.prototype = Object.create(KmlGeometry.prototype);
+
 
 Object.defineProperties(KmlPoint.prototype, {
   /**
@@ -66,7 +74,7 @@ Object.defineProperties(KmlPoint.prototype, {
       var coordinates = this._factory
         .specific(this, {
           name: "coordinates",
-          transformer: NodeTransformers.string,
+          transformer: KmlNodeTransformers.string,
         })
         .split(",");
       return new Position(coordinates[1], coordinates[0], coordinates[2] || 0);
@@ -84,7 +92,7 @@ Object.defineProperties(KmlPoint.prototype, {
     get: function () {
       return this._factory.specific(this, {
         name: "extrude",
-        transformer: NodeTransformers.boolean,
+        transformer: KmlNodeTransformers.boolean,
       });
     },
   },
@@ -100,7 +108,7 @@ Object.defineProperties(KmlPoint.prototype, {
     get: function () {
       return this._factory.specific(this, {
         name: "altitudeMode",
-        transformer: NodeTransformers.string,
+        transformer: KmlNodeTransformers.string,
       });
     },
   },
@@ -118,12 +126,6 @@ Object.defineProperties(KmlPoint.prototype, {
   },
 });
 
-/**
- * @inheritDoc
- */
-KmlPoint.prototype.getTagNames = function () {
-  return ["Point"];
-};
 
 KmlElements.addKey(KmlPoint.prototype.getTagNames()[0], KmlPoint);
 

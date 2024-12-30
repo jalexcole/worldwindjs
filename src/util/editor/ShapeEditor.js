@@ -115,7 +115,7 @@ var ShapeEditor = function (worldWindow) {
 
   // Documented in defineProperties below.
   this._annotationAttributes = new AnnotationAttributes(null);
-  this._annotationAttributes.altitudeMode = WorldWind.CLAMP_TO_GROUND;
+  this._annotationAttributes.altitudeMode = WorldWindConstants.CLAMP_TO_GROUND;
   this._annotationAttributes.cornerRadius = 5;
   this._annotationAttributes.backgroundColor = new Color(0.67, 0.67, 0.67, 0.8);
   this._annotationAttributes.leaderGapHeight = 0;
@@ -822,7 +822,7 @@ ShapeEditor.prototype.beginAction = function (
   var shadowShape = this.activeEditorFragment.createShadowShape(this._shape);
 
   if (this.activeEditorFragment instanceof PlacemarkEditorFragment) {
-    shadowShape.altitudeMode = WorldWind.CLAMP_TO_GROUND;
+    shadowShape.altitudeMode = WorldWindConstants.CLAMP_TO_GROUND;
     shadowShape.highlightAttributes = new PlacemarkAttributes(
       this.originalPlacemarkHighlightAttributes
     );

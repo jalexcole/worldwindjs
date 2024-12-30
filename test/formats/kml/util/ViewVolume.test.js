@@ -27,7 +27,7 @@
  */
 
 import { KmlViewVolume, XmlDocument } from "../../../../src/WorldWind.js";
-import { describe, beforeEach, afterEach } from "vitest";
+import { describe, beforeEach, afterEach, expect } from "vitest";
 describe("KmlViewVolumeTest", function () {
   var index = 0;
 

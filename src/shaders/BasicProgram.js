@@ -46,40 +46,104 @@ import Logger from "../util/Logger";
  * @throws {ArgumentError} If the shaders cannot be compiled, or linking of
  * the compiled shaders into a program fails.
  */
-var BasicProgram = function (gl) {
-  var vertexShaderSource =
-      "attribute vec4 vertexPoint;\n" +
+class BasicProgram extends GpuProgram {
+  constructor(gl) {
+    var vertexShaderSource = "attribute vec4 vertexPoint;\n" +
       "uniform mat4 mvpMatrix;\n" +
-      "void main() {gl_Position = mvpMatrix * vertexPoint;}",
-    fragmentShaderSource =
-      "precision mediump float;\n" +
-      "uniform vec4 color;\n" +
-      "void main() {gl_FragColor = color;}";
+      "void main() {gl_Position = mvpMatrix * vertexPoint;}", fragmentShaderSource = "precision mediump float;\n" +
+        "uniform vec4 color;\n" +
+        "void main() {gl_FragColor = color;}";
 
-  // Call to the superclass, which performs shader program compiling and linking.
-  GpuProgram.call(this, gl, vertexShaderSource, fragmentShaderSource);
+    // Call to the superclass, which performs shader program compiling and linking.
+    GpuProgram.call(this, gl, vertexShaderSource, fragmentShaderSource);
 
+    /**
+     * The WebGL location for this program's 'vertexPoint' attribute.
+     * @type {Number}
+     * @readonly
+     */
+    this.vertexPointLocation = this.attributeLocation(gl, "vertexPoint");
+
+    /**
+     * The WebGL location for this program's 'mvpMatrix' uniform.
+     * @type {WebGLUniformLocation}
+     * @readonly
+     */
+    this.mvpMatrixLocation = this.uniformLocation(gl, "mvpMatrix");
+
+    /**
+     * The WebGL location for this program's 'color' uniform.
+     * @type {WebGLUniformLocation}
+     * @readonly
+     */
+    this.colorLocation = this.uniformLocation(gl, "color");
+  }
   /**
-   * The WebGL location for this program's 'vertexPoint' attribute.
-   * @type {Number}
-   * @readonly
+   * Loads the specified matrix as the value of this program's 'mvpMatrix' uniform variable.
+   *
+   * @param {WebGLRenderingContext} gl The current WebGL context.
+   * @param {Matrix} matrix The matrix to load.
+   * @throws {ArgumentError} If the specified matrix is null or undefined.
    */
-  this.vertexPointLocation = this.attributeLocation(gl, "vertexPoint");
+  loadModelviewProjection(gl, matrix) {
+    if (!matrix) {
+      throw new ArgumentError(
+        Logger.logMessage(
+          Logger.LEVEL_SEVERE,
+          "BasicProgram",
+          "loadModelviewProjection",
+          "missingMatrix"
+        )
+      );
+    }
 
+    this.loadUniformMatrix(gl, matrix, this.mvpMatrixLocation);
+  }
   /**
-   * The WebGL location for this program's 'mvpMatrix' uniform.
-   * @type {WebGLUniformLocation}
-   * @readonly
+   * Loads the specified color as the value of this program's 'color' uniform variable.
+   *
+   * @param {WebGLRenderingContext} gl The current WebGL context.
+   * @param {Color} color The color to load.
+   * @throws {ArgumentError} If the specified color is null or undefined.
    */
-  this.mvpMatrixLocation = this.uniformLocation(gl, "mvpMatrix");
+  loadColor(gl, color) {
+    if (!color) {
+      throw new ArgumentError(
+        Logger.logMessage(
+          Logger.LEVEL_SEVERE,
+          "BasicProgram",
+          "loadColor",
+          "missingColor"
+        )
+      );
+    }
 
+    this.loadUniformColor(gl, color, this.colorLocation);
+  }
   /**
-   * The WebGL location for this program's 'color' uniform.
-   * @type {WebGLUniformLocation}
-   * @readonly
+   * Loads the specified RGBA color components as the value of this program's 'color' uniform variable.
+   *
+   * @param {WebGLRenderingContext} gl The current WebGL context.
+   * @param {Number} red The red component, a number between 0 and 1.
+   * @param {Number} green The green component, a number between 0 and 1.
+   * @param {Number} blue The blue component, a number between 0 and 1.
+   * @param {Number} alpha The alpha component, a number between 0 and 1.
    */
-  this.colorLocation = this.uniformLocation(gl, "color");
-};
+  loadColorComponents(gl,
+    red,
+    green,
+    blue,
+    alpha) {
+    this.loadUniformColorComponents(
+      gl,
+      red,
+      green,
+      blue,
+      alpha,
+      this.colorLocation
+    );
+  }
+}
 
 /**
  * A string that uniquely identifies this program.
@@ -89,76 +153,9 @@ var BasicProgram = function (gl) {
 BasicProgram.key = "WorldWindGpuBasicProgram";
 
 // Inherit from GpuProgram.
-BasicProgram.prototype = Object.create(GpuProgram.prototype);
+// BasicProgram.prototype = Object.create(GpuProgram.prototype);
 
-/**
- * Loads the specified matrix as the value of this program's 'mvpMatrix' uniform variable.
- *
- * @param {WebGLRenderingContext} gl The current WebGL context.
- * @param {Matrix} matrix The matrix to load.
- * @throws {ArgumentError} If the specified matrix is null or undefined.
- */
-BasicProgram.prototype.loadModelviewProjection = function (gl, matrix) {
-  if (!matrix) {
-    throw new ArgumentError(
-      Logger.logMessage(
-        Logger.LEVEL_SEVERE,
-        "BasicProgram",
-        "loadModelviewProjection",
-        "missingMatrix"
-      )
-    );
-  }
 
-  this.loadUniformMatrix(gl, matrix, this.mvpMatrixLocation);
-};
 
-/**
- * Loads the specified color as the value of this program's 'color' uniform variable.
- *
- * @param {WebGLRenderingContext} gl The current WebGL context.
- * @param {Color} color The color to load.
- * @throws {ArgumentError} If the specified color is null or undefined.
- */
-BasicProgram.prototype.loadColor = function (gl, color) {
-  if (!color) {
-    throw new ArgumentError(
-      Logger.logMessage(
-        Logger.LEVEL_SEVERE,
-        "BasicProgram",
-        "loadColor",
-        "missingColor"
-      )
-    );
-  }
-
-  this.loadUniformColor(gl, color, this.colorLocation);
-};
-
-/**
- * Loads the specified RGBA color components as the value of this program's 'color' uniform variable.
- *
- * @param {WebGLRenderingContext} gl The current WebGL context.
- * @param {Number} red The red component, a number between 0 and 1.
- * @param {Number} green The green component, a number between 0 and 1.
- * @param {Number} blue The blue component, a number between 0 and 1.
- * @param {Number} alpha The alpha component, a number between 0 and 1.
- */
-BasicProgram.prototype.loadColorComponents = function (
-  gl,
-  red,
-  green,
-  blue,
-  alpha
-) {
-  this.loadUniformColorComponents(
-    gl,
-    red,
-    green,
-    blue,
-    alpha,
-    this.colorLocation
-  );
-};
 
 export default BasicProgram;

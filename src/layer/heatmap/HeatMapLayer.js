@@ -431,7 +431,7 @@ HeatMapLayer.prototype.retrieveTileImage = function (dc, tile, suppressRedraw) {
       if (!suppressRedraw) {
         // Send an event to request a redraw.
         var e = document.createEvent("Event");
-        e.initEvent(WorldWind.REDRAW_EVENT_TYPE, true, true);
+        e.initEvent(WorldWindConstants.REDRAW_EVENT_TYPE, true, true);
         window.dispatchEvent(e);
       }
     }

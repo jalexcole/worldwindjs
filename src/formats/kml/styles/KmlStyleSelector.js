@@ -39,17 +39,17 @@ import KmlObject from "../KmlObject";
  * @see https://developers.google.com/kml/documentation/kmlreference#styleselector
  * @augments KmlObject
  */
-var KmlStyleSelector = function (options) {
-  KmlObject.call(this, options);
-};
+class KmlStyleSelector extends KmlObject{
+  constructor(options) {
+    super(options);
+  }
+  /**
+   * @inheritDoc
+   */
+  getTagNames() {
+    return ["Style", "StyleMap"];
+  }
+}
 
-KmlStyleSelector.prototype = Object.create(KmlObject.prototype);
-
-/**
- * @inheritDoc
- */
-KmlStyleSelector.prototype.getTagNames = function () {
-  return ["Style", "StyleMap"];
-};
 
 export default KmlStyleSelector;

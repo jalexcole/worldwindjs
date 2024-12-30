@@ -39,26 +39,28 @@ import WktType from "../WktType";
  * @augments WktObject
  * @constructor
  */
-var WktTriangle = function () {
-  WktObject.call(this, WktType.SupportedGeometries.TRIANGLE);
+class WktTriangle extends WktObject {
+  constructor() {
+    super(WktType.SupportedGeometries.TRIANGLE);
 
-  this._renderable = null;
-};
-
-WktTriangle.prototype = Object.create(WktObject.prototype);
-
-/**
- * It returns SurfacePolygon for 2D. It returns Polygon for 3D. Triangle doesn't support inner boundaries.
- * @inheritDoc
- * @return {Polygon|SurfacePolyline}
- */
-WktTriangle.prototype.shapes = function () {
-  if (this._is3d) {
-    return [new Polygon(this.coordinates, new ShapeAttributes(null))];
-  } else {
-    return [new SurfacePolygon(this.coordinates, new ShapeAttributes(null))];
+    this._renderable = null;
   }
-};
+  /**
+   * It returns SurfacePolygon for 2D. It returns Polygon for 3D. Triangle doesn't support inner boundaries.
+   * @inheritDoc
+   * @return {Polygon|SurfacePolyline}
+   */
+  shapes() {
+    if (this._is3d) {
+      return [new Polygon(this.coordinates, new ShapeAttributes(null))];
+    } else {
+      return [new SurfacePolygon(this.coordinates, new ShapeAttributes(null))];
+    }
+  }
+}
+
+
+
 
 WktElements["TRIANGLE"] = WktTriangle;
 

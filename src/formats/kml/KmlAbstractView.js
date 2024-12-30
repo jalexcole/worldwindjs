@@ -43,33 +43,28 @@ import KmlTreePrimitive from "./KmlTimePrimitive";
  * @see https://developers.google.com/kml/documentation/kmlreference#abstractview
  * @augments KmlObject
  */
-var KmlAbstractView = function (options) {
-  KmlObject.call(this, options);
-};
+class KmlAbstractView extends KmlObject {
+  constructor(options) {
+    super(options);
+  }
+  /**
+   * @inheritDoc
+   */
+  getTagNames() {
+    return ["Camera", "LookAt"];
+  }
 
-KmlAbstractView.prototype = Object.create(KmlObject.prototype);
-
-Object.defineProperties(KmlAbstractView.prototype, {
   /**
    * Time associated with current view. It shouldn't be displayed outside of this time frame.
    * @memberof KmlAbstractView.prototype
    * @readonly
    * @type {KmlTimePrimitive}
    */
-  kmlTimePrimitive: {
-    get: function () {
-      return this._factory.any(this, {
-        name: KmlTimePrimitive.prototype.getTagNames(),
-      });
-    },
-  },
-});
-
-/**
- * @inheritDoc
- */
-KmlAbstractView.prototype.getTagNames = function () {
-  return ["Camera", "LookAt"];
-};
+  get kmlTimePrimitive() {
+    return this._factory.any(this, {
+      name: KmlTimePrimitive.prototype.getTagNames(),
+    });
+  }
+}
 
 export default KmlAbstractView;

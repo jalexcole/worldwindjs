@@ -40,14 +40,16 @@ import ShapefileRecord from "../../formats/shapefile/ShapefileRecord";
  * @param {ByteBuffer} buffer A buffer descriptor to read data from.
  * @throws {ArgumentError} If either the specified shapefile or buffer are null or undefined.
  */
-var ShapefileRecordMultiPoint = function (shapefile, buffer) {
-  ShapefileRecord.call(this, shapefile, buffer);
-};
+class ShapefileRecordMultiPoint {
+  constructor(shapefile, buffer) {
+    ShapefileRecord.call(this, shapefile, buffer);
+  }
+  readContents() {
+    this.readMultiPointContents();
+  }
+}
 
 ShapefileRecordMultiPoint.prototype = Object.create(ShapefileRecord.prototype);
 
-ShapefileRecordMultiPoint.prototype.readContents = function () {
-  this.readMultiPointContents();
-};
 
 export default ShapefileRecordMultiPoint;

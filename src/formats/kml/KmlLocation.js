@@ -41,11 +41,19 @@ import KmlNodeTransformers from "./util/KmlNodeTransformers";
  * @see https://developers.google.com/kml/documentation/kmlreference#location
  * @augments KmlObject
  */
-var KmlLocation = function (options) {
-  KmlObject.call(this, options);
-};
+class KmlLocation extends KmlObject {
+  constructor(options) {
+    super(options);
+  }
+  /**
+   * @inheritDoc
+   */
+  getTagNames() {
+    return ["Location"];
+  }
+}
 
-KmlLocation.prototype = Object.create(KmlObject.prototype);
+
 
 Object.defineProperties(KmlLocation.prototype, {
   /**
@@ -58,7 +66,7 @@ Object.defineProperties(KmlLocation.prototype, {
     get: function () {
       return this._factory.specific(this, {
         name: "longitude",
-        transformer: NodeTransformers.string,
+        transformer: KmlNodeTransformers.string,
       });
     },
   },
@@ -73,7 +81,7 @@ Object.defineProperties(KmlLocation.prototype, {
     get: function () {
       return this._factory.specific(this, {
         name: "latitude",
-        transformer: NodeTransformers.string,
+        transformer: KmlNodeTransformers.string,
       });
     },
   },
@@ -88,18 +96,12 @@ Object.defineProperties(KmlLocation.prototype, {
     get: function () {
       return this._factory.specific(this, {
         name: "altitude",
-        transformer: NodeTransformers.string,
+        transformer: KmlNodeTransformers.string,
       });
     },
   },
 });
 
-/**
- * @inheritDoc
- */
-KmlLocation.prototype.getTagNames = function () {
-  return ["Location"];
-};
 
 KmlElements.addKey(KmlLocation.prototype.getTagNames()[0], KmlLocation);
 

@@ -41,11 +41,19 @@ import KmlNodeTransformers from "./util/KmlNodeTransformers";
  * @see https://developers.google.com/kml/documentation/kmlreference#gxlatlonquad
  * @augments KmlObject
  */
-var KmlLatLonQuad = function (options) {
-  KmlObject.call(this, options);
-};
+class KmlLatLonQuad extends KmlObject {
+  constructor(options) {
+    super(options);
+  }
+  /**
+   * @inheritDoc
+   */
+  getTagNames() {
+    return ["gx:LatLonQuad"];
+  }
+}
 
-KmlLatLonQuad.prototype = Object.create(KmlObject.prototype);
+
 
 Object.defineProperties(KmlLatLonQuad.prototype, {
   /**
@@ -63,18 +71,12 @@ Object.defineProperties(KmlLatLonQuad.prototype, {
     get: function () {
       return this._factory.specific(this, {
         name: "coordinates",
-        transformer: NodeTransformers.string,
+        transformer: KmlNodeTransformers.string,
       });
     },
   },
 });
 
-/**
- * @inheritDoc
- */
-KmlLatLonQuad.prototype.getTagNames = function () {
-  return ["gx:LatLonQuad"];
-};
 
 KmlElements.addKey(KmlLatLonQuad.prototype.getTagNames()[0], KmlLatLonQuad);
 

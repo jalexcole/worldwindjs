@@ -102,9 +102,9 @@ var ScreenImage = function (screenOffset, imageSource) {
    * @default 0.5, 0.5, both fractional (Centers the image on the screen location.)
    */
   this.imageOffset = new Offset(
-    WorldWind.OFFSET_FRACTION,
+    WorldWindConstants.OFFSET_FRACTION,
     0.5,
-    WorldWind.OFFSET_FRACTION,
+    WorldWindConstants.OFFSET_FRACTION,
     0.5
   );
 

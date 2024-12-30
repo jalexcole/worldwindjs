@@ -40,11 +40,17 @@ import KmlNodeTransformers from "../util/KmlNodeTransformers";
  * @see https://developers.google.com/kml/documentation/kmlreference#colorstyle
  * @augments KmlSubStyle
  */
-var KmlColorStyle = function (options) {
-  KmlSubStyle.call(this, options);
-};
-
-KmlColorStyle.prototype = Object.create(KmlSubStyle.prototype);
+class KmlColorStyle extends KmlSubStyle {
+  constructor(options) {
+    super(options);
+  }
+  /**
+   * @inheritDoc
+   */
+  getTagNames() {
+    return ["LineStyle", "PolyStyle", "IconStyle", "LabelStyle"];
+  }
+}
 
 Object.defineProperties(KmlColorStyle.prototype, {
   /**
@@ -58,7 +64,7 @@ Object.defineProperties(KmlColorStyle.prototype, {
     get: function () {
       return this._factory.specific(this, {
         name: "color",
-        transformer: NodeTransformers.string,
+        transformer: KmlNodeTransformers.string,
       });
     },
   },
@@ -74,17 +80,10 @@ Object.defineProperties(KmlColorStyle.prototype, {
     get: function () {
       return this._factory.specific(this, {
         name: "colorMode",
-        transformer: NodeTransformers.string,
+        transformer: KmlNodeTransformers.string,
       });
     },
   },
 });
-
-/**
- * @inheritDoc
- */
-KmlColorStyle.prototype.getTagNames = function () {
-  return ["LineStyle", "PolyStyle", "IconStyle", "LabelStyle"];
-};
 
 export default KmlColorStyle;

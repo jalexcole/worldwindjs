@@ -48,9 +48,9 @@ import Vec3 from "../geom/Vec3";
  * @classdesc Represents a line, curve or curtain between specified positions. The path is drawn between input
  * positions to achieve a specified path type, which can be one of the following:
  * <ul>
- *     <li>[WorldWind.GREAT_CIRCLE]{@link WorldWind#GREAT_CIRCLE}</li>
- *     <li>[WorldWind.RHUMB_LINE]{@link WorldWind#RHUMB_LINE}</li>
- *     <li>[WorldWind.LINEAR]{@link WorldWind#LINEAR}</li>
+ *     <li>[WorldWindConstants.GREAT_CIRCLE]{@link WorldWind#GREAT_CIRCLE}</li>
+ *     <li>[WorldWindConstants.RHUMB_LINE]{@link WorldWind#RHUMB_LINE}</li>
+ *     <li>[WorldWindConstants.LINEAR]{@link WorldWind#LINEAR}</li>
  * </ul>
  * <p>
  *     Paths conform to the terrain if the path's [followTerrain]{@link Path#followTerrain} property is true.
@@ -58,9 +58,9 @@ import Vec3 from "../geom/Vec3";
  *     Altitudes within the path's positions are interpreted according to the path's altitude mode, which
  *     can be one of the following:
  * <ul>
- *     <li>[WorldWind.ABSOLUTE]{@link WorldWind#ABSOLUTE}</li>
- *     <li>[WorldWind.RELATIVE_TO_GROUND]{@link WorldWind#RELATIVE_TO_GROUND}</li>
- *     <li>[WorldWind.CLAMP_TO_GROUND]{@link WorldWind#CLAMP_TO_GROUND}</li>
+ *     <li>[WorldWindConstants.ABSOLUTE]{@link WorldWind#ABSOLUTE}</li>
+ *     <li>[WorldWindConstants.RELATIVE_TO_GROUND]{@link WorldWind#RELATIVE_TO_GROUND}</li>
+ *     <li>[WorldWindConstants.CLAMP_TO_GROUND]{@link WorldWind#CLAMP_TO_GROUND}</li>
  * </ul>
  * If the latter, the path positions' altitudes are ignored.
  * <p>
@@ -96,7 +96,7 @@ var Path = function (positions, attributes) {
   this._positions = positions;
 
   // Private. Documentation is with the defined property below.
-  this._pathType = WorldWind.GREAT_CIRCLE;
+  this._pathType = WorldWindConstants.GREAT_CIRCLE;
 
   // Private. Documentation is with the defined property below.
   this._terrainConformance = 10;
@@ -178,7 +178,7 @@ Object.defineProperties(Path.prototype, {
    * cause the path to conform more closely to the path type but decrease performance.
    * <p/>
    * Note: The sub-segments number is ignored when the path follows terrain or when the path type is
-   * WorldWind.LINEAR.
+   * WorldWindConstants.LINEAR.
    * @type {Number}
    * @default 10
    * @memberof Path.prototype
@@ -196,12 +196,12 @@ Object.defineProperties(Path.prototype, {
   /**
    * The type of path to follow when drawing the path. Recognized values are:
    * <ul>
-   * <li>[WorldWind.GREAT_CIRCLE]{@link WorldWind#GREAT_CIRCLE}</li>
-   * <li>[WorldWind.RHUMB_LINE]{@link WorldWind#RHUMB_LINE}</li>
-   * <li>[WorldWind.LINEAR]{@link WorldWind#LINEAR}</li>
+   * <li>[WorldWindConstants.GREAT_CIRCLE]{@link WorldWind#GREAT_CIRCLE}</li>
+   * <li>[WorldWindConstants.RHUMB_LINE]{@link WorldWind#RHUMB_LINE}</li>
+   * <li>[WorldWindConstants.LINEAR]{@link WorldWind#LINEAR}</li>
    * </ul>
    * @type {String}
-   * @default WorldWind.GREAT_CIRCLE
+   * @default WorldWindConstants.GREAT_CIRCLE
    * @memberof Path.prototype
    */
   pathType: {
@@ -265,7 +265,7 @@ Path.prototype.mustGenerateGeometry = function (dc) {
     return true;
   }
 
-  if (this.altitudeMode === WorldWind.ABSOLUTE) {
+  if (this.altitudeMode === WorldWindConstants.ABSOLUTE) {
     return false;
   }
 
@@ -374,7 +374,7 @@ Path.prototype.makeTessellatedPositions = function (dc) {
     pixelSize = dc.pixelSizeAtDistance(eyeDistance);
     if (
       ptA.distanceTo(ptB) < pixelSize * 8 &&
-      this.altitudeMode !== WorldWind.ABSOLUTE
+      this.altitudeMode !== WorldWindConstants.ABSOLUTE
     ) {
       tessellatedPositions.push(posB); // distance is short so no need for sub-segments
     } else {
@@ -414,7 +414,7 @@ Path.prototype.makeSegment = function (
     distance;
 
   // If it's just a straight line and not terrain following, then the segment is just two points.
-  if (this._pathType === WorldWind.LINEAR && !this._followTerrain) {
+  if (this._pathType === WorldWindConstants.LINEAR && !this._followTerrain) {
     if (!ptA.equals(ptB)) {
       tessellatedPositions.push(posB);
     }
@@ -423,15 +423,15 @@ Path.prototype.makeSegment = function (
 
   // Compute the segment length.
 
-  if (this._pathType === WorldWind.LINEAR) {
+  if (this._pathType === WorldWindConstants.LINEAR) {
     segmentDistance = Location.linearDistance(posA, posB);
-  } else if (this._pathType === WorldWind.RHUMB_LINE) {
+  } else if (this._pathType === WorldWindConstants.RHUMB_LINE) {
     segmentDistance = Location.rhumbDistance(posA, posB);
   } else {
     segmentDistance = Location.greatCircleDistance(posA, posB);
   }
 
-  if (this._altitudeMode !== WorldWind.CLAMP_TO_GROUND) {
+  if (this._altitudeMode !== WorldWindConstants.CLAMP_TO_GROUND) {
     height = 0.5 * (posA.altitude + posB.altitude);
   }
 
@@ -446,9 +446,9 @@ Path.prototype.makeSegment = function (
 
   // Compute the azimuth to apply while tessellating the segment.
 
-  if (this._pathType === WorldWind.LINEAR) {
+  if (this._pathType === WorldWindConstants.LINEAR) {
     segmentAzimuth = Location.linearAzimuth(posA, posB);
-  } else if (this._pathType === WorldWind.RHUMB_LINE) {
+  } else if (this._pathType === WorldWindConstants.RHUMB_LINE) {
     segmentAzimuth = Location.rhumbAzimuth(posA, posB);
   } else {
     segmentAzimuth = Location.greatCircleAzimuth(posA, posB);
@@ -471,9 +471,9 @@ Path.prototype.makeSegment = function (
     s = p / arcLength;
     distance = s * segmentDistance;
 
-    if (this._pathType === WorldWind.LINEAR) {
+    if (this._pathType === WorldWindConstants.LINEAR) {
       Location.linearLocation(posA, segmentAzimuth, distance, pos);
-    } else if (this._pathType === WorldWind.RHUMB_LINE) {
+    } else if (this._pathType === WorldWindConstants.RHUMB_LINE) {
       Location.rhumbLocation(posA, segmentAzimuth, distance, pos);
     } else {
       Location.greatCircleLocation(posA, segmentAzimuth, distance, pos);
@@ -490,7 +490,7 @@ Path.prototype.makeSegment = function (
         pos.latitude,
         pos.longitude,
         pos.altitude,
-        WorldWind.CLAMP_TO_GROUND,
+        WorldWindConstants.CLAMP_TO_GROUND,
         this.scratchPoint
       );
     }
@@ -513,8 +513,11 @@ Path.prototype.computeRenderedPath = function (dc, tessellatedPositions) {
     k,
     dSquared;
 
-  if (this._followTerrain && this.altitudeMode !== WorldWind.CLAMP_TO_GROUND) {
-    altitudeMode = WorldWind.RELATIVE_TO_GROUND;
+  if (
+    this._followTerrain &&
+    this.altitudeMode !== WorldWindConstants.CLAMP_TO_GROUND
+  ) {
+    altitudeMode = WorldWindConstants.RELATIVE_TO_GROUND;
   } else {
     altitudeMode = this.altitudeMode;
   }
@@ -547,7 +550,7 @@ Path.prototype.computeRenderedPath = function (dc, tessellatedPositions) {
         pos.latitude,
         pos.longitude,
         0,
-        WorldWind.CLAMP_TO_GROUND,
+        WorldWindConstants.CLAMP_TO_GROUND,
         pt
       );
 
@@ -575,7 +578,7 @@ Path.prototype.mustDrawInterior = function (dc) {
   return (
     this.activeAttributes.drawInterior &&
     this._extrude &&
-    this._altitudeMode !== WorldWind.CLAMP_TO_GROUND
+    this._altitudeMode !== WorldWindConstants.CLAMP_TO_GROUND
   );
 };
 
@@ -584,7 +587,7 @@ Path.prototype.mustDrawVerticals = function (dc) {
   return (
     this.activeAttributes.drawOutline &&
     this.activeAttributes.drawVerticals &&
-    this.altitudeMode !== WorldWind.CLAMP_TO_GROUND
+    this.altitudeMode !== WorldWindConstants.CLAMP_TO_GROUND
   );
 };
 
@@ -657,7 +660,7 @@ Path.prototype.doRenderOrdered = function (dc) {
   if (this.activeAttributes.drawOutline) {
     if (
       (this.mustDrawVerticals(dc) && this.mustDrawInterior(dc)) ||
-      this.altitudeMode === WorldWind.CLAMP_TO_GROUND
+      this.altitudeMode === WorldWindConstants.CLAMP_TO_GROUND
     ) {
       // Make the verticals stand out from the interior, or the outline stand out from the terrain.
       this.applyMvpMatrixForOutline(dc);

@@ -41,43 +41,41 @@ import KmlObject from "./KmlObject";
  * @see https://developers.google.com/kml/documentation/kmlreference#timeprimitive
  * @augments KmlObject
  */
-var KmlTimePrimitive = function (options) {
-  KmlObject.call(this, options);
-};
-
-KmlTimePrimitive.prototype = Object.create(KmlObject.prototype);
-
-/**
- * It returns range applicable to current time.
- * @returns {{from: Date, to: Date}}
- */
-KmlTimePrimitive.prototype.timeRange = function () {
-  var from, to;
-  if (this.kmlBegin) {
-    to = from = this.kmlBegin.valueOf();
+class KmlTimePrimitive extends KmlObject{
+  constructor(options) {
+    super(options);
   }
-  if (this.kmlEnd) {
-    to = this.kmlEnd.valueOf();
-    if (!from) {
-      from = to;
+  /**
+   * It returns range applicable to current time.
+   * @returns {{from: Date, to: Date}}
+   */
+  timeRange() {
+    var from, to;
+    if (this.kmlBegin) {
+      to = from = this.kmlBegin.valueOf();
     }
+    if (this.kmlEnd) {
+      to = this.kmlEnd.valueOf();
+      if (!from) {
+        from = to;
+      }
+    }
+
+    if (this.kmlWhen) {
+      to = from = this.kmlWhen.valueOf();
+    }
+
+    return {
+      from: from,
+      to: to,
+    };
   }
-
-  if (this.kmlWhen) {
-    to = from = this.kmlWhen.valueOf();
+  /**
+   * @inheritDoc
+   */
+  getTagNames() {
+    return ["TimeSpan", "TimeStamp"];
   }
-
-  return {
-    from: from,
-    to: to,
-  };
-};
-
-/**
- * @inheritDoc
- */
-KmlTimePrimitive.prototype.getTagNames = function () {
-  return ["TimeSpan", "TimeStamp"];
-};
+}
 
 export default KmlTimePrimitive;

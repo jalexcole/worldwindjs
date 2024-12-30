@@ -29,85 +29,95 @@ import KmlElements from "../KmlElements";
 import KmlSubStyle from "./KmlSubStyle";
 import KmlNodeTransformers from "../util/KmlNodeTransformers";
 
-    /**
-     * Constructs an KmlBalloonStyle. Applications usually don't call this constructor. It is called by {@link KmlFile}
-     * as objects from KmlFile are read. This object is already concrete implementation.
-     * @alias KmlBalloonStyle
-     * @classdesc Contains the data associated with BalloonStyle node
-     * @param options {Object}
-     * @param options.objectNode {Node} Node representing BalloonStyle
-     * @constructor
-     * @throws {ArgumentError} If the node is null or undefined
-     * @see https://developers.google.com/kml/documentation/kmlreference#balloonstyle
-     * @augments KmlSubStyle
-     */
-    var KmlBalloonStyle = function (options) {
-        KmlSubStyle.call(this, options);
-    };
-
-    KmlBalloonStyle.prototype = Object.create(KmlSubStyle.prototype);
-
-    Object.defineProperties(KmlBalloonStyle.prototype, {
-        /**
-         * Represents background color of the balloon. It expects hexadecimal notation without #.
-         * @memberof KmlBalloonStyle.prototype
-         * @readonly
-         * @type {String}
-         */
-        kmlBgColor: {
-            get: function(){
-                return this._factory.specific(this, {name: 'bgColor', transformer: KmlNodeTransformers.string});
-            }
-        },
-
-        /**
-         * Represents color of the text in the balloon. It expects hexadecimal notation without #.
-         * @memberof KmlBalloonStyle.prototype
-         * @readonly
-         * @type {String}
-         */
-        kmlTextColor: {
-            get: function() {
-                return this._factory.specific(this, {name: 'textColor', transformer: KmlNodeTransformers.string});
-            }
-        },
-
-        /**
-         * Text which should be displayed in the balloon, otherwise feature name and description is displayed.
-         * @memberof KmlBalloonStyle.prototype
-         * @readonly
-         * @type {String}
-         */
-        kmlText: {
-            get: function(){
-                return this._factory.specific(this, {name: 'text', transformer: KmlNodeTransformers.string});
-            }
-        },
-
-        /**
-         * Either display or hide. When hide don't show the balloon at all.
-         * @memberof KmlBalloonStyle.prototype
-         * @readonly
-         * @type {String}
-         */
-        kmlDisplayMode: {
-            get: function() {
-                return this._factory.specific(this, {name: 'displayMode', transformer: KmlNodeTransformers.string});
-            }
-        }
-    });
-
-    KmlBalloonStyle.update = function(){
-
-    };
-
+/**
+ * Constructs an KmlBalloonStyle. Applications usually don't call this constructor. It is called by {@link KmlFile}
+ * as objects from KmlFile are read. This object is already concrete implementation.
+ * @alias KmlBalloonStyle
+ * @classdesc Contains the data associated with BalloonStyle node
+ * @param options {Object}
+ * @param options.objectNode {Node} Node representing BalloonStyle
+ * @constructor
+ * @throws {ArgumentError} If the node is null or undefined
+ * @see https://developers.google.com/kml/documentation/kmlreference#balloonstyle
+ * @augments KmlSubStyle
+ */
+class KmlBalloonStyle extends KmlSubStyle {
+    constructor(options) {
+        super(options);
+    }
+    static update() { }
     /**
      * @inheritDoc
      */
-    KmlBalloonStyle.prototype.getTagNames = function() {
-        return ['BalloonStyle'];
-    };
+    getTagNames() {
+        return ["BalloonStyle"];
+    }
+}
 
-    KmlElements.addKey(KmlBalloonStyle.prototype.getTagNames()[0], KmlBalloonStyle);
+Object.defineProperties(KmlBalloonStyle.prototype, {
+  /**
+   * Represents background color of the balloon. It expects hexadecimal notation without #.
+   * @memberof KmlBalloonStyle.prototype
+   * @readonly
+   * @type {String}
+   */
+  kmlBgColor: {
+    get: function () {
+      return this._factory.specific(this, {
+        name: "bgColor",
+        transformer: KmlNodeTransformers.string,
+      });
+    },
+  },
 
-    export default KmlBalloonStyle;
+  /**
+   * Represents color of the text in the balloon. It expects hexadecimal notation without #.
+   * @memberof KmlBalloonStyle.prototype
+   * @readonly
+   * @type {String}
+   */
+  kmlTextColor: {
+    get: function () {
+      return this._factory.specific(this, {
+        name: "textColor",
+        transformer: KmlNodeTransformers.string,
+      });
+    },
+  },
+
+  /**
+   * Text which should be displayed in the balloon, otherwise feature name and description is displayed.
+   * @memberof KmlBalloonStyle.prototype
+   * @readonly
+   * @type {String}
+   */
+  kmlText: {
+    get: function () {
+      return this._factory.specific(this, {
+        name: "text",
+        transformer: KmlNodeTransformers.string,
+      });
+    },
+  },
+
+  /**
+   * Either display or hide. When hide don't show the balloon at all.
+   * @memberof KmlBalloonStyle.prototype
+   * @readonly
+   * @type {String}
+   */
+  kmlDisplayMode: {
+    get: function () {
+      return this._factory.specific(this, {
+        name: "displayMode",
+        transformer: KmlNodeTransformers.string,
+      });
+    },
+  },
+});
+
+
+
+KmlElements.addKey(KmlBalloonStyle.prototype.getTagNames()[0], KmlBalloonStyle);
+
+export default KmlBalloonStyle;

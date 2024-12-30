@@ -27,8 +27,7 @@
  */
 
 import { describe, expect, it } from "vitest";
-import { Vec3 } from "../../src/WorldWind.js";
-// import Vec3 from "../../src/geom/Vec3.js";
+import Vec3 from "../../src/geom/Vec3.js";
 console.log("Vec3", Vec3);
 describe("Vec3Test", function () {
   it("Should have the correct three components", function () {
@@ -157,6 +156,7 @@ describe("Vec3Test", function () {
     destination.copy(source);
     expect(destination).toEqual(source);
   });
+
 
   it("Reproduces a Vec3", function () {
     const source = new Vec3(1, 2, 3);

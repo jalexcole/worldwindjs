@@ -25,16 +25,8 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
-import {
-  ColladaScene,
-  ElevationModel,
-  Globe,
-  Line,
-  Matrix,
-  Position,
-  ProjectionWgs84,
-  Vec3,
-} from "../../../src/WorldWind";
+import Position from "../../../src/geom/Position"
+import ColladaScene from "../../../src/formats/collada/ColladaScene"
 import { beforeAll, beforeEach, describe,expect, it } from "vitest";
 import ColladaLoader from "../../../src/formats/collada/ColladaLoader";
 describe("ColladaScene calculation and data manipulation testing", function () {

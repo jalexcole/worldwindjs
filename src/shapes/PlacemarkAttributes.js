@@ -31,7 +31,8 @@ import Font from "../util/Font";
 import Offset from "../util/Offset";
 import ShapeAttributes from "../shapes/ShapeAttributes";
 import TextAttributes from "./TextAttributes";
-import WorldWind from "../WorldWind";
+import WorldWindConstants from "../WorldWindConstants";
+
 
 /**
  * Constructs a placemark attributes bundle.
@@ -52,9 +53,9 @@ var PlacemarkAttributes = function (attributes) {
   this._imageOffset = attributes
     ? attributes._imageOffset
     : new Offset(
-        WorldWind.OFFSET_FRACTION,
+        WorldWindConstants.OFFSET_FRACTION,
         0.5,
-        WorldWind.OFFSET_FRACTION,
+        WorldWindConstants.OFFSET_FRACTION,
         0.5
       );
   this._imageInitialWidth = attributes ? attributes._imageInitialWidth : null;

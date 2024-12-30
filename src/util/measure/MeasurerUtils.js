@@ -36,14 +36,14 @@ var MeasurerUtils = {
   /**
    * Subdivide a list of positions so that no segment is longer then the provided maxLength.
    * <p>If needed, new intermediate positions will be created along lines that follow the given pathType one
-   * of WorldWind.LINEAR, WorldWind.RHUMB_LINE or WorldWind.GREAT_CIRCLE.
+   * of WorldWindConstants.LINEAR, WorldWindConstants.RHUMB_LINE or WorldWindConstants.GREAT_CIRCLE.
    * All position elevations will be either at the terrain surface if followTerrain is true, or interpolated
    * according to the original elevations.</p>
    *
    * @param {Globe} globe
    * @param {Position[]} positions
    * @param {Boolean} followTerrain
-   * @param {String} pathType One of WorldWind.LINEAR, WorldWind.RHUMB_LINE or WorldWind.GREAT_CIRCLE
+   * @param {String} pathType One of WorldWindConstants.LINEAR, WorldWindConstants.RHUMB_LINE or WorldWindConstants.GREAT_CIRCLE
    * @param {Number} maxLength The maximum length for one segment
    *
    * @return {Position[]} a list of positions with no segment longer then maxLength and elevations following
@@ -77,9 +77,9 @@ var MeasurerUtils = {
         var steps = Math.ceil(arcLength / maxLength); // number of intervals - at least two
         for (var j = 1; j < steps; j++) {
           var s = j / steps;
-          if (pathType === WorldWind.LINEAR) {
+          if (pathType === WorldWindConstants.LINEAR) {
             destLatLon = Location.interpolateLinear(s, pos1, pos2, destLatLon);
-          } else if (pathType === WorldWind.RHUMB_LINE) {
+          } else if (pathType === WorldWindConstants.RHUMB_LINE) {
             if (segmentAzimuth == null) {
               segmentAzimuth = Location.rhumbAzimuth(pos1, pos2);
               segmentDistance = Location.rhumbDistance(pos1, pos2);

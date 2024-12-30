@@ -37,53 +37,53 @@
  * @param {Layer} parentLayer The layer containing the picked object.
  * @param {Boolean} isTerrain true if the picked object is terrain, otherwise false.
  */
-var PickedObject = function (
-  color,
-  userObject,
-  position,
-  parentLayer,
-  isTerrain
-) {
-  /**
-   * This picked object's pick color.
-   * @type {Color}
-   * @readonly
-   */
-  this.color = color;
+class PickedObject {
+  constructor(color,
+    userObject,
+    position,
+    parentLayer,
+    isTerrain) {
+    /**
+     * This picked object's pick color.
+     * @type {Color}
+     * @readonly
+     */
+    this.color = color;
 
-  /**
-   * The picked shape.
-   * @type {Object}
-   * @readonly
-   */
-  this.userObject = userObject;
+    /**
+     * The picked shape.
+     * @type {Object}
+     * @readonly
+     */
+    this.userObject = userObject;
 
-  /**
-   * This picked object's geographic position.
-   * @type {Position}
-   * @readonly
-   */
-  this.position = position;
+    /**
+     * This picked object's geographic position.
+     * @type {Position}
+     * @readonly
+     */
+    this.position = position;
 
-  /**
-   * The layer containing this picked object.
-   * @type {Layer}
-   * @readonly
-   */
-  this.parentLayer = parentLayer;
+    /**
+     * The layer containing this picked object.
+     * @type {Layer}
+     * @readonly
+     */
+    this.parentLayer = parentLayer;
 
-  /**
-   * Indicates whether this picked object is terrain.
-   * @type {Boolean}
-   * @readonly
-   */
-  this.isTerrain = isTerrain;
+    /**
+     * Indicates whether this picked object is terrain.
+     * @type {Boolean}
+     * @readonly
+     */
+    this.isTerrain = isTerrain;
 
-  /**
-   * Indicates whether this picked object is the top object.
-   * @type {boolean}
-   */
-  this.isOnTop = false;
-};
+    /**
+     * Indicates whether this picked object is the top object.
+     * @type {boolean}
+     */
+    this.isOnTop = false;
+  }
+}
 
 export default PickedObject;

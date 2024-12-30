@@ -51,9 +51,9 @@ import Vec3 from "../geom/Vec3";
  *     Altitudes within the mesh's positions are interpreted according to the mesh's altitude mode, which
  *     can be one of the following:
  * <ul>
- *     <li>[WorldWind.ABSOLUTE]{@link WorldWind#ABSOLUTE}</li>
- *     <li>[WorldWind.RELATIVE_TO_GROUND]{@link WorldWind#RELATIVE_TO_GROUND}</li>
- *     <li>[WorldWind.CLAMP_TO_GROUND]{@link WorldWind#CLAMP_TO_GROUND}</li>
+ *     <li>[WorldWindConstants.ABSOLUTE]{@link WorldWind#ABSOLUTE}</li>
+ *     <li>[WorldWindConstants.RELATIVE_TO_GROUND]{@link WorldWind#RELATIVE_TO_GROUND}</li>
+ *     <li>[WorldWindConstants.CLAMP_TO_GROUND]{@link WorldWind#CLAMP_TO_GROUND}</li>
  * </ul>
  * If the latter, the mesh positions' altitudes are ignored. (If the mesh should be draped onto the
  * terrain, you might want to use {@link SurfacePolygon} instead.)

@@ -50,9 +50,9 @@ import Vec3 from "../geom/Vec3";
  *     Altitudes within the mesh's positions are interpreted according to the mesh's altitude mode, which
  *     can be one of the following:
  * <ul>
- *     <li>[WorldWind.ABSOLUTE]{@link WorldWind#ABSOLUTE}</li>
- *     <li>[WorldWind.RELATIVE_TO_GROUND]{@link WorldWind#RELATIVE_TO_GROUND}</li>
- *     <li>[WorldWind.CLAMP_TO_GROUND]{@link WorldWind#CLAMP_TO_GROUND}</li>
+ *     <li>[WorldWindConstants.ABSOLUTE]{@link WorldWind#ABSOLUTE}</li>
+ *     <li>[WorldWindConstants.RELATIVE_TO_GROUND]{@link WorldWind#RELATIVE_TO_GROUND}</li>
+ *     <li>[WorldWindConstants.CLAMP_TO_GROUND]{@link WorldWind#CLAMP_TO_GROUND}</li>
  * </ul>
  * If the latter, the mesh positions' altitudes are ignored. (If the mesh should be draped onto the
  * terrain, you might want to use {@link SurfacePolygon} instead.)
@@ -74,86 +74,268 @@ import Vec3 from "../geom/Vec3";
  * number of vertices per row is less than 2, the array lengths are inconsistent, or too many positions are
  * specified (limit is 65536).
  */
-var GeographicMesh = function (positions, attributes) {
-  if (!positions) {
-    throw new ArgumentError(
-      Logger.logMessage(
-        Logger.LEVEL_SEVERE,
-        "GeographicMesh",
-        "constructor",
-        "missingPositions"
-      )
-    );
-  }
-
-  if (positions.length < 2 || positions[0].length < 2) {
-    throw new ArgumentError(
-      Logger.logMessage(
-        Logger.LEVEL_SEVERE,
-        "GeographicMesh",
-        "constructor",
-        "Number of positions is insufficient."
-      )
-    );
-  }
-
-  // Check for size limit, which is the max number of available indices for a 16-bit unsigned int.
-  if (positions.length * positions[0].length > 65536) {
-    throw new ArgumentError(
-      Logger.logMessage(
-        Logger.LEVEL_SEVERE,
-        "GeographicMesh",
-        "constructor",
-        "Too many positions. Must be fewer than 65536. Try using multiple meshes."
-      )
-    );
-  }
-
-  var length = positions[0].length;
-  for (var i = 1; i < positions.length; i++) {
-    if (positions[i].length !== length) {
+class GeographicMesh extends AbstractMesh {
+  constructor(positions, attributes) {
+    if (!positions) {
       throw new ArgumentError(
         Logger.logMessage(
           Logger.LEVEL_SEVERE,
           "GeographicMesh",
           "constructor",
-          "Array lengths are inconsistent."
+          "missingPositions"
         )
       );
     }
+
+    if (positions.length < 2 || positions[0].length < 2) {
+      throw new ArgumentError(
+        Logger.logMessage(
+          Logger.LEVEL_SEVERE,
+          "GeographicMesh",
+          "constructor",
+          "Number of positions is insufficient."
+        )
+      );
+    }
+
+    // Check for size limit, which is the max number of available indices for a 16-bit unsigned int.
+    if (positions.length * positions[0].length > 65536) {
+      throw new ArgumentError(
+        Logger.logMessage(
+          Logger.LEVEL_SEVERE,
+          "GeographicMesh",
+          "constructor",
+          "Too many positions. Must be fewer than 65536. Try using multiple meshes."
+        )
+      );
+    }
+
+    var length = positions[0].length;
+    for (var i = 1; i < positions.length; i++) {
+      if (positions[i].length !== length) {
+        throw new ArgumentError(
+          Logger.logMessage(
+            Logger.LEVEL_SEVERE,
+            "GeographicMesh",
+            "constructor",
+            "Array lengths are inconsistent."
+          )
+        );
+      }
+    }
+
+    var numRows = positions.length,
+      numCols = positions[0].length;
+
+    super(attributes);
+
+    /**
+     * Indicates whether this mesh is pickable when the pick point intersects transparent pixels of the
+     * image applied to this mesh. If no image is applied to this mesh, this property is ignored. If this
+     * property is true and an image with fully transparent pixels is applied to the mesh, the mesh is
+     * pickable at those transparent pixels, otherwise this mesh is not pickable at those transparent pixels.
+     * @type {Boolean}
+     * @default true
+     */
+    this.pickTransparentImagePixels = true;
+
+    // Private. Documentation is with the defined property below and the constructor description above.
+    this._positions = positions;
+
+    // Private. Documentation is with the defined property below.
+    this._altitudeScale = 1;
+
+    // Internal. Intentionally not documented.
+    this.numRows = numRows;
+    this.numColumns = numCols;
+
+    // Internal. Intentionally not documented.
+    this._textureCoordinates = null;
+
+    // Internal. Intentionally not documented.
+    this.referencePosition = this.determineReferencePosition(this._positions);
   }
+  static makeGridIndices(nRows, nCols) {
+    // Compute indices for individual triangles.
+    var gridIndices = [],
+      i = 0;
 
-  var numRows = positions.length,
-    numCols = positions[0].length;
+    for (var r = 0; r < nRows - 1; r++) {
+      for (var c = 0; c < nCols - 1; c++) {
+        var k = r * nCols + c;
 
-  AbstractMesh.call(this, attributes);
+        gridIndices[i++] = k;
+        gridIndices[i++] = k + 1;
+        gridIndices[i++] = k + nCols;
+        gridIndices[i++] = k + 1;
+        gridIndices[i++] = k + 1 + nCols;
+        gridIndices[i++] = k + nCols;
+      }
+    }
 
-  /**
-   * Indicates whether this mesh is pickable when the pick point intersects transparent pixels of the
-   * image applied to this mesh. If no image is applied to this mesh, this property is ignored. If this
-   * property is true and an image with fully transparent pixels is applied to the mesh, the mesh is
-   * pickable at those transparent pixels, otherwise this mesh is not pickable at those transparent pixels.
-   * @type {Boolean}
-   * @default true
-   */
-  this.pickTransparentImagePixels = true;
+    return gridIndices;
+  }
+  // Intentionally not documented.
+  determineReferencePosition(positions) {
+    // Assign the first position as the reference position.
+    return positions[0][0];
+  }
+  // Overridden from AbstractShape base class.
+  createSurfaceShape() {
+    var boundaries = [];
 
-  // Private. Documentation is with the defined property below and the constructor description above.
-  this._positions = positions;
+    for (var c = 0; c < this.numColumns; c++) {
+      boundaries.push(this._positions[0][c]);
+    }
 
-  // Private. Documentation is with the defined property below.
-  this._altitudeScale = 1;
+    for (var r = 1; r < this.numRows; r++) {
+      boundaries.push(this._positions[r][this.numColumns - 1]);
+    }
 
-  // Internal. Intentionally not documented.
-  this.numRows = numRows;
-  this.numColumns = numCols;
+    for (c = this.numColumns - 2; c >= 0; c--) {
+      boundaries.push(this._positions[this.numRows - 1][c]);
+    }
 
-  // Internal. Intentionally not documented.
-  this._textureCoordinates = null;
+    for (r = this.numRows - 2; r > 0; r--) {
+      boundaries.push(this._positions[r][0]);
+    }
 
-  // Internal. Intentionally not documented.
-  this.referencePosition = this.determineReferencePosition(this._positions);
-};
+    return new SurfacePolygon(boundaries, null);
+  }
+  computeMeshPoints(dc, currentData) {
+    // Unwrap the mesh row arrays into one long array.
+    var eyeDistSquared = Number.MAX_VALUE,
+      eyePoint = dc.eyePoint,
+      meshPoints = new Float32Array(this.numRows * this.numColumns * 3),
+      pt = new Vec3(0, 0, 0),
+      k = 0,
+      pos,
+      dSquared;
+
+    for (var r = 0; r < this._positions.length; r++) {
+      for (var c = 0, len = this._positions[r].length; c < len; c++) {
+        pos = this._positions[r][c];
+
+        dc.surfacePointForMode(
+          pos.latitude,
+          pos.longitude,
+          pos.altitude * this._altitudeScale,
+          this.altitudeMode,
+          pt
+        );
+
+        dSquared = pt.distanceToSquared(eyePoint);
+        if (dSquared < eyeDistSquared) {
+          eyeDistSquared = dSquared;
+        }
+
+        pt.subtract(this.currentData.referencePoint);
+
+        meshPoints[k++] = pt[0];
+        meshPoints[k++] = pt[1];
+        meshPoints[k++] = pt[2];
+      }
+    }
+
+    currentData.eyeDistance = Math.sqrt(eyeDistSquared);
+
+    return meshPoints;
+  }
+  computeTexCoords() {
+    if (this._textureCoordinates) {
+      return this.computeExplicitTexCoords();
+    } else {
+      return this.computeImplicitTexCoords();
+    }
+  }
+  // Intentionally not documented.
+  computeExplicitTexCoords() {
+    // Capture the texture coordinates to a single array parallel to the mesh points array.
+    var texCoords = new Float32Array(2 * this.numRows * this.numColumns),
+      k = 0;
+
+    for (var r = 0; r < this._textureCoordinates.length; r++) {
+      for (var c = 0, len = this._textureCoordinates[r].length; c < len; c++) {
+        var texCoord = this._textureCoordinates[r][c];
+
+        texCoords[k++] = texCoord[0];
+        texCoords[k++] = texCoord[1];
+      }
+    }
+
+    return texCoords;
+  }
+  // Intentionally not documented.
+  computeImplicitTexCoords() {
+    // Create texture coordinates that map the full image source into the full mesh.
+    var texCoords = new Float32Array(2 * this.numRows * this.numColumns),
+      rowDelta = 1.0 / (this.numRows - 1),
+      columnDelta = 1.0 / (this.numColumns - 1),
+      k = 0;
+
+    for (var r = 0; r < this._positions.length; r++) {
+      var t = r === this.numRows - 1 ? 1.0 : r * rowDelta;
+
+      for (var c = 0, len = this._positions[r].length; c < len; c++) {
+        texCoords[k++] = c === this.numColumns - 1 ? 1.0 : c * columnDelta;
+        texCoords[k++] = t;
+      }
+    }
+
+    return texCoords;
+  }
+  computeMeshIndices() {
+    // Compute indices for individual triangles.
+    var meshIndices = new Uint16Array(
+        (this.numRows - 1) * (this.numColumns - 1) * 6
+      ),
+      i = 0;
+
+    for (var r = 0; r < this.numRows - 1; r++) {
+      for (var c = 0; c < this.numColumns - 1; c++) {
+        var k = r * this.numColumns + c;
+
+        meshIndices[i++] = k;
+        meshIndices[i++] = k + 1;
+        meshIndices[i++] = k + this.numColumns;
+        meshIndices[i++] = k + 1;
+        meshIndices[i++] = k + 1 + this.numColumns;
+        meshIndices[i++] = k + this.numColumns;
+      }
+    }
+
+    return meshIndices;
+  }
+  computeOutlineIndices() {
+    // Walk the mesh boundary and capture those positions for the outline.
+    var outlineIndices = new Uint16Array(
+        2 * this.numRows + 2 * this.numColumns
+      ),
+      k = 0;
+
+    for (var c = 0; c < this.numColumns; c++) {
+      outlineIndices[k++] = c;
+    }
+
+    for (var r = 1; r < this.numRows; r++) {
+      outlineIndices[k++] = (r + 1) * this.numColumns - 1;
+    }
+
+    for (
+      c = this.numRows * this.numColumns - 2;
+      c >= (this.numRows - 1) * this.numColumns;
+      c--
+    ) {
+      outlineIndices[k++] = c;
+    }
+
+    for (r = this.numRows - 2; r >= 0; r--) {
+      outlineIndices[k++] = r * this.numColumns;
+    }
+
+    return outlineIndices;
+  }
+}
 
 GeographicMesh.prototype = Object.create(AbstractMesh.prototype);
 
@@ -264,198 +446,5 @@ Object.defineProperties(GeographicMesh.prototype, {
     },
   },
 });
-
-GeographicMesh.makeGridIndices = function (nRows, nCols) {
-  // Compute indices for individual triangles.
-
-  var gridIndices = [],
-    i = 0;
-
-  for (var r = 0; r < nRows - 1; r++) {
-    for (var c = 0; c < nCols - 1; c++) {
-      var k = r * nCols + c;
-
-      gridIndices[i++] = k;
-      gridIndices[i++] = k + 1;
-      gridIndices[i++] = k + nCols;
-      gridIndices[i++] = k + 1;
-      gridIndices[i++] = k + 1 + nCols;
-      gridIndices[i++] = k + nCols;
-    }
-  }
-
-  return gridIndices;
-};
-
-// Intentionally not documented.
-GeographicMesh.prototype.determineReferencePosition = function (positions) {
-  // Assign the first position as the reference position.
-  return positions[0][0];
-};
-
-// Overridden from AbstractShape base class.
-GeographicMesh.prototype.createSurfaceShape = function () {
-  var boundaries = [];
-
-  for (var c = 0; c < this.numColumns; c++) {
-    boundaries.push(this._positions[0][c]);
-  }
-
-  for (var r = 1; r < this.numRows; r++) {
-    boundaries.push(this._positions[r][this.numColumns - 1]);
-  }
-
-  for (c = this.numColumns - 2; c >= 0; c--) {
-    boundaries.push(this._positions[this.numRows - 1][c]);
-  }
-
-  for (r = this.numRows - 2; r > 0; r--) {
-    boundaries.push(this._positions[r][0]);
-  }
-
-  return new SurfacePolygon(boundaries, null);
-};
-
-GeographicMesh.prototype.computeMeshPoints = function (dc, currentData) {
-  // Unwrap the mesh row arrays into one long array.
-
-  var eyeDistSquared = Number.MAX_VALUE,
-    eyePoint = dc.eyePoint,
-    meshPoints = new Float32Array(this.numRows * this.numColumns * 3),
-    pt = new Vec3(0, 0, 0),
-    k = 0,
-    pos,
-    dSquared;
-
-  for (var r = 0; r < this._positions.length; r++) {
-    for (var c = 0, len = this._positions[r].length; c < len; c++) {
-      pos = this._positions[r][c];
-
-      dc.surfacePointForMode(
-        pos.latitude,
-        pos.longitude,
-        pos.altitude * this._altitudeScale,
-        this.altitudeMode,
-        pt
-      );
-
-      dSquared = pt.distanceToSquared(eyePoint);
-      if (dSquared < eyeDistSquared) {
-        eyeDistSquared = dSquared;
-      }
-
-      pt.subtract(this.currentData.referencePoint);
-
-      meshPoints[k++] = pt[0];
-      meshPoints[k++] = pt[1];
-      meshPoints[k++] = pt[2];
-    }
-  }
-
-  currentData.eyeDistance = Math.sqrt(eyeDistSquared);
-
-  return meshPoints;
-};
-
-GeographicMesh.prototype.computeTexCoords = function () {
-  if (this._textureCoordinates) {
-    return this.computeExplicitTexCoords();
-  } else {
-    return this.computeImplicitTexCoords();
-  }
-};
-
-// Intentionally not documented.
-GeographicMesh.prototype.computeExplicitTexCoords = function () {
-  // Capture the texture coordinates to a single array parallel to the mesh points array.
-
-  var texCoords = new Float32Array(2 * this.numRows * this.numColumns),
-    k = 0;
-
-  for (var r = 0; r < this._textureCoordinates.length; r++) {
-    for (var c = 0, len = this._textureCoordinates[r].length; c < len; c++) {
-      var texCoord = this._textureCoordinates[r][c];
-
-      texCoords[k++] = texCoord[0];
-      texCoords[k++] = texCoord[1];
-    }
-  }
-
-  return texCoords;
-};
-
-// Intentionally not documented.
-GeographicMesh.prototype.computeImplicitTexCoords = function () {
-  // Create texture coordinates that map the full image source into the full mesh.
-
-  var texCoords = new Float32Array(2 * this.numRows * this.numColumns),
-    rowDelta = 1.0 / (this.numRows - 1),
-    columnDelta = 1.0 / (this.numColumns - 1),
-    k = 0;
-
-  for (var r = 0; r < this._positions.length; r++) {
-    var t = r === this.numRows - 1 ? 1.0 : r * rowDelta;
-
-    for (var c = 0, len = this._positions[r].length; c < len; c++) {
-      texCoords[k++] = c === this.numColumns - 1 ? 1.0 : c * columnDelta;
-      texCoords[k++] = t;
-    }
-  }
-
-  return texCoords;
-};
-
-GeographicMesh.prototype.computeMeshIndices = function () {
-  // Compute indices for individual triangles.
-
-  var meshIndices = new Uint16Array(
-      (this.numRows - 1) * (this.numColumns - 1) * 6
-    ),
-    i = 0;
-
-  for (var r = 0; r < this.numRows - 1; r++) {
-    for (var c = 0; c < this.numColumns - 1; c++) {
-      var k = r * this.numColumns + c;
-
-      meshIndices[i++] = k;
-      meshIndices[i++] = k + 1;
-      meshIndices[i++] = k + this.numColumns;
-      meshIndices[i++] = k + 1;
-      meshIndices[i++] = k + 1 + this.numColumns;
-      meshIndices[i++] = k + this.numColumns;
-    }
-  }
-
-  return meshIndices;
-};
-
-GeographicMesh.prototype.computeOutlineIndices = function () {
-  // Walk the mesh boundary and capture those positions for the outline.
-
-  var outlineIndices = new Uint16Array(2 * this.numRows + 2 * this.numColumns),
-    k = 0;
-
-  for (var c = 0; c < this.numColumns; c++) {
-    outlineIndices[k++] = c;
-  }
-
-  for (var r = 1; r < this.numRows; r++) {
-    outlineIndices[k++] = (r + 1) * this.numColumns - 1;
-  }
-
-  for (
-    c = this.numRows * this.numColumns - 2;
-    c >= (this.numRows - 1) * this.numColumns;
-    c--
-  ) {
-    outlineIndices[k++] = c;
-  }
-
-  for (r = this.numRows - 2; r >= 0; r--) {
-    outlineIndices[k++] = r * this.numColumns;
-  }
-
-  return outlineIndices;
-};
 
 export default GeographicMesh;

@@ -41,11 +41,27 @@ import KmlNodeTransformers from "../util/KmlNodeTransformers";
  * @see https://developers.google.com/kml/documentation/kmlreference#linestyle
  * @augments KmlColorStyle
  */
-var KmlLineStyle = function (options) {
-  KmlColorStyle.call(this, options);
-};
+class KmlLineStyle extends KmlColorStyle {
+  constructor(options) {
+    super(options);
+  }
+  static update(style, options) {
+    var shapeOptions = options || {};
+    style = style || {};
 
-KmlLineStyle.prototype = Object.create(KmlColorStyle.prototype);
+    shapeOptions._outlineColor =
+      (style.kmlColor && Color.colorFromKmlHex(style.kmlColor)) || Color.WHITE;
+    shapeOptions._outlineWidth = style.kmlWidth || 10.0;
+
+    return shapeOptions;
+  }
+  /**
+   * @inheritDoc
+   */
+  getTagNames() {
+    return ["LineStyle"];
+  }
+}
 
 Object.defineProperties(KmlLineStyle.prototype, {
   /**
@@ -58,7 +74,7 @@ Object.defineProperties(KmlLineStyle.prototype, {
     get: function () {
       return this._factory.specific(this, {
         name: "width",
-        transformer: NodeTransformers.number,
+        transformer: KmlNodeTransformers.number,
       });
     },
   },
@@ -73,7 +89,7 @@ Object.defineProperties(KmlLineStyle.prototype, {
     get: function () {
       return this._factory.specific(this, {
         name: "gx:outerColor",
-        transformer: NodeTransformers.string,
+        transformer: KmlNodeTransformers.string,
       });
     },
   },
@@ -89,7 +105,7 @@ Object.defineProperties(KmlLineStyle.prototype, {
     get: function () {
       return this._factory.specific(this, {
         name: "gx:outerWidth",
-        transformer: NodeTransformers.number,
+        transformer: KmlNodeTransformers.number,
       });
     },
   },
@@ -104,7 +120,7 @@ Object.defineProperties(KmlLineStyle.prototype, {
     get: function () {
       return this._factory.specific(this, {
         name: "gx:physicalWidth",
-        transformer: NodeTransformers.number,
+        transformer: KmlNodeTransformers.number,
       });
     },
   },
@@ -121,29 +137,13 @@ Object.defineProperties(KmlLineStyle.prototype, {
     get: function () {
       return this._factory.specific(this, {
         name: "gx:labelVisibility",
-        transformer: NodeTransformers.boolean,
+        transformer: KmlNodeTransformers.boolean,
       });
     },
   },
 });
 
-KmlLineStyle.update = function (style, options) {
-  var shapeOptions = options || {};
-  style = style || {};
 
-  shapeOptions._outlineColor =
-    (style.kmlColor && Color.colorFromKmlHex(style.kmlColor)) || Color.WHITE;
-  shapeOptions._outlineWidth = style.kmlWidth || 10.0;
-
-  return shapeOptions;
-};
-
-/**
- * @inheritDoc
- */
-KmlLineStyle.prototype.getTagNames = function () {
-  return ["LineStyle"];
-};
 
 KmlElements.addKey(KmlLineStyle.prototype.getTagNames()[0], KmlLineStyle);
 

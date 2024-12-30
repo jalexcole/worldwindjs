@@ -28,26 +28,26 @@
 import Shapefile from "./Shapefile";
 import ShapefileRecord from "./ShapefileRecord";
 
+/**
+ * Constructs a shapefile record for a polygon. Applications typically do not call this constructor. It is called by
+ * {@link Shapefile} as shapefile records are read.
+ * @alias ShapefileRecordPolygon
+ * @constructor
+ * @classdesc Contains the data associated with a shapefile record.
+ * @augments ShapefileRecord
+ * @param {Shapefile} shapefile The shapefile containing this record.
+ * @param {ByteBuffer} buffer A buffer descriptor to read data from.
+ * @throws {ArgumentError} If either the specified shapefile or buffer are null or undefined.
+ */
+class ShapefileRecordPolygon {
+  constructor(shapefile, buffer) {
+    ShapefileRecord.call(this, shapefile, buffer);
+  }
+  readContents() {
+    this.readPolylineContents();
+  }
+}
 
-        /**
-         * Constructs a shapefile record for a polygon. Applications typically do not call this constructor. It is called by
-         * {@link Shapefile} as shapefile records are read.
-         * @alias ShapefileRecordPolygon
-         * @constructor
-         * @classdesc Contains the data associated with a shapefile record.
-         * @augments ShapefileRecord
-         * @param {Shapefile} shapefile The shapefile containing this record.
-         * @param {ByteBuffer} buffer A buffer descriptor to read data from.
-         * @throws {ArgumentError} If either the specified shapefile or buffer are null or undefined.
-         */
-        var ShapefileRecordPolygon = function (shapefile, buffer) {
-            ShapefileRecord.call(this, shapefile, buffer);
-        };
+ShapefileRecordPolygon.prototype = Object.create(ShapefileRecord.prototype);
 
-        ShapefileRecordPolygon.prototype = Object.create(ShapefileRecord.prototype);
-
-        ShapefileRecordPolygon.prototype.readContents = function() {
-            this.readPolylineContents();
-        };
-
-        export default ShapefileRecordPolygon;
+export default ShapefileRecordPolygon;

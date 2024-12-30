@@ -201,7 +201,7 @@ BaseSurfaceEditorFragment.prototype.createControlPoint = function (
 ) {
   var controlPoint = new Placemark(new Location(0, 0), false, attributes);
 
-  controlPoint.altitudeMode = WorldWind.CLAMP_TO_GROUND;
+  controlPoint.altitudeMode = WorldWindConstants.CLAMP_TO_GROUND;
 
   controlPoint.userProperties.purpose = purpose;
 
@@ -245,7 +245,7 @@ BaseSurfaceEditorFragment.prototype.createRotationAccessory = function (
   shapeAttributes.outlineWidth = 2;
 
   var rotationLine = new Path([], shapeAttributes);
-  rotationLine.altitudeMode = WorldWind.CLAMP_TO_GROUND;
+  rotationLine.altitudeMode = WorldWindConstants.CLAMP_TO_GROUND;
   rotationLine.followTerrain = true;
 
   accessories.push(rotationLine);
@@ -480,12 +480,12 @@ BaseSurfaceEditorFragment.prototype.computeShadowPointLocations = function (
   var segmentAzimuth = null;
   var segmentDistance = null;
 
-  if (shape.pathType === WorldWind.LINEAR) {
+  if (shape.pathType === WorldWindConstants.LINEAR) {
     shadowControlPoint.position = new Location(
       (startLocation.latitude + endLocation.latitude) / 2,
       (startLocation.longitude + endLocation.longitude) / 2
     );
-  } else if (shape.pathType === WorldWind.RHUMB_LINE) {
+  } else if (shape.pathType === WorldWindConstants.RHUMB_LINE) {
     if (segmentAzimuth == null) {
       segmentAzimuth = Location.rhumbAzimuth(startLocation, endLocation);
       segmentDistance = Location.rhumbDistance(startLocation, endLocation);

@@ -25,15 +25,14 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
+import EarthElevationModel from "../../src/globe/EarthElevationModel.js";
+import DrawContext from "../../src/render/DrawContext.js";
+import Globe from "../../src/globe/Globe.js";
+import Location from "../../src/geom/Location.js";
+import Sector from "../../src/geom/Sector.js";
+import Vec3 from "../../src/geom/Vec3.js";
 
-import {
-  EarthElevationModel,
-  DrawContext,
-  Globe,
-  Location,
-  Sector,
-  Vec3,
-} from "../../src/WorldWind";
+
 
 import { beforeEach, describe, expect, it } from "vitest";
 

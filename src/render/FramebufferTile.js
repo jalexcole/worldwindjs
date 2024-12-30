@@ -56,97 +56,96 @@ import DrawContext from "./DrawContext";
  * @throws {ArgumentError} If the specified sector or level is null or undefined, the row or column arguments
  * are less than zero, or the cache name is null, undefined or empty.
  */
-var FramebufferTile = function (sector, level, row, column, cacheKey) {
-  if (!cacheKey || cacheKey.length < 1) {
-    throw new ArgumentError(
-      Logger.logMessage(
-        Logger.LEVEL_SEVERE,
-        "FramebufferTile",
-        "constructor",
-        "The specified cache name is null, undefined or zero length."
-      )
+class FramebufferTile extends TextureTile{
+  constructor(sector, level, row, column, cacheKey) {
+    if (!cacheKey || cacheKey.length < 1) {
+      throw new ArgumentError(
+        Logger.logMessage(
+          Logger.LEVEL_SEVERE,
+          "FramebufferTile",
+          "constructor",
+          "The specified cache name is null, undefined or zero length."
+        )
+      );
+    }
+
+    TextureTile.call(this, sector, level, row, column); // args are checked in the superclass' constructor
+
+
+    // Assign the cacheKey as the gpuCacheKey (inherited from TextureTile).
+    this.gpuCacheKey = cacheKey;
+
+    // Internal. Intentionally not documented.
+    this.textureTransform = Matrix.fromIdentity().setToUnitYFlip();
+
+    // Internal. Intentionally not documented.
+    this.mustClear = true;
+  }
+  /**
+   * Causes this tile to clear any color fragments written to its off-screen framebuffer.
+   * @param dc The current draw context.
+   */
+  clearFramebuffer(dc) {
+    this.mustClear = true;
+  }
+  /**
+   * Causes this tile's off-screen framebuffer as the current WebGL framebuffer. WebGL operations that affect the
+   * framebuffer now affect this tile's framebuffer, rather than the default WebGL framebuffer.
+   * Color fragments are written to this tile's WebGL texture, which can be made active by calling
+   * [SurfaceTile.bind]{@link SurfaceTile#bind}.
+   *
+   * @param {DrawContext} dc The current draw context.
+   * @returns {Boolean} true if the framebuffer was bound successfully, otherwise false.
+   */
+  bindFramebuffer(dc) {
+    var framebuffer = dc.gpuResourceCache.resourceForKey(this.gpuCacheKey);
+
+    if (!framebuffer) {
+      framebuffer = this.createFramebuffer(dc);
+    }
+
+    dc.bindFramebuffer(framebuffer);
+
+    if (this.mustClear) {
+      this.doClearFramebuffer(dc);
+      this.mustClear = false;
+    }
+
+    return true;
+  }
+  // Internal. Intentionally not documented.
+  createFramebuffer(dc) {
+    var framebuffer = new FramebufferTexture(
+      dc.currentGlContext,
+      this.tileWidth,
+      this.tileHeight,
+      false
     );
+    dc.gpuResourceCache.putResource(
+      this.gpuCacheKey,
+      framebuffer,
+      framebuffer.size
+    );
+
+    return framebuffer;
   }
-
-  TextureTile.call(this, sector, level, row, column); // args are checked in the superclass' constructor
-
-  // Assign the cacheKey as the gpuCacheKey (inherited from TextureTile).
-  this.gpuCacheKey = cacheKey;
-
   // Internal. Intentionally not documented.
-  this.textureTransform = Matrix.fromIdentity().setToUnitYFlip();
-
-  // Internal. Intentionally not documented.
-  this.mustClear = true;
-};
-
-FramebufferTile.prototype = Object.create(TextureTile.prototype);
-
-/**
- * Causes this tile to clear any color fragments written to its off-screen framebuffer.
- * @param dc The current draw context.
- */
-FramebufferTile.prototype.clearFramebuffer = function (dc) {
-  this.mustClear = true;
-};
-
-/**
- * Causes this tile's off-screen framebuffer as the current WebGL framebuffer. WebGL operations that affect the
- * framebuffer now affect this tile's framebuffer, rather than the default WebGL framebuffer.
- * Color fragments are written to this tile's WebGL texture, which can be made active by calling
- * [SurfaceTile.bind]{@link SurfaceTile#bind}.
- *
- * @param {DrawContext} dc The current draw context.
- * @returns {Boolean} true if the framebuffer was bound successfully, otherwise false.
- */
-FramebufferTile.prototype.bindFramebuffer = function (dc) {
-  var framebuffer = dc.gpuResourceCache.resourceForKey(this.gpuCacheKey);
-
-  if (!framebuffer) {
-    framebuffer = this.createFramebuffer(dc);
+  doClearFramebuffer(dc) {
+    var gl = dc.currentGlContext;
+    gl.clearColor(0, 0, 0, 0);
+    gl.clear(gl.COLOR_BUFFER_BIT);
   }
-
-  dc.bindFramebuffer(framebuffer);
-
-  if (this.mustClear) {
-    this.doClearFramebuffer(dc);
-    this.mustClear = false;
+  /**
+   * Applies the appropriate texture transform to display this tile's WebGL texture.
+   * @param {DrawContext} dc The current draw context.
+   * @param {Matrix} matrix The matrix to apply the transform to.
+   */
+  applyInternalTransform(dc, matrix) {
+    matrix.multiplyMatrix(this.textureTransform);
   }
+}
 
-  return true;
-};
 
-// Internal. Intentionally not documented.
-FramebufferTile.prototype.createFramebuffer = function (dc) {
-  var framebuffer = new FramebufferTexture(
-    dc.currentGlContext,
-    this.tileWidth,
-    this.tileHeight,
-    false
-  );
-  dc.gpuResourceCache.putResource(
-    this.gpuCacheKey,
-    framebuffer,
-    framebuffer.size
-  );
 
-  return framebuffer;
-};
-
-// Internal. Intentionally not documented.
-FramebufferTile.prototype.doClearFramebuffer = function (dc) {
-  var gl = dc.currentGlContext;
-  gl.clearColor(0, 0, 0, 0);
-  gl.clear(gl.COLOR_BUFFER_BIT);
-};
-
-/**
- * Applies the appropriate texture transform to display this tile's WebGL texture.
- * @param {DrawContext} dc The current draw context.
- * @param {Matrix} matrix The matrix to apply the transform to.
- */
-FramebufferTile.prototype.applyInternalTransform = function (dc, matrix) {
-  matrix.multiplyMatrix(this.textureTransform);
-};
 
 export default FramebufferTile;

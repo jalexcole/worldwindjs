@@ -30,79 +30,89 @@ import KmlObject from "../KmlObject";
 import KmlStyleSelector from "../styles/KmlStyleSelector";
 import KmlNodeTransformers from "./KmlNodeTransformers";
 
+/**
+ * Constructs a KmlPair. Application usually don't call this constructor. It is called by {@link KmlFile} as
+ * Objects from KmlFile are read. It is concrete implementation.
+ * @alias KmlPair
+ * @constructor
+ * @classdesc Contains the data associated with Kml KmlPair
+ * @param options {Object}
+ * @param options.objectNode {Node} Node representing the Kml KmlPair.
+ * @throws {ArgumentError} If either the node is null or undefined.
+ * @see https://developers.google.com/kml/documentation/kmlreference#pair
+ * @augments KmlObject
+ */
+class KmlPair extends KmlObject{
+  constructor(options) {
+    super(options);
+  }
+  /**
+   * @inheritDoc
+   */
+  getTagNames() {
+    return ["Pair"];
+  }
+  /**
+   * @inheritDoc
+   */
+  getStyle(styleResolver) {
+    return styleResolver.handleRemoteStyle(
+      this.kmlStyleUrl,
+      this.kmlStyleSelector
+    );
+  }
+}
 
-    /**
-     * Constructs a KmlPair. Application usually don't call this constructor. It is called by {@link KmlFile} as
-     * Objects from KmlFile are read. It is concrete implementation.
-     * @alias KmlPair
-     * @constructor
-     * @classdesc Contains the data associated with Kml KmlPair
-     * @param options {Object}
-     * @param options.objectNode {Node} Node representing the Kml KmlPair.
-     * @throws {ArgumentError} If either the node is null or undefined.
-     * @see https://developers.google.com/kml/documentation/kmlreference#pair
-     * @augments KmlObject
-     */
-    var KmlPair = function (options) {
-        KmlObject.call(this, options);
-    };
 
-    KmlPair.prototype = Object.create(KmlObject.prototype);
 
-    Object.defineProperties(KmlPair.prototype, {
-        /**
-         * Identifies the key
-         * @memberof KmlPair.prototype
-         * @readonly
-         * @type {String}
-         */
-        kmlKey: {
-            get: function() {
-                return this._factory.specific(this, {name: 'key', transformer: NodeTransformers.string});
-            }
-        },
+Object.defineProperties(KmlPair.prototype, {
+  /**
+   * Identifies the key
+   * @memberof KmlPair.prototype
+   * @readonly
+   * @type {String}
+   */
+  kmlKey: {
+    get: function () {
+      return this._factory.specific(this, {
+        name: "key",
+        transformer: KmlNodeTransformers.string,
+      });
+    },
+  },
 
-        /**
-         * References the style using Url. If part of the same document start with the prefix #
-         * @memberof KmlPair.prototype
-         * @readonly
-         * @type {String}
-         */
-        kmlStyleUrl: {
-            get: function() {
-                return this._factory.specific(this, {name: 'styleUrl', transformer: NodeTransformers.string});
-            }
-        },
+  /**
+   * References the style using Url. If part of the same document start with the prefix #
+   * @memberof KmlPair.prototype
+   * @readonly
+   * @type {String}
+   */
+  kmlStyleUrl: {
+    get: function () {
+      return this._factory.specific(this, {
+        name: "styleUrl",
+        transformer: KmlNodeTransformers.string,
+      });
+    },
+  },
 
-        /**
-         * Definition of styles applied to this KmlPair.
-         * @memberof KmlPair.prototype
-         * @readonly
-         * @type {KmlStyle}
-         */
-        kmlStyleSelector: {
-            get: function() {
-                return this._factory.any(this, {
-                    name: KmlStyleSelector.prototype.getTagNames()
-                });
-            }
-        }
-    });
+  /**
+   * Definition of styles applied to this KmlPair.
+   * @memberof KmlPair.prototype
+   * @readonly
+   * @type {KmlStyle}
+   */
+  kmlStyleSelector: {
+    get: function () {
+      return this._factory.any(this, {
+        name: KmlStyleSelector.prototype.getTagNames(),
+      });
+    },
+  },
+});
 
-    /**
-     * @inheritDoc
-     */
-    KmlPair.prototype.getTagNames = function () {
-        return ['Pair'];
-    };
 
-    /**
-     * @inheritDoc
-     */
-    KmlPair.prototype.getStyle = function(styleResolver) {
-        return styleResolver.handleRemoteStyle(this.kmlStyleUrl, this.kmlStyleSelector);
-    };
 
-    KmlElements.addKey(KmlPair.prototype.getTagNames()[0], KmlPair);
+KmlElements.addKey(KmlPair.prototype.getTagNames()[0], KmlPair);
 
-    export default KmlPair;
+export default KmlPair;

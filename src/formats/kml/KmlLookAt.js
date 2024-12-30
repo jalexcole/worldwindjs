@@ -42,11 +42,29 @@ import Position from "../../geom/Position";
  * @see https://developers.google.com/kml/documentation/kmlreference#lookat
  * @augments KmlAbstractView
  */
-var KmlLookAt = function (options) {
-  KmlAbstractView.call(this, options);
-};
-
-KmlLookAt.prototype = Object.create(KmlAbstractView.prototype);
+class KmlLookAt extends KmlAbstractView {
+  constructor(options) {
+    super(options);
+  }
+  /**
+   * Go to the look at location.
+   */
+  update(options) {
+    if (options.wwd) {
+      var altitude = this.kmlAltitude || 4000;
+      // TODO: Respect altitude mode.
+      options.wwd.goTo(
+        new Position(this.kmlLatitude, this.kmlLongitude, altitude)
+      );
+    }
+  }
+  /**
+   * @inheritDoc
+   */
+  getTagNames() {
+    return ["LookAt"];
+  }
+}
 
 Object.defineProperties(KmlLookAt.prototype, {
   /**
@@ -61,7 +79,7 @@ Object.defineProperties(KmlLookAt.prototype, {
     get: function () {
       return this._factory.specific(this, {
         name: "longitude",
-        transformer: NodeTransformers.number,
+        transformer: KmlNodeTransformers.number,
       });
     },
   },
@@ -77,7 +95,7 @@ Object.defineProperties(KmlLookAt.prototype, {
     get: function () {
       return this._factory.specific(this, {
         name: "latitude",
-        transformer: NodeTransformers.number,
+        transformer: KmlNodeTransformers.number,
       });
     },
   },
@@ -92,7 +110,7 @@ Object.defineProperties(KmlLookAt.prototype, {
     get: function () {
       return this._factory.specific(this, {
         name: "altitude",
-        transformer: NodeTransformers.number,
+        transformer: KmlNodeTransformers.number,
       });
     },
   },
@@ -108,7 +126,7 @@ Object.defineProperties(KmlLookAt.prototype, {
     get: function () {
       return this._factory.specific(this, {
         name: "heading",
-        transformer: NodeTransformers.number,
+        transformer: KmlNodeTransformers.number,
       });
     },
   },
@@ -126,7 +144,7 @@ Object.defineProperties(KmlLookAt.prototype, {
     get: function () {
       return this._factory.specific(this, {
         name: "tilt",
-        transformer: NodeTransformers.number,
+        transformer: KmlNodeTransformers.number,
       });
     },
   },
@@ -142,7 +160,7 @@ Object.defineProperties(KmlLookAt.prototype, {
     get: function () {
       return this._factory.specific(this, {
         name: "range",
-        transformer: NodeTransformers.number,
+        transformer: KmlNodeTransformers.number,
       });
     },
   },
@@ -160,31 +178,13 @@ Object.defineProperties(KmlLookAt.prototype, {
     get: function () {
       return this._factory.specific(this, {
         name: "altitudeMode",
-        transformer: NodeTransformers.string,
+        transformer: KmlNodeTransformers.string,
       });
     },
   },
 });
 
-/**
- * Go to the look at location.
- */
-KmlLookAt.prototype.update = function (options) {
-  if (options.wwd) {
-    var altitude = this.kmlAltitude || 4000;
-    // TODO: Respect altitude mode.
-    options.wwd.goTo(
-      new Position(this.kmlLatitude, this.kmlLongitude, altitude)
-    );
-  }
-};
 
-/**
- * @inheritDoc
- */
-KmlLookAt.prototype.getTagNames = function () {
-  return ["LookAt"];
-};
 
 KmlElements.addKey(KmlLookAt.prototype.getTagNames()[0], KmlLookAt);
 

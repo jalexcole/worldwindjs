@@ -39,24 +39,24 @@ import KmlObject from "../KmlObject";
  * @see https://developers.google.com/kml/documentation/kmlreference#substyle
  * @augments KmlObject
  */
-var KmlSubStyle = function (options) {
-  KmlObject.call(this, options);
-};
+class KmlSubStyle extends KmlObject{
+  constructor(options) {
+    super(options);
+  }
+  /**
+   * @inheritDoc
+   */
+  getTagNames() {
+    return [
+      "LineStyle",
+      "PolyStyle",
+      "IconStyle",
+      "LabelStyle",
+      "BalloonStyle",
+      "ListStyle",
+    ];
+  }
+}
 
-KmlSubStyle.prototype = Object.create(KmlObject.prototype);
-
-/**
- * @inheritDoc
- */
-KmlSubStyle.prototype.getTagNames = function () {
-  return [
-    "LineStyle",
-    "PolyStyle",
-    "IconStyle",
-    "LabelStyle",
-    "BalloonStyle",
-    "ListStyle",
-  ];
-};
 
 export default KmlSubStyle;

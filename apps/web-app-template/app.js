@@ -450,16 +450,16 @@ $(document).ready(function () {
     let commonAttributes = new WorldWind.PlacemarkAttributes(null);
     commonAttributes.imageScale = 1;
     commonAttributes.imageOffset = new WorldWind.Offset(
-      WorldWind.OFFSET_FRACTION,
+      WorldWindConstants.OFFSET_FRACTION,
       0.3,
-      WorldWind.OFFSET_FRACTION,
+      WorldWindConstants.OFFSET_FRACTION,
       0.0
     );
     commonAttributes.imageColor = WorldWind.Color.WHITE;
     commonAttributes.labelAttributes.offset = new WorldWind.Offset(
-      WorldWind.OFFSET_FRACTION,
+      WorldWindConstants.OFFSET_FRACTION,
       0.5,
-      WorldWind.OFFSET_FRACTION,
+      WorldWindConstants.OFFSET_FRACTION,
       1.0
     );
     commonAttributes.labelAttributes.color = WorldWind.Color.YELLOW;
@@ -484,7 +484,7 @@ $(document).ready(function () {
         "\n" +
         "Lon " +
         position.longitude.toPrecision(5).toString();
-      placemark.altitudeMode = WorldWind.CLAMP_TO_GROUND;
+      placemark.altitudeMode = WorldWindConstants.CLAMP_TO_GROUND;
       placemark.eyeDistanceScalingThreshold = 2500000;
       // Add the placemark to the layer and to the observable array
       let layer = globe.findLayerByName("Markers");
@@ -654,9 +654,9 @@ $(document).ready(function () {
       WorldWind.configuration.baseUrl + "images/pushpins/castshadow-red.png";
     placemarkAttributes.imageScale = 0.5;
     placemarkAttributes.imageOffset = new WorldWind.Offset(
-      WorldWind.OFFSET_FRACTION,
+      WorldWindConstants.OFFSET_FRACTION,
       0.3,
-      WorldWind.OFFSET_FRACTION,
+      WorldWindConstants.OFFSET_FRACTION,
       0.0
     );
     // Create an observable array who's contents are displayed in the preview
@@ -682,7 +682,7 @@ $(document).ready(function () {
             100
           )
         );
-        placemark.altitudeMode = WorldWind.RELATIVE_TO_GROUND;
+        placemark.altitudeMode = WorldWindConstants.RELATIVE_TO_GROUND;
         placemark.displayName = item.display_name;
         placemark.attributes = placemarkAttributes;
         resultsLayer.addRenderable(placemark);

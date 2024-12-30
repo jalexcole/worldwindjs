@@ -41,11 +41,17 @@ import KmlNodeTransformers from "../util/KmlNodeTransformers";
  * @see https://developers.google.com/kml/documentation/kmlreference#imagepyramid
  * @augments KmlObject
  */
-var KmlImagePyramid = function (options) {
-  KmlObject.call(this, options);
-};
-
-KmlImagePyramid.prototype = Object.create(KmlObject.prototype);
+class KmlImagePyramid extends KmlObject {
+  constructor(options) {
+    super(options);
+  }
+  /**
+   * @inheritDoc
+   */
+  getTagNames() {
+    return ["ImagePyramid"];
+  }
+}
 
 Object.defineProperties(KmlImagePyramid.prototype, {
   /**
@@ -112,13 +118,6 @@ Object.defineProperties(KmlImagePyramid.prototype, {
     },
   },
 });
-
-/**
- * @inheritDoc
- */
-KmlImagePyramid.prototype.getTagNames = function () {
-  return ["ImagePyramid"];
-};
 
 KmlElements.addKey(KmlImagePyramid.prototype.getTagNames()[0], KmlImagePyramid);
 

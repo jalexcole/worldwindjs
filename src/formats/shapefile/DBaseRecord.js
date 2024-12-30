@@ -40,125 +40,124 @@ import Logger from "../../util/Logger";
  * @returns {DBaseRecord} The DBase record that was parsed.
  * @constructor
  */
-var DBaseRecord = function (dbaseFile, buffer, recordNumber) {
-  if (!dbaseFile) {
-    throw new ArgumentError(
-      Logger.logMessage(
-        Logger.LEVEL_SEVERE,
-        "DBaseRecord",
-        "constructor",
-        "missingAttributeName"
-      )
-    );
+class DBaseRecord {
+  constructor(dbaseFile, buffer, recordNumber) {
+    if (!dbaseFile) {
+      throw new ArgumentError(
+        Logger.logMessage(
+          Logger.LEVEL_SEVERE,
+          "DBaseRecord",
+          "constructor",
+          "missingAttributeName"
+        )
+      );
+    }
+
+    if (!buffer) {
+      throw new ArgumentError(
+        Logger.logMessage(
+          Logger.LEVEL_SEVERE,
+          "DBaseRecord",
+          "constructor",
+          "missingBuffer"
+        )
+      );
+    }
+
+    /**
+     * Indicates whether the record was deleted.
+     * @type {Boolean}
+     */
+    this.deleted = false;
+
+    /**
+     * Indicates the current record number.
+     * @type {Number}
+     */
+    this.recordNumber = recordNumber;
+
+    //DateFormat dateformat = new SimpleDateFormat("yyyyMMdd");
+    this.values = null;
+
+    this.readFromBuffer(dbaseFile, buffer, recordNumber);
   }
-
-  if (!buffer) {
-    throw new ArgumentError(
-      Logger.logMessage(
-        Logger.LEVEL_SEVERE,
-        "DBaseRecord",
-        "constructor",
-        "missingBuffer"
-      )
-    );
+  /**
+   * Returned whether the record was deleted
+   * @returns {Boolean} True if the record was deleted.
+   */
+  isDeleted() {
+    return this.deleted;
   }
-
   /**
-   * Indicates whether the record was deleted.
-   * @type {Boolean}
+   * Returns the number of the record.
+   * @returns {Number} The number of the record.
    */
-  this.deleted = false;
-
+  getRecordNumber() {
+    return this.recordNumber;
+  }
   /**
-   * Indicates the current record number.
-   * @type {Number}
+   * Reads a dBase record from the buffer.
+   * @param {DBaseFile} dbaseFile The dBase file from which to read a record.
+   * @param {ByteBuffer} buffer The buffer descriptor to read the record from.
+   * @param {Number} recordNumber The record number to read.
    */
-  this.recordNumber = recordNumber;
+  readFromBuffer(dbaseFile,
+    buffer,
+    recordNumber) {
+    buffer.order(ByteBuffer.LITTLE_ENDIAN);
 
-  //DateFormat dateformat = new SimpleDateFormat("yyyyMMdd");
+    this.recordNumber = recordNumber;
 
-  this.values = null;
+    // Read deleted record flag.
+    var b = buffer.getByte();
+    this.deleted = b == 0x2a;
 
-  this.readFromBuffer(dbaseFile, buffer, recordNumber);
-};
+    var fields = dbaseFile.getFields();
 
-/**
- * Returned whether the record was deleted
- * @returns {Boolean} True if the record was deleted.
- */
-DBaseRecord.prototype.isDeleted = function () {
-  return this.deleted;
-};
+    this.values = {};
 
-/**
- * Returns the number of the record.
- * @returns {Number} The number of the record.
- */
-DBaseRecord.prototype.getRecordNumber = function () {
-  return this.recordNumber;
-};
+    for (var idx = 0, len = fields.length; idx < len; idx += 1) {
+      var field = fields[idx];
 
-/**
- * Reads a dBase record from the buffer.
- * @param {DBaseFile} dbaseFile The dBase file from which to read a record.
- * @param {ByteBuffer} buffer The buffer descriptor to read the record from.
- * @param {Number} recordNumber The record number to read.
- */
-DBaseRecord.prototype.readFromBuffer = function (
-  dbaseFile,
-  buffer,
-  recordNumber
-) {
-  buffer.order(ByteBuffer.LITTLE_ENDIAN);
+      var key = field.getName();
 
-  this.recordNumber = recordNumber;
+      var value = dbaseFile
+        .readNullTerminatedString(buffer, field.getLength())
+        .trim();
 
-  // Read deleted record flag.
-  var b = buffer.getByte();
-  this.deleted = b == 0x2a;
-
-  var fields = dbaseFile.getFields();
-
-  this.values = {};
-
-  for (var idx = 0, len = fields.length; idx < len; idx += 1) {
-    var field = fields[idx];
-
-    var key = field.getName();
-
-    var value = dbaseFile
-      .readNullTerminatedString(buffer, field.getLength())
-      .trim();
-
-    try {
-      if (field.getType() == DBaseField.TYPE_BOOLEAN) {
-        var firstChar = value.charAt(0);
-        this.values[key] =
-          firstChar == "t" ||
-          firstChar == "T" ||
-          firstChar == "Y" ||
-          firstChar == "y";
-      } else if (field.getType() == DBaseField.TYPE_CHAR) {
-        this.values[key] = value;
-      } else if (field.getType() == DBaseField.TYPE_DATE) {
-        this.values[key] = new Date(value);
-      } else if (field.getType() == DBaseField.TYPE_NUMBER) {
-        this.values[key] = +value;
-      }
-    } catch (e) {
-      // Log warning but keep reading.
-      Logger.log(
-        Logger.LEVEL_WARNING,
-        "Shapefile attribute parsing error:" +
+      try {
+        if (field.getType() == DBaseField.TYPE_BOOLEAN) {
+          var firstChar = value.charAt(0);
+          this.values[key] =
+            firstChar == "t" ||
+            firstChar == "T" ||
+            firstChar == "Y" ||
+            firstChar == "y";
+        } else if (field.getType() == DBaseField.TYPE_CHAR) {
+          this.values[key] = value;
+        } else if (field.getType() == DBaseField.TYPE_DATE) {
+          this.values[key] = new Date(value);
+        } else if (field.getType() == DBaseField.TYPE_NUMBER) {
+          this.values[key] = +value;
+        }
+      } catch (e) {
+        // Log warning but keep reading.
+        Logger.log(
+          Logger.LEVEL_WARNING,
+          "Shapefile attribute parsing error:" +
           field.toString() +
           " -> " +
           value.toString() +
           " [" +
           e +
           "]"
-      );
+        );
+      }
     }
   }
-};
+}
+
+
+
 
 export default DBaseRecord;

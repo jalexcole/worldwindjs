@@ -85,8 +85,8 @@ RotationRecognizer.prototype.reset = function () {
 
 // Documented in superclass.
 RotationRecognizer.prototype.mouseDown = function (event) {
-  if (this.state == WorldWind.POSSIBLE) {
-    this.state = WorldWind.FAILED; // touch gestures fail upon receiving a mouse event
+  if (this.state == WorldWindConstants.POSSIBLE) {
+    this.state = WorldWindConstants.FAILED; // touch gestures fail upon receiving a mouse event
   }
 };
 
@@ -104,19 +104,19 @@ RotationRecognizer.prototype.touchStart = function (touch) {
 // Documented in superclass.
 RotationRecognizer.prototype.touchMove = function (touch) {
   if (this.rotationTouches.length == 2) {
-    if (this.state == WorldWind.POSSIBLE) {
+    if (this.state == WorldWindConstants.POSSIBLE) {
       if (this.shouldRecognize()) {
-        this.state = WorldWind.BEGAN;
+        this.state = WorldWindConstants.BEGAN;
       }
     } else if (
-      this.state == WorldWind.BEGAN ||
-      this.state == WorldWind.CHANGED
+      this.state == WorldWindConstants.BEGAN ||
+      this.state == WorldWindConstants.CHANGED
     ) {
       var angle = this.currentTouchAngle(),
         newRotation = Angle.normalizedDegrees(angle - this.referenceAngle),
         w = this.weight;
       this._rotation = this._rotation * (1 - w) + newRotation * w;
-      this.state = WorldWind.CHANGED;
+      this.state = WorldWindConstants.CHANGED;
     }
   }
 };
@@ -131,13 +131,13 @@ RotationRecognizer.prototype.touchEnd = function (touch) {
   // Transition to the ended state if this was the last touch.
   if (this.touchCount == 0) {
     // last touch ended
-    if (this.state == WorldWind.POSSIBLE) {
-      this.state = WorldWind.FAILED;
+    if (this.state == WorldWindConstants.POSSIBLE) {
+      this.state = WorldWindConstants.FAILED;
     } else if (
-      this.state == WorldWind.BEGAN ||
-      this.state == WorldWind.CHANGED
+      this.state == WorldWindConstants.BEGAN ||
+      this.state == WorldWindConstants.CHANGED
     ) {
-      this.state = WorldWind.ENDED;
+      this.state = WorldWindConstants.ENDED;
     }
   }
 };
@@ -150,13 +150,13 @@ RotationRecognizer.prototype.touchCancel = function (touch) {
 
     // Transition to the cancelled state if this was the last touch.
     if (this.touchCount == 0) {
-      if (this.state == WorldWind.POSSIBLE) {
-        this.state = WorldWind.FAILED;
+      if (this.state == WorldWindConstants.POSSIBLE) {
+        this.state = WorldWindConstants.FAILED;
       } else if (
-        this.state == WorldWind.BEGAN ||
-        this.state == WorldWind.CHANGED
+        this.state == WorldWindConstants.BEGAN ||
+        this.state == WorldWindConstants.CHANGED
       ) {
-        this.state = WorldWind.CANCELLED;
+        this.state = WorldWindConstants.CANCELLED;
       }
     }
   }

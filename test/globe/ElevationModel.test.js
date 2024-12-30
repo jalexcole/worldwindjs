@@ -38,6 +38,7 @@ import UsgsNedElevationCoverage from "../../src/globe/UsgsNedElevationCoverage";
 import UsgsNedHiElevationCoverage from "../../src/globe/UsgsNedHiElevationCoverage";
 import TiledElevationCoverage from "../../src/globe/TiledElevationCoverage";
 import { describe, expect, it } from "vitest";
+
 describe("ElevationModel tests", function () {
   var MockCoverage = function (resolution, minElevation, maxElevation) {
     TiledElevationCoverage.call(this, {

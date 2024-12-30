@@ -411,16 +411,16 @@ ServersPanel.prototype.addLegend = function (legendCaps) {
     legend.layer = new WorldWind.RenderableLayer();
 
     var dummyOffset = new WorldWind.Offset(
-        WorldWind.OFFSET_FRACTION,
+        WorldWindConstants.OFFSET_FRACTION,
         0,
-        WorldWind.OFFSET_FRACTION,
+        WorldWindConstants.OFFSET_FRACTION,
         0
       ),
       screenImage = new WorldWind.ScreenImage(dummyOffset, legendCaps.url);
     screenImage.imageOffset = new WorldWind.Offset(
-      WorldWind.OFFSET_FRACTION,
+      WorldWindConstants.OFFSET_FRACTION,
       0,
-      WorldWind.OFFSET_INSET_PIXELS,
+      WorldWindConstants.OFFSET_INSET_PIXELS,
       0
     );
     legend.layer.addRenderable(screenImage);
@@ -467,9 +467,9 @@ ServersPanel.prototype.updateLegendOffsets = function () {
         screenImage = legend.layer.renderables[0];
 
       screenImage.screenOffset = new WorldWind.Offset(
-        WorldWind.OFFSET_FRACTION,
+        WorldWindConstants.OFFSET_FRACTION,
         0,
-        WorldWind.OFFSET_INSET_PIXELS,
+        WorldWindConstants.OFFSET_INSET_PIXELS,
         yOffset
       );
 

@@ -41,11 +41,18 @@ import KmlNodeTransformers from "../util/KmlNodeTransformers";
  * @see https://developers.google.com/kml/documentation/kmlreference#overlay
  * @augments KmlFeature
  */
-var KmlOverlay = function (options) {
-  KmlFeature.call(this, options);
-};
+class KmlOverlay extends KmlFeature {
+  constructor(options) {
+    super(options);
+  }
+  /**
+   * @inheritDoc
+   */
+  getTagNames() {
+    return ["PhotoOverlay", "ScreenOverlay", "GroundOverlay"];
+  }
+}
 
-KmlOverlay.prototype = Object.create(KmlFeature.prototype);
 
 Object.defineProperties(KmlOverlay.prototype, {
   /**
@@ -62,7 +69,7 @@ Object.defineProperties(KmlOverlay.prototype, {
     get: function () {
       return this._factory.specific(this, {
         name: "color",
-        transformer: NodeTransformers.string,
+        transformer: KmlNodeTransformers.string,
       });
     },
   },
@@ -78,7 +85,7 @@ Object.defineProperties(KmlOverlay.prototype, {
     get: function () {
       return this._factory.specific(this, {
         name: "drawOrder",
-        transformer: NodeTransformers.string,
+        transformer: KmlNodeTransformers.string,
       });
     },
   },
@@ -102,11 +109,5 @@ Object.defineProperties(KmlOverlay.prototype, {
   },
 });
 
-/**
- * @inheritDoc
- */
-KmlOverlay.prototype.getTagNames = function () {
-  return ["PhotoOverlay", "ScreenOverlay", "GroundOverlay"];
-};
 
 export default KmlOverlay;

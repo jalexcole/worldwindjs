@@ -42,11 +42,19 @@ import KmlSchema from "../util/KmlSchema";
  * @see https://developers.google.com/kml/documentation/kmlreference#document
  * @augments KmlContainer
  */
-var KmlDocument = function (options) {
-  KmlContainer.call(this, options);
-};
+class KmlDocument extends KmlContainer{
+  constructor(options) {
+    super(options);
+  }
+  /**
+   * @inheritDoc
+   */
+  getTagNames() {
+    return ["Document"];
+  }
+}
 
-KmlDocument.prototype = Object.create(KmlContainer.prototype);
+
 
 Object.defineProperties(KmlDocument.prototype, {
   /**
@@ -68,12 +76,6 @@ Object.defineProperties(KmlDocument.prototype, {
   },
 });
 
-/**
- * @inheritDoc
- */
-KmlDocument.prototype.getTagNames = function () {
-  return ["Document"];
-};
 
 KmlElements.addKey(KmlDocument.prototype.getTagNames()[0], KmlDocument);
 

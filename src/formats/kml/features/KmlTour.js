@@ -40,18 +40,18 @@ import KmlFeature from "./KmlFeature";
  * @see https://developers.google.com/kml/documentation/kmlreference#gxtour
  * @augments KmlFeature
  */
-var KmlTour = function (options) {
-  KmlFeature.call(this, options);
-};
+class KmlTour extends KmlFeature{
+  constructor(options) {
+    super(options);
+  }
+  /**
+   * @inheritDoc
+   */
+  getTagNames() {
+    return ["gx:Tour"];
+  }
+}
 
-KmlTour.prototype = Object.create(KmlFeature.prototype);
-
-/**
- * @inheritDoc
- */
-KmlTour.prototype.getTagNames = function () {
-  return ["gx:Tour"];
-};
 
 KmlElements.addKey(KmlTour.prototype.getTagNames()[0], KmlTour);
 

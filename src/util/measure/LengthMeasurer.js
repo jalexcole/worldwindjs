@@ -34,8 +34,8 @@ import Vec3 from "../../geom/Vec3";
 
 /**
  * Utility class to measure length along a path on a globe. <p/> <p>Segments which are longer then the current
- * maxSegmentLength will be subdivided along lines following the current pathType - WorldWind.LINEAR,
- * WorldWind.RHUMB_LINE or WorldWind.GREAT_CIRCLE.</p> <p/> <p>For follow terrain, the computed length will
+ * maxSegmentLength will be subdivided along lines following the current pathType - WorldWindConstants.LINEAR,
+ * WorldWindConstants.RHUMB_LINE or WorldWindConstants.GREAT_CIRCLE.</p> <p/> <p>For follow terrain, the computed length will
  * account for terrain deformations as if someone was walking along that path. Otherwise the length is the sum
  * of the cartesian distance between the positions.</p>
  * <p/>
@@ -111,7 +111,7 @@ Object.defineProperties(LengthMeasurer.prototype, {
  *
  * @param {Position[]} positions
  * @param {Boolean} followTerrain
- * @param {String} pathType One of WorldWind.LINEAR, WorldWind.RHUMB_LINE or WorldWind.GREAT_CIRCLE
+ * @param {String} pathType One of WorldWindConstants.LINEAR, WorldWindConstants.RHUMB_LINE or WorldWindConstants.GREAT_CIRCLE
  *
  * @return the current path length or -1 if the position list is too short.
  */
@@ -120,7 +120,7 @@ LengthMeasurer.prototype.getLength = function (
   followTerrain,
   pathType
 ) {
-  pathType = pathType || WorldWind.GREAT_CIRCLE;
+  pathType = pathType || WorldWindConstants.GREAT_CIRCLE;
   this.subdividedPositions = null;
   return this.computeLength(positions, followTerrain, pathType);
 };
@@ -144,12 +144,12 @@ LengthMeasurer.prototype.getPathLength = function (path) {
  *
  * @param {Path|Position[]} path A Path or an array of Positions
  * @param {String} pathType Optional argument used when path is an array of Positions.
- * Defaults to WorldWind.GREAT_CIRCLE.
+ * Defaults to WorldWindConstants.GREAT_CIRCLE.
  * Recognized values are:
  * <ul>
- * <li>[WorldWind.GREAT_CIRCLE]{@link WorldWind#GREAT_CIRCLE}</li>
- * <li>[WorldWind.RHUMB_LINE]{@link WorldWind#RHUMB_LINE}</li>
- * <li>[WorldWind.LINEAR]{@link WorldWind#LINEAR}</li>
+ * <li>[WorldWindConstants.GREAT_CIRCLE]{@link WorldWind#GREAT_CIRCLE}</li>
+ * <li>[WorldWindConstants.RHUMB_LINE]{@link WorldWind#RHUMB_LINE}</li>
+ * <li>[WorldWindConstants.LINEAR]{@link WorldWind#LINEAR}</li>
  * </ul>
  *
  * @return {Number} the current path length or -1 if the position list is too short.
@@ -160,7 +160,7 @@ LengthMeasurer.prototype.getGeographicDistance = function (path, pathType) {
     var _pathType = path.pathType;
   } else if (Array.isArray(path)) {
     positions = path;
-    _pathType = pathType || WorldWind.GREAT_CIRCLE;
+    _pathType = pathType || WorldWindConstants.GREAT_CIRCLE;
   }
 
   if (!positions || positions.length < 2) {
@@ -168,9 +168,9 @@ LengthMeasurer.prototype.getGeographicDistance = function (path, pathType) {
   }
 
   var fn = Location.greatCircleDistance;
-  if (_pathType === WorldWind.RHUMB_LINE) {
+  if (_pathType === WorldWindConstants.RHUMB_LINE) {
     fn = Location.rhumbDistance;
-  } else if (_pathType === WorldWind.LINEAR) {
+  } else if (_pathType === WorldWindConstants.LINEAR) {
     fn = Location.linearDistance;
   }
 
@@ -188,7 +188,7 @@ LengthMeasurer.prototype.getGeographicDistance = function (path, pathType) {
  * Computes the length.
  * @param {Position[]} positions
  * @param {Boolean} followTerrain
- * @param {String} pathType One of WorldWind.LINEAR, WorldWind.RHUMB_LINE or WorldWind.GREAT_CIRCLE
+ * @param {String} pathType One of WorldWindConstants.LINEAR, WorldWindConstants.RHUMB_LINE or WorldWindConstants.GREAT_CIRCLE
  */
 LengthMeasurer.prototype.computeLength = function (
   positions,

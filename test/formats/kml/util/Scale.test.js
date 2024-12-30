@@ -25,26 +25,27 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
-import { KmlScale, XmlDocument } from "../../../../src/WorldWind";
-import { afterEach, beforeEach, describe, it } from "vitest";
-    describe("ScaleTest", function () {
-            var validKml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
-                "<kml xmlns=\"http://www.opengis.net/kml/2.2\">" +
-                "<Scale>" +
-                "   <x>1</x>" +
-                "   <y>1</y>" +
-                "   <z>1</z>" +
-                "</Scale>" +
-                "</kml>";
-            var kmlRepresentation = new XmlDocument(validKml).dom();
-            var scale = new KmlScale({objectNode:
-                kmlRepresentation.getElementsByTagName("Scale")[0]});
-        it('should have the X, Y and Z properties',function(){
-            expect(scale.kmlX).toBe(1);
-            expect(scale.kmlY).toBe(1);
-            expect(scale.kmlZ).toBe(1);
-        });
 
-
-        });
-
+import KmlScale from "../../../../src/formats/kml/util/KmlScale.js";
+import XmlDocument from "../../../../src/util/XmlDocument.js";
+import { afterEach, beforeEach, describe, it, expect } from "vitest";
+describe("ScaleTest", function () {
+  var validKml =
+    '<?xml version="1.0" encoding="UTF-8"?>' +
+    '<kml xmlns="http://www.opengis.net/kml/2.2">' +
+    "<Scale>" +
+    "   <x>1</x>" +
+    "   <y>1</y>" +
+    "   <z>1</z>" +
+    "</Scale>" +
+    "</kml>";
+  var kmlRepresentation = new XmlDocument(validKml).dom();
+  var scale = new KmlScale({
+    objectNode: kmlRepresentation.getElementsByTagName("Scale")[0],
+  });
+  it("should have the X, Y and Z properties", function () {
+    expect(scale.kmlX).toBe(1);
+    expect(scale.kmlY).toBe(1);
+    expect(scale.kmlZ).toBe(1);
+  });
+});

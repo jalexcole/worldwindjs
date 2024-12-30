@@ -38,24 +38,26 @@ import WktObject from "./WktObject";
  * @augments WktObject
  * @constructor
  */
-var WktLineString = function () {
-  WktObject.call(this, WktType.SupportedGeometries.LINE_STRING);
-};
-
-WktLineString.prototype = Object.create(WktObject.prototype);
-
-/**
- * In case of 2D return SurfacePolyline, in case of 3D returns Path.
- * @inheritDoc
- * @return {Path[]|SurfacePolyline[]}
- */
-WktLineString.prototype.shapes = function () {
-  if (this._is3d) {
-    return [new Path(this.coordinates, new ShapeAttributes(null))];
-  } else {
-    return [new SurfacePolyline(this.coordinates, new ShapeAttributes(null))];
+class WktLineString extends WktObject{
+  constructor() {
+    super(WktType.SupportedGeometries.LINE_STRING);
   }
-};
+  /**
+   * In case of 2D return SurfacePolyline, in case of 3D returns Path.
+   * @inheritDoc
+   * @return {Path[]|SurfacePolyline[]}
+   */
+  shapes() {
+    if (this._is3d) {
+      return [new Path(this.coordinates, new ShapeAttributes(null))];
+    } else {
+      return [new SurfacePolyline(this.coordinates, new ShapeAttributes(null))];
+    }
+  }
+}
+
+// WktLineString.prototype = Object.create(WktObject.prototype);
+
 
 WktElements["LINESTRING"] = WktLineString;
 

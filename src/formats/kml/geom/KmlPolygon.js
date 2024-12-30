@@ -28,6 +28,7 @@
 import Polygon from "../../../shapes/Polygon.js";
 import ShapeAttributes from "../../../shapes/ShapeAttributes";
 import SurfacePolygon from "../../../shapes/SurfacePolygon";
+import WorldWindConstants from "../../../WorldWindConstants.js";
 import KmlElements from "../KmlElements";
 import KmlStyle from "../styles/KmlStyle";
 import KmlGeometry from "./KmlGeometry.js";
@@ -46,13 +47,123 @@ import KmlLinearRing from "./KmlLinearRing";
  * @throws {ArgumentError} If either the node is null or undefined.
  * @see https://developers.google.com/kml/documentation/kmlreference#polygon
  */
-var KmlPolygon = function (options) {
-  KmlGeometry.call(this, options);
+class KmlPolygon extends KmlGeometry {
+  constructor(options) {
+    super(options);
 
-  this.initialized = false;
-};
+    this.initialized = false;
+  }
+  /**
+   * Internal use only. Once create the instance of actual polygon.
+   * @param styles {Object|null}
+   * @param styles.normal {KmlStyle} Style to apply when not highlighted
+   * @param styles.highlight {KmlStyle} Style to apply when item is highlighted. Currently ignored.
+   */
+  createPolygon(styles, fileCache) {
+    console.log(
+      this.kmlInnerBoundary &&
+        this.kmlInnerBoundary.kmlAltitudeMode === WorldWindConstants.CLAMP_TO_GROUND
+    );
+    // TODO: KML boundaries are displaying graphic glitches when the camera is zoomed out
+    if (
+      !this.isValidAltitudeMode(this.kmlAltitudeMode) ||
+      this.kmlAltitudeMode === WorldWindConstants.CLAMP_TO_GROUND ||
+      (this.kmlInnerBoundary &&
+        this.kmlInnerBoundary.kmlAltitudeMode === WorldWindConstants.CLAMP_TO_GROUND) ||
+      (this.kmlOuterBoundary &&
+        this.kmlOuterBoundary.kmlAltitudeMode === WorldWindConstants.CLAMP_TO_GROUND)
+    ) {
+      this._renderable = new SurfacePolygon(
+        this.prepareLocations(),
+        this.prepareAttributes(styles.normal, fileCache)
+      );
+    } else {
+      this._renderable = new Polygon(
+        this.prepareLocations(),
+        this.prepareAttributes(styles.normal, fileCache)
+      );
+    }
+    if (styles.highlight) {
+      this._renderable.highlightAttributes = this.prepareAttributes(
+        styles.highlight,
+        fileCache
+      );
+    }
+    this.moveValidProperties();
+  }
+  /**
+   * @inheritDoc
+   */
+  render(dc, kmlOptions) {
+    KmlGeometry.prototype.render.call(this, dc, kmlOptions);
 
-KmlPolygon.prototype = Object.create(KmlGeometry.prototype);
+    if (kmlOptions.lastStyle && !this._renderable) {
+      this.createPolygon(kmlOptions.lastStyle, kmlOptions.fileCache);
+      dc.redrawRequested = true;
+    }
+
+    if (this._renderable) {
+      this._renderable.enabled = this.enabled;
+      this._renderable.render(dc);
+    }
+  }
+  // For internal use only. Intentionally left undocumented.
+  moveValidProperties() {
+    this._renderable.extrude = this.kmlExtrude || true;
+    this._renderable.altitudeMode =
+      this.kmlAltitudeMode || WorldWindConstants.CLAMP_TO_GROUND;
+  }
+  /**
+   * @inheritDoc
+   */
+  prepareAttributes(style, fileCache) {
+    var shapeOptions = (style && style.generate(fileCache)) || {};
+
+    shapeOptions._drawVerticals = this.kmlExtrude || false;
+    shapeOptions._applyLighting = true;
+    shapeOptions._depthTest = true;
+    shapeOptions._outlineStippleFactor = 0;
+    shapeOptions._outlineStipplePattern = 61680;
+    shapeOptions._enableLighting = true;
+
+    return new ShapeAttributes(KmlStyle.shapeAttributes(shapeOptions));
+  }
+  /**
+   * @inheritDoc
+   */
+  prepareLocations() {
+    var locations = [];
+    if (this.kmlInnerBoundary != null) {
+      locations[0] = this.kmlInnerBoundary.kmlPositions;
+      locations[1] = this.kmlOuterBoundary.kmlPositions;
+    } else {
+      locations = this.kmlOuterBoundary.kmlPositions;
+    }
+    return locations;
+  }
+  /**
+   * @inheritDoc
+   */
+  isValidAltitudeMode(altMode) {
+    return (
+      WorldWindConstants.CLAMP_TO_GROUND === altMode ||
+      WorldWindConstants.RELATIVE_TO_GROUND === altMode ||
+      WorldWindConstants.ABSOLUTE === altMode
+    );
+  }
+  /**
+   * @inheritDoc
+   */
+  getStyle() {
+    return this._style;
+  }
+  /**
+   * @inheritDoc
+   */
+  getTagNames() {
+    return ["Polygon"];
+  }
+}
 
 Object.defineProperties(KmlPolygon.prototype, {
   /**
@@ -66,7 +177,7 @@ Object.defineProperties(KmlPolygon.prototype, {
     get: function () {
       return this._factory.specific(this, {
         name: "extrude",
-        transformer: NodeTransformers.boolean,
+        transformer: KmlNodeTransformers.boolean,
       });
     },
   },
@@ -81,7 +192,7 @@ Object.defineProperties(KmlPolygon.prototype, {
     get: function () {
       return this._factory.specific(this, {
         name: "tessellate",
-        transformer: NodeTransformers.boolean,
+        transformer: KmlNodeTransformers.boolean,
       });
     },
   },
@@ -97,7 +208,7 @@ Object.defineProperties(KmlPolygon.prototype, {
     get: function () {
       return this._factory.specific(this, {
         name: "altitudeMode",
-        transformer: NodeTransformers.string,
+        transformer: KmlNodeTransformers.string,
       });
     },
   },
@@ -112,7 +223,7 @@ Object.defineProperties(KmlPolygon.prototype, {
     get: function () {
       return this._factory.specific(this, {
         name: "outerBoundaryIs",
-        transformer: NodeTransformers.linearRing,
+        transformer: KmlNodeTransformers.linearRing,
       });
     },
   },
@@ -127,7 +238,7 @@ Object.defineProperties(KmlPolygon.prototype, {
     get: function () {
       return this._factory.specific(this, {
         name: "innerBoundaryIs",
-        transformer: NodeTransformers.linearRing,
+        transformer: KmlNodeTransformers.linearRing,
       });
     },
   },
@@ -144,124 +255,6 @@ Object.defineProperties(KmlPolygon.prototype, {
     },
   },
 });
-
-/**
- * Internal use only. Once create the instance of actual polygon.
- * @param styles {Object|null}
- * @param styles.normal {KmlStyle} Style to apply when not highlighted
- * @param styles.highlight {KmlStyle} Style to apply when item is highlighted. Currently ignored.
- */
-KmlPolygon.prototype.createPolygon = function (styles, fileCache) {
-  console.log(
-    this.kmlInnerBoundary &&
-    this.kmlInnerBoundary.kmlAltitudeMode === WorldWind.CLAMP_TO_GROUND
-  );
-  // TODO: KML boundaries are displaying graphic glitches when the camera is zoomed out
-  if (
-    !this.isValidAltitudeMode(this.kmlAltitudeMode) ||
-    this.kmlAltitudeMode === WorldWind.CLAMP_TO_GROUND ||
-    (this.kmlInnerBoundary &&
-      this.kmlInnerBoundary.kmlAltitudeMode === WorldWind.CLAMP_TO_GROUND) ||
-    (this.kmlOuterBoundary &&
-      this.kmlOuterBoundary.kmlAltitudeMode === WorldWind.CLAMP_TO_GROUND)
-  ) {
-    this._renderable = new SurfacePolygon(
-      this.prepareLocations(),
-      this.prepareAttributes(styles.normal, fileCache)
-    );
-  } else {
-    this._renderable = new Polygon(
-      this.prepareLocations(),
-      this.prepareAttributes(styles.normal, fileCache)
-    );
-  }
-  if (styles.highlight) {
-    this._renderable.highlightAttributes = this.prepareAttributes(
-      styles.highlight,
-      fileCache
-    );
-  }
-  this.moveValidProperties();
-};
-
-/**
- * @inheritDoc
- */
-KmlPolygon.prototype.render = function (dc, kmlOptions) {
-  KmlGeometry.prototype.render.call(this, dc, kmlOptions);
-
-  if (kmlOptions.lastStyle && !this._renderable) {
-    this.createPolygon(kmlOptions.lastStyle, kmlOptions.fileCache);
-    dc.redrawRequested = true;
-  }
-
-  if (this._renderable) {
-    this._renderable.enabled = this.enabled;
-    this._renderable.render(dc);
-  }
-};
-
-// For internal use only. Intentionally left undocumented.
-KmlPolygon.prototype.moveValidProperties = function () {
-  this._renderable.extrude = this.kmlExtrude || true;
-  this._renderable.altitudeMode =
-    this.kmlAltitudeMode || WorldWind.CLAMP_TO_GROUND;
-};
-
-/**
- * @inheritDoc
- */
-KmlPolygon.prototype.prepareAttributes = function (style, fileCache) {
-  var shapeOptions = (style && style.generate(fileCache)) || {};
-
-  shapeOptions._drawVerticals = this.kmlExtrude || false;
-  shapeOptions._applyLighting = true;
-  shapeOptions._depthTest = true;
-  shapeOptions._outlineStippleFactor = 0;
-  shapeOptions._outlineStipplePattern = 61680;
-  shapeOptions._enableLighting = true;
-
-  return new ShapeAttributes(KmlStyle.shapeAttributes(shapeOptions));
-};
-
-/**
- * @inheritDoc
- */
-KmlPolygon.prototype.prepareLocations = function () {
-  var locations = [];
-  if (this.kmlInnerBoundary != null) {
-    locations[0] = this.kmlInnerBoundary.kmlPositions;
-    locations[1] = this.kmlOuterBoundary.kmlPositions;
-  } else {
-    locations = this.kmlOuterBoundary.kmlPositions;
-  }
-  return locations;
-};
-
-/**
- * @inheritDoc
- */
-KmlPolygon.prototype.isValidAltitudeMode = function (altMode) {
-  return (
-    WorldWind.CLAMP_TO_GROUND === altMode ||
-    WorldWind.RELATIVE_TO_GROUND === altMode ||
-    WorldWind.ABSOLUTE === altMode
-  );
-};
-
-/**
- * @inheritDoc
- */
-KmlPolygon.prototype.getStyle = function () {
-  return this._style;
-};
-
-/**
- * @inheritDoc
- */
-KmlPolygon.prototype.getTagNames = function () {
-  return ["Polygon"];
-};
 
 KmlElements.addKey(KmlPolygon.prototype.getTagNames()[0], KmlPolygon);
 

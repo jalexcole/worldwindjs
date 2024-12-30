@@ -28,6 +28,7 @@
 import ArgumentError from "../../error/ArgumentError";
 import GeoJSONConstants from "./GeoJSONConstants";
 import Logger from "../../util/Logger";
+import WorldWindConstants from "../../WorldWindConstants";
 
 /**
  * Provides GeoJSON exporter functions.
@@ -62,23 +63,23 @@ var GeoJSONExporter = {
       );
     }
 
-    if (renderable instanceof WorldWind.Placemark) {
+    if (renderable instanceof WorldWindConstants.Placemark) {
       return this.exportPlacemark(renderable);
-    } else if (renderable instanceof WorldWind.SurfacePolyline) {
+    } else if (renderable instanceof WorldWindConstants.SurfacePolyline) {
       return this.exportSurfacePolyline(renderable);
-    } else if (renderable instanceof WorldWind.SurfacePolygon) {
+    } else if (renderable instanceof WorldWindConstants.SurfacePolygon) {
       return this.exportSurfacePolygon(renderable);
-    } else if (renderable instanceof WorldWind.SurfaceEllipse) {
+    } else if (renderable instanceof WorldWindConstants.SurfaceEllipse) {
       return this.exportSurfaceEllipse(renderable);
-    } else if (renderable instanceof WorldWind.SurfaceCircle) {
+    } else if (renderable instanceof WorldWindConstants.SurfaceCircle) {
       return this.exportSurfaceCircle(renderable);
-    } else if (renderable instanceof WorldWind.SurfaceRectangle) {
+    } else if (renderable instanceof WorldWindConstants.SurfaceRectangle) {
       return this.exportSurfaceRectangle(renderable);
-    } else if (renderable instanceof WorldWind.SurfaceSector) {
+    } else if (renderable instanceof WorldWindConstants.SurfaceSector) {
       return this.exportSurfaceSector(renderable);
-    } else if (renderable instanceof WorldWind.Path) {
+    } else if (renderable instanceof WorldWindConstants.Path) {
       return this.exportPath(renderable);
-    } else if (renderable instanceof WorldWind.Polygon) {
+    } else if (renderable instanceof WorldWindConstants.Polygon) {
       return this.exportPolygon(renderable);
     } else {
       Logger.log(
@@ -166,7 +167,7 @@ var GeoJSONExporter = {
    * @returns {String} GeoJSON format.
    */
   exportPlacemark: function (renderable) {
-    if (!(renderable instanceof WorldWind.Placemark)) {
+    if (!(renderable instanceof WorldWindConstants.Placemark)) {
       throw new ArgumentError(
         Logger.logMessage(
           Logger.LEVEL_SEVERE,
@@ -204,7 +205,7 @@ var GeoJSONExporter = {
    * @returns {String} GeoJSON format.
    */
   exportSurfacePolyline: function (renderable) {
-    if (!(renderable instanceof WorldWind.SurfacePolyline)) {
+    if (!(renderable instanceof WorldWindConstants.SurfacePolyline)) {
       throw new ArgumentError(
         Logger.logMessage(
           Logger.LEVEL_SEVERE,
@@ -248,7 +249,7 @@ var GeoJSONExporter = {
    * @returns {String} GeoJSON format.
    */
   exportSurfacePolygon: function (renderable) {
-    if (!(renderable instanceof WorldWind.SurfacePolygon)) {
+    if (!(renderable instanceof WorldWindConstants.SurfacePolygon)) {
       throw new ArgumentError(
         Logger.logMessage(
           Logger.LEVEL_SEVERE,
@@ -337,7 +338,7 @@ var GeoJSONExporter = {
    * @returns {String} GeoJSON format.
    */
   exportSurfaceEllipse: function (renderable) {
-    if (!(renderable instanceof WorldWind.SurfaceEllipse)) {
+    if (!(renderable instanceof WorldWindConstants.SurfaceEllipse)) {
       throw new ArgumentError(
         Logger.logMessage(
           Logger.LEVEL_SEVERE,
@@ -391,7 +392,7 @@ var GeoJSONExporter = {
    * @returns {String} GeoJSON format.
    */
   exportSurfaceCircle: function (renderable) {
-    if (!(renderable instanceof WorldWind.SurfaceCircle)) {
+    if (!(renderable instanceof WorldWindConstants.SurfaceCircle)) {
       throw new ArgumentError(
         Logger.logMessage(
           Logger.LEVEL_SEVERE,
@@ -445,7 +446,7 @@ var GeoJSONExporter = {
    * @returns {String} GeoJSON format.
    */
   exportSurfaceRectangle: function (renderable) {
-    if (!(renderable instanceof WorldWind.SurfaceRectangle)) {
+    if (!(renderable instanceof WorldWindConstants.SurfaceRectangle)) {
       throw new ArgumentError(
         Logger.logMessage(
           Logger.LEVEL_SEVERE,
@@ -499,7 +500,7 @@ var GeoJSONExporter = {
    * @returns {String} GeoJSON format.
    */
   exportSurfaceSector: function (renderable) {
-    if (!(renderable instanceof WorldWind.SurfaceSector)) {
+    if (!(renderable instanceof WorldWindConstants.SurfaceSector)) {
       throw new ArgumentError(
         Logger.logMessage(
           Logger.LEVEL_SEVERE,
@@ -557,7 +558,7 @@ var GeoJSONExporter = {
    * @returns {String} GeoJSON format.
    */
   exportPath: function (renderable) {
-    if (!(renderable instanceof WorldWind.Path)) {
+    if (!(renderable instanceof WorldWindConstants.Path)) {
       throw new ArgumentError(
         Logger.logMessage(
           Logger.LEVEL_SEVERE,
@@ -603,7 +604,7 @@ var GeoJSONExporter = {
    * @returns {String} GeoJSON format.
    */
   exportPolygon: function (renderable) {
-    if (!(renderable instanceof WorldWind.Polygon)) {
+    if (!(renderable instanceof WorldWindConstants.Polygon)) {
       throw new ArgumentError(
         Logger.logMessage(
           Logger.LEVEL_SEVERE,

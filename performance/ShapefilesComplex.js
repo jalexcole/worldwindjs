@@ -25,179 +25,214 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
-requirejs(['../src/WorldWind',
-        '../examples/LayerManager'],
-    function (ww,
-              LayerManager) {
-        "use strict";
+requirejs(
+  ["../src/WorldWind", "../examples/LayerManager"],
+  function (ww, LayerManager) {
+    "use strict";
 
-        WorldWind.Logger.setLoggingLevel(WorldWind.Logger.LEVEL_WARNING);
+    WorldWind.Logger.setLoggingLevel(WorldWind.Logger.LEVEL_WARNING);
 
-        var wwd = new WorldWind.WorldWindow("canvasOne");
+    var wwd = new WorldWind.WorldWindow("canvasOne");
 
-        var layers = [
-            {layer: new WorldWind.BMNGLayer(), enabled: true},
-            {layer: new WorldWind.BMNGLandsatLayer(), enabled: true},
-            {layer: new WorldWind.BingAerialWithLabelsLayer(null), enabled: false},
-            {layer: new WorldWind.ViewControlsLayer(wwd), enabled: true},
-            {layer: new WorldWind.CompassLayer(), enabled: true}
-        ];
+    var layers = [
+      { layer: new WorldWind.BMNGLayer(), enabled: true },
+      { layer: new WorldWind.BMNGLandsatLayer(), enabled: true },
+      { layer: new WorldWind.BingAerialWithLabelsLayer(null), enabled: false },
+      { layer: new WorldWind.ViewControlsLayer(wwd), enabled: true },
+      { layer: new WorldWind.CompassLayer(), enabled: true },
+    ];
 
-        for (var l = 0; l < layers.length; l++) {
-            layers[l].layer.enabled = layers[l].enabled;
-            wwd.addLayer(layers[l].layer);
+    for (var l = 0; l < layers.length; l++) {
+      layers[l].layer.enabled = layers[l].enabled;
+      wwd.addLayer(layers[l].layer);
+    }
+
+    var dotImage =
+      WorldWind.WWUtil.currentUrlSansFilePart() + "/../images/white-dot.png"; // location of the dot image file
+
+    // Set up the common placemark attributes.
+    var placemarkAttributes = new WorldWind.PlacemarkAttributes(null);
+    placemarkAttributes.imageScale = 0.025;
+    placemarkAttributes.imageColor = WorldWind.Color.WHITE;
+    placemarkAttributes.labelAttributes.offset = new WorldWind.Offset(
+      WorldWindConstants.OFFSET_FRACTION,
+      0.5,
+      WorldWindConstants.OFFSET_FRACTION,
+      1.0
+    );
+    placemarkAttributes.imageSource = dotImage;
+
+    var addLabelForName = function (attributes, record, layer) {
+      var name =
+        attributes.values.name ||
+        attributes.values.Name ||
+        attributes.values.NAME;
+      if (!!name) {
+        var bounds = record.boundingRectangle;
+        var position = new WorldWind.Position(
+          0.5 * (bounds[0] + bounds[1]),
+          0.5 * (bounds[2] + bounds[3]),
+          100
+        );
+        var namePlacemark = new WorldWind.Placemark(position);
+        namePlacemark.label = name;
+        namePlacemark.altitudeMode = WorldWindConstants.RELATIVE_TO_GROUND;
+        layer.addRenderable(namePlacemark);
+      }
+    };
+
+    // For this example, cities are provided in a shapefile that just has points,
+    // and a database that has names (among other attributes).
+    var cityAttributeCallback = function (layer) {
+      return function (attributes, record) {
+        // Add the label for a name record in the database to a separate layer.
+        if (!!layer) {
+          addLabelForName(attributes, record, layer);
         }
 
-        var dotImage = WorldWind.WWUtil.currentUrlSansFilePart() + "/../images/white-dot.png"; // location of the dot image file
+        if (record.isPointType()) {
+          // Modify placemark attributes in a data dependent manner as appropriate.
 
-        // Set up the common placemark attributes.
-        var placemarkAttributes = new WorldWind.PlacemarkAttributes(null);
-        placemarkAttributes.imageScale = 0.025;
-        placemarkAttributes.imageColor = WorldWind.Color.WHITE;
-        placemarkAttributes.labelAttributes.offset = new WorldWind.Offset(
-            WorldWind.OFFSET_FRACTION, 0.5,
-            WorldWind.OFFSET_FRACTION, 1.0);
-        placemarkAttributes.imageSource = dotImage;
+          var currentPlacemarkAttributes = new WorldWind.PlacemarkAttributes(
+            placemarkAttributes
+          );
 
-        var addLabelForName = function (attributes, record, layer) {
-            var name = attributes.values.name || attributes.values.Name || attributes.values.NAME;
-            if (!!name) {
-                var bounds = record.boundingRectangle;
-                var position = new WorldWind.Position(
-                    0.5 * (bounds[0] + bounds[1]),
-                    0.5 * (bounds[2] + bounds[3]),
-                    100);
-                var namePlacemark = new WorldWind.Placemark(position);
-                namePlacemark.label = name;
-                namePlacemark.altitudeMode = WorldWind.RELATIVE_TO_GROUND;
-                layer.addRenderable(namePlacemark);
-            }
-        };
+          if (attributes.values.hasOwnProperty("pop_max")) {
+            var population = attributes.values.pop_max;
+            currentPlacemarkAttributes.imageScale = 0.01 * Math.log(population);
+          }
 
-        // For this example, cities are provided in a shapefile that just has points,
-        // and a database that has names (among other attributes).
-        var cityAttributeCallback = function (layer) {
-            return function (attributes, record) {
-                // Add the label for a name record in the database to a separate layer.
-                if (!!layer) {
-                    addLabelForName(attributes, record, layer);
-                }
+          return { attributes: currentPlacemarkAttributes };
+        } else {
+          // This should never be reached.
+          alert("Invalid record type was encountered!");
+          return null;
+        }
+      };
+    };
 
-                if (record.isPointType()) {
-                    // Modify placemark attributes in a data dependent manner as appropriate.
+    var defaultAttributeCallback = function (layer) {
+      return function (attributes, record) {
+        // Add the label for a name record in the database to a separate layer.
+        if (!!layer) {
+          addLabelForName(attributes, record, layer);
+        }
 
-                    var currentPlacemarkAttributes = new WorldWind.PlacemarkAttributes(placemarkAttributes);
+        if (record.isPolylineType()) {
+          // Modify path attributes in a data dependent manner as appropriate.
 
-                    if (attributes.values.hasOwnProperty('pop_max')) {
-                        var population = attributes.values.pop_max;
-                        currentPlacemarkAttributes.imageScale = 0.01 * Math.log(population);
-                    }
+          var pathAttributes = new WorldWind.ShapeAttributes(null);
 
-                    return {attributes: currentPlacemarkAttributes};
-                }
-                else {
-                    // This should never be reached.
-                    alert("Invalid record type was encountered!");
-                    return null;
-                }
-            }
-        };
+          pathAttributes.drawVerticals = true;
+          pathAttributes.outlineColor = WorldWind.Color.RED;
 
-        var defaultAttributeCallback = function (layer) {
-            return function (attributes, record) {
-                // Add the label for a name record in the database to a separate layer.
-                if (!!layer) {
-                    addLabelForName(attributes, record, layer);
-                }
+          return { attributes: pathAttributes };
+        } else if (record.isPolygonType()) {
+          // Modify polygon attributes in a data dependent manner as appropriate.
 
-                if (record.isPolylineType()) {
-                    // Modify path attributes in a data dependent manner as appropriate.
+          var polygonAttributes = new WorldWind.ShapeAttributes(null);
 
-                    var pathAttributes = new WorldWind.ShapeAttributes(null);
+          // Fill the polygon with a random pastel color.
+          var interiorColor = new WorldWind.Color(
+            0.375 + 0.5 * Math.random(),
+            0.375 + 0.5 * Math.random(),
+            0.375 + 0.5 * Math.random(),
+            1.0
+          );
+          polygonAttributes.interiorColor = interiorColor;
 
-                    pathAttributes.drawVerticals = true;
-                    pathAttributes.outlineColor = WorldWind.Color.RED;
+          // Paint the outline in a darker variant of the interior color.
+          polygonAttributes.outlineColor = new WorldWind.Color(
+            0.5 * interiorColor.red,
+            0.5 * interiorColor.green,
+            0.5 * interiorColor.blue,
+            1.0
+          );
 
-                    return {attributes: pathAttributes};
-                }
-                else if (record.isPolygonType()) {
-                    // Modify polygon attributes in a data dependent manner as appropriate.
+          return { attributes: polygonAttributes };
+        }
+        if (record.isPointType()) {
+          // Modify placemark attributes in a data dependent manner as appropriate.
 
-                    var polygonAttributes = new WorldWind.ShapeAttributes(null);
+          var currentPlacemarkAttributes = new WorldWind.PlacemarkAttributes(
+            placemarkAttributes
+          );
 
-                    // Fill the polygon with a random pastel color.
-                    var interiorColor = new WorldWind.Color(
-                        0.375 + 0.5 * Math.random(),
-                        0.375 + 0.5 * Math.random(),
-                        0.375 + 0.5 * Math.random(),
-                        1.0);
-                    polygonAttributes.interiorColor = interiorColor;
+          return { attributes: currentPlacemarkAttributes };
+        } else {
+          // This should never be reached.
+          alert("Invalid record type was encountered!");
+          return null;
+        }
+      };
+    };
 
-                    // Paint the outline in a darker variant of the interior color.
-                    polygonAttributes.outlineColor = new WorldWind.Color(
-                        0.5 * interiorColor.red,
-                        0.5 * interiorColor.green,
-                        0.5 * interiorColor.blue,
-                        1.0);
+    var shapefileLibrary =
+      "https://worldwind.arc.nasa.gov/web/examples/data/shapefiles/naturalearth";
 
-                    return {attributes: polygonAttributes};
-                }
-                if (record.isPointType()) {
-                    // Modify placemark attributes in a data dependent manner as appropriate.
+    // Create data for the world.
+    var worldLayer = new WorldWind.RenderableLayer("Countries");
+    var worldLabelsLayer = new WorldWind.RenderableLayer("Country Labels");
 
-                    var currentPlacemarkAttributes = new WorldWind.PlacemarkAttributes(placemarkAttributes);
+    var worldShapefile = new WorldWind.Shapefile(
+      shapefileLibrary +
+        "/ne_110m_admin_0_countries/ne_110m_admin_0_countries.shp"
+    );
+    worldShapefile.load(
+      null,
+      defaultAttributeCallback(worldLabelsLayer),
+      worldLayer
+    );
 
-                    return {attributes: currentPlacemarkAttributes};
-                }
-                else {
-                    // This should never be reached.
-                    alert("Invalid record type was encountered!");
-                    return null;
-                }
-            }
-        };
+    var worldBordersShapefile = new WorldWind.Shapefile(
+      shapefileLibrary +
+        "/ne_110m_admin_0_boundary_lines_land/ne_110m_admin_0_boundary_lines_land.shp"
+    );
+    worldBordersShapefile.load(
+      null,
+      defaultAttributeCallback(null),
+      worldLayer
+    );
 
-        var shapefileLibrary = "https://worldwind.arc.nasa.gov/web/examples/data/shapefiles/naturalearth";
+    wwd.addLayer(worldLayer);
+    wwd.addLayer(worldLabelsLayer);
 
-        // Create data for the world.
-        var worldLayer = new WorldWind.RenderableLayer("Countries");
-        var worldLabelsLayer = new WorldWind.RenderableLayer("Country Labels");
+    // Create data for the US.
+    var usLayer = new WorldWind.RenderableLayer("US States");
+    var usLabelsLayer = new WorldWind.RenderableLayer("State Labels");
 
-        var worldShapefile = new WorldWind.Shapefile(shapefileLibrary + "/ne_110m_admin_0_countries/ne_110m_admin_0_countries.shp");
-        worldShapefile.load(null, defaultAttributeCallback(worldLabelsLayer), worldLayer);
+    var usShapefile = new WorldWind.Shapefile(
+      shapefileLibrary +
+        "/ne_110m_admin_1_states_provinces_lakes/ne_110m_admin_1_states_provinces_lakes.shp"
+    );
+    usShapefile.load(null, defaultAttributeCallback(usLabelsLayer), usLayer);
 
-        var worldBordersShapefile = new WorldWind.Shapefile(shapefileLibrary + "/ne_110m_admin_0_boundary_lines_land/ne_110m_admin_0_boundary_lines_land.shp");
-        worldBordersShapefile.load(null, defaultAttributeCallback(null), worldLayer);
+    var usBordersShapefile = new WorldWind.Shapefile(
+      shapefileLibrary +
+        "/ne_110m_admin_1_states_provinces_lines/ne_110m_admin_1_states_provinces_lines.shp"
+    );
+    usBordersShapefile.load(null, defaultAttributeCallback(null), usLayer);
 
-        wwd.addLayer(worldLayer);
-        wwd.addLayer(worldLabelsLayer);
+    wwd.addLayer(usLayer);
+    wwd.addLayer(usLabelsLayer);
 
-        // Create data for the US.
-        var usLayer = new WorldWind.RenderableLayer("US States");
-        var usLabelsLayer = new WorldWind.RenderableLayer("State Labels");
+    // Create data for cities.
+    var cityLayer = new WorldWind.RenderableLayer("Cities");
+    var cityLabelsLayer = new WorldWind.RenderableLayer("City Labels");
 
-        var usShapefile = new WorldWind.Shapefile(shapefileLibrary + "/ne_110m_admin_1_states_provinces_lakes/ne_110m_admin_1_states_provinces_lakes.shp");
-        usShapefile.load(null, defaultAttributeCallback(usLabelsLayer), usLayer);
+    var cityShapefile = new WorldWind.Shapefile(
+      shapefileLibrary +
+        "/ne_50m_populated_places_simple/ne_50m_populated_places_simple.shp"
+    );
+    cityShapefile.load(null, cityAttributeCallback(cityLabelsLayer), cityLayer);
 
-        var usBordersShapefile = new WorldWind.Shapefile(shapefileLibrary + "/ne_110m_admin_1_states_provinces_lines/ne_110m_admin_1_states_provinces_lines.shp");
-        usBordersShapefile.load(null, defaultAttributeCallback(null), usLayer);
+    cityLabelsLayer.enabled = false;
+    wwd.addLayer(cityLayer);
+    wwd.addLayer(cityLabelsLayer);
 
-        wwd.addLayer(usLayer);
-        wwd.addLayer(usLabelsLayer);
+    wwd.redraw();
 
-        // Create data for cities.
-        var cityLayer = new WorldWind.RenderableLayer("Cities");
-        var cityLabelsLayer = new WorldWind.RenderableLayer("City Labels");
-
-        var cityShapefile = new WorldWind.Shapefile(shapefileLibrary + "/ne_50m_populated_places_simple/ne_50m_populated_places_simple.shp");
-        cityShapefile.load(null, cityAttributeCallback(cityLabelsLayer), cityLayer);
-
-        cityLabelsLayer.enabled = false;
-        wwd.addLayer(cityLayer);
-        wwd.addLayer(cityLabelsLayer);
-
-        wwd.redraw();
-
-        // Create a layer manager for controlling layer visibility.
-        var layerManager = new LayerManager(wwd);
-    });
+    // Create a layer manager for controlling layer visibility.
+    var layerManager = new LayerManager(wwd);
+  }
+);

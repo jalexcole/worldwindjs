@@ -38,74 +38,76 @@ import TextAttributes from "./TextAttributes";
  * @param {AnnotationAttributes} attributes Attributes to initialize this attributes instance to. May be null,
  * in which case the new instance contains default attributes.
  */
-var AnnotationAttributes = function (attributes) {
-  // These are all documented with their property accessors below.
-  this._cornerRadius = attributes ? attributes._cornerRadius : 0;
-  this._insets = attributes ? attributes._insets : new Insets(0, 0, 0, 0);
-  this._backgroundColor = attributes
-    ? attributes._backgroundColor.clone()
-    : Color.WHITE.clone();
-  this._leaderGapWidth = attributes ? attributes._leaderGapWidth : 40;
-  this._leaderGapHeight = attributes ? attributes._leaderGapHeight : 30;
-  this._opacity = attributes ? attributes._opacity : 1;
-  this._scale = attributes ? attributes._scale : 1;
-  this._drawLeader = attributes ? attributes._drawLeader : true;
-  this._width = attributes ? attributes._width : 200;
-  this._height = attributes ? attributes._height : 100;
-  this._textAttributes = attributes
-    ? attributes._textAttributes
-    : this.createDefaultTextAttributes();
+class AnnotationAttributes {
+  constructor(attributes) {
+    // These are all documented with their property accessors below.
+    this._cornerRadius = attributes ? attributes._cornerRadius : 0;
+    this._insets = attributes ? attributes._insets : new Insets(0, 0, 0, 0);
+    this._backgroundColor = attributes
+      ? attributes._backgroundColor.clone()
+      : Color.WHITE.clone();
+    this._leaderGapWidth = attributes ? attributes._leaderGapWidth : 40;
+    this._leaderGapHeight = attributes ? attributes._leaderGapHeight : 30;
+    this._opacity = attributes ? attributes._opacity : 1;
+    this._scale = attributes ? attributes._scale : 1;
+    this._drawLeader = attributes ? attributes._drawLeader : true;
+    this._width = attributes ? attributes._width : 200;
+    this._height = attributes ? attributes._height : 100;
+    this._textAttributes = attributes
+      ? attributes._textAttributes
+      : this.createDefaultTextAttributes();
 
+    /**
+     * Indicates whether this object's state key is invalid. Subclasses must set this value to true when their
+     * attributes change. The state key will be automatically computed the next time it's requested. This flag
+     * will be set to false when that occurs.
+     * @type {Boolean}
+     * @protected
+     */
+    this.stateKeyInvalid = true;
+  }
   /**
-   * Indicates whether this object's state key is invalid. Subclasses must set this value to true when their
-   * attributes change. The state key will be automatically computed the next time it's requested. This flag
-   * will be set to false when that occurs.
-   * @type {Boolean}
+   * Computes the state key for this attributes object. Subclasses that define additional attributes must
+   * override this method, call it from that method, and append the state of their attributes to its
+   * return value.
+   * @returns {String} The state key for this object.
    * @protected
    */
-  this.stateKeyInvalid = true;
-};
+  computeStateKey() {
+    return (
+      "wi " +
+      this._width +
+      " he " +
+      this._height +
+      " cr " +
+      this._cornerRadius +
+      " in " +
+      this._insets.toString() +
+      " bg " +
+      this.backgroundColor.toHexString(true) +
+      " dl " +
+      this.drawLeader +
+      " lgw " +
+      this.leaderGapWidth +
+      " lgh " +
+      this.leaderGapHeight +
+      " op " +
+      this.opacity +
+      " ta " +
+      this._textAttributes.stateKey +
+      " sc " +
+      this.scale
+    );
+  }
+  // Internal use only. Intentionally not documented.
+  createDefaultTextAttributes() {
+    var attributes = new TextAttributes(null);
+    attributes.enableOutline = false; // Annotations display text without an outline by default
+    return attributes;
+  }
+}
 
-/**
- * Computes the state key for this attributes object. Subclasses that define additional attributes must
- * override this method, call it from that method, and append the state of their attributes to its
- * return value.
- * @returns {String} The state key for this object.
- * @protected
- */
-AnnotationAttributes.prototype.computeStateKey = function () {
-  return (
-    "wi " +
-    this._width +
-    " he " +
-    this._height +
-    " cr " +
-    this._cornerRadius +
-    " in " +
-    this._insets.toString() +
-    " bg " +
-    this.backgroundColor.toHexString(true) +
-    " dl " +
-    this.drawLeader +
-    " lgw " +
-    this.leaderGapWidth +
-    " lgh " +
-    this.leaderGapHeight +
-    " op " +
-    this.opacity +
-    " ta " +
-    this._textAttributes.stateKey +
-    " sc " +
-    this.scale
-  );
-};
 
-// Internal use only. Intentionally not documented.
-AnnotationAttributes.prototype.createDefaultTextAttributes = function () {
-  var attributes = new TextAttributes(null);
-  attributes.enableOutline = false; // Annotations display text without an outline by default
-  return attributes;
-};
 
 Object.defineProperties(AnnotationAttributes.prototype, {
   /**

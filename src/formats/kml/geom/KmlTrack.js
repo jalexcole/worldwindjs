@@ -40,18 +40,18 @@ import KmlGeometry from "./KmlGeometry";
  * @see https://developers.google.com/kml/documentation/kmlreference#gxtrack
  * @augments KmlGeometry
  */
-var KmlTrack = function (options) {
-  KmlGeometry.call(this, options);
-};
+class KmlTrack extends KmlGeometry {
+  constructor(options) {
+    super(options);
+  }
+  /**
+   * @inheritDoc
+   */
+  getTagNames() {
+    return ["gx:Track"];
+  }
+}
 
-KmlTrack.prototype = Object.create(KmlGeometry.prototype);
-
-/**
- * @inheritDoc
- */
-KmlTrack.prototype.getTagNames = function () {
-  return ["gx:Track"];
-};
 
 KmlElements.addKey(KmlTrack.prototype.getTagNames()[0], KmlTrack);
 

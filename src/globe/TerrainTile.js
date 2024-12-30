@@ -75,10 +75,10 @@ var TerrainTile = function (sector, level, row, column) {
 
   // Internal use. Intentionally not documented.
   this.neighborMap = {};
-  this.neighborMap[WorldWind.NORTH] = null;
-  this.neighborMap[WorldWind.SOUTH] = null;
-  this.neighborMap[WorldWind.EAST] = null;
-  this.neighborMap[WorldWind.WEST] = null;
+  this.neighborMap[WorldWindConstants.NORTH] = null;
+  this.neighborMap[WorldWindConstants.SOUTH] = null;
+  this.neighborMap[WorldWindConstants.EAST] = null;
+  this.neighborMap[WorldWindConstants.WEST] = null;
 
   // Internal use. Intentionally not documented.
   this._stateKey = null;
@@ -115,8 +115,8 @@ Object.defineProperties(TerrainTile.prototype, {
 /**
  * Indicates the level of the tile adjacent to this tile in a specified direction. This returns null when this
  * tile has no neighbor in that direction.
- * @param {String} direction The cardinal direction. Must be one of WorldWind.NORTH, WorldWind.SOUTH,
- * WorldWind.EAST or WorldWind.WEST.
+ * @param {String} direction The cardinal direction. Must be one of WorldWindConstants.NORTH, WorldWindConstants.SOUTH,
+ * WorldWindConstants.EAST or WorldWindConstants.WEST.
  * @returns {Level} The neighbor tile's level in the specified direction, or null if there is no neighbor.
  */
 TerrainTile.prototype.neighborLevel = function (direction) {
@@ -125,8 +125,8 @@ TerrainTile.prototype.neighborLevel = function (direction) {
 
 /**
  * Specifies the level of the tile adjacent to this tile in a specified direction.
- * @param {String} direction The cardinal direction. Must be one of WorldWind.NORTH, WorldWind.SOUTH,
- * WorldWind.EAST or WorldWind.WEST.
+ * @param {String} direction The cardinal direction. Must be one of WorldWindConstants.NORTH, WorldWindConstants.SOUTH,
+ * WorldWindConstants.EAST or WorldWindConstants.WEST.
  * @param {Level} level The neighbor tile's level in the specified direction, or null to indicate that there is
  * no neighbor in that direction.
  */
@@ -256,23 +256,23 @@ TerrainTile.prototype.computeStateKey = function () {
   var array = [];
   array.push(this._elevationTimestamp);
   array.push(
-    this.neighborMap[WorldWind.NORTH]
-      ? this.neighborMap[WorldWind.NORTH].compare(this.level)
+    this.neighborMap[WorldWindConstants.NORTH]
+      ? this.neighborMap[WorldWindConstants.NORTH].compare(this.level)
       : 0
   );
   array.push(
-    this.neighborMap[WorldWind.SOUTH]
-      ? this.neighborMap[WorldWind.SOUTH].compare(this.level)
+    this.neighborMap[WorldWindConstants.SOUTH]
+      ? this.neighborMap[WorldWindConstants.SOUTH].compare(this.level)
       : 0
   );
   array.push(
-    this.neighborMap[WorldWind.EAST]
-      ? this.neighborMap[WorldWind.EAST].compare(this.level)
+    this.neighborMap[WorldWindConstants.EAST]
+      ? this.neighborMap[WorldWindConstants.EAST].compare(this.level)
       : 0
   );
   array.push(
-    this.neighborMap[WorldWind.WEST]
-      ? this.neighborMap[WorldWind.WEST].compare(this.level)
+    this.neighborMap[WorldWindConstants.WEST]
+      ? this.neighborMap[WorldWindConstants.WEST].compare(this.level)
       : 0
   );
 

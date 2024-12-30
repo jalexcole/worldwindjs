@@ -17,111 +17,113 @@ import ArgumentError from "../error/ArgumentError";
 import Logger from "../util/Logger";
 import Position from "./Position";
 
-var LookAt = function () {
-  /**
-   * The geographic position at the center of the viewport.
-   * @type {Location}
-   */
-  this.position = new Position(30, -110, 0);
+class LookAt {
+  constructor() {
+    /**
+     * The geographic position at the center of the viewport.
+     * @type {Location}
+     */
+    this.position = new Position(30, -110, 0);
 
-  /**
-   * Look at heading, in degrees clockwise from north.
-   * @type {Number}
-   * @default 0
-   */
-  this.heading = 0;
+    /**
+     * Look at heading, in degrees clockwise from north.
+     * @type {Number}
+     * @default 0
+     */
+    this.heading = 0;
 
-  /**
-   * Look at tilt, in degrees.
-   * @type {Number}
-   * @default 0
-   */
-  this.tilt = 0;
+    /**
+     * Look at tilt, in degrees.
+     * @type {Number}
+     * @default 0
+     */
+    this.tilt = 0;
 
-  /**
-   * Look at roll, in degrees.
-   * @type {Number}
-   * @default 0
-   */
-  this.roll = 0;
+    /**
+     * Look at roll, in degrees.
+     * @type {Number}
+     * @default 0
+     */
+    this.roll = 0;
 
+    /**
+     * The distance from the eye point to its look at location.
+     * @type {Number}
+     * @default 10,000 kilometers
+     */
+    this.range = 10e6; // TODO: Compute initial range to fit globe in viewport.
+  }
   /**
-   * The distance from the eye point to its look at location.
-   * @type {Number}
-   * @default 10,000 kilometers
+   * Indicates whether the components of this object are equal to those of a specified object.
+   * @param {LookAt} otherLookAt The object to test equality with. May be null or undefined, in which case this
+   * function returns false.
+   * @returns {boolean} true if all components of this object are equal to the corresponding
+   * components of the specified object, otherwise false.
    */
-  this.range = 10e6; // TODO: Compute initial range to fit globe in viewport.
-};
+  equals(otherLookAt) {
+    if (otherLookAt) {
+      return (
+        this.position.equals(otherLookAt.position) &&
+        this.heading === otherLookAt.heading &&
+        this.tilt === otherLookAt.tilt &&
+        this.roll === otherLookAt.roll &&
+        this.range === otherLookAt.range
+      );
+    }
 
-/**
- * Indicates whether the components of this object are equal to those of a specified object.
- * @param {LookAt} otherLookAt The object to test equality with. May be null or undefined, in which case this
- * function returns false.
- * @returns {boolean} true if all components of this object are equal to the corresponding
- * components of the specified object, otherwise false.
- */
-LookAt.prototype.equals = function (otherLookAt) {
-  if (otherLookAt) {
+    return false;
+  }
+  /**
+   * Creates a new object that is a copy of this object.
+   * @returns {LookAt} The new object.
+   */
+  clone() {
+    var clone = new LookAt();
+    clone.copy(this);
+
+    return clone;
+  }
+  /**
+   * Copies the components of a specified object to this object.
+   * @param {LookAt} copyObject The object to copy.
+   * @returns {LookAt} A copy of this object equal to copyObject.
+   * @throws {ArgumentError} If the specified object is null or undefined.
+   */
+  copy(copyObject) {
+    if (!copyObject) {
+      throw new ArgumentError(
+        Logger.logMessage(Logger.LEVEL_SEVERE, "LookAt", "copy", "missingObject")
+      );
+    }
+
+    this.position.copy(copyObject.position);
+    this.heading = copyObject.heading;
+    this.tilt = copyObject.tilt;
+    this.roll = copyObject.roll;
+    this.range = copyObject.range;
+
+    return this;
+  }
+  /**
+   * Returns a string representation of this object.
+   * @returns {String}
+   */
+  toString() {
     return (
-      this.position.equals(otherLookAt.position) &&
-      this.heading === otherLookAt.heading &&
-      this.tilt === otherLookAt.tilt &&
-      this.roll === otherLookAt.roll &&
-      this.range === otherLookAt.range
+      this.position.toString() +
+      "," +
+      this.heading +
+      "\u00b0," +
+      this.tilt +
+      "\u00b0," +
+      this.roll +
+      "\u00b0"
     );
   }
+}
 
-  return false;
-};
 
-/**
- * Creates a new object that is a copy of this object.
- * @returns {LookAt} The new object.
- */
-LookAt.prototype.clone = function () {
-  var clone = new LookAt();
-  clone.copy(this);
 
-  return clone;
-};
 
-/**
- * Copies the components of a specified object to this object.
- * @param {LookAt} copyObject The object to copy.
- * @returns {LookAt} A copy of this object equal to copyObject.
- * @throws {ArgumentError} If the specified object is null or undefined.
- */
-LookAt.prototype.copy = function (copyObject) {
-  if (!copyObject) {
-    throw new ArgumentError(
-      Logger.logMessage(Logger.LEVEL_SEVERE, "LookAt", "copy", "missingObject")
-    );
-  }
-
-  this.position.copy(copyObject.position);
-  this.heading = copyObject.heading;
-  this.tilt = copyObject.tilt;
-  this.roll = copyObject.roll;
-  this.range = copyObject.range;
-
-  return this;
-};
-
-/**
- * Returns a string representation of this object.
- * @returns {String}
- */
-LookAt.prototype.toString = function () {
-  return (
-    this.position.toString() +
-    "," +
-    this.heading +
-    "\u00b0," +
-    this.tilt +
-    "\u00b0," +
-    this.roll +
-    "\u00b0"
-  );
-};
 
 export default LookAt;

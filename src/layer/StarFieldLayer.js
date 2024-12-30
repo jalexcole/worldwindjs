@@ -464,7 +464,7 @@ StarFieldLayer.prototype.invalidateStarData = function () {
 // Internal. Intentionally not documented.
 StarFieldLayer.prototype.sendRedrawRequest = function () {
   var e = document.createEvent("Event");
-  e.initEvent(WorldWind.REDRAW_EVENT_TYPE, true, true);
+  e.initEvent(WorldWindConstants.REDRAW_EVENT_TYPE, true, true);
   window.dispatchEvent(e);
 };
 

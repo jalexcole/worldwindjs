@@ -33,18 +33,19 @@ import Logger from "../../../util/Logger";
   * @alias KmlControls
   * @constructor
   */
-var KmlControls = function () {
+class KmlControls {
+  constructor() {
+  }
+  /**
+   * Controls added to the KML document will be notified by the update of the Kml document. Hook is method which is
+   * called once, when the element is updated. It is necessary to be careful and hook the element only once. The
+   * other solution is to make sure the ids will be used correctly.
+   */
+  hook() {
+    Logger.logMessage(Logger.LEVEL_WARNING, "KmlControls", "hook", "Every KML controls should override hook" +
+      " method.");
+  }
+}
 
-};
-
-/**
- * Controls added to the KML document will be notified by the update of the Kml document. Hook is method which is
- * called once, when the element is updated. It is necessary to be careful and hook the element only once. The
- * other solution is to make sure the ids will be used correctly.
- */
-KmlControls.prototype.hook = function () {
-  Logger.logMessage(Logger.LEVEL_WARNING, "KmlControls", "hook", "Every KML controls should override hook" +
-    " method.");
-};
 
 export default KmlControls;

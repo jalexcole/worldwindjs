@@ -41,11 +41,17 @@ import KmlNodeTransformers from "./util/KmlNodeTransformers";
  * @see https://developers.google.com/kml/documentation/kmlreference#camera
  * @augments KmlAbstractView
  */
-var KmlCamera = function (options) {
-  KmlAbstractView.call(this, options);
-};
-
-KmlCamera.prototype = Object.create(KmlAbstractView.prototype);
+class KmlCamera extends KmlAbstractView {
+  constructor(options) {
+    super(options);
+  }
+  /**
+   * @inheritDoc
+   */
+  getTagNames() {
+    return ["Camera"];
+  }
+}
 
 Object.defineProperties(KmlCamera.prototype, {
   /**
@@ -60,7 +66,7 @@ Object.defineProperties(KmlCamera.prototype, {
     get: function () {
       return this._factory.specific(this, {
         name: "longitude",
-        transformer: NodeTransformers.string,
+        transformer: KmlNodeTransformers.string,
       });
     },
   },
@@ -76,7 +82,7 @@ Object.defineProperties(KmlCamera.prototype, {
     get: function () {
       return this._factory.specific(this, {
         name: "latitude",
-        transformer: NodeTransformers.string,
+        transformer: KmlNodeTransformers.string,
       });
     },
   },
@@ -92,7 +98,7 @@ Object.defineProperties(KmlCamera.prototype, {
     get: function () {
       return this._factory.specific(this, {
         name: "altitude",
-        transformer: NodeTransformers.string,
+        transformer: KmlNodeTransformers.string,
       });
     },
   },
@@ -108,7 +114,7 @@ Object.defineProperties(KmlCamera.prototype, {
     get: function () {
       return this._factory.specific(this, {
         name: "heading",
-        transformer: NodeTransformers.string,
+        transformer: KmlNodeTransformers.string,
       });
     },
   },
@@ -127,7 +133,7 @@ Object.defineProperties(KmlCamera.prototype, {
     get: function () {
       return this._factory.specific(this, {
         name: "tilt",
-        transformer: NodeTransformers.string,
+        transformer: KmlNodeTransformers.string,
       });
     },
   },
@@ -142,7 +148,7 @@ Object.defineProperties(KmlCamera.prototype, {
     get: function () {
       return this._factory.specific(this, {
         name: "roll",
-        transformer: NodeTransformers.string,
+        transformer: KmlNodeTransformers.string,
       });
     },
   },
@@ -165,18 +171,12 @@ Object.defineProperties(KmlCamera.prototype, {
     get: function () {
       return this._factory.specific(this, {
         name: "altitudeMode",
-        transformer: NodeTransformers.string,
+        transformer: KmlNodeTransformers.string,
       });
     },
   },
 });
 
-/**
- * @inheritDoc
- */
-KmlCamera.prototype.getTagNames = function () {
-  return ["Camera"];
-};
 
 KmlElements.addKey(KmlCamera.prototype.getTagNames()[0], KmlCamera);
 

@@ -34,7 +34,7 @@ import {
   XmlDocument,
 } from "../../../../src/WorldWind.js";
 import KmlNodeTransformers from "../../../../src/formats/kml/util/KmlNodeTransformers";
-import { afterEach, beforeEach, describe, it } from "vitest";
+import { afterEach, beforeEach, describe, it, expect } from "vitest";
 describe("KmlElementsFactoryTest", function () {
   var factory = new KmlElementsFactory();
   var exampleDocument =

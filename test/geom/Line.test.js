@@ -25,8 +25,9 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
+import Line from "../../src/geom/Line";
+import Vec3 from "../../src/geom/Vec3";
 
-import { Line, Vec3 } from "../../src/WorldWind";
 import { beforeEach, describe,expect, it } from "vitest";
 
 describe("Line Tests", function () {

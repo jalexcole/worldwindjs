@@ -63,7 +63,7 @@ var LayerManager = function (worldWindow) {
 
   //
   //this.wwd.redrawCallbacks.push(function (worldWindow, stage) {
-  //    if (stage == WorldWind.AFTER_REDRAW) {
+  //    if (stage == WorldWindConstants.AFTER_REDRAW) {
   //        thisExplorer.updateVisibilityState(worldWindow);
   //    }
   //});

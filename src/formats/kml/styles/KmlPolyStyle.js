@@ -42,11 +42,29 @@ import KmlNodeTransformers from "../util/KmlNodeTransformers";
  * @see https://developers.google.com/kml/documentation/kmlreference#polystyle
  * @augments KmlColorStyle
  */
-var KmlPolyStyle = function (options) {
-  KmlColorStyle.call(this, options);
-};
+class KmlPolyStyle extends KmlColorStyle {
+  constructor(options) {
+    super(options);
+  }
+  static update(style, options) {
+    style = style || {};
+    var shapeOptions = options || {};
+    shapeOptions._drawInterior = style.kmlFill || true;
+    shapeOptions._drawOutline = style.kmlOutline || false;
+    shapeOptions._outlineColor = options._outlineColor || Color.WHITE;
+    shapeOptions._interiorColor =
+      (style.kmlColor && Color.colorFromKmlHex(style.kmlColor)) || Color.WHITE;
+    shapeOptions._colorMode = style.kmlColorMode || "normal"; // TODO Not yet supported.
 
-KmlPolyStyle.prototype = Object.create(KmlColorStyle.prototype);
+    return shapeOptions;
+  }
+  /**
+   * @inheritDoc
+   */
+  getTagNames() {
+    return ["PolyStyle"];
+  }
+}
 
 Object.defineProperties(KmlPolyStyle.prototype, {
   /**
@@ -80,25 +98,7 @@ Object.defineProperties(KmlPolyStyle.prototype, {
   },
 });
 
-KmlPolyStyle.update = function (style, options) {
-  style = style || {};
-  var shapeOptions = options || {};
-  shapeOptions._drawInterior = style.kmlFill || true;
-  shapeOptions._drawOutline = style.kmlOutline || false;
-  shapeOptions._outlineColor = options._outlineColor || Color.WHITE;
-  shapeOptions._interiorColor =
-    (style.kmlColor && Color.colorFromKmlHex(style.kmlColor)) || Color.WHITE;
-  shapeOptions._colorMode = style.kmlColorMode || "normal"; // TODO Not yet supported.
 
-  return shapeOptions;
-};
-
-/**
- * @inheritDoc
- */
-KmlPolyStyle.prototype.getTagNames = function () {
-  return ["PolyStyle"];
-};
 
 KmlElements.addKey(KmlPolyStyle.prototype.getTagNames()[0], KmlPolyStyle);
 

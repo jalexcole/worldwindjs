@@ -48,48 +48,52 @@ import DrawContext from "./DrawContext";
  * are less than zero, or the specified image path is null, undefined or empty.
  *
  */
-var TextureTile = function (sector, level, row, column) {
-  Tile.call(this, sector, level, row, column); // args are checked in the superclass' constructor
+class TextureTile extends Tile {
+  constructor(sector, level, row, column) {
+    super(sector, level, row, column); // args are checked in the superclass' constructor
 
-  /**
-   * GPU cache key
-   * @type {string}
-   */
-  this.gpuCacheKey = null;
-};
 
-TextureTile.prototype = Object.create(Tile.prototype);
 
-/**
- * Returns the size of the this tile in bytes.
- * @returns {Number} The size of this tile in bytes, not including the associated texture size.
- */
-TextureTile.prototype.size = function () {
-  return Tile.prototype.size.call(this);
-};
 
-/**
- * Causes this tile's texture to be active. Implements [SurfaceTile.bind]{@link SurfaceTile#bind}.
- * @param {DrawContext} dc The current draw context.
- * @returns {Boolean} true if the texture was bound successfully, otherwise false.
- */
-TextureTile.prototype.bind = function (dc) {
-  var texture = dc.gpuResourceCache.resourceForKey(this.gpuCacheKey);
-  if (texture) {
-    return texture.bind(dc);
+
+    /**
+     * GPU cache key
+     * @type {string}
+     */
+    this.gpuCacheKey = null;
   }
+  /**
+   * Returns the size of the this tile in bytes.
+   * @returns {Number} The size of this tile in bytes, not including the associated texture size.
+   */
+  size() {
+    return Tile.prototype.size.call(this);
+  }
+  /**
+   * Causes this tile's texture to be active. Implements [SurfaceTile.bind]{@link SurfaceTile#bind}.
+   * @param {DrawContext} dc The current draw context.
+   * @returns {Boolean} true if the texture was bound successfully, otherwise false.
+   */
+  bind(dc) {
+    var texture = dc.gpuResourceCache.resourceForKey(this.gpuCacheKey);
+    if (texture) {
+      return texture.bind(dc);
+    }
 
-  return false;
-};
+    return false;
+  }
+  /**
+   * If this tile's fallback texture is used, applies the appropriate texture transform to a specified matrix.
+   * Otherwise, this is a no-op.
+   * @param {DrawContext} dc The current draw context.
+   * @param {Matrix} matrix The matrix to apply the transform to.
+   */
+  applyInternalTransform(dc, matrix) {
+    // Override this method if the tile has a fallback texture.
+  }
+}
 
-/**
- * If this tile's fallback texture is used, applies the appropriate texture transform to a specified matrix.
- * Otherwise, this is a no-op.
- * @param {DrawContext} dc The current draw context.
- * @param {Matrix} matrix The matrix to apply the transform to.
- */
-TextureTile.prototype.applyInternalTransform = function (dc, matrix) {
-  // Override this method if the tile has a fallback texture.
-};
+
+
 
 export default TextureTile;

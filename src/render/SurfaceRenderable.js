@@ -37,44 +37,46 @@ import DrawContext from "./DrawContext";
  * @classdesc Represents a surface renderable.
  * This is an interface class and is not meant to be instantiated directly.
  */
-var SurfaceRenderable = function () {
+class SurfaceRenderable {
+  constructor() {
+    /**
+     * This surface renderable's display name.
+     * @type {String}
+     * @default Renderable
+     */
+    this.displayName = "Renderable";
+
+    /**
+     * Indicates whether this surface renderable is enabled.
+     * @type {Boolean}
+     * @default true
+     */
+    this.enabled = true;
+
+    throw new UnsupportedOperationError(
+      Logger.logMessage(
+        Logger.LEVEL_SEVERE,
+        "SurfaceRenderable",
+        "constructor",
+        "abstractInvocation"
+      )
+    );
+  }
   /**
-   * This surface renderable's display name.
-   * @type {String}
-   * @default Renderable
+   * Renders this surface renderable.
+   * @param {DrawContext} dc The current draw context.
    */
-  this.displayName = "Renderable";
+  renderSurface(dc) {
+    throw new UnsupportedOperationError(
+      Logger.logMessage(
+        Logger.LEVEL_SEVERE,
+        "SurfaceRenderable",
+        "renderSurface",
+        "abstractInvocation"
+      )
+    );
+  }
+}
 
-  /**
-   * Indicates whether this surface renderable is enabled.
-   * @type {Boolean}
-   * @default true
-   */
-  this.enabled = true;
-
-  throw new UnsupportedOperationError(
-    Logger.logMessage(
-      Logger.LEVEL_SEVERE,
-      "SurfaceRenderable",
-      "constructor",
-      "abstractInvocation"
-    )
-  );
-};
-
-/**
- * Renders this surface renderable.
- * @param {DrawContext} dc The current draw context.
- */
-SurfaceRenderable.prototype.renderSurface = function (dc) {
-  throw new UnsupportedOperationError(
-    Logger.logMessage(
-      Logger.LEVEL_SEVERE,
-      "SurfaceRenderable",
-      "renderSurface",
-      "abstractInvocation"
-    )
-  );
-};
 
 export default SurfaceRenderable;

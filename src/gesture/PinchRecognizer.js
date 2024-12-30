@@ -84,8 +84,8 @@ PinchRecognizer.prototype.reset = function () {
 
 // Documented in superclass.
 PinchRecognizer.prototype.mouseDown = function (event) {
-  if (this.state == WorldWind.POSSIBLE) {
-    this.state = WorldWind.FAILED; // touch gestures fail upon receiving a mouse event
+  if (this.state == WorldWindConstants.POSSIBLE) {
+    this.state = WorldWindConstants.FAILED; // touch gestures fail upon receiving a mouse event
   }
 };
 
@@ -103,19 +103,19 @@ PinchRecognizer.prototype.touchStart = function (touch) {
 // Documented in superclass.
 PinchRecognizer.prototype.touchMove = function (touch) {
   if (this.pinchTouches.length == 2) {
-    if (this.state == WorldWind.POSSIBLE) {
+    if (this.state == WorldWindConstants.POSSIBLE) {
       if (this.shouldRecognize()) {
-        this.state = WorldWind.BEGAN;
+        this.state = WorldWindConstants.BEGAN;
       }
     } else if (
-      this.state == WorldWind.BEGAN ||
-      this.state == WorldWind.CHANGED
+      this.state == WorldWindConstants.BEGAN ||
+      this.state == WorldWindConstants.CHANGED
     ) {
       var distance = this.currentPinchDistance(),
         newScale = Math.abs(distance / this.referenceDistance),
         w = this.weight;
       this._scale = this._scale * (1 - w) + newScale * w;
-      this.state = WorldWind.CHANGED;
+      this.state = WorldWindConstants.CHANGED;
     }
   }
 };
@@ -130,13 +130,13 @@ PinchRecognizer.prototype.touchEnd = function (touch) {
   // Transition to the ended state if this was the last touch.
   if (this.touchCount == 0) {
     // last touch ended
-    if (this.state == WorldWind.POSSIBLE) {
-      this.state = WorldWind.FAILED;
+    if (this.state == WorldWindConstants.POSSIBLE) {
+      this.state = WorldWindConstants.FAILED;
     } else if (
-      this.state == WorldWind.BEGAN ||
-      this.state == WorldWind.CHANGED
+      this.state == WorldWindConstants.BEGAN ||
+      this.state == WorldWindConstants.CHANGED
     ) {
-      this.state = WorldWind.ENDED;
+      this.state = WorldWindConstants.ENDED;
     }
   }
 };
@@ -150,13 +150,13 @@ PinchRecognizer.prototype.touchCancel = function (touch) {
 
   // Transition to the cancelled state if this was the last touch.
   if (this.touchCount == 0) {
-    if (this.state == WorldWind.POSSIBLE) {
-      this.state = WorldWind.FAILED;
+    if (this.state == WorldWindConstants.POSSIBLE) {
+      this.state = WorldWindConstants.FAILED;
     } else if (
-      this.state == WorldWind.BEGAN ||
-      this.state == WorldWind.CHANGED
+      this.state == WorldWindConstants.BEGAN ||
+      this.state == WorldWindConstants.CHANGED
     ) {
-      this.state = WorldWind.CANCELLED;
+      this.state = WorldWindConstants.CANCELLED;
     }
   }
 };

@@ -50,106 +50,102 @@ import DrawContext from "./DrawContext";
  * are less than zero, or the specified image path is null, undefined or empty.
  *
  */
-var ImageTile = function (sector, level, row, column, imagePath) {
-  if (!imagePath || imagePath.length < 1) {
-    throw new ArgumentError(
-      Logger.logMessage(
-        Logger.LEVEL_SEVERE,
-        "ImageTile",
-        "constructor",
-        "The specified image path is null, undefined or zero length."
-      )
-    );
+class ImageTile extends TextureTile {
+  constructor(sector, level, row, column, imagePath) {
+    if (!imagePath || imagePath.length < 1) {
+      throw new ArgumentError(
+        Logger.logMessage(
+          Logger.LEVEL_SEVERE,
+          "ImageTile",
+          "constructor",
+          "The specified image path is null, undefined or zero length."
+        )
+      );
+    }
+
+    super(sector, level, row, column); // args are checked in the superclass' constructor
+
+
+
+
+
+    /**
+     * This tile's image path.
+     * @type {String}
+     */
+    this.imagePath = imagePath;
+
+    /**
+     * The tile whose texture to use when this tile's texture is not available.
+     * @type {Matrix}
+     */
+    this.fallbackTile = null;
+
+    // Assign imagePath to gpuCacheKey (inherited from TextureTile).
+    this.gpuCacheKey = imagePath;
   }
-
-  TextureTile.call(this, sector, level, row, column); // args are checked in the superclass' constructor
-
   /**
-   * This tile's image path.
-   * @type {String}
+   * Returns the size of the this tile in bytes.
+   * @returns {Number} The size of this tile in bytes, not including the associated texture size.
    */
-  this.imagePath = imagePath;
-
+  size() {
+    return this.__proto__.__proto__.size.call(this) + this.imagePath.length + 8;
+  }
   /**
-   * The tile whose texture to use when this tile's texture is not available.
-   * @type {Matrix}
+   * Causes this tile's texture to be active. Implements [SurfaceTile.bind]{@link SurfaceTile#bind}.
+   * @param {DrawContext} dc The current draw context.
+   * @returns {Boolean} true if the texture was bound successfully, otherwise false.
    */
-  this.fallbackTile = null;
+  bind(dc) {
+    // Attempt to bind in TextureTile first.
+    var isBound = this.__proto__.__proto__.bind.call(this, dc);
+    if (isBound) {
+      return true;
+    }
 
-  // Assign imagePath to gpuCacheKey (inherited from TextureTile).
-  this.gpuCacheKey = imagePath;
-};
+    if (this.fallbackTile) {
+      return this.fallbackTile.bind(dc);
+    }
 
-ImageTile.prototype = Object.create(TextureTile.prototype);
-
-/**
- * Returns the size of the this tile in bytes.
- * @returns {Number} The size of this tile in bytes, not including the associated texture size.
- */
-ImageTile.prototype.size = function () {
-  return this.__proto__.__proto__.size.call(this) + this.imagePath.length + 8;
-};
-
-/**
- * Causes this tile's texture to be active. Implements [SurfaceTile.bind]{@link SurfaceTile#bind}.
- * @param {DrawContext} dc The current draw context.
- * @returns {Boolean} true if the texture was bound successfully, otherwise false.
- */
-ImageTile.prototype.bind = function (dc) {
-  // Attempt to bind in TextureTile first.
-  var isBound = this.__proto__.__proto__.bind.call(this, dc);
-  if (isBound) {
-    return true;
+    return false;
   }
-
-  if (this.fallbackTile) {
-    return this.fallbackTile.bind(dc);
+  /**
+   * If this tile's fallback texture is used, applies the appropriate texture transform to a specified matrix.
+   * @param {DrawContext} dc The current draw context.
+   * @param {Matrix} matrix The matrix to apply the transform to.
+   */
+  applyInternalTransform(dc, matrix) {
+    if (this.fallbackTile &&
+      !dc.gpuResourceCache.resourceForKey(this.imagePath)) {
+      // Must apply a texture transform to map the tile's sector into its fallback's image.
+      this.applyFallbackTransform(matrix);
+    }
   }
+  // Intentionally not documented.
+  applyFallbackTransform(matrix) {
+    var deltaLevel = this.level.levelNumber - this.fallbackTile.level.levelNumber;
+    if (deltaLevel <= 0) return;
 
-  return false;
-};
+    var fbTileDeltaLat = this.fallbackTile.sector.deltaLatitude(), fbTileDeltaLon = this.fallbackTile.sector.deltaLongitude(), sx = this.sector.deltaLongitude() / fbTileDeltaLon, sy = this.sector.deltaLatitude() / fbTileDeltaLat, tx = (this.sector.minLongitude - this.fallbackTile.sector.minLongitude) /
+      fbTileDeltaLon, ty = (this.sector.minLatitude - this.fallbackTile.sector.minLatitude) /
+        fbTileDeltaLat;
 
-/**
- * If this tile's fallback texture is used, applies the appropriate texture transform to a specified matrix.
- * @param {DrawContext} dc The current draw context.
- * @param {Matrix} matrix The matrix to apply the transform to.
- */
-ImageTile.prototype.applyInternalTransform = function (dc, matrix) {
-  if (
-    this.fallbackTile &&
-    !dc.gpuResourceCache.resourceForKey(this.imagePath)
-  ) {
-    // Must apply a texture transform to map the tile's sector into its fallback's image.
-    this.applyFallbackTransform(matrix);
+    // Apply a transform to the matrix that maps texture coordinates for this tile to texture coordinates for the
+    // fallback tile. Rather than perform the full set of matrix operations, a single multiply is performed with the
+    // precomputed non-zero values:
+    //
+    // Matrix trans = Matrix.fromTranslation(tx, ty, 0);
+    // Matrix scale = Matrix.fromScale(sxy, sxy, 1);
+    // matrix.multiply(trans);
+    // matrix.multiply(scale);
+    matrix.multiply(sx, 0, 0, tx, 0, sy, 0, ty, 0, 0, 1, 0, 0, 0, 0, 1);
   }
-};
+}
 
-// Intentionally not documented.
-ImageTile.prototype.applyFallbackTransform = function (matrix) {
-  var deltaLevel = this.level.levelNumber - this.fallbackTile.level.levelNumber;
-  if (deltaLevel <= 0) return;
 
-  var fbTileDeltaLat = this.fallbackTile.sector.deltaLatitude(),
-    fbTileDeltaLon = this.fallbackTile.sector.deltaLongitude(),
-    sx = this.sector.deltaLongitude() / fbTileDeltaLon,
-    sy = this.sector.deltaLatitude() / fbTileDeltaLat,
-    tx =
-      (this.sector.minLongitude - this.fallbackTile.sector.minLongitude) /
-      fbTileDeltaLon,
-    ty =
-      (this.sector.minLatitude - this.fallbackTile.sector.minLatitude) /
-      fbTileDeltaLat;
 
-  // Apply a transform to the matrix that maps texture coordinates for this tile to texture coordinates for the
-  // fallback tile. Rather than perform the full set of matrix operations, a single multiply is performed with the
-  // precomputed non-zero values:
-  //
-  // Matrix trans = Matrix.fromTranslation(tx, ty, 0);
-  // Matrix scale = Matrix.fromScale(sxy, sxy, 1);
-  // matrix.multiply(trans);
-  // matrix.multiply(scale);
 
-  matrix.multiply(sx, 0, 0, tx, 0, sy, 0, ty, 0, 0, 1, 0, 0, 0, 0, 1);
-};
+
+
 
 export default ImageTile;

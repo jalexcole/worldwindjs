@@ -4,6 +4,7 @@ const path = require("path");
 
 module.exports = {
   //mode: "development",
+  devtool: "inline-source-map",
   optimization: {
     minimize: false, // Disable minification
   },
@@ -13,10 +14,19 @@ module.exports = {
     path: path.resolve(__dirname, "build/dist"),
     assetModuleFilename: "images/[hash][ext][query]",
   },
+  resolve: {
+    extensions: [".ts", ".js"],
+  },
   module: {
     rules: [
       {
-        loader: "file-loader",
+        test: /\.ts$/,
+        use: "ts-loader",
+        exclude: /node_modules/,
+      },
+      {
+        // loader: "file-loader",
+        use: "ts-loader",
         test: /\.(png|svg|jpg|jpeg|gif)$/,
         type: "asset/resource",
       },

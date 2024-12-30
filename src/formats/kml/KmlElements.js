@@ -33,29 +33,29 @@
  * Like MultiGeometry present inside of some of the Geometries.
  * @exports KmlElements
  */
-var KmlElements = {
+class KmlElements {
   /**
    * Internal storage for all key-values pairs
    */
-  keys: {},
+  static keys = {}
 
   /**
    * Adds key representing name of the node and constructor to be used.
    * @param key {String} Name of the node, by which it is retrieved. Name is case sensitive.
    * @param value {KmlObject} Value represent constructor function to be instantiated
    */
-  addKey: function (key, value) {
-    this.keys[key] = value;
-  },
+  static addKey(key, value) {
+    KmlElements.keys[key] = value;
+  }
 
   /**
    * Returns constructor function to be instantiated.
    * @param key {String} Name of the node.
    * @returns {*} Constructor function to be instantiated.
    */
-  getKey: function (key) {
-    return this.keys[key];
-  },
-};
+  static getKey(key) {
+    return KmlElements.keys[key];
+  }
+}
 
 export default KmlElements;

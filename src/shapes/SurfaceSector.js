@@ -76,7 +76,7 @@ var SurfaceSector = function (sector, attributes) {
   this._sector = sector;
 
   // The default path type for a surface sector is linear so that it represents a bounding box by default.
-  this._pathType = WorldWind.LINEAR;
+  this._pathType = WorldWindConstants.LINEAR;
 };
 
 SurfaceSector.prototype = Object.create(SurfaceShape.prototype);

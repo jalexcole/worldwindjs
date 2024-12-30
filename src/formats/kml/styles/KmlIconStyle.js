@@ -44,11 +44,33 @@ import KmlNodeTransformers from "../util/KmlNodeTransformers";
  * @see https://developers.google.com/kml/documentation/kmlreference#iconstyle
  * @augments KmlColorStyle
  */
-var KmlIconStyle = function (options) {
-  KmlColorStyle.call(this, options);
-};
+class KmlIconStyle extends KmlColorStyle {
+  constructor(options) {
+    super(options);
+  }
+  static update(style, options, fileCache) {
+    style = style || {};
+    var shapeOptions = options || {};
 
-KmlIconStyle.prototype = Object.create(KmlColorStyle.prototype);
+    // Set initial image size to 32x32 like Google Earth
+    shapeOptions._imageInitialWidth = 32;
+    shapeOptions._imageInitialHeight = 32;
+    shapeOptions._imageScale = style.kmlScale || 1;
+    shapeOptions._imageSource =
+      (style.kmlIcon && style.kmlIcon.kmlHref(fileCache)) || null;
+    shapeOptions._imageColor =
+      (style.kmlColor && Color.colorFromKmlHex(style.kmlColor)) || Color.WHITE;
+    shapeOptions._imageColorMode = style.kmlColorMode || "normal";
+
+    return shapeOptions;
+  }
+  /**
+   * @inheritDoc
+   */
+  getTagNames() {
+    return ["IconStyle"];
+  }
+}
 
 Object.defineProperties(KmlIconStyle.prototype, {
   /**
@@ -61,7 +83,7 @@ Object.defineProperties(KmlIconStyle.prototype, {
     get: function () {
       return this._factory.specific(this, {
         name: "scale",
-        transformer: NodeTransformers.number,
+        transformer: KmlNodeTransformers.number,
       });
     },
   },
@@ -76,7 +98,7 @@ Object.defineProperties(KmlIconStyle.prototype, {
     get: function () {
       return this._factory.specific(this, {
         name: "heading",
-        transformer: NodeTransformers.number,
+        transformer: KmlNodeTransformers.number,
       });
     },
   },
@@ -106,7 +128,7 @@ Object.defineProperties(KmlIconStyle.prototype, {
     get: function () {
       return this._factory.specific(this, {
         name: "hotSpot",
-        transformer: NodeTransformers.attribute("x"),
+        transformer: KmlNodeTransformers.attribute("x"),
       });
     },
   },
@@ -122,7 +144,7 @@ Object.defineProperties(KmlIconStyle.prototype, {
     get: function () {
       return this._factory.specific(this, {
         name: "hotSpot",
-        transformer: NodeTransformers.attribute("y"),
+        transformer: KmlNodeTransformers.attribute("y"),
       });
     },
   },
@@ -139,7 +161,7 @@ Object.defineProperties(KmlIconStyle.prototype, {
     get: function () {
       return this._factory.specific(this, {
         name: "hotSpot",
-        transformer: NodeTransformers.attribute("xunits"),
+        transformer: KmlNodeTransformers.attribute("xunits"),
       });
     },
   },
@@ -156,35 +178,11 @@ Object.defineProperties(KmlIconStyle.prototype, {
     get: function () {
       return this._factory.specific(this, {
         name: "hotSpot",
-        transformer: NodeTransformers.attribute("yunits"),
+        transformer: KmlNodeTransformers.attribute("yunits"),
       });
     },
   },
 });
-
-KmlIconStyle.update = function (style, options, fileCache) {
-  style = style || {};
-  var shapeOptions = options || {};
-
-  // Set initial image size to 32x32 like Google Earth
-  shapeOptions._imageInitialWidth = 32;
-  shapeOptions._imageInitialHeight = 32;
-  shapeOptions._imageScale = style.kmlScale || 1;
-  shapeOptions._imageSource =
-    (style.kmlIcon && style.kmlIcon.kmlHref(fileCache)) || null;
-  shapeOptions._imageColor =
-    (style.kmlColor && Color.colorFromKmlHex(style.kmlColor)) || Color.WHITE;
-  shapeOptions._imageColorMode = style.kmlColorMode || "normal";
-
-  return shapeOptions;
-};
-
-/**
- * @inheritDoc
- */
-KmlIconStyle.prototype.getTagNames = function () {
-  return ["IconStyle"];
-};
 
 KmlElements.addKey(KmlIconStyle.prototype.getTagNames()[0], KmlIconStyle);
 

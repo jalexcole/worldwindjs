@@ -36,7 +36,7 @@ import Position from "../../../geom/Position";
 import ShapeAttributes from "../../../shapes/ShapeAttributes";
 import SurfacePolyline from "../../../shapes/SurfacePolyline";
 import WWUtil from "../../../util/WWUtil";
-import WorldWind from "../../../WorldWind";
+import WorldWindConstants from "../../../WorldWindConstants";
 
 /**
  * Constructs an KmlLineString object.  Applications shouldn't use this constructor. It is used by
@@ -49,13 +49,111 @@ import WorldWind from "../../../WorldWind";
  * @see https://developers.google.com/kml/documentation/kmlreference#linestring
  * @augments KmlGeometry
  */
-var KmlLineString = function (options) {
-  KmlGeometry.call(this, options);
+class KmlLineString extends KmlGeometry {
+  constructor(options) {
+    super(options);
 
-  this._style = null;
-};
+    this._style = null;
+  }
+  /**
+   * It creates Path representing this LineString unless already initialized.
+   * @param styles {Object|null}
+   * @param styles.normal {KmlStyle} Style applied when item not highlighted
+   * @param styles.highlight {KmlStyle} Style applied when item is highlighted
+   */
+  createPath(styles, fileCache) {
+    if (this.kmlAltitudeMode == WorldWindConstants.CLAMP_TO_GROUND) {
+      this._renderable = new SurfacePolyline(
+        this.prepareLocations(),
+        this.prepareAttributes(styles.normal, fileCache)
+      );
+    } else {
+      this._renderable = new Path(
+        this.prepareLocations(),
+        this.prepareAttributes(styles.normal, fileCache)
+      );
+    }
+    if (styles.highlight) {
+      this._renderable.highlightAttributes = this.prepareAttributes(
+        styles.highlight,
+        fileCache
+      );
+    }
+    this.moveValidProperties();
+  }
+  render(dc, kmlOptions) {
+    super.render(dc, kmlOptions);
 
-KmlLineString.prototype = Object.create(KmlGeometry.prototype);
+    if (kmlOptions.lastStyle && !this._renderable) {
+      this.createPath(kmlOptions.lastStyle, kmlOptions.fileCache);
+      dc.redrawRequested = true;
+    }
+
+    if (this._renderable) {
+      this._renderable.enabled = this.enabled;
+      this._renderable.render(dc);
+    }
+  }
+  /**
+   * @inheritDoc
+   */
+  prepareAttributes(style, fileCache) {
+    var shapeOptions = (style && style.generate(fileCache)) || {};
+
+    shapeOptions._applyLighting = true;
+    shapeOptions._drawOutline = true;
+    shapeOptions._drawInterior = true;
+    shapeOptions._drawVerticals = this.kmlExtrude || false;
+    shapeOptions._outlineStippleFactor = 0;
+    shapeOptions._outlineStipplePattern = 61680;
+    shapeOptions._enableLighting = true;
+
+    return new ShapeAttributes(KmlStyle.shapeAttributes(shapeOptions));
+  }
+  /**
+   * Prepare locations representing current Line String.
+   * @returns {Position[]} Positions representing this LineString.
+   */
+  prepareLocations() {
+    return this.kmlPositions;
+  }
+  /**
+   * Moves KML properties from current object into the internal shape representation.
+   */
+  moveValidProperties() {
+    this._renderable.extrude = this.kmlExtrude || false;
+    this._renderable.altitudeMode =
+      this.kmlAltitudeMode || WorldWindConstants.ABSOLUTE;
+    //noinspection JSUnusedGlobalSymbols
+    this._renderable.tesselate = this.kmlTesselate || false;
+  }
+  /**
+   * Two line strings are equal when the properties and positions are equal.
+   * @param toCompare {KmlLineString} LineString to compare to.
+   * @returns {Boolean} True if the LineStrings are equal.
+   */
+  equals(toCompare) {
+    if (!toCompare) {
+      return false;
+    }
+    var positionsEquals = WWUtil.arrayEquals(
+      toCompare.kmlPositions,
+      this.kmlPositions
+    );
+    return (
+      positionsEquals &&
+      toCompare.kmlExtrude == this.kmlExtrude &&
+      toCompare.kmlTessellate == this.kmlTessellate &&
+      toCompare.kmlAltitudeMode == this.kmlAltitudeMode
+    );
+  }
+  /**
+   * @inheritDoc
+   */
+  getTagNames() {
+    return ["LineString"];
+  }
+}
 
 Object.defineProperties(KmlLineString.prototype, {
   /**
@@ -69,7 +167,7 @@ Object.defineProperties(KmlLineString.prototype, {
       return (
         this._factory.specific(this, {
           name: "extrude",
-          transformer: NodeTransformers.boolean,
+          transformer: KmlNodeTransformers.boolean,
         }) || false
       );
     },
@@ -86,7 +184,7 @@ Object.defineProperties(KmlLineString.prototype, {
       return (
         this._factory.specific(this, {
           name: "tessellate",
-          transformer: NodeTransformers.boolean,
+          transformer: KmlNodeTransformers.boolean,
         }) || false
       );
     },
@@ -104,8 +202,8 @@ Object.defineProperties(KmlLineString.prototype, {
       return (
         this._factory.specific(this, {
           name: "altitudeMode",
-          transformer: NodeTransformers.string,
-        }) || WorldWind.ABSOLUTE
+          transformer: KmlNodeTransformers.string,
+        }) || WorldWindConstants.ABSOLUTE
       );
     },
   },
@@ -151,110 +249,6 @@ Object.defineProperties(KmlLineString.prototype, {
     },
   },
 });
-
-/**
- * It creates Path representing this LineString unless already initialized.
- * @param styles {Object|null}
- * @param styles.normal {KmlStyle} Style applied when item not highlighted
- * @param styles.highlight {KmlStyle} Style applied when item is highlighted
- */
-KmlLineString.prototype.createPath = function (styles, fileCache) {
-  if (this.kmlAltitudeMode == WorldWind.CLAMP_TO_GROUND) {
-    this._renderable = new SurfacePolyline(
-      this.prepareLocations(),
-      this.prepareAttributes(styles.normal, fileCache)
-    );
-  } else {
-    this._renderable = new Path(
-      this.prepareLocations(),
-      this.prepareAttributes(styles.normal, fileCache)
-    );
-  }
-  if (styles.highlight) {
-    this._renderable.highlightAttributes = this.prepareAttributes(
-      styles.highlight,
-      fileCache
-    );
-  }
-  this.moveValidProperties();
-};
-
-KmlLineString.prototype.render = function (dc, kmlOptions) {
-  KmlGeometry.prototype.render.call(this, dc, kmlOptions);
-
-  if (kmlOptions.lastStyle && !this._renderable) {
-    this.createPath(kmlOptions.lastStyle, kmlOptions.fileCache);
-    dc.redrawRequested = true;
-  }
-
-  if (this._renderable) {
-    this._renderable.enabled = this.enabled;
-    this._renderable.render(dc);
-  }
-};
-
-/**
- * @inheritDoc
- */
-KmlLineString.prototype.prepareAttributes = function (style, fileCache) {
-  var shapeOptions = (style && style.generate(fileCache)) || {};
-
-  shapeOptions._applyLighting = true;
-  shapeOptions._drawOutline = true;
-  shapeOptions._drawInterior = true;
-  shapeOptions._drawVerticals = this.kmlExtrude || false;
-  shapeOptions._outlineStippleFactor = 0;
-  shapeOptions._outlineStipplePattern = 61680;
-  shapeOptions._enableLighting = true;
-
-  return new ShapeAttributes(KmlStyle.shapeAttributes(shapeOptions));
-};
-
-/**
- * Prepare locations representing current Line String.
- * @returns {Position[]} Positions representing this LineString.
- */
-KmlLineString.prototype.prepareLocations = function () {
-  return this.kmlPositions;
-};
-
-/**
- * Moves KML properties from current object into the internal shape representation.
- */
-KmlLineString.prototype.moveValidProperties = function () {
-  this._renderable.extrude = this.kmlExtrude || false;
-  this._renderable.altitudeMode = this.kmlAltitudeMode || WorldWind.ABSOLUTE;
-  //noinspection JSUnusedGlobalSymbols
-  this._renderable.tesselate = this.kmlTesselate || false;
-};
-
-/**
- * Two line strings are equal when the properties and positions are equal.
- * @param toCompare {KmlLineString} LineString to compare to.
- * @returns {Boolean} True if the LineStrings are equal.
- */
-KmlLineString.prototype.equals = function (toCompare) {
-  if (!toCompare) {
-    return false;
-  }
-  var positionsEquals = WWUtil.arrayEquals(
-    toCompare.kmlPositions,
-    this.kmlPositions
-  );
-  return (
-    positionsEquals &&
-    toCompare.kmlExtrude == this.kmlExtrude &&
-    toCompare.kmlTessellate == this.kmlTessellate &&
-    toCompare.kmlAltitudeMode == this.kmlAltitudeMode
-  );
-};
-
-/**
- * @inheritDoc
- */
-KmlLineString.prototype.getTagNames = function () {
-  return ["LineString"];
-};
 
 KmlElements.addKey(KmlLineString.prototype.getTagNames()[0], KmlLineString);
 

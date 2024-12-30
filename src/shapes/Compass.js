@@ -46,54 +46,57 @@ import ScreenImage from "../shapes/ScreenImage";
  * screen point.
  * @param {String} imagePath The URL of the image to display. If null or undefined, a default compass image is used.
  */
-var Compass = function (screenOffset, imagePath) {
-  var sOffset = screenOffset
-      ? screenOffset
-      : new Offset(WorldWind.OFFSET_FRACTION, 1, WorldWind.OFFSET_FRACTION, 1), // upper-right placement
-    iPath = imagePath
-      ? imagePath
-      : WorldWind.configuration.baseUrl + "images/notched-compass.png";
+class Compass extends ScreenImage {
+  constructor(screenOffset, imagePath) {
+    var sOffset = screenOffset
+        ? screenOffset
+        : new Offset(
+            WorldWindConstants.OFFSET_FRACTION,
+            1,
+            WorldWindConstants.OFFSET_FRACTION,
+            1
+          ), // upper-right placement
+      iPath = imagePath
+        ? imagePath
+        : WorldWind.configuration.baseUrl + "images/notched-compass.png";
 
-  ScreenImage.call(this, sOffset, iPath);
+    super(sOffset, iPath);
 
-  // Must set the default image offset after calling the constructor above.
+    // Must set the default image offset after calling the constructor above.
+    if (!screenOffset) {
+      // Align the upper right corner of the image with the screen point, and give the image some padding.
+      this.imageOffset = new Offset(
+        WorldWindConstants.OFFSET_FRACTION,
+        1.1,
+        WorldWindConstants.OFFSET_FRACTION,
+        1.1
+      );
+    }
 
-  if (!screenOffset) {
-    // Align the upper right corner of the image with the screen point, and give the image some padding.
-    this.imageOffset = new Offset(
-      WorldWind.OFFSET_FRACTION,
-      1.1,
-      WorldWind.OFFSET_FRACTION,
-      1.1
-    );
+    /**
+     * Specifies the size of the compass as a fraction of the WorldWindow width.
+     * @type {number}
+     * @default 0.15
+     */
+    this.size = 0.15;
   }
-
   /**
-   * Specifies the size of the compass as a fraction of the WorldWindow width.
-   * @type {number}
-   * @default 0.15
+   * Capture the camera's heading and tilt and apply it to the compass' screen image.
+   * @param {DrawContext} dc The current draw context.
    */
-  this.size = 0.15;
-};
+  render(dc) {
+    // Capture the camera's heading and tilt and apply it to the compass' screen image.
+    this.imageRotation = dc.camera.heading;
+    this.imageTilt = dc.camera.tilt;
 
-Compass.prototype = Object.create(ScreenImage.prototype);
+    var t = this.getActiveTexture(dc);
+    if (t) {
+      this.imageScale =
+        (this.size * dc.currentGlContext.drawingBufferWidth) / t.imageWidth;
+    }
 
-/**
- * Capture the camera's heading and tilt and apply it to the compass' screen image.
- * @param {DrawContext} dc The current draw context.
- */
-Compass.prototype.render = function (dc) {
-  // Capture the camera's heading and tilt and apply it to the compass' screen image.
-  this.imageRotation = dc.camera.heading;
-  this.imageTilt = dc.camera.tilt;
-
-  var t = this.getActiveTexture(dc);
-  if (t) {
-    this.imageScale =
-      (this.size * dc.currentGlContext.drawingBufferWidth) / t.imageWidth;
+    ScreenImage.prototype.render.call(this, dc);
   }
-
-  ScreenImage.prototype.render.call(this, dc);
-};
+}
 
 export default Compass;

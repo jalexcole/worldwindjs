@@ -33,20 +33,22 @@
  * @param {{}} source The source of the message.
  * @constructor
  */
-var WWMessage = function (type, source) {
-  /**
-   * This object's message type.
-   * @type {String}
-   * @readonly
-   */
-  this.type = type;
+class WWMessage {
+  constructor(type, source) {
+    /**
+     * This object's message type.
+     * @type {String}
+     * @readonly
+     */
+    this.type = type;
 
-  /**
-   * The source object of this message.
-   * @type {{}}
-   * @readonly
-   */
-  this.source = source;
-};
+    /**
+     * The source object of this message.
+     * @type {{}}
+     * @readonly
+     */
+    this.source = source;
+  }
+}
 
 export default WWMessage;

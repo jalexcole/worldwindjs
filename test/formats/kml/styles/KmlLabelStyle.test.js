@@ -25,7 +25,9 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
-import { KmlLabelStyle, XMLDocument } from "../../../../src/WorldWind";
+
+import KmlLabelStyle from "../../../../src/formats/kml/styles/KmlLabelStyle.js";
+import XmlDocument from "../../../../src/util/XmlDocument.js";
 import { beforeAll, beforeEach, describe,expect, it } from "vitest";
 
     describe ("KmlLabelStyle", function(){

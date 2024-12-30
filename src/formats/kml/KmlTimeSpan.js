@@ -41,14 +41,21 @@ import KmlNodeTransformers from "./util/KmlNodeTransformers";
  * @see https://developers.google.com/kml/documentation/kmlreference#timespan
  * @augments KmlTimePrimitive
  */
-var KmlTimeSpan = function (options) {
-  //noinspection JSUndefinedPropertyAssignment
-  options.isTimeSpan = true;
+class KmlTimeSpan extends KmlTimePrimitive {
+  constructor(options) {
+    super(options);
+    //noinspection JSUndefinedPropertyAssignment
+    options.isTimeSpan = true;
 
-  KmlTimePrimitive.call(this, options);
-};
-
-KmlTimeSpan.prototype = Object.create(KmlTimePrimitive.prototype);
+    
+  }
+  /**
+   * @inheritDoc
+   */
+  getTagNames() {
+    return ["TimeSpan"];
+  }
+}
 
 Object.defineProperties(KmlTimeSpan.prototype, {
   /**
@@ -61,7 +68,7 @@ Object.defineProperties(KmlTimeSpan.prototype, {
     get: function () {
       return this._factory.specific(this, {
         name: "begin",
-        transformer: NodeTransformers.date,
+        transformer: KmlNodeTransformers.date,
       });
     },
   },
@@ -76,18 +83,12 @@ Object.defineProperties(KmlTimeSpan.prototype, {
     get: function () {
       return this._factory.specific(this, {
         name: "end",
-        transformer: NodeTransformers.date,
+        transformer: KmlNodeTransformers.date,
       });
     },
   },
 });
 
-/**
- * @inheritDoc
- */
-KmlTimeSpan.prototype.getTagNames = function () {
-  return ["TimeSpan"];
-};
 
 KmlElements.addKey(KmlTimeSpan.prototype.getTagNames()[0], KmlTimeSpan);
 

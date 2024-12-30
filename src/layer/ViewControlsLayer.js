@@ -60,28 +60,28 @@ import Vec2 from "../geom/Vec2";
  *         </tr>
  *         <tr>
  *             <td>Bottom Left</td>
- *             <td>WorldWind.OFFSET_FRACTION, 0, WorldWind.OFFSET_FRACTION, 0</td>
- *             <td>WorldWind.OFFSET_FRACTION, 0, WorldWind.OFFSET_FRACTION, 0</td>
+ *             <td>WorldWindConstants.OFFSET_FRACTION, 0, WorldWindConstants.OFFSET_FRACTION, 0</td>
+ *             <td>WorldWindConstants.OFFSET_FRACTION, 0, WorldWindConstants.OFFSET_FRACTION, 0</td>
  *         </tr>
  *         <tr>
  *             <td>Top Right</td>
- *             <td>WorldWind.OFFSET_FRACTION, 1, WorldWind.OFFSET_FRACTION, 1</td>
- *             <td>WorldWind.OFFSET_FRACTION, 1, WorldWind.OFFSET_FRACTION, 1</td>
+ *             <td>WorldWindConstants.OFFSET_FRACTION, 1, WorldWindConstants.OFFSET_FRACTION, 1</td>
+ *             <td>WorldWindConstants.OFFSET_FRACTION, 1, WorldWindConstants.OFFSET_FRACTION, 1</td>
  *         </tr>
  *         <tr>
  *             <td>Top Left</td>
- *             <td>WorldWind.OFFSET_FRACTION, 0, WorldWind.OFFSET_FRACTION, 1</td>
- *             <td>WorldWind.OFFSET_FRACTION, 0, WorldWind.OFFSET_FRACTION, 1</td>
+ *             <td>WorldWindConstants.OFFSET_FRACTION, 0, WorldWindConstants.OFFSET_FRACTION, 1</td>
+ *             <td>WorldWindConstants.OFFSET_FRACTION, 0, WorldWindConstants.OFFSET_FRACTION, 1</td>
  *         </tr>
  *         <tr>
  *             <td>Bottom Center</td>
- *             <td>WorldWind.OFFSET_FRACTION, 0.5, WorldWind.OFFSET_FRACTION, 0</td>
- *             <td>WorldWind.OFFSET_FRACTION, 0.5, WorldWind.OFFSET_FRACTION, 0</td>
+ *             <td>WorldWindConstants.OFFSET_FRACTION, 0.5, WorldWindConstants.OFFSET_FRACTION, 0</td>
+ *             <td>WorldWindConstants.OFFSET_FRACTION, 0.5, WorldWindConstants.OFFSET_FRACTION, 0</td>
  *         </tr>
  *         <tr>
  *             <td>Southeast</td>
- *             <td>WorldWind.OFFSET_FRACTION, 1, WorldWind.OFFSET_FRACTION, 0.25</td>
- *             <td>WorldWind.OFFSET_FRACTION, 1, WorldWind.OFFSET_FRACTION, 0.5</td>
+ *             <td>WorldWindConstants.OFFSET_FRACTION, 1, WorldWindConstants.OFFSET_FRACTION, 0.25</td>
+ *             <td>WorldWindConstants.OFFSET_FRACTION, 1, WorldWindConstants.OFFSET_FRACTION, 0.5</td>
  *         </tr>
  *     </table>
  * </p>
@@ -114,9 +114,9 @@ var ViewControlsLayer = function (worldWindow) {
    * @default The lower left corner of the window with an 11px margin.
    */
   this.placement = new Offset(
-    WorldWind.OFFSET_PIXELS,
+    WorldWindConstants.OFFSET_PIXELS,
     11,
-    WorldWind.OFFSET_PIXELS,
+    WorldWindConstants.OFFSET_PIXELS,
     11
   );
 
@@ -129,9 +129,9 @@ var ViewControlsLayer = function (worldWindow) {
    * @default The lower left corner of the control collection.
    */
   this.alignment = new Offset(
-    WorldWind.OFFSET_FRACTION,
+    WorldWindConstants.OFFSET_FRACTION,
     0,
-    WorldWind.OFFSET_FRACTION,
+    WorldWindConstants.OFFSET_FRACTION,
     0
   );
 
@@ -182,9 +182,9 @@ var ViewControlsLayer = function (worldWindow) {
 
   // Set the screen and image offsets of each control to the lower left corner.
   var screenOffset = new Offset(
-      WorldWind.OFFSET_PIXELS,
+      WorldWindConstants.OFFSET_PIXELS,
       0,
-      WorldWind.OFFSET_PIXELS,
+      WorldWindConstants.OFFSET_PIXELS,
       0
     ),
     imagePath = WorldWind.configuration.baseUrl + "images/view/";

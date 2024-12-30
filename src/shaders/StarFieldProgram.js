@@ -45,8 +45,9 @@ import Logger from "../util/Logger";
  * @throws {ArgumentError} If the shaders cannot be compiled, or linking of the compiled shaders into a program
  * fails.
  */
-var StarFieldProgram = function (gl) {
-  var vertexShaderSource =
+class StarFieldProgram {
+  constructor(gl) {
+    var vertexShaderSource =
       //.x = declination
       //.y = right ascension
       //.z = point size
@@ -83,71 +84,159 @@ var StarFieldProgram = function (gl) {
       "   gl_Position.z = gl_Position.w - 0.00001;\n" +
       "   gl_PointSize = vertexPoint.z;\n" +
       "   magnitudeWeight = normalizeScalar(vertexPoint.w, magnitudeRange.x, magnitudeRange.y);\n" +
-      "}",
-    fragmentShaderSource =
-      "precision mediump float;\n" +
-      "uniform sampler2D textureSampler;\n" +
-      "uniform int textureEnabled;\n" +
-      "varying float magnitudeWeight;\n" +
-      "const vec4 white = vec4(1.0, 1.0, 1.0, 1.0);\n" +
-      "const vec4 grey = vec4(0.5, 0.5, 0.5, 1.0);\n" +
-      "void main() {\n" +
-      "   if (textureEnabled == 1) {\n" +
-      "       gl_FragColor = texture2D(textureSampler, gl_PointCoord);\n" +
-      "   }\n" +
-      "   else {\n" +
-      //paint the starts in shades of grey, where the brightest star is white and the dimmest star is grey
-      "       gl_FragColor = mix(white, grey, magnitudeWeight);\n" +
-      "   }\n" +
-      "}";
+      "}", fragmentShaderSource = "precision mediump float;\n" +
+        "uniform sampler2D textureSampler;\n" +
+        "uniform int textureEnabled;\n" +
+        "varying float magnitudeWeight;\n" +
+        "const vec4 white = vec4(1.0, 1.0, 1.0, 1.0);\n" +
+        "const vec4 grey = vec4(0.5, 0.5, 0.5, 1.0);\n" +
+        "void main() {\n" +
+        "   if (textureEnabled == 1) {\n" +
+        "       gl_FragColor = texture2D(textureSampler, gl_PointCoord);\n" +
+        "   }\n" +
+        "   else {\n" +
+        //paint the starts in shades of grey, where the brightest star is white and the dimmest star is grey
+        "       gl_FragColor = mix(white, grey, magnitudeWeight);\n" +
+        "   }\n" +
+        "}";
 
-  // Call to the superclass, which performs shader program compiling and linking.
-  GpuProgram.call(this, gl, vertexShaderSource, fragmentShaderSource, [
-    "vertexPoint",
-  ]);
+    // Call to the superclass, which performs shader program compiling and linking.
+    GpuProgram.call(this, gl, vertexShaderSource, fragmentShaderSource, [
+      "vertexPoint",
+    ]);
 
+    /**
+     * The WebGL location for this program's 'vertexPoint' attribute.
+     * @type {Number}
+     * @readonly
+     */
+    this.vertexPointLocation = this.attributeLocation(gl, "vertexPoint");
+
+    /**
+     * The WebGL location for this program's 'mvpMatrix' uniform.
+     * @type {WebGLUniformLocation}
+     * @readonly
+     */
+    this.mvpMatrixLocation = this.uniformLocation(gl, "mvpMatrix");
+
+    /**
+     * The WebGL location for this program's 'numDays' uniform.
+     * @type {WebGLUniformLocation}
+     * @readonly
+     */
+    this.numDaysLocation = this.uniformLocation(gl, "numDays");
+
+    /**
+     * The WebGL location for this program's 'magnitudeRangeLocation' uniform.
+     * @type {WebGLUniformLocation}
+     * @readonly
+     */
+    this.magnitudeRangeLocation = this.uniformLocation(gl, "magnitudeRange");
+
+    /**
+     * The WebGL location for this program's 'textureSampler' uniform.
+     * @type {WebGLUniformLocation}
+     * @readonly
+     */
+    this.textureUnitLocation = this.uniformLocation(gl, "textureSampler");
+
+    /**
+     * The WebGL location for this program's 'textureEnabled' uniform.
+     * @type {WebGLUniformLocation}
+     * @readonly
+     */
+    this.textureEnabledLocation = this.uniformLocation(gl, "textureEnabled");
+  }
   /**
-   * The WebGL location for this program's 'vertexPoint' attribute.
-   * @type {Number}
-   * @readonly
+   * Loads the specified matrix as the value of this program's 'mvpMatrix' uniform variable.
+   *
+   * @param {WebGLRenderingContext} gl The current WebGL context.
+   * @param {Matrix} matrix The matrix to load.
+   * @throws {ArgumentError} If the specified matrix is null or undefined.
    */
-  this.vertexPointLocation = this.attributeLocation(gl, "vertexPoint");
+  loadModelviewProjection(gl, matrix) {
+    if (!matrix) {
+      throw new ArgumentError(
+        Logger.logMessage(
+          Logger.LEVEL_SEVERE,
+          "StarFieldProgram",
+          "loadModelviewProjection",
+          "missingMatrix"
+        )
+      );
+    }
 
+    this.loadUniformMatrix(gl, matrix, this.mvpMatrixLocation);
+  }
   /**
-   * The WebGL location for this program's 'mvpMatrix' uniform.
-   * @type {WebGLUniformLocation}
-   * @readonly
+   * Loads the specified number as the value of this program's 'numDays' uniform variable.
+   *
+   * @param {WebGLRenderingContext} gl The current WebGL context.
+   * @param {Number} numDays The number of days (positive or negative) since Greenwich noon, Terrestrial Time,
+   * on 1 January 2000 (J2000.0)
+   * @throws {ArgumentError} If the specified number is null or undefined.
    */
-  this.mvpMatrixLocation = this.uniformLocation(gl, "mvpMatrix");
-
+  loadNumDays(gl, numDays) {
+    if (numDays == null) {
+      throw new ArgumentError(
+        Logger.logMessage(
+          Logger.LEVEL_SEVERE,
+          "StarFieldProgram",
+          "loadNumDays",
+          "missingNumDays"
+        )
+      );
+    }
+    gl.uniform1f(this.numDaysLocation, numDays);
+  }
   /**
-   * The WebGL location for this program's 'numDays' uniform.
-   * @type {WebGLUniformLocation}
-   * @readonly
+   * Loads the specified numbers as the value of this program's 'magnitudeRange' uniform variable.
+   *
+   * @param {WebGLRenderingContext} gl The current WebGL context.
+   * @param {Number} minMag
+   * @param {Number} maxMag
+   * @throws {ArgumentError} If the specified numbers are null or undefined.
    */
-  this.numDaysLocation = this.uniformLocation(gl, "numDays");
-
+  loadMagnitudeRange(gl, minMag, maxMag) {
+    if (minMag == null) {
+      throw new ArgumentError(
+        Logger.logMessage(
+          Logger.LEVEL_SEVERE,
+          "StarFieldProgram",
+          "loadMagRange",
+          "missingMinMag"
+        )
+      );
+    }
+    if (maxMag == null) {
+      throw new ArgumentError(
+        Logger.logMessage(
+          Logger.LEVEL_SEVERE,
+          "StarFieldProgram",
+          "loadMagRange",
+          "missingMaxMag"
+        )
+      );
+    }
+    gl.uniform2f(this.magnitudeRangeLocation, minMag, maxMag);
+  }
   /**
-   * The WebGL location for this program's 'magnitudeRangeLocation' uniform.
-   * @type {WebGLUniformLocation}
-   * @readonly
+   * Loads the specified number as the value of this program's 'textureSampler' uniform variable.
+   * @param {WebGLRenderingContext} gl The current WebGL context.
+   * @param {Number} unit The texture unit.
    */
-  this.magnitudeRangeLocation = this.uniformLocation(gl, "magnitudeRange");
-
+  loadTextureUnit(gl, unit) {
+    gl.uniform1i(this.textureUnitLocation, unit - gl.TEXTURE0);
+  }
   /**
-   * The WebGL location for this program's 'textureSampler' uniform.
-   * @type {WebGLUniformLocation}
-   * @readonly
+   * Loads the specified boolean as the value of this program's 'textureEnabledLocation' uniform variable.
+   * @param {WebGLRenderingContext} gl The current WebGL context.
+   * @param {Boolean} value
    */
-  this.textureUnitLocation = this.uniformLocation(gl, "textureSampler");
-
-  /**
-   * The WebGL location for this program's 'textureEnabled' uniform.
-   * @type {WebGLUniformLocation}
-   * @readonly
-   */
-  this.textureEnabledLocation = this.uniformLocation(gl, "textureEnabled");
-};
+  loadTextureEnabled(gl, value) {
+    gl.uniform1i(this.textureEnabledLocation, value ? 1 : 0);
+  }
+}
 
 /**
  * A string that uniquely identifies this program.
@@ -159,98 +248,9 @@ StarFieldProgram.key = "WorldWindGpuStarFieldProgram";
 // Inherit from GpuProgram.
 StarFieldProgram.prototype = Object.create(GpuProgram.prototype);
 
-/**
- * Loads the specified matrix as the value of this program's 'mvpMatrix' uniform variable.
- *
- * @param {WebGLRenderingContext} gl The current WebGL context.
- * @param {Matrix} matrix The matrix to load.
- * @throws {ArgumentError} If the specified matrix is null or undefined.
- */
-StarFieldProgram.prototype.loadModelviewProjection = function (gl, matrix) {
-  if (!matrix) {
-    throw new ArgumentError(
-      Logger.logMessage(
-        Logger.LEVEL_SEVERE,
-        "StarFieldProgram",
-        "loadModelviewProjection",
-        "missingMatrix"
-      )
-    );
-  }
 
-  this.loadUniformMatrix(gl, matrix, this.mvpMatrixLocation);
-};
 
-/**
- * Loads the specified number as the value of this program's 'numDays' uniform variable.
- *
- * @param {WebGLRenderingContext} gl The current WebGL context.
- * @param {Number} numDays The number of days (positive or negative) since Greenwich noon, Terrestrial Time,
- * on 1 January 2000 (J2000.0)
- * @throws {ArgumentError} If the specified number is null or undefined.
- */
-StarFieldProgram.prototype.loadNumDays = function (gl, numDays) {
-  if (numDays == null) {
-    throw new ArgumentError(
-      Logger.logMessage(
-        Logger.LEVEL_SEVERE,
-        "StarFieldProgram",
-        "loadNumDays",
-        "missingNumDays"
-      )
-    );
-  }
-  gl.uniform1f(this.numDaysLocation, numDays);
-};
 
-/**
- * Loads the specified numbers as the value of this program's 'magnitudeRange' uniform variable.
- *
- * @param {WebGLRenderingContext} gl The current WebGL context.
- * @param {Number} minMag
- * @param {Number} maxMag
- * @throws {ArgumentError} If the specified numbers are null or undefined.
- */
-StarFieldProgram.prototype.loadMagnitudeRange = function (gl, minMag, maxMag) {
-  if (minMag == null) {
-    throw new ArgumentError(
-      Logger.logMessage(
-        Logger.LEVEL_SEVERE,
-        "StarFieldProgram",
-        "loadMagRange",
-        "missingMinMag"
-      )
-    );
-  }
-  if (maxMag == null) {
-    throw new ArgumentError(
-      Logger.logMessage(
-        Logger.LEVEL_SEVERE,
-        "StarFieldProgram",
-        "loadMagRange",
-        "missingMaxMag"
-      )
-    );
-  }
-  gl.uniform2f(this.magnitudeRangeLocation, minMag, maxMag);
-};
 
-/**
- * Loads the specified number as the value of this program's 'textureSampler' uniform variable.
- * @param {WebGLRenderingContext} gl The current WebGL context.
- * @param {Number} unit The texture unit.
- */
-StarFieldProgram.prototype.loadTextureUnit = function (gl, unit) {
-  gl.uniform1i(this.textureUnitLocation, unit - gl.TEXTURE0);
-};
-
-/**
- * Loads the specified boolean as the value of this program's 'textureEnabledLocation' uniform variable.
- * @param {WebGLRenderingContext} gl The current WebGL context.
- * @param {Boolean} value
- */
-StarFieldProgram.prototype.loadTextureEnabled = function (gl, value) {
-  gl.uniform1i(this.textureEnabledLocation, value ? 1 : 0);
-};
 
 export default StarFieldProgram;

@@ -41,11 +41,46 @@ import { Promise } from "es6-promise";
  * @see https://developers.google.com/kml/documentation/kmlreference#stylemap
  * @augments KmlSubStyle
  */
-var KmlStyleMap = function (node) {
-  KmlSubStyle.call(this, node);
-};
+class KmlStyleMap extends KmlSubStyle{
+  constructor(node) {
+    super(node);
+  }
+  /**
+   * Resolve the information from style map and create the options with normal and highlight.
+   * @param styleResolver {StyleResolver} Resolver used to handle the potential remoteness of the style. The style
+   *   itself can be located in any file.
+   * @return {Promise} Promise of the resolved style.
+   */
+  resolve(styleResolver) {
+    // Create promise which resolves, when all styles are resolved.
+    var results = {};
+    var promises = this.kmlPairs.map(function (pair) {
+      var key = pair.kmlKey;
+      return pair.getStyle(styleResolver).then(function (pStyle) {
+        results[key] = pStyle.normal;
+      });
+    });
 
-KmlStyleMap.prototype = Object.create(KmlSubStyle.prototype);
+    return Promise.all(promises).then(function () {
+      if (!results["normal"]) {
+        results["normal"] = null;
+      }
+
+      if (!results["highlight"]) {
+        results["highlight"] = null;
+      }
+
+      return results;
+    });
+  }
+  /**
+   * @inheritDoc
+   */
+  getTagNames() {
+    return ["StyleMap"];
+  }
+}
+
 
 Object.defineProperties(KmlStyleMap.prototype, {
   /**
@@ -73,41 +108,7 @@ Object.defineProperties(KmlStyleMap.prototype, {
   },
 });
 
-/**
- * Resolve the information from style map and create the options with normal and highlight.
- * @param styleResolver {StyleResolver} Resolver used to handle the potential remoteness of the style. The style
- *   itself can be located in any file.
- * @return {Promise} Promise of the resolved style.
- */
-KmlStyleMap.prototype.resolve = function (styleResolver) {
-  // Create promise which resolves, when all styles are resolved.
-  var results = {};
-  var promises = this.kmlPairs.map(function (pair) {
-    var key = pair.kmlKey;
-    return pair.getStyle(styleResolver).then(function (pStyle) {
-      results[key] = pStyle.normal;
-    });
-  });
 
-  return Promise.all(promises).then(function () {
-    if (!results["normal"]) {
-      results["normal"] = null;
-    }
-
-    if (!results["highlight"]) {
-      results["highlight"] = null;
-    }
-
-    return results;
-  });
-};
-
-/**
- * @inheritDoc
- */
-KmlStyleMap.prototype.getTagNames = function () {
-  return ["StyleMap"];
-};
 
 KmlElements.addKey(KmlStyleMap.prototype.getTagNames()[0], KmlStyleMap);
 

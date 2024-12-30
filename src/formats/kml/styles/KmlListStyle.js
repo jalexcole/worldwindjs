@@ -28,7 +28,7 @@
 import KmlItemIcon from "../util/KmlItemIcon.js";
 import KmlElements from "../KmlElements";
 import KmlSubStyle from "./KmlSubStyle";
-import NodeTransformers from "../util/KmlNodeTransformers";
+import KmlNodeTransformers from "../util/KmlNodeTransformers";
 
 /**
  * Constructs an KmlListStyle. Applications usually don't call this constructor. It is called by {@link KmlFile} as
@@ -42,11 +42,18 @@ import NodeTransformers from "../util/KmlNodeTransformers";
  * @see https://developers.google.com/kml/documentation/kmlreference#liststyle
  * @augments KmlSubStyle
  */
-var KmlListStyle = function (options) {
-  KmlSubStyle.call(this, options);
-};
-
-KmlListStyle.prototype = Object.create(KmlSubStyle.prototype);
+class KmlListStyle extends KmlSubStyle {
+  constructor(options) {
+    super(options);
+  }
+  static update() {}
+  /**
+   * @inheritDoc
+   */
+  getTagNames() {
+    return ["ListStyle"];
+  }
+}
 
 Object.defineProperties(KmlListStyle.prototype, {
   /**
@@ -64,7 +71,7 @@ Object.defineProperties(KmlListStyle.prototype, {
     get: function () {
       return this._factory.specific(this, {
         name: "bgColor",
-        transformer: NodeTransformers.string,
+        transformer: KmlNodeTransformers.string,
       });
     },
   },
@@ -88,7 +95,7 @@ Object.defineProperties(KmlListStyle.prototype, {
     get: function () {
       return this._factory.specific(this, {
         name: "listItemType",
-        transformer: NodeTransformers.string,
+        transformer: KmlNodeTransformers.string,
       });
     },
   },
@@ -109,15 +116,6 @@ Object.defineProperties(KmlListStyle.prototype, {
     },
   },
 });
-
-KmlListStyle.update = function () {};
-
-/**
- * @inheritDoc
- */
-KmlListStyle.prototype.getTagNames = function () {
-  return ["ListStyle"];
-};
 
 KmlElements.addKey(KmlListStyle.prototype.getTagNames()[0], KmlListStyle);
 

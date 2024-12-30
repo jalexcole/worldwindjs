@@ -56,26 +56,75 @@ import SurfaceShape from "./SurfaceShape";
  *
  * @throws {ArgumentError} If the specified boundaries are null or undefined.
  */
-var SurfacePolygon = function (boundaries, attributes) {
-  if (!Array.isArray(boundaries)) {
-    throw new ArgumentError(
-      Logger.logMessage(
-        Logger.LEVEL_SEVERE,
-        "SurfacePolygon",
-        "constructor",
-        "The specified boundary is not an array."
-      )
-    );
+class SurfacePolygon extends SurfaceShape {
+  constructor(boundaries, attributes) {
+    super(attributes);
+    if (!Array.isArray(boundaries)) {
+      throw new ArgumentError(
+        Logger.logMessage(
+          Logger.LEVEL_SEVERE,
+          "SurfacePolygon",
+          "constructor",
+          "The specified boundary is not an array."
+        )
+      );
+    }
+
+    
+
+    this._boundaries = boundaries;
+
+    this._stateId = SurfacePolygon.stateId++;
   }
+  // Internal use only. Intentionally not documented.
+  static staticStateKey(shape) {
+    var shapeStateKey = SurfaceShape.staticStateKey(shape);
 
-  SurfaceShape.call(this, attributes);
+    return shapeStateKey + " pg " + shape._stateId;
+  }
+  // Internal use only. Intentionally not documented.
+  computeStateKey() {
+    return SurfacePolygon.staticStateKey(this);
+  }
+  // Internal. Polygon doesn't generate its own boundaries. See SurfaceShape.prototype.computeBoundaries.
+  computeBoundaries(dc) { }
+  // Internal use only. Intentionally not documented.
+  getReferencePosition() {
+    // Assign the first position as the reference position.
+    if (this.boundaries.length > 0 && this.boundaries[0].length > 2) {
+      return this.boundaries[0][0];
+    } else if (this.boundaries.length > 2) {
+      return this.boundaries[0];
+    } else {
+      return null;
+    }
+  }
+  // Internal use only. Intentionally not documented.
+  moveTo(globe, position) {
+    if (this.boundaries.length > 0 && this.boundaries[0].length > 2) {
+      var boundaries = [];
+      for (var i = 0, len = this._boundaries.length; i < len; i++) {
+        var locations = this.computeShiftedLocations(
+          globe,
+          this.getReferencePosition(),
+          position,
+          this._boundaries[i]
+        );
+        boundaries.push(locations);
+      }
+      this.boundaries = boundaries;
+    } else if (this.boundaries.length > 2) {
+      this.boundaries = this.computeShiftedLocations(
+        globe,
+        this.getReferencePosition(),
+        position,
+        this._boundaries
+      );
+    }
+  }
+}
 
-  this._boundaries = boundaries;
 
-  this._stateId = SurfacePolygon.stateId++;
-};
-
-SurfacePolygon.prototype = Object.create(SurfaceShape.prototype);
 
 Object.defineProperties(SurfacePolygon.prototype, {
   /**
@@ -111,55 +160,9 @@ Object.defineProperties(SurfacePolygon.prototype, {
 // Internal use only. Intentionally not documented.
 SurfacePolygon.stateId = Number.MIN_SAFE_INTEGER;
 
-// Internal use only. Intentionally not documented.
-SurfacePolygon.staticStateKey = function (shape) {
-  var shapeStateKey = SurfaceShape.staticStateKey(shape);
 
-  return shapeStateKey + " pg " + shape._stateId;
-};
 
-// Internal use only. Intentionally not documented.
-SurfacePolygon.prototype.computeStateKey = function () {
-  return SurfacePolygon.staticStateKey(this);
-};
 
-// Internal. Polygon doesn't generate its own boundaries. See SurfaceShape.prototype.computeBoundaries.
-SurfacePolygon.prototype.computeBoundaries = function (dc) {};
 
-// Internal use only. Intentionally not documented.
-SurfacePolygon.prototype.getReferencePosition = function () {
-  // Assign the first position as the reference position.
-  if (this.boundaries.length > 0 && this.boundaries[0].length > 2) {
-    return this.boundaries[0][0];
-  } else if (this.boundaries.length > 2) {
-    return this.boundaries[0];
-  } else {
-    return null;
-  }
-};
-
-// Internal use only. Intentionally not documented.
-SurfacePolygon.prototype.moveTo = function (globe, position) {
-  if (this.boundaries.length > 0 && this.boundaries[0].length > 2) {
-    var boundaries = [];
-    for (var i = 0, len = this._boundaries.length; i < len; i++) {
-      var locations = this.computeShiftedLocations(
-        globe,
-        this.getReferencePosition(),
-        position,
-        this._boundaries[i]
-      );
-      boundaries.push(locations);
-    }
-    this.boundaries = boundaries;
-  } else if (this.boundaries.length > 2) {
-    this.boundaries = this.computeShiftedLocations(
-      globe,
-      this.getReferencePosition(),
-      position,
-      this._boundaries
-    );
-  }
-};
 
 export default SurfacePolygon;

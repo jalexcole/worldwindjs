@@ -32,166 +32,168 @@ import Logger from "../../util/Logger";
 
 /**
  * Constructs a dBase record field. Applications typically do not call this constructor. It is called by
- * {@link {DBaseRecord} as attribute fields are read.
+ * @link {DBaseRecord} as attribute fields are read.
  * @param {DBaseFile} dbaseFile A dBase attribute file.
  * @param {ByteBuffer} buffer A buffer descriptor from which to parse a field.
  * @returns {DBaseField} The dBase field that was parsed.
  * @constructor
  */
-var DBaseField = function (dbaseFile, buffer) {
-  if (!dbaseFile) {
-    throw new ArgumentError(
-      Logger.logMessage(
-        Logger.LEVEL_SEVERE,
-        "DBaseField",
-        "constructor",
-        "missingAttributeName"
-      )
-    );
-  }
+class DBaseField {
+  constructor(dbaseFile, buffer) {
+    if (!dbaseFile) {
+      throw new ArgumentError(
+        Logger.logMessage(
+          Logger.LEVEL_SEVERE,
+          "DBaseField",
+          "constructor",
+          "missingAttributeName"
+        )
+      );
+    }
 
-  if (!buffer) {
-    throw new ArgumentError(
-      Logger.logMessage(
-        Logger.LEVEL_SEVERE,
-        "DBaseField",
-        "constructor",
-        "missingBuffer"
-      )
-    );
-  }
+    if (!buffer) {
+      throw new ArgumentError(
+        Logger.logMessage(
+          Logger.LEVEL_SEVERE,
+          "DBaseField",
+          "constructor",
+          "missingBuffer"
+        )
+      );
+    }
 
+    /**
+     * The name of the field.
+     * @type {String}
+     */
+    this.name = null;
+
+    /**
+     * The type of the field.
+     * @type {String}
+     */
+    this.type = null;
+
+    /**
+     * The code byte for the field.
+     * @type {Number}
+     */
+    this.typeCode = -1;
+
+    /**
+     * The length of the field.
+     * @type {Number}
+     */
+    this.length = -1;
+
+    /**
+     * The number of decimals in the field.
+     * @type {Number}
+     */
+    this.decimals = -1;
+
+    this.readFieldDescriptor(dbaseFile, buffer);
+  }
+  /**
+   * Indicate the type of the field.
+   * @param {String} type The type of the field.
+   * @returns {String} A description of the field type.
+   */
+  static getFieldType(type) {
+    switch (type) {
+      case "C":
+        return DBaseField.TYPE_CHAR;
+      case "D":
+        return DBaseField.TYPE_DATE;
+      case "F":
+        return DBaseField.TYPE_NUMBER;
+      case "L":
+        return DBaseField.TYPE_BOOLEAN;
+      case "N":
+        return DBaseField.TYPE_NUMBER;
+      default:
+        return null;
+    }
+  }
   /**
    * The name of the field.
-   * @type {String}
+   * @returns {String} The name of the field.
    */
-  this.name = null;
-
+  getName() {
+    return this.name;
+  }
   /**
    * The type of the field.
-   * @type {String}
+   * @returns {String} The type of the field.
    */
-  this.type = null;
-
-  /**
-   * The code byte for the field.
-   * @type {Number}
-   */
-  this.typeCode = -1;
-
+  getType() {
+    return this.type;
+  }
   /**
    * The length of the field.
-   * @type {Number}
+   * @returns {Number} The length of the field.
    */
-  this.length = -1;
-
+  getLength() {
+    return this.length;
+  }
   /**
-   * The number of decimals in the field.
-   * @type {Number}
+   * The number of decimal places in the field.
+   * @returns {Number} The number of decimal places.
    */
-  this.decimals = -1;
+  getDecimals() {
+    return this.decimals;
+  }
+  /**
+   * Read the field descriptor.
+   * @param {DBaseFile} dbaseFile The dBase file to read.
+   * @param {ByteBuffer} buffer The descriptor of the buffer to read from.
+   */
+  readFieldDescriptor(dbaseFile, buffer) {
+    buffer.order(ByteBuffer.LITTLE_ENDIAN);
 
-  this.readFieldDescriptor(dbaseFile, buffer);
-};
+    var pos = buffer.position;
 
-/**
- * The name of the field.
- * @returns {String} The name of the field.
- */
-DBaseField.prototype.getName = function () {
-  return this.name;
-};
-
-/**
- * The type of the field.
- * @returns {String} The type of the field.
- */
-DBaseField.prototype.getType = function () {
-  return this.type;
-};
-
-/**
- * The length of the field.
- * @returns {Number} The length of the field.
- */
-DBaseField.prototype.getLength = function () {
-  return this.length;
-};
-
-/**
- * The number of decimal places in the field.
- * @returns {Number} The number of decimal places.
- */
-DBaseField.prototype.getDecimals = function () {
-  return this.decimals;
-};
-
-/**
- * Read the field descriptor.
- * @param {DBaseFile} dbaseFile The dBase file to read.
- * @param {ByteBuffer} buffer The descriptor of the buffer to read from.
- */
-DBaseField.prototype.readFieldDescriptor = function (dbaseFile, buffer) {
-  buffer.order(ByteBuffer.LITTLE_ENDIAN);
-
-  var pos = buffer.position;
-
-  this.name = dbaseFile.readNullTerminatedString(
-    buffer,
-    DBaseField.FIELD_NAME_LENGTH
-  );
-
-  buffer.seek(pos + DBaseField.FIELD_NAME_LENGTH);
-  this.typeCode = String.fromCharCode(buffer.getByte());
-  this.type = DBaseField.getFieldType(this.typeCode);
-  if (this.type == null) {
-    // TODO: firgure out type of error.
-    throw new Error(
-      Logger.log(
-        Logger.LEVEL_SEVERE,
-        "Shapefile dBase encountered unsupported field type: " + this.typeCode
-      )
+    this.name = dbaseFile.readNullTerminatedString(
+      buffer,
+      DBaseField.FIELD_NAME_LENGTH
     );
+
+    buffer.seek(pos + DBaseField.FIELD_NAME_LENGTH);
+    this.typeCode = String.fromCharCode(buffer.getByte());
+    this.type = DBaseField.getFieldType(this.typeCode);
+    if (this.type == null) {
+      // TODO: firgure out type of error.
+      throw new Error(
+        Logger.log(
+          Logger.LEVEL_SEVERE,
+          "Shapefile dBase encountered unsupported field type: " + this.typeCode
+        )
+      );
+    }
+
+    // Skip four byte field address.
+    buffer.skipBytes(4);
+
+    this.length = buffer.getByte();
+    this.decimals = buffer.getByte();
+
+    buffer.seek(pos + DBaseField.FIELD_DESCRIPTOR_LENGTH); // move to next field
   }
-
-  // Skip four byte field address.
-  buffer.skipBytes(4);
-
-  this.length = buffer.getByte();
-  this.decimals = buffer.getByte();
-
-  buffer.seek(pos + DBaseField.FIELD_DESCRIPTOR_LENGTH); // move to next field
-};
-
-/**
- * Indicate the type of the field.
- * @param {String} type The type of the field.
- * @returns {String} A description of the field type.
- */
-DBaseField.getFieldType = function (type) {
-  switch (type) {
-    case "C":
-      return DBaseField.TYPE_CHAR;
-    case "D":
-      return DBaseField.TYPE_DATE;
-    case "F":
-      return DBaseField.TYPE_NUMBER;
-    case "L":
-      return DBaseField.TYPE_BOOLEAN;
-    case "N":
-      return DBaseField.TYPE_NUMBER;
-    default:
-      return null;
+  /**
+   * Create a string from the field.
+   * @returns {String} The dtring for the field.
+   */
+  toString() {
+    return this.name + "(" + this.typeCode + ")";
   }
-};
+}
 
-/**
- * Create a string from the field.
- * @returns {String} The dtring for the field.
- */
-DBaseField.prototype.toString = function () {
-  return this.name + "(" + this.typeCode + ")";
-};
+
+
+
+
+
+
 
 /**
  * The description of a character field.

@@ -53,9 +53,9 @@ import Vec3 from "../geom/Vec3";
  *     Altitudes within the polygon's positions are interpreted according to the polygon's altitude mode, which
  *     can be one of the following:
  * <ul>
- *     <li>[WorldWind.ABSOLUTE]{@link WorldWind#ABSOLUTE}</li>
- *     <li>[WorldWind.RELATIVE_TO_GROUND]{@link WorldWind#RELATIVE_TO_GROUND}</li>
- *     <li>[WorldWind.CLAMP_TO_GROUND]{@link WorldWind#CLAMP_TO_GROUND}</li>
+ *     <li>[WorldWindConstants.ABSOLUTE]{@link WorldWind#ABSOLUTE}</li>
+ *     <li>[WorldWindConstants.RELATIVE_TO_GROUND]{@link WorldWind#RELATIVE_TO_GROUND}</li>
+ *     <li>[WorldWindConstants.CLAMP_TO_GROUND]{@link WorldWind#CLAMP_TO_GROUND}</li>
  * </ul>
  * If the latter, the polygon positions' altitudes are ignored. (If the polygon should be draped onto the
  * terrain, you might want to use {@link SurfacePolygon} instead.)
@@ -97,38 +97,956 @@ import Vec3 from "../geom/Vec3";
  *
  * @throws {ArgumentError} If the specified boundaries array is null or undefined.
  */
-var Polygon = function (boundaries, attributes) {
-  if (!boundaries) {
-    throw new ArgumentError(
-      Logger.logMessage(
-        Logger.LEVEL_SEVERE,
-        "Polygon",
-        "constructor",
-        "missingBoundaries"
-      )
+class Polygon extends AbstractShape {
+  constructor(boundaries, attributes) {
+    if (!boundaries) {
+      throw new ArgumentError(
+        Logger.logMessage(
+          Logger.LEVEL_SEVERE,
+          "Polygon",
+          "constructor",
+          "missingBoundaries"
+        )
+      );
+    }
+
+    super(attributes);
+
+    if (boundaries.length > 0 && boundaries[0].latitude) {
+      boundaries = [boundaries];
+      this._boundariesSpecifiedSimply = true;
+    }
+
+    // Private. Documentation is with the defined property below and the constructor description above.
+    this._boundaries = boundaries;
+
+    this._textureCoordinates = null;
+
+    this.referencePosition = this.determineReferencePosition(this._boundaries);
+
+    this._extrude = false;
+
+    this.scratchPoint = new Vec3(0, 0, 0); // scratch variable
+  }
+  // Intentionally not documented.
+  determineReferencePosition(boundaries) {
+    // Assign the first position as the reference position.
+    return boundaries.length > 0 && boundaries[0].length > 2
+      ? boundaries[0][0]
+      : null;
+  }
+  // Internal. Determines whether this shape's geometry must be re-computed.
+  mustGenerateGeometry(dc) {
+    if (!this.currentData.boundaryPoints) {
+      return true;
+    }
+
+    if (this.currentData.drawInterior !== this.activeAttributes.drawInterior) {
+      return true;
+    }
+
+    if (this.altitudeMode === WorldWindConstants.ABSOLUTE) {
+      return false;
+    }
+
+    return this.currentData.isExpired;
+  }
+  // Internal. Indicates whether this polygon should be textured.
+  hasCapTexture() {
+    return this.textureCoordinates && this.capImageSource();
+  }
+  // Internal. Determines source of this polygon's cap texture. See the class description above for the policy.
+  capImageSource() {
+    if (!this.activeAttributes.imageSource) {
+      return null;
+    }
+
+    if (
+      typeof this.activeAttributes.imageSource === "string" ||
+      this.activeAttributes.imageSource instanceof ImageSource
+    ) {
+      return this.activeAttributes.imageSource;
+    }
+
+    if (
+      Array.isArray(this.activeAttributes.imageSource) &&
+      this.activeAttributes.imageSource[0] &&
+      (typeof this.activeAttributes.imageSource[0] === "string" ||
+        this.activeAttributes.imageSource instanceof ImageSource)
+    ) {
+      return this.activeAttributes.imageSource[0];
+    }
+
+    return null;
+  }
+  // Internal. Indicates whether this polygon has side textures defined.
+  hasSideTextures() {
+    return (
+      this.activeAttributes.imageSource &&
+      Array.isArray(this.activeAttributes.imageSource) &&
+      this.activeAttributes.imageSource.length > 1
     );
   }
+  // Internal. Determines the side texture for a specified side. See the class description above for the policy.
+  sideImageSource(side) {
+    if (side === 0 || this.activeAttributes.imageSource.length === 2) {
+      return this.activeAttributes.imageSource[1];
+    }
 
-  AbstractShape.call(this, attributes);
-
-  if (boundaries.length > 0 && boundaries[0].latitude) {
-    boundaries = [boundaries];
-    this._boundariesSpecifiedSimply = true;
+    var numSideTextures = this.activeAttributes.imageSource.length - 1;
+    side = Math.min(side + 1, numSideTextures);
+    return this.activeAttributes.imageSource[side];
   }
+  createSurfaceShape() {
+    return new SurfacePolygon(this.boundaries, null);
+  }
+  // Overridden from AbstractShape base class.
+  doMakeOrderedRenderable(dc) {
+    // A null reference position is a signal that there are no boundaries to render.
+    if (!this.referencePosition) {
+      return null;
+    }
 
-  // Private. Documentation is with the defined property below and the constructor description above.
-  this._boundaries = boundaries;
+    if (
+      !this.activeAttributes.drawInterior &&
+      !this.activeAttributes.drawOutline
+    ) {
+      return null;
+    }
 
-  this._textureCoordinates = null;
+    // See if the current shape data can be re-used.
+    if (!this.mustGenerateGeometry(dc)) {
+      return this;
+    }
 
-  this.referencePosition = this.determineReferencePosition(this._boundaries);
+    var currentData = this.currentData;
 
-  this._extrude = false;
+    // Set the transformation matrix to correspond to the reference position.
+    var refPt = currentData.referencePoint;
+    dc.surfacePointForMode(
+      this.referencePosition.latitude,
+      this.referencePosition.longitude,
+      this.referencePosition.altitude,
+      this._altitudeMode,
+      refPt
+    );
+    currentData.transformationMatrix.setToTranslation(
+      refPt[0],
+      refPt[1],
+      refPt[2]
+    );
 
-  this.scratchPoint = new Vec3(0, 0, 0); // scratch variable
-};
+    // Close the boundaries.
+    var fullBoundaries = [];
+    for (var b = 0; b < this._boundaries.length; b++) {
+      fullBoundaries[b] = this._boundaries[b].slice(0); // clones the array
+      fullBoundaries[b].push(this._boundaries[b][0]); // appends the first position to the boundary
+    }
 
-Polygon.prototype = Object.create(AbstractShape.prototype);
+    // Convert the geographic coordinates to the Cartesian coordinates that will be rendered.
+    var boundaryPoints = this.computeBoundaryPoints(dc, fullBoundaries);
+
+    // Tessellate the polygon if its interior is to be drawn.
+    if (this.activeAttributes.drawInterior) {
+      var capVertices = this.tessellatePolygon(dc, boundaryPoints);
+      if (capVertices) {
+        // Must copy the vertices to a typed array. (Can't use typed array to begin with because its size
+        // is unknown prior to tessellation.)
+        currentData.capTriangles = new Float32Array(capVertices.length);
+        for (var i = 0, len = capVertices.length; i < len; i++) {
+          currentData.capTriangles[i] = capVertices[i];
+        }
+      }
+    }
+
+    currentData.boundaryPoints = boundaryPoints;
+    currentData.drawInterior = this.activeAttributes.drawInterior; // remember for validation
+    this.resetExpiration(currentData);
+    currentData.refreshBuffers = true; // causes VBOs to be reloaded
+
+    // Create the extent from the Cartesian points. Those points are relative to this path's reference point,
+    // so translate the computed extent to the reference point.
+    if (!currentData.extent) {
+      currentData.extent = new BoundingBox();
+    }
+    if (boundaryPoints.length === 1) {
+      currentData.extent.setToPoints(boundaryPoints[0]);
+    } else {
+      var allPoints = [];
+      for (b = 0; b < boundaryPoints.length; b++) {
+        for (var p = 0; p < boundaryPoints[b].length; p++) {
+          allPoints.push(boundaryPoints[b][p]);
+        }
+      }
+      currentData.extent.setToPoints(allPoints);
+    }
+    currentData.extent.translate(currentData.referencePoint);
+
+    return this;
+  }
+  // Private. Intentionally not documented.
+  computeBoundaryPoints(dc, boundaries) {
+    var eyeDistSquared = Number.MAX_VALUE,
+      eyePoint = dc.eyePoint,
+      boundaryPoints = [],
+      stride = this._extrude ? 6 : 3,
+      pt = new Vec3(0, 0, 0),
+      numBoundaryPoints,
+      pos,
+      k,
+      dSquared;
+
+    for (var b = 0; b < boundaries.length; b++) {
+      numBoundaryPoints = (this._extrude ? 2 : 1) * boundaries[b].length;
+      boundaryPoints[b] = new Float32Array(numBoundaryPoints * 3);
+
+      for (var i = 0, len = boundaries[b].length; i < len; i++) {
+        pos = boundaries[b][i];
+
+        dc.surfacePointForMode(
+          pos.latitude,
+          pos.longitude,
+          pos.altitude,
+          this.altitudeMode,
+          pt
+        );
+
+        dSquared = pt.distanceToSquared(eyePoint);
+        if (dSquared < eyeDistSquared) {
+          eyeDistSquared = dSquared;
+        }
+
+        pt.subtract(this.currentData.referencePoint);
+
+        k = stride * i;
+        boundaryPoints[b][k] = pt[0];
+        boundaryPoints[b][k + 1] = pt[1];
+        boundaryPoints[b][k + 2] = pt[2];
+
+        if (this._extrude) {
+          dc.surfacePointForMode(
+            pos.latitude,
+            pos.longitude,
+            0,
+            WorldWindConstants.CLAMP_TO_GROUND,
+            pt
+          );
+
+          dSquared = pt.distanceToSquared(eyePoint);
+          if (dSquared < eyeDistSquared) {
+            eyeDistSquared = dSquared;
+          }
+
+          pt.subtract(this.currentData.referencePoint);
+
+          boundaryPoints[b][k + 3] = pt[0];
+          boundaryPoints[b][k + 4] = pt[1];
+          boundaryPoints[b][k + 5] = pt[2];
+        }
+      }
+    }
+
+    this.currentData.eyeDistance = 0;
+    /*DO NOT COMMITMath.sqrt(eyeDistSquared);*/
+    return boundaryPoints;
+  }
+  tessellatePolygon(dc, boundaryPoints) {
+    var triangles = [], // the output list of triangles
+      error = 0,
+      stride = this._extrude ? 6 : 3,
+      includeTextureCoordinates = this.hasCapTexture(),
+      coords,
+      normal;
+
+    if (!this.polygonTessellator) {
+      this.polygonTessellator = new libtess.GluTesselator();
+
+      this.polygonTessellator.gluTessCallback(
+        libtess.gluEnum.GLU_TESS_VERTEX_DATA,
+        function (data, tris) {
+          tris[tris.length] = data[0];
+          tris[tris.length] = data[1];
+          tris[tris.length] = data[2];
+
+          if (includeTextureCoordinates) {
+            tris[tris.length] = data[3];
+            tris[tris.length] = data[4];
+          }
+        }
+      );
+
+      this.polygonTessellator.gluTessCallback(
+        libtess.gluEnum.GLU_TESS_COMBINE,
+        function (coords, data, weight) {
+          var newCoords = [coords[0], coords[1], coords[2]];
+
+          if (includeTextureCoordinates) {
+            for (var i = 3; i <= 4; i++) {
+              var value = 0;
+              for (var w = 0; w < 4; w++) {
+                if (weight[w] > 0) {
+                  value += weight[w] * data[w][i];
+                }
+              }
+
+              newCoords[i] = value;
+            }
+          }
+
+          return newCoords;
+        }
+      );
+
+      this.polygonTessellator.gluTessCallback(
+        libtess.gluEnum.GLU_TESS_ERROR,
+        function (errno) {
+          error = errno;
+          Logger.logMessage(
+            Logger.LEVEL_WARNING,
+            "Polygon",
+            "tessellatePolygon",
+            "Tessellation error " + errno + "."
+          );
+        }
+      );
+    }
+
+    // Compute a normal vector for the polygon.
+    normal = Vec3.computeBufferNormal(boundaryPoints[0], stride);
+    if (!normal) {
+      normal = new Vec3(0, 0, 0);
+      // The first boundary is colinear. Fall back to the surface normal.
+      dc.globe.surfaceNormalAtLocation(
+        this.referencePosition.latitude,
+        this.referencePosition.longitude,
+        normal
+      );
+    }
+    this.polygonTessellator.gluTessNormal(normal[0], normal[1], normal[2]);
+    this.currentData.capNormal = normal;
+
+    // Tessellate the polygon.
+    this.polygonTessellator.gluTessBeginPolygon(triangles);
+    for (var b = 0; b < boundaryPoints.length; b++) {
+      var t = 0;
+      this.polygonTessellator.gluTessBeginContour();
+      var contour = boundaryPoints[b];
+      for (var c = 0; c < contour.length; c += stride) {
+        coords = [contour[c], contour[c + 1], contour[c + 2]];
+        if (includeTextureCoordinates) {
+          if (t < this.textureCoordinates[b].length) {
+            coords[3] = this.textureCoordinates[b][t][0];
+            coords[4] = this.textureCoordinates[b][t][1];
+          } else {
+            coords[3] = this.textureCoordinates[b][0][0];
+            coords[4] = this.textureCoordinates[b][1][1];
+          }
+          ++t;
+        }
+        this.polygonTessellator.gluTessVertex(coords, coords);
+      }
+      this.polygonTessellator.gluTessEndContour();
+    }
+    this.polygonTessellator.gluTessEndPolygon();
+
+    return error === 0 ? triangles : null;
+  }
+  // Private. Intentionally not documented.
+  mustDrawVerticals(dc) {
+    return (
+      this._extrude &&
+      this.activeAttributes.drawOutline &&
+      this.activeAttributes.drawVerticals &&
+      this.altitudeMode !== WorldWindConstants.CLAMP_TO_GROUND
+    );
+  }
+  // Overridden from AbstractShape base class.
+  doRenderOrdered(dc) {
+    var currentData = this.currentData,
+      pickColor;
+
+    if (dc.pickingMode) {
+      pickColor = dc.uniquePickColor();
+    }
+
+    // Draw the cap if the interior requested and we were able to tessellate the polygon.
+    if (
+      this.activeAttributes.drawInterior &&
+      currentData.capTriangles &&
+      currentData.capTriangles.length > 0
+    ) {
+      this.drawCap(dc, pickColor);
+    }
+
+    if (this._extrude && this.activeAttributes.drawInterior) {
+      this.drawSides(dc, pickColor);
+    }
+
+    if (this.activeAttributes.drawOutline) {
+      this.drawOutline(dc, pickColor);
+    }
+
+    currentData.refreshBuffers = false;
+
+    if (dc.pickingMode) {
+      var po = new PickedObject(
+        pickColor,
+        this.pickDelegate ? this.pickDelegate : this,
+        null,
+        this.layer,
+        false
+      );
+      dc.resolvePick(po);
+    }
+  }
+  drawCap(dc, pickColor) {
+    var gl = dc.currentGlContext,
+      program = dc.currentProgram,
+      currentData = this.currentData,
+      refreshBuffers = currentData.refreshBuffers,
+      hasCapTexture = !!this.hasCapTexture(),
+      applyLighting = this.activeAttributes.applyLighting,
+      numCapVertices =
+        currentData.capTriangles.length / (hasCapTexture ? 5 : 3),
+      vboId,
+      color,
+      stride,
+      textureBound,
+      capBuffer;
+
+    // Assume no cap texture.
+    program.loadTextureEnabled(gl, false);
+
+    this.applyMvpMatrix(dc);
+
+    if (!currentData.capVboCacheKey) {
+      currentData.capVboCacheKey = dc.gpuResourceCache.generateCacheKey();
+    }
+
+    vboId = dc.gpuResourceCache.resourceForKey(currentData.capVboCacheKey);
+    if (!vboId) {
+      vboId = gl.createBuffer();
+      dc.gpuResourceCache.putResource(
+        currentData.capVboCacheKey,
+        vboId,
+        currentData.capTriangles.length * 4
+      );
+      refreshBuffers = true;
+    }
+
+    gl.bindBuffer(gl.ARRAY_BUFFER, vboId);
+    if (refreshBuffers) {
+      capBuffer = applyLighting
+        ? this.makeCapBufferWithNormals()
+        : currentData.capTriangles;
+      gl.bufferData(gl.ARRAY_BUFFER, capBuffer, gl.STATIC_DRAW);
+      dc.frameStatistics.incrementVboLoadCount(1);
+    }
+
+    color = this.activeAttributes.interiorColor;
+    // Disable writing the shape's fragments to the depth buffer when the interior is semi-transparent.
+    gl.depthMask(color.alpha * this.layer.opacity >= 1 || dc.pickingMode);
+    program.loadColor(gl, dc.pickingMode ? pickColor : color);
+    program.loadOpacity(gl, dc.pickingMode ? 1 : this.layer.opacity);
+
+    stride = 12 + (hasCapTexture ? 8 : 0) + (applyLighting ? 12 : 0);
+
+    if (hasCapTexture && !dc.pickingMode) {
+      this.activeTexture = dc.gpuResourceCache.resourceForKey(
+        this.capImageSource()
+      );
+      if (!this.activeTexture) {
+        this.activeTexture = dc.gpuResourceCache.retrieveTexture(
+          dc.currentGlContext,
+          this.capImageSource()
+        );
+      }
+
+      textureBound = this.activeTexture && this.activeTexture.bind(dc);
+      if (textureBound) {
+        gl.enableVertexAttribArray(program.vertexTexCoordLocation);
+        gl.vertexAttribPointer(
+          program.vertexTexCoordLocation,
+          2,
+          gl.FLOAT,
+          false,
+          stride,
+          12
+        );
+
+        this.scratchMatrix.setToIdentity();
+        this.scratchMatrix.multiplyByTextureTransform(this.activeTexture);
+
+        program.loadTextureEnabled(gl, true);
+        program.loadTextureUnit(gl, gl.TEXTURE0);
+        program.loadTextureMatrix(gl, this.scratchMatrix);
+        program.loadModulateColor(gl, dc.pickingMode);
+      }
+    }
+
+    if (applyLighting && !dc.pickingMode) {
+      program.loadApplyLighting(gl, true);
+      gl.enableVertexAttribArray(program.normalVectorLocation);
+      gl.vertexAttribPointer(
+        program.normalVectorLocation,
+        3,
+        gl.FLOAT,
+        false,
+        stride,
+        stride - 12
+      );
+    }
+
+    gl.vertexAttribPointer(
+      program.vertexPointLocation,
+      3,
+      gl.FLOAT,
+      false,
+      stride,
+      0
+    );
+    gl.drawArrays(gl.TRIANGLES, 0, numCapVertices);
+  }
+  makeCapBufferWithNormals() {
+    var currentData = this.currentData,
+      normal = currentData.capNormal,
+      numFloatsIn = this.hasCapTexture() ? 5 : 3,
+      numFloatsOut = numFloatsIn + 3,
+      numVertices = currentData.capTriangles.length / numFloatsIn,
+      bufferIn = currentData.capTriangles,
+      bufferOut = new Float32Array(numVertices * numFloatsOut),
+      k = 0;
+
+    for (var i = 0; i < numVertices; i++) {
+      for (var j = 0; j < numFloatsIn; j++) {
+        bufferOut[k++] = bufferIn[i * numFloatsIn + j];
+      }
+
+      bufferOut[k++] = normal[0];
+      bufferOut[k++] = normal[1];
+      bufferOut[k++] = normal[2];
+    }
+
+    return bufferOut;
+  }
+  drawSides(dc, pickColor) {
+    var gl = dc.currentGlContext,
+      program = dc.currentProgram,
+      currentData = this.currentData,
+      refreshBuffers = currentData.refreshBuffers,
+      hasSideTextures = this.hasSideTextures(),
+      applyLighting = this.activeAttributes.applyLighting,
+      numFloatsPerVertex =
+        3 + (hasSideTextures ? 2 : 0) + (applyLighting ? 3 : 0),
+      numBytesPerVertex = 4 * numFloatsPerVertex,
+      vboId,
+      opacity,
+      color,
+      textureBound,
+      sidesBuffer,
+      numSides;
+
+    numSides = 0;
+    for (var b = 0; b < currentData.boundaryPoints.length; b++) {
+      // for each boundary}
+      numSides += currentData.boundaryPoints[b].length / 6 - 1; // 6 floats per boundary point: top + bottom
+    }
+
+    if (!currentData.sidesVboCacheKey) {
+      currentData.sidesVboCacheKey = dc.gpuResourceCache.generateCacheKey();
+    }
+
+    vboId = dc.gpuResourceCache.resourceForKey(currentData.sidesVboCacheKey);
+    if (!vboId || refreshBuffers) {
+      sidesBuffer = this.makeSidesBuffer(numSides);
+      currentData.numSideVertices = sidesBuffer.length / numFloatsPerVertex;
+
+      if (!vboId) {
+        vboId = gl.createBuffer();
+      }
+
+      dc.gpuResourceCache.putResource(
+        currentData.sidesVboCacheKey,
+        vboId,
+        sidesBuffer.length * 4
+      );
+      gl.bindBuffer(gl.ARRAY_BUFFER, vboId);
+      gl.bufferData(gl.ARRAY_BUFFER, sidesBuffer, gl.STATIC_DRAW);
+      dc.frameStatistics.incrementVboLoadCount(1);
+    } else {
+      gl.bindBuffer(gl.ARRAY_BUFFER, vboId);
+    }
+
+    color = this.activeAttributes.interiorColor;
+    // Disable writing the shape's fragments to the depth buffer when the interior is semi-transparent.
+    gl.depthMask(color.alpha * this.layer.opacity >= 1 || dc.pickingMode);
+    program.loadColor(gl, dc.pickingMode ? pickColor : color);
+    program.loadOpacity(gl, dc.pickingMode ? 1 : this.layer.opacity);
+
+    if (hasSideTextures && !dc.pickingMode) {
+      if (applyLighting) {
+        program.loadApplyLighting(gl, true);
+        gl.enableVertexAttribArray(program.normalVectorLocation);
+      } else {
+        program.loadApplyLighting(gl, false);
+      }
+
+      // Step through the sides buffer rendering each side independently but from the same buffer.
+      for (var side = 0; side < numSides; side++) {
+        var sideImageSource = this.sideImageSource(side),
+          sideTexture = dc.gpuResourceCache.resourceForKey(sideImageSource),
+          coordByteOffset = side * 6 * numBytesPerVertex; // 6 vertices (2 triangles) per side
+
+        if (sideImageSource && !sideTexture) {
+          sideTexture = dc.gpuResourceCache.retrieveTexture(
+            dc.currentGlContext,
+            sideImageSource
+          );
+        }
+
+        textureBound = sideTexture && sideTexture.bind(dc);
+        if (textureBound) {
+          gl.enableVertexAttribArray(program.vertexTexCoordLocation);
+          gl.vertexAttribPointer(
+            program.vertexTexCoordLocation,
+            2,
+            gl.FLOAT,
+            false,
+            numBytesPerVertex,
+            coordByteOffset + 12
+          );
+
+          this.scratchMatrix.setToIdentity();
+          this.scratchMatrix.multiplyByTextureTransform(sideTexture);
+
+          program.loadTextureEnabled(gl, true);
+          program.loadTextureUnit(gl, gl.TEXTURE0);
+          program.loadTextureMatrix(gl, this.scratchMatrix);
+        } else {
+          program.loadTextureEnabled(gl, false);
+          gl.disableVertexAttribArray(program.vertexTexCoordLocation);
+        }
+
+        if (applyLighting) {
+          gl.vertexAttribPointer(
+            program.normalVectorLocation,
+            3,
+            gl.FLOAT,
+            false,
+            numBytesPerVertex,
+            coordByteOffset + 20
+          );
+        }
+
+        gl.vertexAttribPointer(
+          program.vertexPointLocation,
+          3,
+          gl.FLOAT,
+          false,
+          numBytesPerVertex,
+          coordByteOffset
+        );
+        gl.drawArrays(gl.TRIANGLES, 0, 6); // 6 vertices per side
+      }
+    } else {
+      program.loadTextureEnabled(gl, false);
+
+      if (applyLighting && !dc.pickingMode) {
+        program.loadApplyLighting(gl, true);
+        gl.enableVertexAttribArray(program.normalVectorLocation);
+        gl.vertexAttribPointer(
+          program.normalVectorLocation,
+          3,
+          gl.FLOAT,
+          false,
+          numBytesPerVertex,
+          numBytesPerVertex - 12
+        );
+      } else {
+        program.loadApplyLighting(gl, false);
+      }
+
+      gl.vertexAttribPointer(
+        program.vertexPointLocation,
+        3,
+        gl.FLOAT,
+        false,
+        numBytesPerVertex,
+        0
+      );
+      gl.drawArrays(gl.TRIANGLES, 0, currentData.numSideVertices);
+    }
+  }
+  makeSidesBuffer(numSides) {
+    var currentData = this.currentData,
+      hasSideTextures = this.hasSideTextures(),
+      applyLighting = this.activeAttributes.applyLighting,
+      numFloatsPerVertex =
+        3 + (hasSideTextures ? 2 : 0) + (applyLighting ? 3 : 0),
+      sidesBuffer,
+      sidesBufferIndex,
+      numBufferFloats,
+      v0,
+      v1,
+      v2,
+      v3,
+      t0,
+      t1,
+      t2,
+      t3;
+
+    numBufferFloats = numSides * 2 * 3 * numFloatsPerVertex; // 2 triangles per side, 3 vertices per triangle
+    sidesBuffer = new Float32Array(numBufferFloats);
+    sidesBufferIndex = 0;
+
+    v0 = new Vec3(0, 0, 0);
+    v1 = new Vec3(0, 0, 0);
+    v2 = new Vec3(0, 0, 0);
+    v3 = new Vec3(0, 0, 0);
+
+    if (hasSideTextures) {
+      t0 = new Vec2(0, 1);
+      t1 = new Vec2(0, 0);
+      t2 = new Vec2(1, 1);
+      t3 = new Vec2(1, 0);
+    } else {
+      t0 = t1 = t2 = t3 = null;
+    }
+
+    for (var b = 0; b < currentData.boundaryPoints.length; b++) {
+      // for each boundary}
+      var boundaryPoints = currentData.boundaryPoints[b],
+        sideNormal;
+
+      for (var i = 0; i < boundaryPoints.length - 6; i += 6) {
+        v0[0] = boundaryPoints[i];
+        v0[1] = boundaryPoints[i + 1];
+        v0[2] = boundaryPoints[i + 2];
+
+        v1[0] = boundaryPoints[i + 3];
+        v1[1] = boundaryPoints[i + 4];
+        v1[2] = boundaryPoints[i + 5];
+
+        v2[0] = boundaryPoints[i + 6];
+        v2[1] = boundaryPoints[i + 7];
+        v2[2] = boundaryPoints[i + 8];
+
+        v3[0] = boundaryPoints[i + 9];
+        v3[1] = boundaryPoints[i + 10];
+        v3[2] = boundaryPoints[i + 11];
+
+        sideNormal = applyLighting
+          ? Vec3.computeTriangleNormal(v0, v1, v2)
+          : null;
+
+        // First triangle.
+        this.addVertexToBuffer(
+          v0,
+          t0,
+          sideNormal,
+          sidesBuffer,
+          sidesBufferIndex
+        );
+        sidesBufferIndex += numFloatsPerVertex;
+
+        this.addVertexToBuffer(
+          v1,
+          t1,
+          sideNormal,
+          sidesBuffer,
+          sidesBufferIndex
+        );
+        sidesBufferIndex += numFloatsPerVertex;
+
+        this.addVertexToBuffer(
+          v2,
+          t2,
+          sideNormal,
+          sidesBuffer,
+          sidesBufferIndex
+        );
+        sidesBufferIndex += numFloatsPerVertex;
+
+        // Second triangle.
+        this.addVertexToBuffer(
+          v1,
+          t1,
+          sideNormal,
+          sidesBuffer,
+          sidesBufferIndex
+        );
+        sidesBufferIndex += numFloatsPerVertex;
+
+        this.addVertexToBuffer(
+          v3,
+          t3,
+          sideNormal,
+          sidesBuffer,
+          sidesBufferIndex
+        );
+        sidesBufferIndex += numFloatsPerVertex;
+
+        this.addVertexToBuffer(
+          v2,
+          t2,
+          sideNormal,
+          sidesBuffer,
+          sidesBufferIndex
+        );
+        sidesBufferIndex += numFloatsPerVertex;
+      }
+    }
+
+    return sidesBuffer;
+  }
+  addVertexToBuffer(v, texCoord, normal, buffer, bufferIndex) {
+    buffer[bufferIndex++] = v[0];
+    buffer[bufferIndex++] = v[1];
+    buffer[bufferIndex++] = v[2];
+
+    if (texCoord) {
+      buffer[bufferIndex++] = texCoord[0];
+      buffer[bufferIndex++] = texCoord[1];
+    }
+
+    if (normal) {
+      buffer[bufferIndex++] = normal[0];
+      buffer[bufferIndex++] = normal[1];
+      buffer[bufferIndex] = normal[2];
+    }
+  }
+  drawOutline(dc, pickColor) {
+    var gl = dc.currentGlContext,
+      program = dc.currentProgram,
+      currentData = this.currentData,
+      refreshBuffers = currentData.refreshBuffers,
+      numBoundaryPoints,
+      vboId,
+      opacity,
+      color,
+      stride,
+      nPts,
+      textureBound;
+
+    program.loadTextureEnabled(gl, false);
+    program.loadApplyLighting(gl, false);
+
+    if (this.hasCapTexture()) {
+      gl.disableVertexAttribArray(program.vertexTexCoordLocation); // we're not texturing the outline
+    }
+
+    if (this.activeAttributes.applyLighting) {
+      gl.disableVertexAttribArray(program.normalVectorLocation); // we're not lighting the outline
+    }
+
+    if (!currentData.boundaryVboCacheKeys) {
+      this.currentData.boundaryVboCacheKeys = [];
+    }
+
+    // Make the outline stand out from the interior.
+    this.applyMvpMatrixForOutline(dc);
+
+    program.loadTextureEnabled(gl, false);
+    gl.disableVertexAttribArray(program.vertexTexCoordLocation);
+
+    for (var b = 0; b < currentData.boundaryPoints.length; b++) {
+      // for each boundary}
+      numBoundaryPoints = currentData.boundaryPoints[b].length / 3;
+
+      if (!currentData.boundaryVboCacheKeys[b]) {
+        currentData.boundaryVboCacheKeys[b] =
+          dc.gpuResourceCache.generateCacheKey();
+      }
+
+      vboId = dc.gpuResourceCache.resourceForKey(
+        currentData.boundaryVboCacheKeys[b]
+      );
+      if (!vboId) {
+        vboId = gl.createBuffer();
+        dc.gpuResourceCache.putResource(
+          currentData.boundaryVboCacheKeys[b],
+          vboId,
+          numBoundaryPoints * 12
+        );
+        refreshBuffers = true;
+      }
+
+      gl.bindBuffer(gl.ARRAY_BUFFER, vboId);
+      if (refreshBuffers) {
+        gl.bufferData(
+          gl.ARRAY_BUFFER,
+          currentData.boundaryPoints[b],
+          gl.STATIC_DRAW
+        );
+        dc.frameStatistics.incrementVboLoadCount(1);
+      }
+
+      color = this.activeAttributes.outlineColor;
+      // Disable writing the shape's fragments to the depth buffer when the interior is semi-transparent.
+      gl.depthMask(color.alpha * this.layer.opacity >= 1 || dc.pickingMode);
+      program.loadColor(gl, dc.pickingMode ? pickColor : color);
+      program.loadOpacity(gl, dc.pickingMode ? 1 : this.layer.opacity);
+
+      gl.lineWidth(this.activeAttributes.outlineWidth);
+
+      if (this._extrude) {
+        stride = 24;
+        nPts = numBoundaryPoints / 2;
+      } else {
+        stride = 12;
+        nPts = numBoundaryPoints;
+      }
+
+      gl.vertexAttribPointer(
+        program.vertexPointLocation,
+        3,
+        gl.FLOAT,
+        false,
+        stride,
+        0
+      );
+      gl.drawArrays(gl.LINE_STRIP, 0, nPts);
+
+      if (this.mustDrawVerticals(dc)) {
+        gl.vertexAttribPointer(
+          program.vertexPointLocation,
+          3,
+          gl.FLOAT,
+          false,
+          0,
+          0
+        );
+        gl.drawArrays(gl.LINES, 0, numBoundaryPoints - 2);
+      }
+    }
+  }
+  // Overridden from AbstractShape base class.
+  beginDrawing(dc) {
+    var gl = dc.currentGlContext;
+
+    if (this.activeAttributes.drawInterior) {
+      gl.disable(gl.CULL_FACE);
+    }
+
+    dc.findAndBindProgram(BasicTextureProgram);
+    gl.enableVertexAttribArray(dc.currentProgram.vertexPointLocation);
+
+    var applyLighting = !dc.pickMode && this.activeAttributes.applyLighting;
+    if (applyLighting) {
+      dc.currentProgram.loadModelviewInverse(gl, dc.modelviewNormalTransform);
+    }
+  }
+  // Overridden from AbstractShape base class.
+  endDrawing(dc) {
+    var gl = dc.currentGlContext;
+
+    gl.disableVertexAttribArray(dc.currentProgram.vertexPointLocation);
+    gl.disableVertexAttribArray(dc.currentProgram.normalVectorLocation);
+    gl.depthMask(true);
+    gl.lineWidth(1);
+    gl.enable(gl.CULL_FACE);
+  }
+}
 
 Object.defineProperties(Polygon.prototype, {
   /**
@@ -205,913 +1123,5 @@ Object.defineProperties(Polygon.prototype, {
     },
   },
 });
-
-// Intentionally not documented.
-Polygon.prototype.determineReferencePosition = function (boundaries) {
-  // Assign the first position as the reference position.
-  return boundaries.length > 0 && boundaries[0].length > 2
-    ? boundaries[0][0]
-    : null;
-};
-
-// Internal. Determines whether this shape's geometry must be re-computed.
-Polygon.prototype.mustGenerateGeometry = function (dc) {
-  if (!this.currentData.boundaryPoints) {
-    return true;
-  }
-
-  if (this.currentData.drawInterior !== this.activeAttributes.drawInterior) {
-    return true;
-  }
-
-  if (this.altitudeMode === WorldWind.ABSOLUTE) {
-    return false;
-  }
-
-  return this.currentData.isExpired;
-};
-
-// Internal. Indicates whether this polygon should be textured.
-Polygon.prototype.hasCapTexture = function () {
-  return this.textureCoordinates && this.capImageSource();
-};
-
-// Internal. Determines source of this polygon's cap texture. See the class description above for the policy.
-Polygon.prototype.capImageSource = function () {
-  if (!this.activeAttributes.imageSource) {
-    return null;
-  }
-
-  if (
-    typeof this.activeAttributes.imageSource === "string" ||
-    this.activeAttributes.imageSource instanceof ImageSource
-  ) {
-    return this.activeAttributes.imageSource;
-  }
-
-  if (
-    Array.isArray(this.activeAttributes.imageSource) &&
-    this.activeAttributes.imageSource[0] &&
-    (typeof this.activeAttributes.imageSource[0] === "string" ||
-      this.activeAttributes.imageSource instanceof ImageSource)
-  ) {
-    return this.activeAttributes.imageSource[0];
-  }
-
-  return null;
-};
-
-// Internal. Indicates whether this polygon has side textures defined.
-Polygon.prototype.hasSideTextures = function () {
-  return (
-    this.activeAttributes.imageSource &&
-    Array.isArray(this.activeAttributes.imageSource) &&
-    this.activeAttributes.imageSource.length > 1
-  );
-};
-
-// Internal. Determines the side texture for a specified side. See the class description above for the policy.
-Polygon.prototype.sideImageSource = function (side) {
-  if (side === 0 || this.activeAttributes.imageSource.length === 2) {
-    return this.activeAttributes.imageSource[1];
-  }
-
-  var numSideTextures = this.activeAttributes.imageSource.length - 1;
-  side = Math.min(side + 1, numSideTextures);
-  return this.activeAttributes.imageSource[side];
-};
-
-Polygon.prototype.createSurfaceShape = function () {
-  return new SurfacePolygon(this.boundaries, null);
-};
-
-// Overridden from AbstractShape base class.
-Polygon.prototype.doMakeOrderedRenderable = function (dc) {
-  // A null reference position is a signal that there are no boundaries to render.
-  if (!this.referencePosition) {
-    return null;
-  }
-
-  if (
-    !this.activeAttributes.drawInterior &&
-    !this.activeAttributes.drawOutline
-  ) {
-    return null;
-  }
-
-  // See if the current shape data can be re-used.
-  if (!this.mustGenerateGeometry(dc)) {
-    return this;
-  }
-
-  var currentData = this.currentData;
-
-  // Set the transformation matrix to correspond to the reference position.
-  var refPt = currentData.referencePoint;
-  dc.surfacePointForMode(
-    this.referencePosition.latitude,
-    this.referencePosition.longitude,
-    this.referencePosition.altitude,
-    this._altitudeMode,
-    refPt
-  );
-  currentData.transformationMatrix.setToTranslation(
-    refPt[0],
-    refPt[1],
-    refPt[2]
-  );
-
-  // Close the boundaries.
-  var fullBoundaries = [];
-  for (var b = 0; b < this._boundaries.length; b++) {
-    fullBoundaries[b] = this._boundaries[b].slice(0); // clones the array
-    fullBoundaries[b].push(this._boundaries[b][0]); // appends the first position to the boundary
-  }
-
-  // Convert the geographic coordinates to the Cartesian coordinates that will be rendered.
-  var boundaryPoints = this.computeBoundaryPoints(dc, fullBoundaries);
-
-  // Tessellate the polygon if its interior is to be drawn.
-  if (this.activeAttributes.drawInterior) {
-    var capVertices = this.tessellatePolygon(dc, boundaryPoints);
-    if (capVertices) {
-      // Must copy the vertices to a typed array. (Can't use typed array to begin with because its size
-      // is unknown prior to tessellation.)
-      currentData.capTriangles = new Float32Array(capVertices.length);
-      for (var i = 0, len = capVertices.length; i < len; i++) {
-        currentData.capTriangles[i] = capVertices[i];
-      }
-    }
-  }
-
-  currentData.boundaryPoints = boundaryPoints;
-  currentData.drawInterior = this.activeAttributes.drawInterior; // remember for validation
-  this.resetExpiration(currentData);
-  currentData.refreshBuffers = true; // causes VBOs to be reloaded
-
-  // Create the extent from the Cartesian points. Those points are relative to this path's reference point,
-  // so translate the computed extent to the reference point.
-  if (!currentData.extent) {
-    currentData.extent = new BoundingBox();
-  }
-  if (boundaryPoints.length === 1) {
-    currentData.extent.setToPoints(boundaryPoints[0]);
-  } else {
-    var allPoints = [];
-    for (b = 0; b < boundaryPoints.length; b++) {
-      for (var p = 0; p < boundaryPoints[b].length; p++) {
-        allPoints.push(boundaryPoints[b][p]);
-      }
-    }
-    currentData.extent.setToPoints(allPoints);
-  }
-  currentData.extent.translate(currentData.referencePoint);
-
-  return this;
-};
-
-// Private. Intentionally not documented.
-Polygon.prototype.computeBoundaryPoints = function (dc, boundaries) {
-  var eyeDistSquared = Number.MAX_VALUE,
-    eyePoint = dc.eyePoint,
-    boundaryPoints = [],
-    stride = this._extrude ? 6 : 3,
-    pt = new Vec3(0, 0, 0),
-    numBoundaryPoints,
-    pos,
-    k,
-    dSquared;
-
-  for (var b = 0; b < boundaries.length; b++) {
-    numBoundaryPoints = (this._extrude ? 2 : 1) * boundaries[b].length;
-    boundaryPoints[b] = new Float32Array(numBoundaryPoints * 3);
-
-    for (var i = 0, len = boundaries[b].length; i < len; i++) {
-      pos = boundaries[b][i];
-
-      dc.surfacePointForMode(
-        pos.latitude,
-        pos.longitude,
-        pos.altitude,
-        this.altitudeMode,
-        pt
-      );
-
-      dSquared = pt.distanceToSquared(eyePoint);
-      if (dSquared < eyeDistSquared) {
-        eyeDistSquared = dSquared;
-      }
-
-      pt.subtract(this.currentData.referencePoint);
-
-      k = stride * i;
-      boundaryPoints[b][k] = pt[0];
-      boundaryPoints[b][k + 1] = pt[1];
-      boundaryPoints[b][k + 2] = pt[2];
-
-      if (this._extrude) {
-        dc.surfacePointForMode(
-          pos.latitude,
-          pos.longitude,
-          0,
-          WorldWind.CLAMP_TO_GROUND,
-          pt
-        );
-
-        dSquared = pt.distanceToSquared(eyePoint);
-        if (dSquared < eyeDistSquared) {
-          eyeDistSquared = dSquared;
-        }
-
-        pt.subtract(this.currentData.referencePoint);
-
-        boundaryPoints[b][k + 3] = pt[0];
-        boundaryPoints[b][k + 4] = pt[1];
-        boundaryPoints[b][k + 5] = pt[2];
-      }
-    }
-  }
-
-  this.currentData.eyeDistance = 0;
-  /*DO NOT COMMITMath.sqrt(eyeDistSquared);*/
-
-  return boundaryPoints;
-};
-
-Polygon.prototype.tessellatePolygon = function (dc, boundaryPoints) {
-  var triangles = [], // the output list of triangles
-    error = 0,
-    stride = this._extrude ? 6 : 3,
-    includeTextureCoordinates = this.hasCapTexture(),
-    coords,
-    normal;
-
-  if (!this.polygonTessellator) {
-    this.polygonTessellator = new libtess.GluTesselator();
-
-    this.polygonTessellator.gluTessCallback(
-      libtess.gluEnum.GLU_TESS_VERTEX_DATA,
-      function (data, tris) {
-        tris[tris.length] = data[0];
-        tris[tris.length] = data[1];
-        tris[tris.length] = data[2];
-
-        if (includeTextureCoordinates) {
-          tris[tris.length] = data[3];
-          tris[tris.length] = data[4];
-        }
-      }
-    );
-
-    this.polygonTessellator.gluTessCallback(
-      libtess.gluEnum.GLU_TESS_COMBINE,
-      function (coords, data, weight) {
-        var newCoords = [coords[0], coords[1], coords[2]];
-
-        if (includeTextureCoordinates) {
-          for (var i = 3; i <= 4; i++) {
-            var value = 0;
-            for (var w = 0; w < 4; w++) {
-              if (weight[w] > 0) {
-                value += weight[w] * data[w][i];
-              }
-            }
-
-            newCoords[i] = value;
-          }
-        }
-
-        return newCoords;
-      }
-    );
-
-    this.polygonTessellator.gluTessCallback(
-      libtess.gluEnum.GLU_TESS_ERROR,
-      function (errno) {
-        error = errno;
-        Logger.logMessage(
-          Logger.LEVEL_WARNING,
-          "Polygon",
-          "tessellatePolygon",
-          "Tessellation error " + errno + "."
-        );
-      }
-    );
-  }
-
-  // Compute a normal vector for the polygon.
-  normal = Vec3.computeBufferNormal(boundaryPoints[0], stride);
-  if (!normal) {
-    normal = new Vec3(0, 0, 0);
-    // The first boundary is colinear. Fall back to the surface normal.
-    dc.globe.surfaceNormalAtLocation(
-      this.referencePosition.latitude,
-      this.referencePosition.longitude,
-      normal
-    );
-  }
-  this.polygonTessellator.gluTessNormal(normal[0], normal[1], normal[2]);
-  this.currentData.capNormal = normal;
-
-  // Tessellate the polygon.
-  this.polygonTessellator.gluTessBeginPolygon(triangles);
-  for (var b = 0; b < boundaryPoints.length; b++) {
-    var t = 0;
-    this.polygonTessellator.gluTessBeginContour();
-    var contour = boundaryPoints[b];
-    for (var c = 0; c < contour.length; c += stride) {
-      coords = [contour[c], contour[c + 1], contour[c + 2]];
-      if (includeTextureCoordinates) {
-        if (t < this.textureCoordinates[b].length) {
-          coords[3] = this.textureCoordinates[b][t][0];
-          coords[4] = this.textureCoordinates[b][t][1];
-        } else {
-          coords[3] = this.textureCoordinates[b][0][0];
-          coords[4] = this.textureCoordinates[b][1][1];
-        }
-        ++t;
-      }
-      this.polygonTessellator.gluTessVertex(coords, coords);
-    }
-    this.polygonTessellator.gluTessEndContour();
-  }
-  this.polygonTessellator.gluTessEndPolygon();
-
-  return error === 0 ? triangles : null;
-};
-
-// Private. Intentionally not documented.
-Polygon.prototype.mustDrawVerticals = function (dc) {
-  return (
-    this._extrude &&
-    this.activeAttributes.drawOutline &&
-    this.activeAttributes.drawVerticals &&
-    this.altitudeMode !== WorldWind.CLAMP_TO_GROUND
-  );
-};
-
-// Overridden from AbstractShape base class.
-Polygon.prototype.doRenderOrdered = function (dc) {
-  var currentData = this.currentData,
-    pickColor;
-
-  if (dc.pickingMode) {
-    pickColor = dc.uniquePickColor();
-  }
-
-  // Draw the cap if the interior requested and we were able to tessellate the polygon.
-  if (
-    this.activeAttributes.drawInterior &&
-    currentData.capTriangles &&
-    currentData.capTriangles.length > 0
-  ) {
-    this.drawCap(dc, pickColor);
-  }
-
-  if (this._extrude && this.activeAttributes.drawInterior) {
-    this.drawSides(dc, pickColor);
-  }
-
-  if (this.activeAttributes.drawOutline) {
-    this.drawOutline(dc, pickColor);
-  }
-
-  currentData.refreshBuffers = false;
-
-  if (dc.pickingMode) {
-    var po = new PickedObject(
-      pickColor,
-      this.pickDelegate ? this.pickDelegate : this,
-      null,
-      this.layer,
-      false
-    );
-    dc.resolvePick(po);
-  }
-};
-
-Polygon.prototype.drawCap = function (dc, pickColor) {
-  var gl = dc.currentGlContext,
-    program = dc.currentProgram,
-    currentData = this.currentData,
-    refreshBuffers = currentData.refreshBuffers,
-    hasCapTexture = !!this.hasCapTexture(),
-    applyLighting = this.activeAttributes.applyLighting,
-    numCapVertices = currentData.capTriangles.length / (hasCapTexture ? 5 : 3),
-    vboId,
-    color,
-    stride,
-    textureBound,
-    capBuffer;
-
-  // Assume no cap texture.
-  program.loadTextureEnabled(gl, false);
-
-  this.applyMvpMatrix(dc);
-
-  if (!currentData.capVboCacheKey) {
-    currentData.capVboCacheKey = dc.gpuResourceCache.generateCacheKey();
-  }
-
-  vboId = dc.gpuResourceCache.resourceForKey(currentData.capVboCacheKey);
-  if (!vboId) {
-    vboId = gl.createBuffer();
-    dc.gpuResourceCache.putResource(
-      currentData.capVboCacheKey,
-      vboId,
-      currentData.capTriangles.length * 4
-    );
-    refreshBuffers = true;
-  }
-
-  gl.bindBuffer(gl.ARRAY_BUFFER, vboId);
-  if (refreshBuffers) {
-    capBuffer = applyLighting
-      ? this.makeCapBufferWithNormals()
-      : currentData.capTriangles;
-    gl.bufferData(gl.ARRAY_BUFFER, capBuffer, gl.STATIC_DRAW);
-    dc.frameStatistics.incrementVboLoadCount(1);
-  }
-
-  color = this.activeAttributes.interiorColor;
-  // Disable writing the shape's fragments to the depth buffer when the interior is semi-transparent.
-  gl.depthMask(color.alpha * this.layer.opacity >= 1 || dc.pickingMode);
-  program.loadColor(gl, dc.pickingMode ? pickColor : color);
-  program.loadOpacity(gl, dc.pickingMode ? 1 : this.layer.opacity);
-
-  stride = 12 + (hasCapTexture ? 8 : 0) + (applyLighting ? 12 : 0);
-
-  if (hasCapTexture && !dc.pickingMode) {
-    this.activeTexture = dc.gpuResourceCache.resourceForKey(
-      this.capImageSource()
-    );
-    if (!this.activeTexture) {
-      this.activeTexture = dc.gpuResourceCache.retrieveTexture(
-        dc.currentGlContext,
-        this.capImageSource()
-      );
-    }
-
-    textureBound = this.activeTexture && this.activeTexture.bind(dc);
-    if (textureBound) {
-      gl.enableVertexAttribArray(program.vertexTexCoordLocation);
-      gl.vertexAttribPointer(
-        program.vertexTexCoordLocation,
-        2,
-        gl.FLOAT,
-        false,
-        stride,
-        12
-      );
-
-      this.scratchMatrix.setToIdentity();
-      this.scratchMatrix.multiplyByTextureTransform(this.activeTexture);
-
-      program.loadTextureEnabled(gl, true);
-      program.loadTextureUnit(gl, gl.TEXTURE0);
-      program.loadTextureMatrix(gl, this.scratchMatrix);
-      program.loadModulateColor(gl, dc.pickingMode);
-    }
-  }
-
-  if (applyLighting && !dc.pickingMode) {
-    program.loadApplyLighting(gl, true);
-    gl.enableVertexAttribArray(program.normalVectorLocation);
-    gl.vertexAttribPointer(
-      program.normalVectorLocation,
-      3,
-      gl.FLOAT,
-      false,
-      stride,
-      stride - 12
-    );
-  }
-
-  gl.vertexAttribPointer(
-    program.vertexPointLocation,
-    3,
-    gl.FLOAT,
-    false,
-    stride,
-    0
-  );
-  gl.drawArrays(gl.TRIANGLES, 0, numCapVertices);
-};
-
-Polygon.prototype.makeCapBufferWithNormals = function () {
-  var currentData = this.currentData,
-    normal = currentData.capNormal,
-    numFloatsIn = this.hasCapTexture() ? 5 : 3,
-    numFloatsOut = numFloatsIn + 3,
-    numVertices = currentData.capTriangles.length / numFloatsIn,
-    bufferIn = currentData.capTriangles,
-    bufferOut = new Float32Array(numVertices * numFloatsOut),
-    k = 0;
-
-  for (var i = 0; i < numVertices; i++) {
-    for (var j = 0; j < numFloatsIn; j++) {
-      bufferOut[k++] = bufferIn[i * numFloatsIn + j];
-    }
-
-    bufferOut[k++] = normal[0];
-    bufferOut[k++] = normal[1];
-    bufferOut[k++] = normal[2];
-  }
-
-  return bufferOut;
-};
-
-Polygon.prototype.drawSides = function (dc, pickColor) {
-  var gl = dc.currentGlContext,
-    program = dc.currentProgram,
-    currentData = this.currentData,
-    refreshBuffers = currentData.refreshBuffers,
-    hasSideTextures = this.hasSideTextures(),
-    applyLighting = this.activeAttributes.applyLighting,
-    numFloatsPerVertex =
-      3 + (hasSideTextures ? 2 : 0) + (applyLighting ? 3 : 0),
-    numBytesPerVertex = 4 * numFloatsPerVertex,
-    vboId,
-    opacity,
-    color,
-    textureBound,
-    sidesBuffer,
-    numSides;
-
-  numSides = 0;
-  for (var b = 0; b < currentData.boundaryPoints.length; b++) {
-    // for each boundary}
-    numSides += currentData.boundaryPoints[b].length / 6 - 1; // 6 floats per boundary point: top + bottom
-  }
-
-  if (!currentData.sidesVboCacheKey) {
-    currentData.sidesVboCacheKey = dc.gpuResourceCache.generateCacheKey();
-  }
-
-  vboId = dc.gpuResourceCache.resourceForKey(currentData.sidesVboCacheKey);
-  if (!vboId || refreshBuffers) {
-    sidesBuffer = this.makeSidesBuffer(numSides);
-    currentData.numSideVertices = sidesBuffer.length / numFloatsPerVertex;
-
-    if (!vboId) {
-      vboId = gl.createBuffer();
-    }
-
-    dc.gpuResourceCache.putResource(
-      currentData.sidesVboCacheKey,
-      vboId,
-      sidesBuffer.length * 4
-    );
-    gl.bindBuffer(gl.ARRAY_BUFFER, vboId);
-    gl.bufferData(gl.ARRAY_BUFFER, sidesBuffer, gl.STATIC_DRAW);
-    dc.frameStatistics.incrementVboLoadCount(1);
-  } else {
-    gl.bindBuffer(gl.ARRAY_BUFFER, vboId);
-  }
-
-  color = this.activeAttributes.interiorColor;
-  // Disable writing the shape's fragments to the depth buffer when the interior is semi-transparent.
-  gl.depthMask(color.alpha * this.layer.opacity >= 1 || dc.pickingMode);
-  program.loadColor(gl, dc.pickingMode ? pickColor : color);
-  program.loadOpacity(gl, dc.pickingMode ? 1 : this.layer.opacity);
-
-  if (hasSideTextures && !dc.pickingMode) {
-    if (applyLighting) {
-      program.loadApplyLighting(gl, true);
-      gl.enableVertexAttribArray(program.normalVectorLocation);
-    } else {
-      program.loadApplyLighting(gl, false);
-    }
-
-    // Step through the sides buffer rendering each side independently but from the same buffer.
-    for (var side = 0; side < numSides; side++) {
-      var sideImageSource = this.sideImageSource(side),
-        sideTexture = dc.gpuResourceCache.resourceForKey(sideImageSource),
-        coordByteOffset = side * 6 * numBytesPerVertex; // 6 vertices (2 triangles) per side
-
-      if (sideImageSource && !sideTexture) {
-        sideTexture = dc.gpuResourceCache.retrieveTexture(
-          dc.currentGlContext,
-          sideImageSource
-        );
-      }
-
-      textureBound = sideTexture && sideTexture.bind(dc);
-      if (textureBound) {
-        gl.enableVertexAttribArray(program.vertexTexCoordLocation);
-        gl.vertexAttribPointer(
-          program.vertexTexCoordLocation,
-          2,
-          gl.FLOAT,
-          false,
-          numBytesPerVertex,
-          coordByteOffset + 12
-        );
-
-        this.scratchMatrix.setToIdentity();
-        this.scratchMatrix.multiplyByTextureTransform(sideTexture);
-
-        program.loadTextureEnabled(gl, true);
-        program.loadTextureUnit(gl, gl.TEXTURE0);
-        program.loadTextureMatrix(gl, this.scratchMatrix);
-      } else {
-        program.loadTextureEnabled(gl, false);
-        gl.disableVertexAttribArray(program.vertexTexCoordLocation);
-      }
-
-      if (applyLighting) {
-        gl.vertexAttribPointer(
-          program.normalVectorLocation,
-          3,
-          gl.FLOAT,
-          false,
-          numBytesPerVertex,
-          coordByteOffset + 20
-        );
-      }
-
-      gl.vertexAttribPointer(
-        program.vertexPointLocation,
-        3,
-        gl.FLOAT,
-        false,
-        numBytesPerVertex,
-        coordByteOffset
-      );
-      gl.drawArrays(gl.TRIANGLES, 0, 6); // 6 vertices per side
-    }
-  } else {
-    program.loadTextureEnabled(gl, false);
-
-    if (applyLighting && !dc.pickingMode) {
-      program.loadApplyLighting(gl, true);
-      gl.enableVertexAttribArray(program.normalVectorLocation);
-      gl.vertexAttribPointer(
-        program.normalVectorLocation,
-        3,
-        gl.FLOAT,
-        false,
-        numBytesPerVertex,
-        numBytesPerVertex - 12
-      );
-    } else {
-      program.loadApplyLighting(gl, false);
-    }
-
-    gl.vertexAttribPointer(
-      program.vertexPointLocation,
-      3,
-      gl.FLOAT,
-      false,
-      numBytesPerVertex,
-      0
-    );
-    gl.drawArrays(gl.TRIANGLES, 0, currentData.numSideVertices);
-  }
-};
-
-Polygon.prototype.makeSidesBuffer = function (numSides) {
-  var currentData = this.currentData,
-    hasSideTextures = this.hasSideTextures(),
-    applyLighting = this.activeAttributes.applyLighting,
-    numFloatsPerVertex =
-      3 + (hasSideTextures ? 2 : 0) + (applyLighting ? 3 : 0),
-    sidesBuffer,
-    sidesBufferIndex,
-    numBufferFloats,
-    v0,
-    v1,
-    v2,
-    v3,
-    t0,
-    t1,
-    t2,
-    t3;
-
-  numBufferFloats = numSides * 2 * 3 * numFloatsPerVertex; // 2 triangles per side, 3 vertices per triangle
-  sidesBuffer = new Float32Array(numBufferFloats);
-  sidesBufferIndex = 0;
-
-  v0 = new Vec3(0, 0, 0);
-  v1 = new Vec3(0, 0, 0);
-  v2 = new Vec3(0, 0, 0);
-  v3 = new Vec3(0, 0, 0);
-
-  if (hasSideTextures) {
-    t0 = new Vec2(0, 1);
-    t1 = new Vec2(0, 0);
-    t2 = new Vec2(1, 1);
-    t3 = new Vec2(1, 0);
-  } else {
-    t0 = t1 = t2 = t3 = null;
-  }
-
-  for (var b = 0; b < currentData.boundaryPoints.length; b++) {
-    // for each boundary}
-    var boundaryPoints = currentData.boundaryPoints[b],
-      sideNormal;
-
-    for (var i = 0; i < boundaryPoints.length - 6; i += 6) {
-      v0[0] = boundaryPoints[i];
-      v0[1] = boundaryPoints[i + 1];
-      v0[2] = boundaryPoints[i + 2];
-
-      v1[0] = boundaryPoints[i + 3];
-      v1[1] = boundaryPoints[i + 4];
-      v1[2] = boundaryPoints[i + 5];
-
-      v2[0] = boundaryPoints[i + 6];
-      v2[1] = boundaryPoints[i + 7];
-      v2[2] = boundaryPoints[i + 8];
-
-      v3[0] = boundaryPoints[i + 9];
-      v3[1] = boundaryPoints[i + 10];
-      v3[2] = boundaryPoints[i + 11];
-
-      sideNormal = applyLighting
-        ? Vec3.computeTriangleNormal(v0, v1, v2)
-        : null;
-
-      // First triangle.
-      this.addVertexToBuffer(v0, t0, sideNormal, sidesBuffer, sidesBufferIndex);
-      sidesBufferIndex += numFloatsPerVertex;
-
-      this.addVertexToBuffer(v1, t1, sideNormal, sidesBuffer, sidesBufferIndex);
-      sidesBufferIndex += numFloatsPerVertex;
-
-      this.addVertexToBuffer(v2, t2, sideNormal, sidesBuffer, sidesBufferIndex);
-      sidesBufferIndex += numFloatsPerVertex;
-
-      // Second triangle.
-      this.addVertexToBuffer(v1, t1, sideNormal, sidesBuffer, sidesBufferIndex);
-      sidesBufferIndex += numFloatsPerVertex;
-
-      this.addVertexToBuffer(v3, t3, sideNormal, sidesBuffer, sidesBufferIndex);
-      sidesBufferIndex += numFloatsPerVertex;
-
-      this.addVertexToBuffer(v2, t2, sideNormal, sidesBuffer, sidesBufferIndex);
-      sidesBufferIndex += numFloatsPerVertex;
-    }
-  }
-
-  return sidesBuffer;
-};
-
-Polygon.prototype.addVertexToBuffer = function (
-  v,
-  texCoord,
-  normal,
-  buffer,
-  bufferIndex
-) {
-  buffer[bufferIndex++] = v[0];
-  buffer[bufferIndex++] = v[1];
-  buffer[bufferIndex++] = v[2];
-
-  if (texCoord) {
-    buffer[bufferIndex++] = texCoord[0];
-    buffer[bufferIndex++] = texCoord[1];
-  }
-
-  if (normal) {
-    buffer[bufferIndex++] = normal[0];
-    buffer[bufferIndex++] = normal[1];
-    buffer[bufferIndex] = normal[2];
-  }
-};
-
-Polygon.prototype.drawOutline = function (dc, pickColor) {
-  var gl = dc.currentGlContext,
-    program = dc.currentProgram,
-    currentData = this.currentData,
-    refreshBuffers = currentData.refreshBuffers,
-    numBoundaryPoints,
-    vboId,
-    opacity,
-    color,
-    stride,
-    nPts,
-    textureBound;
-
-  program.loadTextureEnabled(gl, false);
-  program.loadApplyLighting(gl, false);
-
-  if (this.hasCapTexture()) {
-    gl.disableVertexAttribArray(program.vertexTexCoordLocation); // we're not texturing the outline
-  }
-
-  if (this.activeAttributes.applyLighting) {
-    gl.disableVertexAttribArray(program.normalVectorLocation); // we're not lighting the outline
-  }
-
-  if (!currentData.boundaryVboCacheKeys) {
-    this.currentData.boundaryVboCacheKeys = [];
-  }
-
-  // Make the outline stand out from the interior.
-  this.applyMvpMatrixForOutline(dc);
-
-  program.loadTextureEnabled(gl, false);
-  gl.disableVertexAttribArray(program.vertexTexCoordLocation);
-
-  for (var b = 0; b < currentData.boundaryPoints.length; b++) {
-    // for each boundary}
-    numBoundaryPoints = currentData.boundaryPoints[b].length / 3;
-
-    if (!currentData.boundaryVboCacheKeys[b]) {
-      currentData.boundaryVboCacheKeys[b] =
-        dc.gpuResourceCache.generateCacheKey();
-    }
-
-    vboId = dc.gpuResourceCache.resourceForKey(
-      currentData.boundaryVboCacheKeys[b]
-    );
-    if (!vboId) {
-      vboId = gl.createBuffer();
-      dc.gpuResourceCache.putResource(
-        currentData.boundaryVboCacheKeys[b],
-        vboId,
-        numBoundaryPoints * 12
-      );
-      refreshBuffers = true;
-    }
-
-    gl.bindBuffer(gl.ARRAY_BUFFER, vboId);
-    if (refreshBuffers) {
-      gl.bufferData(
-        gl.ARRAY_BUFFER,
-        currentData.boundaryPoints[b],
-        gl.STATIC_DRAW
-      );
-      dc.frameStatistics.incrementVboLoadCount(1);
-    }
-
-    color = this.activeAttributes.outlineColor;
-    // Disable writing the shape's fragments to the depth buffer when the interior is semi-transparent.
-    gl.depthMask(color.alpha * this.layer.opacity >= 1 || dc.pickingMode);
-    program.loadColor(gl, dc.pickingMode ? pickColor : color);
-    program.loadOpacity(gl, dc.pickingMode ? 1 : this.layer.opacity);
-
-    gl.lineWidth(this.activeAttributes.outlineWidth);
-
-    if (this._extrude) {
-      stride = 24;
-      nPts = numBoundaryPoints / 2;
-    } else {
-      stride = 12;
-      nPts = numBoundaryPoints;
-    }
-
-    gl.vertexAttribPointer(
-      program.vertexPointLocation,
-      3,
-      gl.FLOAT,
-      false,
-      stride,
-      0
-    );
-    gl.drawArrays(gl.LINE_STRIP, 0, nPts);
-
-    if (this.mustDrawVerticals(dc)) {
-      gl.vertexAttribPointer(
-        program.vertexPointLocation,
-        3,
-        gl.FLOAT,
-        false,
-        0,
-        0
-      );
-      gl.drawArrays(gl.LINES, 0, numBoundaryPoints - 2);
-    }
-  }
-};
-
-// Overridden from AbstractShape base class.
-Polygon.prototype.beginDrawing = function (dc) {
-  var gl = dc.currentGlContext;
-
-  if (this.activeAttributes.drawInterior) {
-    gl.disable(gl.CULL_FACE);
-  }
-
-  dc.findAndBindProgram(BasicTextureProgram);
-  gl.enableVertexAttribArray(dc.currentProgram.vertexPointLocation);
-
-  var applyLighting = !dc.pickMode && this.activeAttributes.applyLighting;
-  if (applyLighting) {
-    dc.currentProgram.loadModelviewInverse(gl, dc.modelviewNormalTransform);
-  }
-};
-
-// Overridden from AbstractShape base class.
-Polygon.prototype.endDrawing = function (dc) {
-  var gl = dc.currentGlContext;
-
-  gl.disableVertexAttribArray(dc.currentProgram.vertexPointLocation);
-  gl.disableVertexAttribArray(dc.currentProgram.normalVectorLocation);
-  gl.depthMask(true);
-  gl.lineWidth(1);
-  gl.enable(gl.CULL_FACE);
-};
 
 export default Polygon;

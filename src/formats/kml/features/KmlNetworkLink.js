@@ -32,103 +32,48 @@ import KmlLink from "../KmlLink";
 import KmlNodeTransformers from "../util/KmlNodeTransformers";
 import KmlRefreshListener from "../util/KmlRefreshListener";
 
+var REFRESH_NETWORK_LINK_EVENT = "refreshNetworkLinkEvent";
 
-    var REFRESH_NETWORK_LINK_EVENT = "refreshNetworkLinkEvent";
-
-    /**
-     * Constructs an KmlNetworkLink. Applications usually don't call this constructor. It is called by {@link KmlFile}
-     * as objects from Kml file are read. This object is already concrete implementation.
-     * @alias KmlNetworkLink
-     * @classdesc Contains the data associated with NetworkLink node.
-     * @param options {Object}
-     * @param options.objectNode {Node} Node representing NetworkLink
-     * @constructor
-     * @throws {ArgumentError} If the node is null or undefined.
-     * @see https://developers.google.com/kml/documentation/kmlreference#networklink
-     * @augments KmlFeature
-     */
-    var KmlNetworkLink = function (options) {
-        KmlFeature.call(this, options);
+/**
+ * Constructs an KmlNetworkLink. Applications usually don't call this constructor. It is called by {@link KmlFile}
+ * as objects from Kml file are read. This object is already concrete implementation.
+ * @alias KmlNetworkLink
+ * @classdesc Contains the data associated with NetworkLink node.
+ * @param options {Object}
+ * @param options.objectNode {Node} Node representing NetworkLink
+ * @constructor
+ * @throws {ArgumentError} If the node is null or undefined.
+ * @see https://developers.google.com/kml/documentation/kmlreference#networklink
+ * @augments KmlFeature
+ */
+class KmlNetworkLink extends KmlFeature {
+    constructor(options) {
+        super(options);
 
         this.isFeature = true;
 
         this.resolvedFile = null;
         this.displayed = false;
         this.isDownloading = false;
-    };
-
-    KmlNetworkLink.prototype = Object.create(KmlFeature.prototype);
-
-    Object.defineProperties(KmlNetworkLink.prototype, {
-        /**
-         * Boolean value. A value of 0 leaves the visibility of features within the control of the Google Earth
-         * user. Set the value to 1 to reset the visibility of features each time the NetworkLink is refreshed. For
-         * example, suppose a Placemark within the linked KML file has &lt;visibility&gt; set to 1 and the NetworkLink
-         * has
-         * &lt;refreshVisibility&gt; set to 1. When the file is first loaded into Google Earth, the user can clear the
-         * check box next to the item to turn off display in the 3D viewer. However, when the NetworkLink is
-         * refreshed, the Placemark will be made visible again, since its original visibility state was TRUE.
-         * @memberof KmlNetworkLink.prototype
-         * @readonly
-         * @type {Boolean}
-         */
-        kmlRefreshVisibility: {
-            get: function () {
-                return this._factory.specific(this, {name: 'refreshVisibility', transformer: NodeTransformers.boolean});
-            }
-        },
-
-        /**
-         * Boolean value. A value of 1 causes Google Earth to fly to the view of the LookAt or Camera in the
-         * NetworkLinkControl (if it exists). If the NetworkLinkControl does not contain an AbstractView element,
-         * Google Earth flies to the LookAt or Camera element in the Feature child within the &lt;kml&gt; element in the
-         * refreshed file. If the &lt;kml&gt; element does not have a LookAt or Camera specified, the view is unchanged.
-         * For example, Google Earth would fly to the &lt;LookAt&gt; view of the parent Document, not the &lt;LookAt&gt;
-         * of the Placemarks contained within the Document.
-         * @memberof KmlNetworkLink.prototype
-         * @readonly
-         * @type {Boolean}
-         */
-        kmlFlyToView: {
-            get: function () {
-                return this._factory.specific(this, {name: 'flyToView', transformer: NodeTransformers.boolean});
-            }
-        },
-
-        /**
-         * @memberof KmlNetworkLink.prototype
-         * @readonly
-         * @type {KmlLink}
-         * @see {KmlLink}
-         */
-        kmlLink: {
-            get: function () {
-                return this._factory.any(this, {
-                    name: KmlLink.prototype.getTagNames()
-                });
-            }
-        }
-    });
-
+    }
     /**
      * @inheritDoc
      */
-    KmlNetworkLink.prototype.getTagNames = function () {
-        return ['NetworkLink'];
-    };
-
-	/**
+    getTagNames() {
+        return ["NetworkLink"];
+    }
+    /**
      * @inheritDoc
      */
-    KmlNetworkLink.prototype.render = function(dc, kmlOptions) {
+    render(dc, kmlOptions) {
         KmlFeature.prototype.render.call(this, dc, kmlOptions);
 
         // Not visible and wasn't displayed yet.
-        if(!kmlOptions.lastVisibility && !this.displayed) {
+        if (!kmlOptions.lastVisibility && !this.displayed) {
             return;
         }
 
-        if(!this.isDownloading && !this.resolvedFile) {
+        if (!this.isDownloading && !this.resolvedFile) {
             this.isDownloading = true;
             var self = this;
 
@@ -140,29 +85,26 @@ import KmlRefreshListener from "../util/KmlRefreshListener";
             });
         }
 
-
-        if(this.resolvedFile && !this.displayed) {
+        if (this.resolvedFile && !this.displayed) {
             this.resolvedFile.render(dc, kmlOptions);
 
             this.handleRefresh(kmlOptions); // This one happens always
         }
-    };
-
-    KmlNetworkLink.prototype.buildUrl = function(fileCache) {
+    }
+    buildUrl(fileCache) {
         return this.kmlLink.kmlHref(fileCache);
-    };
-
-	/**
+    }
+    /**
      * It handles refreshing strategy of the NetworkLink.
      * @param kmlOptions {Object}
      * @param kmlOptions.activeEvents {RefreshListener.Event[]} Events which should be processed in this round of render.
      */
-    KmlNetworkLink.prototype.handleRefresh = function(kmlOptions) {
+    handleRefresh(kmlOptions) {
         var activeEvents = kmlOptions.activeEvents;
-        activeEvents = activeEvents.filter(function(event){
+        activeEvents = activeEvents.filter(function (event) {
             return event.type == REFRESH_NETWORK_LINK_EVENT;
         });
-        if(activeEvents.length > 0) {
+        if (activeEvents.length > 0) {
             var self = this;
             new KmlFile(self.buildUrl(kmlOptions.fileCache)).then(function (kmlFile) {
                 self.resolvedFile = kmlFile;
@@ -170,21 +112,20 @@ import KmlRefreshListener from "../util/KmlRefreshListener";
                 self.fireEvent(kmlOptions);
             });
         }
-    };
-
-	/**
+    }
+    /**
      * It fires event when the kmlLink refreshMode contains refreshMode.
      * @param kmlOptions {Object}
      * @param kmlOptions.listener {RefreshListener} Object which allows you to schedule events, which will be triggered
      *   at some point in future. It doesn't have to be exactly that time.
      */
-    KmlNetworkLink.prototype.fireEvent = function(kmlOptions) {
+    fireEvent(kmlOptions) {
         var time = 0;
-        if(this.kmlLink.kmlRefreshMode == "onInterval") {
+        if (this.kmlLink.kmlRefreshMode == "onInterval") {
             time = this.kmlLink.kmlRefreshInterval * 1000;
-        } else if(this.kmlLink.kmlRefreshMode == "onExpire") {
+        } else if (this.kmlLink.kmlRefreshMode == "onExpire") {
             // Test whether the file is expired
-            if(!this.resolvedFile) {
+            if (!this.resolvedFile) {
                 return;
             } else {
                 time = this.resolvedFile.getExpired();
@@ -194,9 +135,75 @@ import KmlRefreshListener from "../util/KmlRefreshListener";
             return;
         }
 
-        kmlOptions.listener.addEvent(new RefreshListener.Event(REFRESH_NETWORK_LINK_EVENT, time, null));
-    };
+        kmlOptions.listener.addEvent(
+            new RefreshListener.Event(REFRESH_NETWORK_LINK_EVENT, time, null)
+        );
+    }
+}
 
-    KmlElements.addKey(KmlNetworkLink.prototype.getTagNames()[0], KmlNetworkLink);
 
-    export default KmlNetworkLink;
+Object.defineProperties(KmlNetworkLink.prototype, {
+  /**
+   * Boolean value. A value of 0 leaves the visibility of features within the control of the Google Earth
+   * user. Set the value to 1 to reset the visibility of features each time the NetworkLink is refreshed. For
+   * example, suppose a Placemark within the linked KML file has &lt;visibility&gt; set to 1 and the NetworkLink
+   * has
+   * &lt;refreshVisibility&gt; set to 1. When the file is first loaded into Google Earth, the user can clear the
+   * check box next to the item to turn off display in the 3D viewer. However, when the NetworkLink is
+   * refreshed, the Placemark will be made visible again, since its original visibility state was TRUE.
+   * @memberof KmlNetworkLink.prototype
+   * @readonly
+   * @type {Boolean}
+   */
+  kmlRefreshVisibility: {
+    get: function () {
+      return this._factory.specific(this, {
+        name: "refreshVisibility",
+        transformer: KmlNodeTransformers.boolean,
+      });
+    },
+  },
+
+  /**
+   * Boolean value. A value of 1 causes Google Earth to fly to the view of the LookAt or Camera in the
+   * NetworkLinkControl (if it exists). If the NetworkLinkControl does not contain an AbstractView element,
+   * Google Earth flies to the LookAt or Camera element in the Feature child within the &lt;kml&gt; element in the
+   * refreshed file. If the &lt;kml&gt; element does not have a LookAt or Camera specified, the view is unchanged.
+   * For example, Google Earth would fly to the &lt;LookAt&gt; view of the parent Document, not the &lt;LookAt&gt;
+   * of the Placemarks contained within the Document.
+   * @memberof KmlNetworkLink.prototype
+   * @readonly
+   * @type {Boolean}
+   */
+  kmlFlyToView: {
+    get: function () {
+      return this._factory.specific(this, {
+        name: "flyToView",
+        transformer: KmlNodeTransformers.boolean,
+      });
+    },
+  },
+
+  /**
+   * @memberof KmlNetworkLink.prototype
+   * @readonly
+   * @type {KmlLink}
+   * @see {KmlLink}
+   */
+  kmlLink: {
+    get: function () {
+      return this._factory.any(this, {
+        name: KmlLink.prototype.getTagNames(),
+      });
+    },
+  },
+});
+
+
+
+
+
+
+KmlElements.addKey(KmlNetworkLink.prototype.getTagNames()[0], KmlNetworkLink);
+
+export default KmlNetworkLink;

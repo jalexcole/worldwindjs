@@ -38,7 +38,7 @@ import MemoryCache from "../cache/MemoryCache";
 import Sector from "../geom/Sector";
 import Tile from "../util/Tile";
 import WWMath from "../util/WWMath";
-import WorldWind from "../WorldWind";
+import WorldWindConfiguration from "../WorldWindConfiguration";
 
 /**
  * Constructs a TiledElevationCoverage
@@ -195,9 +195,9 @@ var TiledElevationCoverage = function (config) {
   /**
    * Controls how many concurrent tile requests are allowed for this coverage.
    * @type {Number}
-   * @default WorldWind.configuration.coverageRetrievalQueueSize
+   * @default WorldWindConfiguration.coverageRetrievalQueueSize
    */
-  this.retrievalQueueSize = WorldWind.configuration.coverageRetrievalQueueSize;
+  this.retrievalQueueSize = WorldWindConfiguration.coverageRetrievalQueueSize;
 
   /**
    * Internal use only
@@ -753,7 +753,7 @@ TiledElevationCoverage.prototype.retrieveTileImage = function (tile) {
 
             // Send an event to request a redraw.
             var e = document.createEvent("Event");
-            e.initEvent(WorldWind.REDRAW_EVENT_TYPE, true, true);
+            e.initEvent(WorldWindConstants.REDRAW_EVENT_TYPE, true, true);
             window.dispatchEvent(e);
           } else if (contentType === "text/xml") {
             elevationCoverage.absentResourceList.markResourceAbsent(

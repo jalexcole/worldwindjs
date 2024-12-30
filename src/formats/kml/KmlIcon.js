@@ -58,7 +58,7 @@ Object.defineProperties(KmlIcon.prototype, {
     get: function () {
       return this._factory.specific(this, {
         name: "gx:x",
-        transformer: NodeTransformers.number,
+        transformer: KmlNodeTransformers.number,
       });
     },
   },
@@ -73,7 +73,7 @@ Object.defineProperties(KmlIcon.prototype, {
     get: function () {
       return this._factory.specific(this, {
         name: "gx:y",
-        transformer: NodeTransformers.number,
+        transformer: KmlNodeTransformers.number,
       });
     },
   },
@@ -88,7 +88,7 @@ Object.defineProperties(KmlIcon.prototype, {
     get: function () {
       return this._factory.specific(this, {
         name: "gx:w",
-        transformer: NodeTransformers.number,
+        transformer: KmlNodeTransformers.number,
       });
     },
   },
@@ -103,7 +103,7 @@ Object.defineProperties(KmlIcon.prototype, {
     get: function () {
       return this._factory.specific(this, {
         name: "gx:h",
-        transformer: NodeTransformers.number,
+        transformer: KmlNodeTransformers.number,
       });
     },
   },

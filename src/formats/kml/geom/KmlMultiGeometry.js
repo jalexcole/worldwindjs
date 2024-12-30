@@ -41,12 +41,28 @@ import Position from "../../../geom/Position";
  * @see https://developers.google.com/kml/documentation/kmlreference#multigeometry
  * @augments KmlGeometry
  */
-var KmlMultiGeometry = function (options) {
-  KmlGeometry.call(this, options);
-  this._style = options.style;
-};
+class KmlMultiGeometry extends KmlGeometry {
+  constructor(options) {
+    super(options);
+    this._style = options.style;
+  }
+  /**
+   * @inheritDoc
+   */
+  render(dc, kmlOptions) {
+    KmlGeometry.prototype.render.call(this, dc, kmlOptions);
 
-KmlMultiGeometry.prototype = Object.create(KmlGeometry.prototype);
+    this.kmlShapes.forEach(function (shape) {
+      shape.render(dc, kmlOptions);
+    });
+  }
+  /**
+   * @inheritDoc
+   */
+  getTagNames() {
+    return ["MultiGeometry"];
+  }
+}
 
 Object.defineProperties(KmlMultiGeometry.prototype, {
   /**
@@ -89,23 +105,7 @@ Object.defineProperties(KmlMultiGeometry.prototype, {
   },
 });
 
-/**
- * @inheritDoc
- */
-KmlMultiGeometry.prototype.render = function (dc, kmlOptions) {
-  KmlGeometry.prototype.render.call(this, dc, kmlOptions);
 
-  this.kmlShapes.forEach(function (shape) {
-    shape.render(dc, kmlOptions);
-  });
-};
-
-/**
- * @inheritDoc
- */
-KmlMultiGeometry.prototype.getTagNames = function () {
-  return ["MultiGeometry"];
-};
 
 KmlElements.addKey(
   KmlMultiGeometry.prototype.getTagNames()[0],

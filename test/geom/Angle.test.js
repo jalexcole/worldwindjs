@@ -25,8 +25,7 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
-
-import { Angle } from "../../src/WorldWind.js"
+import Angle from "../../src/geom/Angle.js"
 
 import { describe, expect, it } from "vitest";
 

@@ -46,11 +46,38 @@ import Sector from "../../geom/Sector";
  * @throws {ArgumentError} If the node is null or undefined.
  * @see https://developers.google.com/kml/documentation/kmlreference#region
  */
-var KmlRegion = function (options) {
-  KmlObject.call(this, options);
-};
+class KmlRegion extends KmlObject {
+  constructor(options) {
+    super(options);
+  }
+  /**
+   * It tests whether the region intersects the visible area.
+   * @param dc {DrawContext} Frustum to test for intersection.
+   */
+  intersectsVisible(dc) {
+    var box = this.kmlLatLonAltBox;
 
-KmlRegion.prototype = Object.create(KmlObject.prototype);
+    var boundingBoxForRegion = new BoundingBox();
+    boundingBoxForRegion.setToSector(
+      new Sector(box.kmlSouth, box.kmlNorth, box.kmlWest, box.kmlEast),
+      dc.globe,
+      box.kmlMinAltitude,
+      box.kmlMaxAltitude
+    );
+
+    return (
+      boundingBoxForRegion.intersectsFrustum(dc.frustumInModelCoordinates) &&
+      (!box.kmlMinAltitude || dc.eyePosition.altitude > box.kmlMinAltitude) &&
+      (!box.kmlMaxAltitude || dc.eyePosition.altitude < box.kmlMaxAltitude)
+    );
+  }
+  /**
+   * @inheritDoc
+   */
+  getTagNames() {
+    return ["Region"];
+  }
+}
 
 Object.defineProperties(KmlRegion.prototype, {
   /**
@@ -64,7 +91,7 @@ Object.defineProperties(KmlRegion.prototype, {
     get: function () {
       return this._factory.specific(this, {
         name: KmlLatLonAltBox.prototype.getTagNames(),
-        transformer: NodeTransformers.kmlObject,
+        transformer: KmlNodeTransformers.kmlObject,
       });
     },
   },
@@ -82,40 +109,13 @@ Object.defineProperties(KmlRegion.prototype, {
     get: function () {
       return this._factory.specific(this, {
         name: KmlLod.prototype.getTagNames(),
-        transformer: NodeTransformers.kmlObject,
+        transformer: KmlNodeTransformers.kmlObject,
       });
     },
   },
 });
 
-/**
- * It tests whether the region intersects the visible area.
- * @param dc {DrawContext} Frustum to test for intersection.
- */
-KmlRegion.prototype.intersectsVisible = function (dc) {
-  var box = this.kmlLatLonAltBox;
 
-  var boundingBoxForRegion = new BoundingBox();
-  boundingBoxForRegion.setToSector(
-    new Sector(box.kmlSouth, box.kmlNorth, box.kmlWest, box.kmlEast),
-    dc.globe,
-    box.kmlMinAltitude,
-    box.kmlMaxAltitude
-  );
-
-  return (
-    boundingBoxForRegion.intersectsFrustum(dc.frustumInModelCoordinates) &&
-    (!box.kmlMinAltitude || dc.eyePosition.altitude > box.kmlMinAltitude) &&
-    (!box.kmlMaxAltitude || dc.eyePosition.altitude < box.kmlMaxAltitude)
-  );
-};
-
-/**
- * @inheritDoc
- */
-KmlRegion.prototype.getTagNames = function () {
-  return ["Region"];
-};
 
 KmlElements.addKey(KmlRegion.prototype.getTagNames()[0], KmlRegion);
 

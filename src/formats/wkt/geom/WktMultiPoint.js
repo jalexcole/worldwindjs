@@ -38,29 +38,27 @@ import WktType from "../WktType";
  * @augments WktObject
  * @constructor
  */
-var WktMultiPoint = function () {
-  WktObject.call(this, WktType.SupportedGeometries.MULTI_POINT);
-};
-
-WktMultiPoint.prototype = Object.create(WktObject.prototype);
-
-/**
- * Specific for Multi objects as it depicts the boundaries.
- */
-WktMultiPoint.prototype.commaWithoutCoordinates = function () {};
-
-/**
- * It returns Placemark for each point.
- * @inheritDoc
- * @return {Placemark[]}
- */
-WktMultiPoint.prototype.shapes = function () {
-  return this.coordinates.map(
-    function (coordinate) {
-      return WktPoint.placemark(coordinate);
-    }.bind(this)
-  );
-};
+class WktMultiPoint extends WktObject{
+  constructor() {
+    super(WktType.SupportedGeometries.MULTI_POINT);
+  }
+  /**
+   * Specific for Multi objects as it depicts the boundaries.
+   */
+  commaWithoutCoordinates() { }
+  /**
+   * It returns Placemark for each point.
+   * @inheritDoc
+   * @return {Placemark[]}
+   */
+  shapes() {
+    return this.coordinates.map(
+      function (coordinate) {
+        return WktPoint.placemark(coordinate);
+      }.bind(this)
+    );
+  }
+}
 
 WktElements["MULTIPOINT"] = WktMultiPoint;
 

@@ -145,13 +145,13 @@ var Placemark = function (position, eyeDistanceScaling, attributes) {
   /**
    * This placemark's altitude mode. May be one of
    * <ul>
-   *  <li>[WorldWind.ABSOLUTE]{@link WorldWind#ABSOLUTE}</li>
-   *  <li>[WorldWind.RELATIVE_TO_GROUND]{@link WorldWind#RELATIVE_TO_GROUND}</li>
-   *  <li>[WorldWind.CLAMP_TO_GROUND]{@link WorldWind#CLAMP_TO_GROUND}</li>
+   *  <li>[WorldWindConstants.ABSOLUTE]{@link WorldWind#ABSOLUTE}</li>
+   *  <li>[WorldWindConstants.RELATIVE_TO_GROUND]{@link WorldWind#RELATIVE_TO_GROUND}</li>
+   *  <li>[WorldWindConstants.CLAMP_TO_GROUND]{@link WorldWind#CLAMP_TO_GROUND}</li>
    * </ul>
-   * @default WorldWind.ABSOLUTE
+   * @default WorldWindConstants.ABSOLUTE
    */
-  this.altitudeMode = WorldWind.ABSOLUTE;
+  this.altitudeMode = WorldWindConstants.ABSOLUTE;
 
   /**
    * Indicates whether this placemark has visual priority over other shapes in the scene.
@@ -226,25 +226,25 @@ var Placemark = function (position, eyeDistanceScaling, attributes) {
 
   /**
    * Indicates whether to apply this placemark's image rotation relative to the screen or the globe.
-   * If WorldWind.RELATIVE_TO_SCREEN, this placemark's image is rotated in the plane of the screen and
+   * If WorldWindConstants.RELATIVE_TO_SCREEN, this placemark's image is rotated in the plane of the screen and
    * its orientation relative to the globe changes as the view changes.
-   * If WorldWind.RELATIVE_TO_GLOBE, this placemark's image is rotated in a plane tangent to the globe
+   * If WorldWindConstants.RELATIVE_TO_GLOBE, this placemark's image is rotated in a plane tangent to the globe
    * at this placemark's position and retains its orientation relative to the globe.
    * @type {String}
-   * @default WorldWind.RELATIVE_TO_SCREEN
+   * @default WorldWindConstants.RELATIVE_TO_SCREEN
    */
-  this.imageRotationReference = WorldWind.RELATIVE_TO_SCREEN;
+  this.imageRotationReference = WorldWindConstants.RELATIVE_TO_SCREEN;
 
   /**
    * Indicates whether to apply this placemark's image tilt relative to the screen or the globe.
-   * If WorldWind.RELATIVE_TO_SCREEN, this placemark's image is tilted inwards (for positive tilts)
+   * If WorldWindConstants.RELATIVE_TO_SCREEN, this placemark's image is tilted inwards (for positive tilts)
    * relative to the plane of the screen, and its orientation relative to the globe changes as the view
-   * changes. If WorldWind.RELATIVE_TO_GLOBE, this placemark's image is tilted towards the globe's surface,
+   * changes. If WorldWindConstants.RELATIVE_TO_GLOBE, this placemark's image is tilted towards the globe's surface,
    * and retains its orientation relative to the surface.
    * @type {string}
-   * @default WorldWind.RELATIVE_TO_SCREEN
+   * @default WorldWindConstants.RELATIVE_TO_SCREEN
    */
-  this.imageTiltReference = WorldWind.RELATIVE_TO_SCREEN;
+  this.imageTiltReference = WorldWindConstants.RELATIVE_TO_SCREEN;
 
   // Internal use only. Intentionally not documented.
   this.activeAttributes = null;
@@ -525,7 +525,7 @@ Placemark.prototype.makeOrderedRenderable = function (dc) {
   // Perform the tilt so that the image tilts back from its base into the view volume
   if (this.imageTilt) {
     var actualTilt =
-      this.imageTiltReference === WorldWind.RELATIVE_TO_GLOBE
+      this.imageTiltReference === WorldWindConstants.RELATIVE_TO_GLOBE
         ? dc.camera.tilt + this.imageTilt
         : this.imageTilt;
     this.imageTransform.multiplyByRotation(-1, 0, 0, actualTilt);
@@ -534,7 +534,7 @@ Placemark.prototype.makeOrderedRenderable = function (dc) {
   // Perform image rotation
   if (this.imageRotation) {
     var actualRotation =
-      this.imageRotationReference === WorldWind.RELATIVE_TO_GLOBE
+      this.imageRotationReference === WorldWindConstants.RELATIVE_TO_GLOBE
         ? dc.camera.heading - this.imageRotation
         : -this.imageRotation;
     this.imageTransform.multiplyByRotation(0, 0, 1, actualRotation);

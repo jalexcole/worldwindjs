@@ -31,7 +31,9 @@
  * @constructor
  * @alias WktType
  */
-var WktType = function () {};
+class WktType {
+  constructor() { }
+}
 
 /**
  * Names of supported geometries.

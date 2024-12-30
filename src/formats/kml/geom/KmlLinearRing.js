@@ -40,18 +40,20 @@ import KmlElements from "../KmlElements";
  * @see https://developers.google.com/kml/documentation/kmlreference#linearring
  * @augments KmlLineString
  */
-var KmlLinearRing = function (options) {
-  KmlLineString.call(this, options);
-};
+class KmlLinearRing extends KmlLineString {
+  constructor(options) {
+    super(options);
+  }
+  /**
+   * @inheritDoc
+   */
+  getTagNames() {
+    return ["LinearRing"];
+  }
+}
 
-KmlLinearRing.prototype = Object.create(KmlLineString.prototype);
 
-/**
- * @inheritDoc
- */
-KmlLinearRing.prototype.getTagNames = function () {
-  return ["LinearRing"];
-};
+
 
 KmlElements.addKey(KmlLinearRing.prototype.getTagNames()[0], KmlLinearRing);
 

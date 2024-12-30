@@ -36,23 +36,25 @@
  * @param {String} name The error's name.
  * @param {String} message The message.
  */
-var AbstractError = function (name, message) {
-  this.name = name;
-  this.message = message;
-};
-
-/**
- * Returns the message and stack trace associated with this error.
- * @returns {String} The message and stack trace associated with this error.
- */
-AbstractError.prototype.toString = function () {
-  var str = this.name + ": " + this.message;
-
-  if (this.stack) {
-    str += "\n" + this.stack.toString();
+class AbstractError {
+  constructor(name, message) {
+    this.name = name;
+    this.message = message;
   }
+  /**
+   * Returns the message and stack trace associated with this error.
+   * @returns {String} The message and stack trace associated with this error.
+   */
+  toString() {
+    var str = this.name + ": " + this.message;
 
-  return str;
-};
+    if (this.stack) {
+      str += "\n" + this.stack.toString();
+    }
+
+    return str;
+  }
+}
+
 
 export default AbstractError;

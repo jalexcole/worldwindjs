@@ -27,27 +27,26 @@
  */
 import AbstractError from "./AbstractError";
 
-        /**
-         * Constructs a not-yet-implemented error with a specified message.
-         * @alias NotYetImplementedError
-         * @constructor
-         * @classdesc Represents an error associated with an operation that is not yet implemented.
-         * @augments AbstractError
-         * @param {String} message The message.
-         */
-        var NotYetImplementedError = function (message) {
-            AbstractError.call(this, "NotYetImplementedError", message);
+/**
+ * Constructs a not-yet-implemented error with a specified message.
+ * @alias NotYetImplementedError
+ * @constructor
+ * @classdesc Represents an error associated with an operation that is not yet implemented.
+ * @param {String} message The message.
+ */
+class NotYetImplementedError extends AbstractError {
+    constructor(message) {
+        super("NotYetImplementedError", message);
 
-            var stack;
-            try {
-                //noinspection ExceptionCaughtLocallyJS
-                throw new Error();
-            } catch (e) {
-                stack = e.stack;
-            }
-            this.stack = stack;
-        };
+        let stack;
+        try {
+            //noinspection ExceptionCaughtLocallyJS
+            throw new Error();
+        } catch (e) {
+            stack = e.stack;
+        }
+        this.stack = stack;
+    }
+}
 
-        NotYetImplementedError.prototype = Object.create(AbstractError.prototype);
-
-        export default NotYetImplementedError;
+export default NotYetImplementedError;

@@ -29,71 +29,78 @@ import KmlElements from "../KmlElements";
 import KmlObject from "../KmlObject";
 import KmlNodeTransformers from "./KmlNodeTransformers";
 
+/**
+ * Constructs a KmlScale. Application usually don't call this constructor. It is called by {@link KmlFile} as
+ * Objects from KmlFile are read. It is concrete implementation.
+ * @alias KmlScale
+ * @constructor
+ * @classdesc Contains the data associated with Kml KmlScale
+ * @param options {Object}
+ * @param options.objectNode {Node} Node representing the Kml KmlScale
+ * @throws {ArgumentError} If either the node is null or undefined.
+ * @see https://developers.google.com/kml/documentation/kmlreference#scale
+ * @augments KmlObject
+ */
+class KmlScale extends KmlObject{
+  constructor(options) {
+    super(options);
+  }
+  /**
+   * @inheritDoc
+   */
+  getTagNames() {
+    return ["Scale"];
+  }
+}
 
-    /**
-     * Constructs a KmlScale. Application usually don't call this constructor. It is called by {@link KmlFile} as
-     * Objects from KmlFile are read. It is concrete implementation.
-     * @alias KmlScale
-     * @constructor
-     * @classdesc Contains the data associated with Kml KmlScale
-     * @param options {Object}
-     * @param options.objectNode {Node} Node representing the Kml KmlScale
-     * @throws {ArgumentError} If either the node is null or undefined.
-     * @see https://developers.google.com/kml/documentation/kmlreference#scale
-     * @augments KmlObject
-     */
-    var KmlScale = function (options) {
-        KmlObject.call(this, options);
-    };
+Object.defineProperties(KmlScale.prototype, {
+  /**
+   * Scales model along x axis
+   * @memberof KmlScale.prototype
+   * @readonly
+   * @type {Number}
+   */
+  kmlX: {
+    get: function () {
+      return this._factory.specific(this, {
+        name: "x",
+        transformer: KmlNodeTransformers.number,
+      });
+    },
+  },
 
-    KmlScale.prototype = Object.create(KmlObject.prototype);
+  /**
+   * Scales model along y axis
+   * @memberof KmlScale.prototype
+   * @readonly
+   * @type {Number}
+   */
+  kmlY: {
+    get: function () {
+      return this._factory.specific(this, {
+        name: "y",
+        transformer: KmlNodeTransformers.number,
+      });
+    },
+  },
 
-    Object.defineProperties(KmlScale.prototype, {
-        /**
-         * Scales model along x axis
-         * @memberof KmlScale.prototype
-         * @readonly
-         * @type {Number}
-         */
-        kmlX: {
-            get: function() {
-                return this._factory.specific(this, {name: 'x', transformer: NodeTransformers.number});
-            }
-        },
+  /**
+   * Scales model along z axis
+   * @memberof KmlScale.prototype
+   * @readonly
+   * @type {Number}
+   */
+  kmlZ: {
+    get: function () {
+      return this._factory.specific(this, {
+        name: "z",
+        transformer: KmlNodeTransformers.number,
+      });
+    },
+  },
+});
 
-        /**
-         * Scales model along y axis
-         * @memberof KmlScale.prototype
-         * @readonly
-         * @type {Number}
-         */
-        kmlY: {
-            get: function() {
-                return this._factory.specific(this, {name: 'y', transformer: NodeTransformers.number});
-            }
-        },
 
-        /**
-         * Scales model along z axis
-         * @memberof KmlScale.prototype
-         * @readonly
-         * @type {Number}
-         */
-        kmlZ: {
-            get: function() {
-                return this._factory.specific(this, {name: 'z', transformer: NodeTransformers.number});
-            }
-        }
-    });
+KmlElements.addKey(KmlScale.prototype.getTagNames()[0], KmlScale);
 
-    /**
-     * @inheritDoc
-     */
-    KmlScale.prototype.getTagNames = function () {
-        return ['Scale'];
-    };
-
-    KmlElements.addKey(KmlScale.prototype.getTagNames()[0], KmlScale);
-
-    export default KmlScale;
-
+export default KmlScale;

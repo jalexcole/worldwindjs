@@ -47,31 +47,54 @@ import Renderable from "../../render/Renderable";
  * @augments Renderable
  * @see https://developers.google.com/kml/documentation/kmlreference#object
  */
-var KmlObject = function (options) {
-  Renderable.call(this);
+class KmlObject extends Renderable{
+  constructor(options) {
+    super();
 
-  options = options || {};
-  if (!options.objectNode) {
-    throw new ArgumentError(
-      Logger.logMessage(
-        Logger.LEVEL_SEVERE,
-        "KmlObject",
-        "constructor",
-        "Passed node isn't defined."
-      )
-    );
+    options = options || {};
+    if (!options.objectNode) {
+      throw new ArgumentError(
+        Logger.logMessage(
+          Logger.LEVEL_SEVERE,
+          "KmlObject",
+          "constructor",
+          "Passed node isn't defined."
+        )
+      );
+    }
+    this._node = options.objectNode;
+    this._cache = {};
+
+    this._controls = options.controls || [];
+    // It should be possible to keep the context here?
+    this._factory = new KmlElementsFactoryCached({ controls: this._controls });
+
+    this.hook(this._controls, options);
   }
-  this._node = options.objectNode;
-  this._cache = {};
+  /**
+   * It calls all controls associated with current KmlFile with the link to this.
+   * @param controls {KmlControls[]} Controls associated with current tree.
+   * @param options {Object} Options to pass into the controls.
+   */
+  hook(controls, options) {
+    var self = this;
+    controls.forEach(function (control) {
+      control.hook(self, options);
+    });
+  }
+  /**
+   * @inheritDoc
+   */
+  render(dc) { }
+  /**
+   * Returns tag name of all descendants of abstract node or the tag name for current node.
+   * @returns {String[]}
+   */
+  getTagNames() {
+    return [];
+  }
+}
 
-  this._controls = options.controls || [];
-  // It should be possible to keep the context here?
-  this._factory = new KmlElementsFactoryCached({ controls: this._controls });
-
-  this.hook(this._controls, options);
-};
-
-KmlObject.prototype = Object.create(Renderable.prototype);
 
 Object.defineProperties(KmlObject.prototype, {
   /**
@@ -101,29 +124,7 @@ Object.defineProperties(KmlObject.prototype, {
   },
 });
 
-/**
- * It calls all controls associated with current KmlFile with the link to this.
- * @param controls {KmlControls[]} Controls associated with current tree.
- * @param options {Object} Options to pass into the controls.
- */
-KmlObject.prototype.hook = function (controls, options) {
-  var self = this;
-  controls.forEach(function (control) {
-    control.hook(self, options);
-  });
-};
 
-/**
- * @inheritDoc
- */
-KmlObject.prototype.render = function (dc) {};
 
-/**
- * Returns tag name of all descendants of abstract node or the tag name for current node.
- * @returns {String[]}
- */
-KmlObject.prototype.getTagNames = function () {
-  return [];
-};
 
 export default KmlObject;

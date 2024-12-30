@@ -35,17 +35,17 @@ import Vec3 from "../geom/Vec3";
  * Provides math constants and functions.
  * @exports WWUtil
  */
-var WWUtil = {
+class WWUtil {
   // A regular expression that matches latitude followed by a comma and possible white space followed by
   // longitude. Latitude and longitude ranges are not considered.
-  latLonRegex: /^(\-?\d+(\.\d+)?),\s*(\-?\d+(\.\d+)?)$/,
+  static latLonRegex = /^(\-?\d+(\.\d+)?),\s*(\-?\d+(\.\d+)?)$/;
 
   /**
    * Returns the suffix for a specified mime type.
    * @param {String} mimeType The mime type to determine a suffix for.
    * @returns {String} The suffix for the specified mime type, or null if the mime type is not recognized.
    */
-  suffixForMimeType: function (mimeType) {
+  static suffixForMimeType(mimeType) {
     if (mimeType === "image/png") return "png";
 
     if (mimeType === "image/jpeg") return "jpg";
@@ -55,14 +55,14 @@ var WWUtil = {
     if (mimeType === "application/bil32") return "bil";
 
     return null;
-  },
+  }
 
   /**
    * Returns the current location URL as obtained from window.location with the last path component
    * removed.
    * @returns {String} The current location URL with the last path component removed.
    */
-  currentUrlSansFilePart: function () {
+  static currentUrlSansFilePart() {
     var protocol = window.location.protocol,
       host = window.location.host,
       path = window.location.pathname,
@@ -76,14 +76,14 @@ var WWUtil = {
     }
 
     return protocol + "//" + host + newPath;
-  },
+  }
 
   /**
    * Returns the URL of the directory containing the WorldWind library.
    * @returns {String} The URL of the directory containing the WorldWind library, or null if that directory
    * cannot be determined.
    */
-  worldwindlibLocation: function () {
+  static worldwindlibLocation() {
     var scripts = document.getElementsByTagName("script"),
       libraryName = "/worldwind.";
 
@@ -95,7 +95,7 @@ var WWUtil = {
     }
 
     return null;
-  },
+  }
 
   /**
    * Returns the path component of a specified URL.
@@ -103,7 +103,7 @@ var WWUtil = {
    * @returns {String} The path component, or the empty string if the specified URL is null, undefined
    * or empty.
    */
-  urlPath: function (url) {
+  static urlPath(url) {
     if (!url) return "";
 
     var urlParts = url.split("/"),
@@ -132,7 +132,7 @@ var WWUtil = {
     }
 
     return newPath;
-  },
+  }
 
   /**
    * Sets each element of an array to a specified value. This function is intentionally generic, and works
@@ -140,7 +140,7 @@ var WWUtil = {
    * @param array The array to fill.
    * @param {*} value The value to assign to each array element.
    */
-  fillArray: function (array, value) {
+  static fillArray(array, value) {
     if (!array) {
       return;
     }
@@ -148,7 +148,7 @@ var WWUtil = {
     for (var i = 0, len = array.length; i < len; i++) {
       array[i] = value;
     }
-  },
+  }
 
   /**
    * Multiplies each element of an array by a specified value and assigns each element to the result. This
@@ -157,7 +157,7 @@ var WWUtil = {
    * @param array The array to fill.
    * @param {*} value The value to multiply by each array element.
    */
-  multiplyArray: function (array, value) {
+  static multiplyArray(array, value) {
     if (!array) {
       return;
     }
@@ -165,10 +165,10 @@ var WWUtil = {
     for (var i = 0, len = array.length; i < len; i++) {
       array[i] *= value;
     }
-  },
+  }
 
   // Used to form unique function names for JSONP callback functions.
-  jsonpCounter: 0,
+  static jsonpCounter = 0;
 
   /**
    * Request a resource using JSONP.
@@ -178,7 +178,7 @@ var WWUtil = {
    * @param {Function} callback The function to invoke when the request succeeds. The function receives
    * one argument, the JSON payload of the JSONP request.
    */
-  jsonp: function (url, parameterName, callback) {
+  static jsonp(url, parameterName, callback) {
     // Generate a unique function name for the JSONP callback.
     var functionName = "gov_nasa_worldwind_jsonp_" + WWUtil.jsonpCounter++;
 
@@ -215,9 +215,14 @@ var WWUtil = {
 
     // Add the script element to the document, causing the browser to invoke it.
     head.appendChild(script);
-  },
-
-  arrayEquals: function (array1, array2) {
+  };
+  /**
+   * 
+   * @param {Float64Array} array1 
+   * @param {Float64Array} array2 
+   * @returns 
+   */
+  static arrayEquals(array1, array2) {
     return (
       array1.length == array2.length &&
       array1.every(function (element, index) {
@@ -227,7 +232,7 @@ var WWUtil = {
         );
       })
     );
-  },
+  };
 
   /**
    * It transforms given item to the boolean. It respects that 0, "0" and "false" are percieved as false
@@ -235,13 +240,13 @@ var WWUtil = {
    * @param item {String} Item to transform
    * @returns {boolean} Value transformed to the boolean.
    */
-  transformToBoolean: function (item) {
-    if (item == 0 || item == "0" || item == "false") {
+  static transformToBoolean (item) {
+    if (item == "0" || item == "false") {
       return false;
     } else {
       return Boolean(item);
     }
-  },
+  }
 
   /**
    * It clones original object into the new one. It is necessary to retain the options information valid
@@ -249,7 +254,7 @@ var WWUtil = {
    * @param original Object to clone
    * @returns {Object} Cloned object
    */
-  clone: function (original) {
+  static clone (original) {
     var clone = {};
     var i,
       keys = Object.keys(original);
@@ -260,13 +265,13 @@ var WWUtil = {
     }
 
     return clone;
-  },
+  }
 
   /**
    * It returns unique GUID.
    * @returns {string} String representing unique identifier in the application.
    */
-  guid: function () {
+  static guid () {
     function s4() {
       return Math.floor((1 + Math.random()) * 0x10000)
         .toString(16)
@@ -287,16 +292,16 @@ var WWUtil = {
       s4() +
       s4()
     );
-  },
+  }
 
   /**
    * Transforms item to date. It accepts ISO-8601 format.
    * @param item {String} To transform.
    * @returns {Date} Date extracted from the current information.
    */
-  date: function (item) {
+  static date (item) {
     return new Date(item);
-  },
+  }
 
   /**
    * Determines whether subjectString begins with the characters of searchString.
@@ -305,10 +310,10 @@ var WWUtil = {
    * @param {Number} position The position in subjectString at which to begin searching for searchString; defaults to 0.
    * @return {Boolean} true if the given characters are found at the beginning of the string; otherwise, false.
    */
-  startsWith: function (subjectString, searchString, position) {
+  static startsWith (subjectString, searchString, position) {
     position = position || 0;
     return subjectString.substr(position, searchString.length) === searchString;
-  },
+  }
 
   /**
    * Determines whether subjectString ends with the characters of searchString.
@@ -317,7 +322,7 @@ var WWUtil = {
    * @param {Number} length Optional. If provided overwrites the considered length of the string to search in. If omitted, the default value is the length of the string.
    * @return {Boolean} true if the given characters are found at the end of the string; otherwise, false.
    */
-  endsWith: function (subjectString, searchString, length) {
+  static endsWith (subjectString, searchString, length) {
     if (
       typeof length !== "number" ||
       !isFinite(length) ||
@@ -329,7 +334,7 @@ var WWUtil = {
     length -= searchString.length;
     var lastIndex = subjectString.lastIndexOf(searchString, length);
     return lastIndex !== -1 && lastIndex === length;
-  },
+  }
 };
 
 export default WWUtil;

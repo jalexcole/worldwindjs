@@ -32,7 +32,7 @@ import WktElements from "../WktElements";
 import WktObject from "./WktObject";
 import WktType from "../WktType";
 import Offset from "../../../util/Offset";
-import WorldWind from "../../../WorldWind";
+import WorldWindConstants from "../../../WorldWindConstants";
 
 /**
  * It represents Point
@@ -40,52 +40,54 @@ import WorldWind from "../../../WorldWind";
  * @augments WktObject
  * @constructor
  */
-var WktPoint = function () {
-  WktObject.call(this, WktType.SupportedGeometries.POINT);
-};
+class WktPoint extends WktObject {
+  constructor() {
+    super(WktType.SupportedGeometries.POINT);
+  }
+  /**
+   * Default Placemark implementation for the Point and MultiPoint.
+   * @param coordinates {Location | Position} Location or Position for the Placemark
+   * @return {Placemark} Placemark to be displayed on the map.
+   */
+  static placemark(coordinates) {
+    var placemarkAttributes = new PlacemarkAttributes(null);
+    placemarkAttributes._imageScale = 1;
+    placemarkAttributes._imageOffset = new Offset(
+      WorldWindConstants.OFFSET_FRACTION,
+      0.3,
+      WorldWindConstants.OFFSET_FRACTION,
+      0.0
+    );
+    placemarkAttributes._imageColor = WorldWindConstants.Color.WHITE;
+    placemarkAttributes._labelAttributes._offset = new Offset(
+      WorldWindConstants.OFFSET_FRACTION,
+      0.5,
+      WorldWindConstants.OFFSET_FRACTION,
+      1.0
+    );
+    placemarkAttributes._labelAttributes._color = WorldWindConstants.Color.YELLOW;
+    placemarkAttributes._drawLeaderLine = true;
+    placemarkAttributes._leaderLineAttributes._outlineColor = WorldWindConstants.Color.RED;
+    placemarkAttributes._imageSource =
+      WorldWindConstants.configuration.baseUrl + "images/pushpins/castshadow-purple.png";
 
-WktPoint.prototype = Object.create(WktObject.prototype);
+    var placemark = new Placemark(coordinates, true, placemarkAttributes);
+    placemark.altitudeMode = WorldWindConstants.RELATIVE_TO_GROUND;
 
-/**
- * It returns Placemark representing this point.
- * @return {Placemark[]}
- */
-WktPoint.prototype.shapes = function () {
-  return [WktPoint.placemark(this.coordinates[0])];
-};
+    return placemark;
+  }
+  /**
+   * It returns Placemark representing this point.
+   * @return {Placemark[]}
+   */
+  shapes() {
+    return [WktPoint.placemark(this.coordinates[0])];
+  }
+}
 
-/**
- * Default Placemark implementation for the Point and MultiPoint.
- * @param coordinates {Location | Position} Location or Position for the Placemark
- * @return {Placemark} Placemark to be displayed on the map.
- */
-WktPoint.placemark = function (coordinates) {
-  var placemarkAttributes = new PlacemarkAttributes(null);
-  placemarkAttributes._imageScale = 1;
-  placemarkAttributes._imageOffset = new Offset(
-    WorldWind.OFFSET_FRACTION,
-    0.3,
-    WorldWind.OFFSET_FRACTION,
-    0.0
-  );
-  placemarkAttributes._imageColor = WorldWind.Color.WHITE;
-  placemarkAttributes._labelAttributes._offset = new Offset(
-    WorldWind.OFFSET_FRACTION,
-    0.5,
-    WorldWind.OFFSET_FRACTION,
-    1.0
-  );
-  placemarkAttributes._labelAttributes._color = WorldWind.Color.YELLOW;
-  placemarkAttributes._drawLeaderLine = true;
-  placemarkAttributes._leaderLineAttributes._outlineColor = WorldWind.Color.RED;
-  placemarkAttributes._imageSource =
-    WorldWind.configuration.baseUrl + "images/pushpins/castshadow-purple.png";
 
-  var placemark = new Placemark(coordinates, true, placemarkAttributes);
-  placemark.altitudeMode = WorldWind.RELATIVE_TO_GROUND;
 
-  return placemark;
-};
+
 
 WktElements["POINT"] = WktPoint;
 

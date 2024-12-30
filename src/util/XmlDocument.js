@@ -35,7 +35,7 @@ import Logger from "./Logger";
  * @param document String representation of the xml document.
  * @constructor
  */
-export class XmlDocument {
+ export class XmlDocument {
     constructor(document) {
         /**
          * Retrieved textual representation of the document.
