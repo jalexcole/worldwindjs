@@ -19,8 +19,8 @@
     "url": "https://github.com/emxsys/worldwindjs.git"
   },
   "scripts": {
-    "build": "vite build",
-    "dev": "vite",
+    "build": "vite --config vite.config.js build",
+    "dev": "vite --config vite.config.js examples",
     "test": "vitest --config vitest.config.js",
     "lint": "eslint"
   },

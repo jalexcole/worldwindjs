@@ -16,6 +16,10 @@ export default defineConfig({
   resolve: {
     extensions: [".ts", ".js"], // Resolve .ts and .js files
   },
+  server: {
+    port: 8080,
+    open: "/simple-example.html"
+  },
   plugins: [],
   esbuild: {
     // TypeScript handling is natively supported by Vite's esbuild
