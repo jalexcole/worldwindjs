@@ -32,6 +32,7 @@
  * parsing some of the elements may be dependent on elements, in which they may be present.
  * Like MultiGeometry present inside of some of the Geometries.
  * @exports KmlElements
+ * @interface
  */
 class KmlElements {
   /**

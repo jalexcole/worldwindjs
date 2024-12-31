@@ -40,29 +40,121 @@ import GestureRecognizer from "./GestureRecognizer";
  * e.g., <code>gestureCallback(recognizer)</code>.
  * @throws {ArgumentError} If the specified target is null or undefined.
  */
-var PinchRecognizer = function (target, callback) {
-  GestureRecognizer.call(this, target, callback);
+class PinchRecognizer extends GestureRecognizer{
+  constructor(target, callback) {
+    super(target, callback);
 
+    // Intentionally not documented.
+    this._scale = 1;
+
+    // Intentionally not documented.
+    this._offsetScale = 1;
+
+    // Intentionally not documented.
+    this.referenceDistance = 0;
+
+    // Intentionally not documented.
+    this.interpretThreshold = 20;
+
+    // Intentionally not documented.
+    this.weight = 0.4;
+
+    // Intentionally not documented.
+    this.pinchTouches = [];
+  }
+  // Documented in superclass.
+  reset() {
+    GestureRecognizer.prototype.reset.call(this);
+
+    this._scale = 1;
+    this._offsetScale = 1;
+    this.referenceDistance = 0;
+    this.pinchTouches = [];
+  }
+  // Documented in superclass.
+  mouseDown(event) {
+    if (this.state == WorldWindConstants.POSSIBLE) {
+      this.state = WorldWindConstants.FAILED; // touch gestures fail upon receiving a mouse event
+    }
+  }
+  // Documented in superclass.
+  touchStart(touch) {
+    if (this.pinchTouches.length < 2) {
+      if (this.pinchTouches.push(touch) == 2) {
+        this.referenceDistance = this.currentPinchDistance();
+        this._offsetScale *= this._scale;
+        this._scale = 1;
+      }
+    }
+  }
+  // Documented in superclass.
+  touchMove(touch) {
+    if (this.pinchTouches.length == 2) {
+      if (this.state == WorldWindConstants.POSSIBLE) {
+        if (this.shouldRecognize()) {
+          this.state = WorldWindConstants.BEGAN;
+        }
+      } else if (this.state == WorldWindConstants.BEGAN ||
+        this.state == WorldWindConstants.CHANGED) {
+        var distance = this.currentPinchDistance(), newScale = Math.abs(distance / this.referenceDistance), w = this.weight;
+        this._scale = this._scale * (1 - w) + newScale * w;
+        this.state = WorldWindConstants.CHANGED;
+      }
+    }
+  }
+  // Documented in superclass.
+  touchEnd(touch) {
+    var index = this.pinchTouches.indexOf(touch);
+    if (index != -1) {
+      this.pinchTouches.splice(index, 1);
+    }
+
+    // Transition to the ended state if this was the last touch.
+    if (this.touchCount == 0) {
+      // last touch ended
+      if (this.state == WorldWindConstants.POSSIBLE) {
+        this.state = WorldWindConstants.FAILED;
+      } else if (this.state == WorldWindConstants.BEGAN ||
+        this.state == WorldWindConstants.CHANGED) {
+        this.state = WorldWindConstants.ENDED;
+      }
+    }
+  }
+  // Documented in superclass.
+  touchCancel(touch) {
+    var index = this.pinchTouches.indexOf(touch);
+    if (index != -1) {
+      this.pinchTouches.splice(index, 1);
+    }
+
+    // Transition to the cancelled state if this was the last touch.
+    if (this.touchCount == 0) {
+      if (this.state == WorldWindConstants.POSSIBLE) {
+        this.state = WorldWindConstants.FAILED;
+      } else if (this.state == WorldWindConstants.BEGAN ||
+        this.state == WorldWindConstants.CHANGED) {
+        this.state = WorldWindConstants.CANCELLED;
+      }
+    }
+  }
+  // Documented in superclass.
+  prepareToRecognize() {
+    this.referenceDistance = this.currentPinchDistance();
+    this._scale = 1;
+  }
   // Intentionally not documented.
-  this._scale = 1;
+  shouldRecognize() {
+    var distance = this.currentPinchDistance();
 
+    return Math.abs(distance - this.referenceDistance) > this.interpretThreshold;
+  }
   // Intentionally not documented.
-  this._offsetScale = 1;
+  currentPinchDistance() {
+    var touch0 = this.pinchTouches[0], touch1 = this.pinchTouches[1], dx = touch0.clientX - touch1.clientX, dy = touch0.clientY - touch1.clientY;
 
-  // Intentionally not documented.
-  this.referenceDistance = 0;
-
-  // Intentionally not documented.
-  this.interpretThreshold = 20;
-
-  // Intentionally not documented.
-  this.weight = 0.4;
-
-  // Intentionally not documented.
-  this.pinchTouches = [];
-};
-
-PinchRecognizer.prototype = Object.create(GestureRecognizer.prototype);
+    return Math.sqrt(dx * dx + dy * dy);
+  }
+}
 
 Object.defineProperties(PinchRecognizer.prototype, {
   scale: {
@@ -72,116 +164,6 @@ Object.defineProperties(PinchRecognizer.prototype, {
   },
 });
 
-// Documented in superclass.
-PinchRecognizer.prototype.reset = function () {
-  GestureRecognizer.prototype.reset.call(this);
 
-  this._scale = 1;
-  this._offsetScale = 1;
-  this.referenceDistance = 0;
-  this.pinchTouches = [];
-};
-
-// Documented in superclass.
-PinchRecognizer.prototype.mouseDown = function (event) {
-  if (this.state == WorldWindConstants.POSSIBLE) {
-    this.state = WorldWindConstants.FAILED; // touch gestures fail upon receiving a mouse event
-  }
-};
-
-// Documented in superclass.
-PinchRecognizer.prototype.touchStart = function (touch) {
-  if (this.pinchTouches.length < 2) {
-    if (this.pinchTouches.push(touch) == 2) {
-      this.referenceDistance = this.currentPinchDistance();
-      this._offsetScale *= this._scale;
-      this._scale = 1;
-    }
-  }
-};
-
-// Documented in superclass.
-PinchRecognizer.prototype.touchMove = function (touch) {
-  if (this.pinchTouches.length == 2) {
-    if (this.state == WorldWindConstants.POSSIBLE) {
-      if (this.shouldRecognize()) {
-        this.state = WorldWindConstants.BEGAN;
-      }
-    } else if (
-      this.state == WorldWindConstants.BEGAN ||
-      this.state == WorldWindConstants.CHANGED
-    ) {
-      var distance = this.currentPinchDistance(),
-        newScale = Math.abs(distance / this.referenceDistance),
-        w = this.weight;
-      this._scale = this._scale * (1 - w) + newScale * w;
-      this.state = WorldWindConstants.CHANGED;
-    }
-  }
-};
-
-// Documented in superclass.
-PinchRecognizer.prototype.touchEnd = function (touch) {
-  var index = this.pinchTouches.indexOf(touch);
-  if (index != -1) {
-    this.pinchTouches.splice(index, 1);
-  }
-
-  // Transition to the ended state if this was the last touch.
-  if (this.touchCount == 0) {
-    // last touch ended
-    if (this.state == WorldWindConstants.POSSIBLE) {
-      this.state = WorldWindConstants.FAILED;
-    } else if (
-      this.state == WorldWindConstants.BEGAN ||
-      this.state == WorldWindConstants.CHANGED
-    ) {
-      this.state = WorldWindConstants.ENDED;
-    }
-  }
-};
-
-// Documented in superclass.
-PinchRecognizer.prototype.touchCancel = function (touch) {
-  var index = this.pinchTouches.indexOf(touch);
-  if (index != -1) {
-    this.pinchTouches.splice(index, 1);
-  }
-
-  // Transition to the cancelled state if this was the last touch.
-  if (this.touchCount == 0) {
-    if (this.state == WorldWindConstants.POSSIBLE) {
-      this.state = WorldWindConstants.FAILED;
-    } else if (
-      this.state == WorldWindConstants.BEGAN ||
-      this.state == WorldWindConstants.CHANGED
-    ) {
-      this.state = WorldWindConstants.CANCELLED;
-    }
-  }
-};
-
-// Documented in superclass.
-PinchRecognizer.prototype.prepareToRecognize = function () {
-  this.referenceDistance = this.currentPinchDistance();
-  this._scale = 1;
-};
-
-// Intentionally not documented.
-PinchRecognizer.prototype.shouldRecognize = function () {
-  var distance = this.currentPinchDistance();
-
-  return Math.abs(distance - this.referenceDistance) > this.interpretThreshold;
-};
-
-// Intentionally not documented.
-PinchRecognizer.prototype.currentPinchDistance = function () {
-  var touch0 = this.pinchTouches[0],
-    touch1 = this.pinchTouches[1],
-    dx = touch0.clientX - touch1.clientX,
-    dy = touch0.clientY - touch1.clientY;
-
-  return Math.sqrt(dx * dx + dy * dy);
-};
 
 export default PinchRecognizer;

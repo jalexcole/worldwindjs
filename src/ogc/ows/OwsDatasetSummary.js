@@ -31,53 +31,55 @@ import OwsBoundingBox from "./OwsBoundingBox";
 import OwsKeywords from "./OwsKeywords";
 import OwsLanguageString from "./OwsLanguageString";
 
-var OwsDatasetSummary = function (element) {
-  if (!element) {
-    throw new ArgumentError(
-      Logger.logMessage(
-        Logger.LEVEL_SEVERE,
-        "OwsDatasetSummary",
-        "constructor",
-        "missingDomElement"
-      )
-    );
-  }
-
-  this.assembleElement(element);
-};
-
-// Internal. Intentionally not documented.
-OwsDatasetSummary.prototype.assembleElement = function (element) {
-  var children = element.children || element.childNodes;
-
-  for (var c = 0; c < children.length; c++) {
-    var child = children[c];
-
-    if (child.localName === "Title") {
-      this.titles = this.titles || [];
-      this.titles.push(new OwsLanguageString(child));
-    } else if (child.localName === "Abstract") {
-      this.abstracts = this.abtracts || [];
-      this.abstracts.push(new OwsLanguageString(child));
-    } else if (child.localName === "Keywords") {
-      this.keywords = this.keywords || [];
-      this.keywords.push(new OwsKeywords(child));
-    } else if (child.localName === "Identifier") {
-      this.identifier = child.textContent;
-    } else if (child.localName === "WGS84BoundingBox") {
-      this.wgs84BoundingBox = new OwsBoundingBox(child);
-    } else if (child.localName === "BoundingBox") {
-      this.boundingBox = this.boundingBox || [];
-      this.boundingBox.push(new OwsBoundingBox(child));
-    } else if (child.localName === "OutputFormat") {
-      this.outputFormat = this.outputFormat || [];
-      this.outputFormat.push(child.textContent);
-    } else if (child.localName === "AvailableCRS") {
-      this.availableCrs = this.availableCrs || [];
-      this.availableCRS.push(child.textContent);
+class OwsDatasetSummary {
+  constructor(element) {
+    if (!element) {
+      throw new ArgumentError(
+        Logger.logMessage(
+          Logger.LEVEL_SEVERE,
+          "OwsDatasetSummary",
+          "constructor",
+          "missingDomElement"
+        )
+      );
     }
-    // TODO AccessConstraint, Fees, PointOfContact, Language
+
+    this.assembleElement(element);
   }
-};
+  // Internal. Intentionally not documented.
+  assembleElement(element) {
+    var children = element.children || element.childNodes;
+
+    for (var c = 0; c < children.length; c++) {
+      var child = children[c];
+
+      if (child.localName === "Title") {
+        this.titles = this.titles || [];
+        this.titles.push(new OwsLanguageString(child));
+      } else if (child.localName === "Abstract") {
+        this.abstracts = this.abtracts || [];
+        this.abstracts.push(new OwsLanguageString(child));
+      } else if (child.localName === "Keywords") {
+        this.keywords = this.keywords || [];
+        this.keywords.push(new OwsKeywords(child));
+      } else if (child.localName === "Identifier") {
+        this.identifier = child.textContent;
+      } else if (child.localName === "WGS84BoundingBox") {
+        this.wgs84BoundingBox = new OwsBoundingBox(child);
+      } else if (child.localName === "BoundingBox") {
+        this.boundingBox = this.boundingBox || [];
+        this.boundingBox.push(new OwsBoundingBox(child));
+      } else if (child.localName === "OutputFormat") {
+        this.outputFormat = this.outputFormat || [];
+        this.outputFormat.push(child.textContent);
+      } else if (child.localName === "AvailableCRS") {
+        this.availableCrs = this.availableCrs || [];
+        this.availableCRS.push(child.textContent);
+      }
+      // TODO AccessConstraint, Fees, PointOfContact, Language
+    }
+  }
+}
+
 
 export default OwsDatasetSummary;

@@ -29,7 +29,6 @@ import ArgumentError from "../error/ArgumentError";
 import FramebufferTexture from "./FramebufferTexture";
 import Logger from "../util/Logger";
 import Matrix from "../geom/Matrix";
-import Rectangle from "../geom/Rectangle";
 import TextureTile from "./TextureTile";
 import Sector from "../geom/Sector";
 import Level from "../util/Level";
@@ -58,6 +57,7 @@ import DrawContext from "./DrawContext";
  */
 class FramebufferTile extends TextureTile{
   constructor(sector, level, row, column, cacheKey) {
+    super(sector, level, row, column); // args are checked in the superclass' constructor
     if (!cacheKey || cacheKey.length < 1) {
       throw new ArgumentError(
         Logger.logMessage(
@@ -68,9 +68,6 @@ class FramebufferTile extends TextureTile{
         )
       );
     }
-
-    TextureTile.call(this, sector, level, row, column); // args are checked in the superclass' constructor
-
 
     // Assign the cacheKey as the gpuCacheKey (inherited from TextureTile).
     this.gpuCacheKey = cacheKey;

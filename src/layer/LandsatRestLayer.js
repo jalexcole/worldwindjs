@@ -25,9 +25,9 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
-import ArgumentError from "../error/ArgumentError";
+
 import Location from "../geom/Location";
-import Logger from "../util/Logger";
+
 import Sector from "../geom/Sector";
 import TiledImageLayer from "./TiledImageLayer";
 import LevelRowColumnUrlBuilder from "../util/LevelRowColumnUrlBuilder";
@@ -47,24 +47,24 @@ import WWUtil from "../util/WWUtil";
  * May be null, in which case the server address is assumed to be the full path to the data directory.
  * @param {String} displayName The display name to associate with this layer.
  */
-var LandsatRestLayer = function (serverAddress, pathToData, displayName) {
-  var cachePath = WWUtil.urlPath(serverAddress + "/" + pathToData);
+class LandsatRestLayer extends TiledImageLayer{
+  constructor(serverAddress, pathToData, displayName) {
+    super(
+      displayName,
+      Sector.FULL_SPHERE,
+      new Location(36, 36),
+      10,
+      "image/png",
+      cachePath,
+      512,
+      512
+    );
+    var cachePath = WWUtil.urlPath(serverAddress + "/" + pathToData);
 
-  TiledImageLayer.call(
-    this,
-    displayName,
-    Sector.FULL_SPHERE,
-    new Location(36, 36),
-    10,
-    "image/png",
-    cachePath,
-    512,
-    512
-  );
+    
 
-  this.urlBuilder = new LevelRowColumnUrlBuilder(serverAddress, pathToData);
-};
-
-LandsatRestLayer.prototype = Object.create(TiledImageLayer.prototype);
+    this.urlBuilder = new LevelRowColumnUrlBuilder(serverAddress, pathToData);
+  }
+}
 
 export default LandsatRestLayer;

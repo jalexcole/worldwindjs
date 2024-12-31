@@ -42,57 +42,56 @@ import Logger from "../../util/Logger";
  * @throws {ArgumentError} If the specified coordinates or type are null or undefined or if the coordinates
  * parameter is not an array of two or more positions.
  */
-var GeoJSONGeometryLineString = function (coordinates, type, bbox) {
-  if (!coordinates) {
-    throw new ArgumentError(
-      Logger.logMessage(
-        Logger.LEVEL_SEVERE,
-        "GeoJSONGeometryLineString",
-        "constructor",
-        "missingCoordinates"
-      )
-    );
+class GeoJSONGeometryLineString extends GeoJSONGeometry{
+  constructor(coordinates, type, bbox) {
+    super(coordinates, type, bbox);
+    if (!coordinates) {
+      throw new ArgumentError(
+        Logger.logMessage(
+          Logger.LEVEL_SEVERE,
+          "GeoJSONGeometryLineString",
+          "constructor",
+          "missingCoordinates"
+        )
+      );
+    }
+
+    if (coordinates.length < 2 || coordinates[0].length < 2) {
+      throw new ArgumentError(
+        Logger.logMessage(
+          Logger.LEVEL_SEVERE,
+          "GeoJSONGeometryLineString",
+          "constructor",
+          "invalidNumberOfCoordinates"
+        )
+      );
+    }
+
+    if (Object.prototype.toString.call(coordinates[0]) !== "[object Array]" ||
+      Object.prototype.toString.call(coordinates[0][0]) !== "[object Number]") {
+      throw new ArgumentError(
+        Logger.logMessage(
+          Logger.LEVEL_SEVERE,
+          "GeoJSONGeometryLineString",
+          "constructor",
+          "invalidCoordinatesType"
+        )
+      );
+    }
+
+    if (!type) {
+      throw new ArgumentError(
+        Logger.logMessage(
+          Logger.LEVEL_SEVERE,
+          "GeoJSONGeometryLineString",
+          "constructor",
+          "missingType"
+        )
+      );
+    }
+
+    
   }
-
-  if (coordinates.length < 2 || coordinates[0].length < 2) {
-    throw new ArgumentError(
-      Logger.logMessage(
-        Logger.LEVEL_SEVERE,
-        "GeoJSONGeometryLineString",
-        "constructor",
-        "invalidNumberOfCoordinates"
-      )
-    );
-  }
-
-  if (
-    Object.prototype.toString.call(coordinates[0]) !== "[object Array]" ||
-    Object.prototype.toString.call(coordinates[0][0]) !== "[object Number]"
-  ) {
-    throw new ArgumentError(
-      Logger.logMessage(
-        Logger.LEVEL_SEVERE,
-        "GeoJSONGeometryLineString",
-        "constructor",
-        "invalidCoordinatesType"
-      )
-    );
-  }
-
-  if (!type) {
-    throw new ArgumentError(
-      Logger.logMessage(
-        Logger.LEVEL_SEVERE,
-        "GeoJSONGeometryLineString",
-        "constructor",
-        "missingType"
-      )
-    );
-  }
-
-  GeoJSONGeometry.call(this, coordinates, type, bbox);
-};
-
-GeoJSONGeometryLineString.prototype = Object.create(GeoJSONGeometry.prototype);
+}
 
 export default GeoJSONGeometryLineString;

@@ -42,73 +42,144 @@ import SurfaceTile from "../render/SurfaceTile";
  * dynamically created image.
  * @throws {ArgumentError} If either the specified sector or image source is null or undefined.
  */
-var SurfaceImage = function (sector, imageSource) {
-  if (!sector) {
-    throw new ArgumentError(
-      Logger.logMessage(
-        Logger.LEVEL_SEVERE,
-        "SurfaceImage",
-        "constructor",
-        "missingSector"
-      )
-    );
+class SurfaceImage extends SurfaceTile{
+  constructor(sector, imageSource) {
+    super(sector);
+    if (!sector) {
+      throw new ArgumentError(
+        Logger.logMessage(
+          Logger.LEVEL_SEVERE,
+          "SurfaceImage",
+          "constructor",
+          "missingSector"
+        )
+      );
+    }
+
+    if (!imageSource) {
+      throw new ArgumentError(
+        Logger.logMessage(
+          Logger.LEVEL_SEVERE,
+          "SurfaceImage",
+          "constructor",
+          "missingImage"
+        )
+      );
+    }
+
+    
+
+    /**
+     * Indicates whether this surface image is drawn.
+     * @type {boolean}
+     * @default true
+     */
+    this.enabled = true;
+
+    /**
+     * The path to the image.
+     * @type {String}
+     */
+    this._imageSource = imageSource;
+
+    /**
+     * This surface image's resampling mode. Indicates the sampling algorithm used to display this image when it
+     * is larger on screen than its native resolution. May be one of:
+     * <ul>
+     *  <li>WorldWindConstants.FILTER_LINEAR</li>
+     *  <li>WorldWindConstants.FILTER_NEAREST</li>
+     * </ul>
+     * @default WorldWindConstants.FILTER_LINEAR
+     */
+    this.resamplingMode = WorldWindConstants.FILTER_LINEAR;
+
+    /**
+     * This surface image's opacity. When this surface image is drawn, the actual opacity is the product of
+     * this opacity and the opacity of the layer containing this surface image.
+     * @type {number}
+     */
+    this.opacity = 1;
+
+    /**
+     * This surface image's display name;
+     * @type {string}
+     */
+    this.displayName = "Surface Image";
+
+    // Internal. Indicates whether the image needs to be updated in the GPU resource cache.
+    this.imageSourceWasUpdated = true;
   }
-
-  if (!imageSource) {
-    throw new ArgumentError(
-      Logger.logMessage(
-        Logger.LEVEL_SEVERE,
-        "SurfaceImage",
-        "constructor",
-        "missingImage"
-      )
-    );
+  bind(dc) {
+    var texture = dc.gpuResourceCache.resourceForKey(this._imageSource);
+    if (texture && !this.imageSourceWasUpdated) {
+      return this.bindTexture(dc, texture);
+    } else {
+      texture = dc.gpuResourceCache.retrieveTexture(
+        dc.currentGlContext,
+        this._imageSource
+      );
+      this.imageSourceWasUpdated = false;
+      if (texture) {
+        return this.bindTexture(dc, texture);
+      }
+    }
   }
+  bindTexture(dc, texture) {
+    var gl = dc.currentGlContext;
 
-  SurfaceTile.call(this, sector);
+    texture.setTexParameter(
+      gl.TEXTURE_MAG_FILTER,
+      this.resamplingMode === WorldWindConstants.FILTER_NEAREST
+        ? gl.NEAREST
+        : gl.LINEAR
+    );
 
+    return texture.bind(dc);
+  }
+  applyInternalTransform(dc, matrix) {
+    // No need to apply the transform.
+  }
   /**
-   * Indicates whether this surface image is drawn.
-   * @type {boolean}
-   * @default true
+   * Displays this surface image. Called by the layer containing this surface image.
+   * @param {DrawContext} dc The current draw context.
    */
-  this.enabled = true;
+  render(dc) {
+    if (!this.enabled) {
+      return;
+    }
 
-  /**
-   * The path to the image.
-   * @type {String}
-   */
-  this._imageSource = imageSource;
+    if (!dc.terrain) {
+      return;
+    }
 
-  /**
-   * This surface image's resampling mode. Indicates the sampling algorithm used to display this image when it
-   * is larger on screen than its native resolution. May be one of:
-   * <ul>
-   *  <li>WorldWindConstants.FILTER_LINEAR</li>
-   *  <li>WorldWindConstants.FILTER_NEAREST</li>
-   * </ul>
-   * @default WorldWindConstants.FILTER_LINEAR
-   */
-  this.resamplingMode = WorldWindConstants.FILTER_LINEAR;
+    if (!this.sector.overlaps(dc.terrain.sector)) {
+      return;
+    }
 
-  /**
-   * This surface image's opacity. When this surface image is drawn, the actual opacity is the product of
-   * this opacity and the opacity of the layer containing this surface image.
-   * @type {number}
-   */
-  this.opacity = 1;
+    if (dc.pickingMode) {
+      this.pickColor = dc.uniquePickColor();
+    }
 
-  /**
-   * This surface image's display name;
-   * @type {string}
-   */
-  this.displayName = "Surface Image";
+    dc.surfaceTileRenderer.renderTiles(
+      dc,
+      [this],
+      this.opacity * dc.currentLayer.opacity
+    );
 
-  // Internal. Indicates whether the image needs to be updated in the GPU resource cache.
-  this.imageSourceWasUpdated = true;
-};
+    if (dc.pickingMode) {
+      var po = new PickedObject(
+        this.pickColor.clone(),
+        this.pickDelegate ? this.pickDelegate : this,
+        null,
+        this.layer,
+        false
+      );
+      dc.resolvePick(po);
+    }
 
-SurfaceImage.prototype = Object.create(SurfaceTile.prototype);
+    dc.currentLayer.inCurrentFrame = true;
+  }
+}
 
 Object.defineProperties(SurfaceImage.prototype, {
   /**
@@ -141,78 +212,8 @@ Object.defineProperties(SurfaceImage.prototype, {
   },
 });
 
-SurfaceImage.prototype.bind = function (dc) {
-  var texture = dc.gpuResourceCache.resourceForKey(this._imageSource);
-  if (texture && !this.imageSourceWasUpdated) {
-    return this.bindTexture(dc, texture);
-  } else {
-    texture = dc.gpuResourceCache.retrieveTexture(
-      dc.currentGlContext,
-      this._imageSource
-    );
-    this.imageSourceWasUpdated = false;
-    if (texture) {
-      return this.bindTexture(dc, texture);
-    }
-  }
-};
 
-SurfaceImage.prototype.bindTexture = function (dc, texture) {
-  var gl = dc.currentGlContext;
 
-  texture.setTexParameter(
-    gl.TEXTURE_MAG_FILTER,
-    this.resamplingMode === WorldWindConstants.FILTER_NEAREST
-      ? gl.NEAREST
-      : gl.LINEAR
-  );
 
-  return texture.bind(dc);
-};
-
-SurfaceImage.prototype.applyInternalTransform = function (dc, matrix) {
-  // No need to apply the transform.
-};
-
-/**
- * Displays this surface image. Called by the layer containing this surface image.
- * @param {DrawContext} dc The current draw context.
- */
-SurfaceImage.prototype.render = function (dc) {
-  if (!this.enabled) {
-    return;
-  }
-
-  if (!dc.terrain) {
-    return;
-  }
-
-  if (!this.sector.overlaps(dc.terrain.sector)) {
-    return;
-  }
-
-  if (dc.pickingMode) {
-    this.pickColor = dc.uniquePickColor();
-  }
-
-  dc.surfaceTileRenderer.renderTiles(
-    dc,
-    [this],
-    this.opacity * dc.currentLayer.opacity
-  );
-
-  if (dc.pickingMode) {
-    var po = new PickedObject(
-      this.pickColor.clone(),
-      this.pickDelegate ? this.pickDelegate : this,
-      null,
-      this.layer,
-      false
-    );
-    dc.resolvePick(po);
-  }
-
-  dc.currentLayer.inCurrentFrame = true;
-};
 
 export default SurfaceImage;

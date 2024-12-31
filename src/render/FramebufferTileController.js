@@ -266,13 +266,4 @@ class FramebufferTileController {
 FramebufferTileController.keyPool = 0; // source of unique ids
 
 
-
-
-
-
-
-
-
-
-
 export default FramebufferTileController;

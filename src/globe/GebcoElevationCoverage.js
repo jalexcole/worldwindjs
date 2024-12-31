@@ -38,26 +38,24 @@ import WmsUrlBuilder from "../util/WmsUrlBuilder";
  * @augments TiledElevationCoverage
  * @classdesc Provides elevations for Earth. Elevations are drawn from the NASA WorldWind elevation service.
  */
-var GebcoElevationCoverage = function () {
-  TiledElevationCoverage.call(this, {
-    coverageSector: Sector.FULL_SPHERE,
-    resolution: 0.008333333333333,
-    retrievalImageFormat: "application/bil16",
-    minElevation: -11000,
-    maxElevation: 8850,
-    urlBuilder: new WmsUrlBuilder(
-      "https://worldwind26.arc.nasa.gov/elev",
-      "GEBCO",
-      "",
-      "1.3.0"
-    ),
-  });
+class GebcoElevationCoverage extends TiledElevationCoverage{
+  constructor() {
+    super({
+      coverageSector: Sector.FULL_SPHERE,
+      resolution: 0.008333333333333,
+      retrievalImageFormat: "application/bil16",
+      minElevation: -11000,
+      maxElevation: 8850,
+      urlBuilder: new WmsUrlBuilder(
+        "https://worldwind26.arc.nasa.gov/elev",
+        "GEBCO",
+        "",
+        "1.3.0"
+      ),
+    });
 
-  this.displayName = "GEBCO Earth Elevation Coverage";
-};
-
-GebcoElevationCoverage.prototype = Object.create(
-  TiledElevationCoverage.prototype
-);
+    this.displayName = "GEBCO Earth Elevation Coverage";
+  }
+}
 
 export default GebcoElevationCoverage;

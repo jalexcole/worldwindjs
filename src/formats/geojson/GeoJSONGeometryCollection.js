@@ -44,35 +44,37 @@ import Logger from "../../util/Logger";
  * @throws {ArgumentError} If the specified mandatory geometries is null or undefined or if the geometries
  * parameter is not an array of GeoJSONGeometry.
  */
-var GeoJSONGeometryCollection = function (geometries, bbox) {
-  if (!geometries) {
-    throw new ArgumentError(
-      Logger.logMessage(
-        Logger.LEVEL_SEVERE,
-        "GeoJSONGeometryCollection",
-        "constructor",
-        "missingGeometries"
-      )
-    );
+class GeoJSONGeometryCollection {
+  constructor(geometries, bbox) {
+    if (!geometries) {
+      throw new ArgumentError(
+        Logger.logMessage(
+          Logger.LEVEL_SEVERE,
+          "GeoJSONGeometryCollection",
+          "constructor",
+          "missingGeometries"
+        )
+      );
+    }
+
+    if (Object.prototype.toString.call(geometries) !== "[object Array]") {
+      throw new ArgumentError(
+        Logger.logMessage(
+          Logger.LEVEL_SEVERE,
+          "GeoJSONGeometryCollection",
+          "constructor",
+          "invalidGeometries"
+        )
+      );
+    }
+
+    // Documented in defineProperties below.
+    this._geometries = geometries;
+
+    // Documented in defineProperties below.
+    this._bbox = bbox;
   }
-
-  if (Object.prototype.toString.call(geometries) !== "[object Array]") {
-    throw new ArgumentError(
-      Logger.logMessage(
-        Logger.LEVEL_SEVERE,
-        "GeoJSONGeometryCollection",
-        "constructor",
-        "invalidGeometries"
-      )
-    );
-  }
-
-  // Documented in defineProperties below.
-  this._geometries = geometries;
-
-  // Documented in defineProperties below.
-  this._bbox = bbox;
-};
+}
 
 Object.defineProperties(GeoJSONGeometryCollection.prototype, {
   /**

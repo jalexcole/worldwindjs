@@ -27,7 +27,6 @@
  */
 import ArgumentError from "../error/ArgumentError";
 import Logger from "../util/Logger";
-import Sector from "./Sector";
 import TileMatrix from "./TileMatrix";
 
 /**

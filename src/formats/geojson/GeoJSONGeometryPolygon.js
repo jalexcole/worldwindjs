@@ -42,74 +42,73 @@ import Logger from "../../util/Logger";
  * @throws {ArgumentError} If the specified coordinates or type are null or undefined or if the
  * coordinates parameter is not an array of LinearRing coordinate arrays.
  */
-var GeoJSONGeometryPolygon = function (coordinates, type, bbox) {
-  if (!coordinates) {
-    throw new ArgumentError(
-      Logger.logMessage(
-        Logger.LEVEL_SEVERE,
-        "GeoJSONGeometryPolygon",
-        "constructor",
-        "missingCoordinates"
-      )
-    );
-  }
-
-  if (coordinates[0].length < 2 || coordinates[0][0].length < 2) {
-    throw new ArgumentError(
-      Logger.logMessage(
-        Logger.LEVEL_SEVERE,
-        "GeoJSONGeometryPolygon",
-        "constructor",
-        "invalidNumberOfCoordinates"
-      )
-    );
-  }
-
-  if (
-    Object.prototype.toString.call(coordinates[0]) !== "[object Array]" ||
-    Object.prototype.toString.call(coordinates[0][0]) !== "[object Array]" ||
-    Object.prototype.toString.call(coordinates[0][0][0]) !== "[object Number]"
-  ) {
-    throw new ArgumentError(
-      Logger.logMessage(
-        Logger.LEVEL_SEVERE,
-        "GeoJSONGeometryPolygon",
-        "constructor",
-        "invalidCoordinatesType"
-      )
-    );
-  }
-
-  for (var i = 0; i < coordinates.length; i++) {
-    if (
-      coordinates[i][0][0] !== coordinates[i][coordinates[i].length - 1][0] ||
-      coordinates[i][0][1] !== coordinates[i][coordinates[i].length - 1][1]
-    ) {
+class GeoJSONGeometryPolygon extends GeoJSONGeometry {
+  constructor(coordinates, type, bbox) {
+    super(coordinates, type, bbox);
+    if (!coordinates) {
       throw new ArgumentError(
         Logger.logMessage(
           Logger.LEVEL_SEVERE,
           "GeoJSONGeometryPolygon",
           "constructor",
-          "invalidLinearRing"
+          "missingCoordinates"
         )
       );
     }
+
+    if (coordinates[0].length < 2 || coordinates[0][0].length < 2) {
+      throw new ArgumentError(
+        Logger.logMessage(
+          Logger.LEVEL_SEVERE,
+          "GeoJSONGeometryPolygon",
+          "constructor",
+          "invalidNumberOfCoordinates"
+        )
+      );
+    }
+
+    if (Object.prototype.toString.call(coordinates[0]) !== "[object Array]" ||
+      Object.prototype.toString.call(coordinates[0][0]) !== "[object Array]" ||
+      Object.prototype.toString.call(coordinates[0][0][0]) !== "[object Number]") {
+      throw new ArgumentError(
+        Logger.logMessage(
+          Logger.LEVEL_SEVERE,
+          "GeoJSONGeometryPolygon",
+          "constructor",
+          "invalidCoordinatesType"
+        )
+      );
+    }
+
+    for (var i = 0; i < coordinates.length; i++) {
+      if (coordinates[i][0][0] !== coordinates[i][coordinates[i].length - 1][0] ||
+        coordinates[i][0][1] !== coordinates[i][coordinates[i].length - 1][1]) {
+        throw new ArgumentError(
+          Logger.logMessage(
+            Logger.LEVEL_SEVERE,
+            "GeoJSONGeometryPolygon",
+            "constructor",
+            "invalidLinearRing"
+          )
+        );
+      }
+    }
+
+    if (!type) {
+      throw new ArgumentError(
+        Logger.logMessage(
+          Logger.LEVEL_SEVERE,
+          "GeoJSONGeometryPolygon",
+          "constructor",
+          "missingType"
+        )
+      );
+    }
+
+    
   }
+}
 
-  if (!type) {
-    throw new ArgumentError(
-      Logger.logMessage(
-        Logger.LEVEL_SEVERE,
-        "GeoJSONGeometryPolygon",
-        "constructor",
-        "missingType"
-      )
-    );
-  }
 
-  GeoJSONGeometry.call(this, coordinates, type, bbox);
-};
-
-GeoJSONGeometryPolygon.prototype = Object.create(GeoJSONGeometry.prototype);
 
 export default GeoJSONGeometryPolygon;

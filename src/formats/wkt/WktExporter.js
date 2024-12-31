@@ -45,14 +45,14 @@ import WktType from "./WktType";
  * </ul>
  * @exports WktExporter
  */
-var WktExporter = {
+class WktExporter {
   /**
    * Exports a [Renderable]{@link Renderable} in WKT format.
    * @param {Renderable} renderable The renderable to export.
    * @throws {ArgumentError} If the specified renderable is null or undefined.
    * @returns {String} WKT format.
    */
-  exportRenderable: function (renderable) {
+  static exportRenderable(renderable) {
     if (!renderable) {
       throw new ArgumentError(
         Logger.logMessage(
@@ -89,7 +89,7 @@ var WktExporter = {
       );
       return null;
     }
-  },
+  }
 
   /**
    * Exports a list of [Renderable]{@link Renderable} in WKT format of type GeometryCollection.
@@ -97,7 +97,7 @@ var WktExporter = {
    * @throws {ArgumentError} If the specified renderable is null or undefined.
    * @returns {String} WKT format.
    */
-  exportRenderables: function (renderables) {
+  static exportRenderables(renderables) {
     if (!renderables) {
       throw new ArgumentError(
         Logger.logMessage(
@@ -131,7 +131,7 @@ var WktExporter = {
     } else {
       return this.exportRenderable(renderables[0]);
     }
-  },
+  }
 
   /**
    * Exports a [Layer]{@link Layer} in WKT format of type GeometryCollection.
@@ -139,7 +139,7 @@ var WktExporter = {
    * @throws {ArgumentError} If the specified argument is null or undefined.
    * @returns {String} WKT format.
    */
-  exportLayer: function (layer) {
+  static exportLayer(layer) {
     if (!layer) {
       throw new ArgumentError(
         Logger.logMessage(
@@ -152,7 +152,7 @@ var WktExporter = {
     }
 
     return this.exportRenderables(layer.renderables);
-  },
+  }
 
   /**
    * Exports a [Placemark]{@link Placemark} in WKT format of type Point.
@@ -160,7 +160,7 @@ var WktExporter = {
    * @throws {ArgumentError} If the specified argument is null or undefined.
    * @returns {String} WKT format.
    */
-  exportPlacemark: function (renderable) {
+  static exportPlacemark(renderable) {
     if (!(renderable instanceof WorldWind.Placemark)) {
       throw new ArgumentError(
         Logger.logMessage(
@@ -177,7 +177,7 @@ var WktExporter = {
       sb + renderable.position.longitude + " " + renderable.position.latitude;
     sb = sb + ")";
     return sb;
-  },
+  }
 
   /**
    * Exports a [Path]{@link Path} in WKT format of type LineString.
@@ -185,7 +185,7 @@ var WktExporter = {
    * @throws {ArgumentError} If the specified argument is null or undefined.
    * @returns {String} WKT format.
    */
-  exportPath: function (renderable) {
+  static exportPath(renderable) {
     if (!(renderable instanceof WorldWind.Path)) {
       throw new ArgumentError(
         Logger.logMessage(
@@ -208,7 +208,7 @@ var WktExporter = {
     sb = sb.substring(0, sb.length - 2);
     sb = sb + ")";
     return sb;
-  },
+  }
 
   /**
    * Exports a [Polygon]{@link Polygon} in WKT format of type Polygon.
@@ -216,7 +216,7 @@ var WktExporter = {
    * @throws {ArgumentError} If the specified argument is null or undefined.
    * @returns {String} WKT format.
    */
-  exportPolygon: function (renderable) {
+  static exportPolygon(renderable) {
     if (!(renderable instanceof WorldWind.Polygon)) {
       throw new ArgumentError(
         Logger.logMessage(
@@ -266,7 +266,7 @@ var WktExporter = {
     }
     sb = sb + ")";
     return sb;
-  },
+  }
 
   /**
    * Exports a [SurfacePolyline]{@link SurfacePolyline} in WKT format of type LineString.
@@ -274,7 +274,7 @@ var WktExporter = {
    * @throws {ArgumentError} If the specified argument is null or undefined.
    * @returns {String} WKT format.
    */
-  exportSurfacePolyline: function (renderable) {
+  static exportSurfacePolyline(renderable) {
     if (!(renderable instanceof WorldWind.SurfacePolyline)) {
       throw new ArgumentError(
         Logger.logMessage(
@@ -298,7 +298,7 @@ var WktExporter = {
     sb = sb.substring(0, sb.length - 2);
     sb = sb + ")";
     return sb;
-  },
+  }
 
   /**
    * Exports a [SurfacePolygon]{@link SurfacePolygon} in WKT format of type Polygon.
@@ -306,7 +306,7 @@ var WktExporter = {
    * @throws {ArgumentError} If the specified argument is null or undefined.
    * @returns {String} WKT format.
    */
-  exportSurfacePolygon: function (renderable) {
+  static exportSurfacePolygon (renderable) {
     if (!(renderable instanceof WorldWind.SurfacePolygon)) {
       throw new ArgumentError(
         Logger.logMessage(
@@ -355,7 +355,7 @@ var WktExporter = {
     }
     sb = sb + ")";
     return sb;
-  },
+  }
 
   /**
    * Exports a [SurfaceEllipse]{@link SurfaceEllipse} in WKT format of type Polygon.
@@ -363,7 +363,7 @@ var WktExporter = {
    * @throws {ArgumentError} If the specified argument is null or undefined.
    * @returns {String} WKT format.
    */
-  exportSurfaceEllipse: function (renderable) {
+  static exportSurfaceEllipse (renderable) {
     if (!(renderable instanceof WorldWind.SurfaceEllipse)) {
       throw new ArgumentError(
         Logger.logMessage(
@@ -391,7 +391,7 @@ var WktExporter = {
     sb = sb + ")";
     sb = sb + ")";
     return sb;
-  },
+  }
 
   /**
    * Exports a [SurfaceCircle]{@link SurfaceCircle} in WKT format of type Polygon.
@@ -399,7 +399,7 @@ var WktExporter = {
    * @throws {ArgumentError} If the specified argument is null or undefined.
    * @returns {String} WKT format.
    */
-  exportSurfaceCircle: function (renderable) {
+  static exportSurfaceCircle(renderable) {
     if (!(renderable instanceof WorldWind.SurfaceCircle)) {
       throw new ArgumentError(
         Logger.logMessage(
@@ -427,7 +427,7 @@ var WktExporter = {
     sb = sb + ")";
     sb = sb + ")";
     return sb;
-  },
+  }
 
   /**
    * Exports a [SurfaceRectangle]{@link SurfaceRectangle} in WKT format of type Polygon.
@@ -435,7 +435,7 @@ var WktExporter = {
    * @throws {ArgumentError} If the specified argument is null or undefined.
    * @returns {String} WKT format.
    */
-  exportSurfaceRectangle: function (renderable) {
+  static exportSurfaceRectangle(renderable) {
     if (!(renderable instanceof WorldWind.SurfaceRectangle)) {
       throw new ArgumentError(
         Logger.logMessage(
@@ -463,7 +463,7 @@ var WktExporter = {
     sb = sb + ")";
     sb = sb + ")";
     return sb;
-  },
+  }
 
   /**
    * Exports a [SurfaceSector]{@link SurfaceSector} in WKT format of type Polygon.
@@ -471,7 +471,7 @@ var WktExporter = {
    * @throws {ArgumentError} If the specified argument is null or undefined.
    * @returns {String} WKT format.
    */
-  exportSurfaceSector: function (renderable) {
+  static exportSurfaceSector(renderable) {
     if (!(renderable instanceof WorldWind.SurfaceSector)) {
       throw new ArgumentError(
         Logger.logMessage(
@@ -499,7 +499,7 @@ var WktExporter = {
     sb = sb + ")";
     sb = sb + ")";
     return sb;
-  },
-};
+  }
+}
 
 export default WktExporter;

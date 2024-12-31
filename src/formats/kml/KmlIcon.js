@@ -41,11 +41,17 @@ import KmlNodeTransformers from "./util/KmlNodeTransformers";
  * @see https://developers.google.com/kml/documentation/kmlreference#icon
  * @augments KmlLink
  */
-var KmlIcon = function (options) {
-  KmlLink.call(this, options);
-};
-
-KmlIcon.prototype = Object.create(KmlLink.prototype);
+class KmlIcon extends KmlLink{
+  constructor(options) {
+    super(options);
+  }
+  /**
+   * @inheritDoc
+   */
+  getTagNames() {
+    return ["Icon"];
+  }
+}
 
 Object.defineProperties(KmlIcon.prototype, {
   /**
@@ -109,12 +115,6 @@ Object.defineProperties(KmlIcon.prototype, {
   },
 });
 
-/**
- * @inheritDoc
- */
-KmlIcon.prototype.getTagNames = function () {
-  return ["Icon"];
-};
 
 KmlElements.addKey(KmlIcon.prototype.getTagNames()[0], KmlIcon);
 

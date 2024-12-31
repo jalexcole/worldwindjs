@@ -39,78 +39,80 @@ import ImageSource from "../util/ImageSource";
  * the constructed attributes bundle. May be null, in which case the constructed attributes bundle is populated
  * with default attributes.
  */
-var ShapeAttributes = function (attributes) {
-  // All these are documented with their property accessors below.
-  this._drawInterior = attributes ? attributes._drawInterior : true;
-  this._drawOutline = attributes ? attributes._drawOutline : true;
-  this._enableLighting = attributes ? attributes._enableLighting : false;
-  this._interiorColor = attributes
-    ? attributes._interiorColor.clone()
-    : Color.WHITE.clone();
-  this._outlineColor = attributes
-    ? attributes._outlineColor.clone()
-    : Color.RED.clone();
-  this._outlineWidth = attributes ? attributes._outlineWidth : 1.0;
-  this._outlineStippleFactor = attributes
-    ? attributes._outlineStippleFactor
-    : 0;
-  this._outlineStipplePattern = attributes
-    ? attributes._outlineStipplePattern
-    : 0xf0f0;
-  this._imageSource = attributes ? attributes._imageSource : null;
-  this._depthTest = attributes ? attributes._depthTest : true;
-  this._drawVerticals = attributes ? attributes._drawVerticals : false;
-  this._applyLighting = attributes ? attributes._applyLighting : false;
+class ShapeAttributes {
+  constructor(attributes) {
+    // All these are documented with their property accessors below.
+    this._drawInterior = attributes ? attributes._drawInterior : true;
+    this._drawOutline = attributes ? attributes._drawOutline : true;
+    this._enableLighting = attributes ? attributes._enableLighting : false;
+    this._interiorColor = attributes
+      ? attributes._interiorColor.clone()
+      : Color.WHITE.clone();
+    this._outlineColor = attributes
+      ? attributes._outlineColor.clone()
+      : Color.RED.clone();
+    this._outlineWidth = attributes ? attributes._outlineWidth : 1.0;
+    this._outlineStippleFactor = attributes
+      ? attributes._outlineStippleFactor
+      : 0;
+    this._outlineStipplePattern = attributes
+      ? attributes._outlineStipplePattern
+      : 0xf0f0;
+    this._imageSource = attributes ? attributes._imageSource : null;
+    this._depthTest = attributes ? attributes._depthTest : true;
+    this._drawVerticals = attributes ? attributes._drawVerticals : false;
+    this._applyLighting = attributes ? attributes._applyLighting : false;
 
+    /**
+     * Indicates whether this object's state key is invalid. Subclasses must set this value to true when their
+     * attributes change. The state key will be automatically computed the next time it's requested. This flag
+     * will be set to false when that occurs.
+     * @type {Boolean}
+     * @protected
+     */
+    this.stateKeyInvalid = true;
+  }
   /**
-   * Indicates whether this object's state key is invalid. Subclasses must set this value to true when their
-   * attributes change. The state key will be automatically computed the next time it's requested. This flag
-   * will be set to false when that occurs.
-   * @type {Boolean}
+   * Computes the state key for this attributes object. Subclasses that define additional attributes must
+   * override this method, call it from that method, and append the state of their attributes to its
+   * return value.
+   * @returns {String} The state key for this object.
    * @protected
    */
-  this.stateKeyInvalid = true;
-};
+  computeStateKey() {
+    return (
+      "di " +
+      this._drawInterior +
+      " do " +
+      this._drawOutline +
+      " el " +
+      this._enableLighting +
+      " ic " +
+      this._interiorColor.toHexString(true) +
+      " oc " +
+      this._outlineColor.toHexString(true) +
+      " ow " +
+      this._outlineWidth +
+      " osf " +
+      this._outlineStippleFactor +
+      " osp " +
+      this._outlineStipplePattern +
+      " is " +
+      (this._imageSource
+        ? this.imageSource instanceof ImageSource
+          ? this.imageSource.key
+          : this.imageSource
+        : "null") +
+      " dt " +
+      this._depthTest +
+      " dv " +
+      this._drawVerticals +
+      " li " +
+      this._applyLighting
+    );
+  }
+}
 
-/**
- * Computes the state key for this attributes object. Subclasses that define additional attributes must
- * override this method, call it from that method, and append the state of their attributes to its
- * return value.
- * @returns {String} The state key for this object.
- * @protected
- */
-ShapeAttributes.prototype.computeStateKey = function () {
-  return (
-    "di " +
-    this._drawInterior +
-    " do " +
-    this._drawOutline +
-    " el " +
-    this._enableLighting +
-    " ic " +
-    this._interiorColor.toHexString(true) +
-    " oc " +
-    this._outlineColor.toHexString(true) +
-    " ow " +
-    this._outlineWidth +
-    " osf " +
-    this._outlineStippleFactor +
-    " osp " +
-    this._outlineStipplePattern +
-    " is " +
-    (this._imageSource
-      ? this.imageSource instanceof ImageSource
-        ? this.imageSource.key
-        : this.imageSource
-      : "null") +
-    " dt " +
-    this._depthTest +
-    " dv " +
-    this._drawVerticals +
-    " li " +
-    this._applyLighting
-  );
-};
 
 Object.defineProperties(ShapeAttributes.prototype, {
   /**

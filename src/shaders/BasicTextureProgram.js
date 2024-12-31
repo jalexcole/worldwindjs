@@ -48,19 +48,28 @@ import Logger from "../util/Logger";
  */
 class BasicTextureProgram extends GpuProgram{
   constructor(gl) {
-    var vertexShaderSource = "attribute vec4 vertexPoint;\n" +
-      "attribute vec4 vertexTexCoord;\n" +
-      "attribute vec4 normalVector;\n" +
-      "uniform mat4 mvpMatrix;\n" +
-      "uniform mat4 mvInverseMatrix;\n" +
-      "uniform mat4 texCoordMatrix;\n" +
-      "uniform bool applyLighting;\n" +
-      "varying vec2 texCoord;\n" +
-      "varying vec4 normal;\n" +
-      "void main() {gl_Position = mvpMatrix * vertexPoint;\n" +
-      "texCoord = (texCoordMatrix * vertexTexCoord).st;\n" +
-      "if (applyLighting) {normal = mvInverseMatrix * normalVector;}\n" +
-      "}", fragmentShaderSource = "precision mediump float;\n" +
+    // Call to the superclass, which performs shader program compiling and linking.
+    super(gl,
+      vertexShaderSource,
+      fragmentShaderSource,
+      bindings
+    );
+    var vertexShaderSource =
+        "attribute vec4 vertexPoint;\n" +
+        "attribute vec4 vertexTexCoord;\n" +
+        "attribute vec4 normalVector;\n" +
+        "uniform mat4 mvpMatrix;\n" +
+        "uniform mat4 mvInverseMatrix;\n" +
+        "uniform mat4 texCoordMatrix;\n" +
+        "uniform bool applyLighting;\n" +
+        "varying vec2 texCoord;\n" +
+        "varying vec4 normal;\n" +
+        "void main() {gl_Position = mvpMatrix * vertexPoint;\n" +
+        "texCoord = (texCoordMatrix * vertexTexCoord).st;\n" +
+        "if (applyLighting) {normal = mvInverseMatrix * normalVector;}\n" +
+        "}",
+      fragmentShaderSource =
+        "precision mediump float;\n" +
         "uniform float opacity;\n" +
         "uniform vec4 color;\n" +
         "uniform bool enableTexture;\n" +
@@ -88,9 +97,6 @@ class BasicTextureProgram extends GpuProgram{
     // Specify bindings to avoid the WebGL performance warning that's generated when normalVector gets
     // bound to location 0.
     var bindings = ["vertexPoint", "normalVector", "vertexTexCoord"];
-
-    // Call to the superclass, which performs shader program compiling and linking.
-    GpuProgram.call(this, gl, vertexShaderSource, fragmentShaderSource, bindings);
 
     /**
      * The WebGL location for this program's 'vertexPoint' attribute.

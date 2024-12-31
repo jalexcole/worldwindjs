@@ -59,39 +59,105 @@ import WWMath from "../util/WWMath";
  * @throws {ArgumentError} If the specified center location is null or undefined or if either specified width
  * or height is negative.
  */
-var SurfaceRectangle = function (center, width, height, heading, attributes) {
-  if (!center) {
-    throw new ArgumentError(
-      Logger.logMessage(
-        Logger.LEVEL_SEVERE,
-        "SurfaceRectangle",
-        "constructor",
-        "missingLocation"
-      )
+class SurfaceRectangle extends SurfaceShape {
+  constructor(center, width, height, heading, attributes) {
+    super(attributes);
+    if (!center) {
+      throw new ArgumentError(
+        Logger.logMessage(
+          Logger.LEVEL_SEVERE,
+          "SurfaceRectangle",
+          "constructor",
+          "missingLocation"
+        )
+      );
+    }
+
+    if (width < 0 || height < 0) {
+      throw new ArgumentError(
+        Logger.logMessage(
+          Logger.LEVEL_SEVERE,
+          "SurfaceRectangle",
+          "constructor",
+          "Size is negative."
+        )
+      );
+    }
+
+    
+
+    // All these are documented with their property accessors below.
+    this._center = center;
+    this._width = width;
+    this._height = height;
+    this._heading = heading;
+  }
+  // Internal use only. Intentionally not documented.
+  static staticStateKey(shape) {
+    var shapeStateKey = SurfaceShape.staticStateKey(shape);
+
+    return (
+      shapeStateKey +
+      " ce " +
+      shape.center.toString() +
+      " wi " +
+      shape.width.toString() +
+      " he " +
+      shape.height.toString() +
+      " hd " +
+      shape.heading.toString()
     );
   }
+  // Internal use only. Intentionally not documented.
+  computeStateKey() {
+    return SurfaceRectangle.staticStateKey(this);
+  }
+  // Internal. Intentionally not documented.
+  computeBoundaries(dc) {
+    var halfWidth = 0.5 * this.width, halfHeight = 0.5 * this.height, globeRadius = dc.globe.radiusAt(
+      this.center.latitude,
+      this.center.longitude
+    );
 
-  if (width < 0 || height < 0) {
-    throw new ArgumentError(
-      Logger.logMessage(
-        Logger.LEVEL_SEVERE,
-        "SurfaceRectangle",
-        "constructor",
-        "Size is negative."
-      )
+    this._boundaries = new Array(4);
+
+    this.addLocation(0, -halfWidth, -halfHeight, globeRadius);
+    this.addLocation(1, halfWidth, -halfHeight, globeRadius);
+    this.addLocation(2, halfWidth, halfHeight, globeRadius);
+    this.addLocation(3, -halfWidth, halfHeight, globeRadius);
+  }
+  addLocation(idx,
+    xLength,
+    yLength,
+    globeRadius) {
+    var distance = Math.sqrt(xLength * xLength + yLength * yLength);
+
+    // azimuth runs positive clockwise from north and through 360 degrees.
+    var azimuth = Math.PI / 2.0 -
+      (Math.acos(xLength / distance) * WWMath.signum(yLength) -
+        this.heading * Angle.DEGREES_TO_RADIANS);
+
+    this._boundaries[idx] = Location.greatCircleLocation(
+      this.center,
+      azimuth * Angle.RADIANS_TO_DEGREES,
+      distance / globeRadius,
+      new Location(0, 0)
     );
   }
-
-  SurfaceShape.call(this, attributes);
-
-  // All these are documented with their property accessors below.
-  this._center = center;
-  this._width = width;
-  this._height = height;
-  this._heading = heading;
-};
-
-SurfaceRectangle.prototype = Object.create(SurfaceShape.prototype);
+  // Internal use only. Intentionally not documented.
+  getReferencePosition() {
+    return this.center;
+  }
+  // Internal use only. Intentionally not documented.
+  moveTo(globe, position) {
+    this.center = this.computeShiftedLocations(
+      globe,
+      this.getReferencePosition(),
+      position,
+      [this.center]
+    )[0];
+  }
+}
 
 Object.defineProperties(SurfaceRectangle.prototype, {
   /**
@@ -161,80 +227,10 @@ Object.defineProperties(SurfaceRectangle.prototype, {
   },
 });
 
-// Internal use only. Intentionally not documented.
-SurfaceRectangle.staticStateKey = function (shape) {
-  var shapeStateKey = SurfaceShape.staticStateKey(shape);
 
-  return (
-    shapeStateKey +
-    " ce " +
-    shape.center.toString() +
-    " wi " +
-    shape.width.toString() +
-    " he " +
-    shape.height.toString() +
-    " hd " +
-    shape.heading.toString()
-  );
-};
 
-// Internal use only. Intentionally not documented.
-SurfaceRectangle.prototype.computeStateKey = function () {
-  return SurfaceRectangle.staticStateKey(this);
-};
 
-// Internal. Intentionally not documented.
-SurfaceRectangle.prototype.computeBoundaries = function (dc) {
-  var halfWidth = 0.5 * this.width,
-    halfHeight = 0.5 * this.height,
-    globeRadius = dc.globe.radiusAt(
-      this.center.latitude,
-      this.center.longitude
-    );
 
-  this._boundaries = new Array(4);
 
-  this.addLocation(0, -halfWidth, -halfHeight, globeRadius);
-  this.addLocation(1, halfWidth, -halfHeight, globeRadius);
-  this.addLocation(2, halfWidth, halfHeight, globeRadius);
-  this.addLocation(3, -halfWidth, halfHeight, globeRadius);
-};
-
-SurfaceRectangle.prototype.addLocation = function (
-  idx,
-  xLength,
-  yLength,
-  globeRadius
-) {
-  var distance = Math.sqrt(xLength * xLength + yLength * yLength);
-
-  // azimuth runs positive clockwise from north and through 360 degrees.
-  var azimuth =
-    Math.PI / 2.0 -
-    (Math.acos(xLength / distance) * WWMath.signum(yLength) -
-      this.heading * Angle.DEGREES_TO_RADIANS);
-
-  this._boundaries[idx] = Location.greatCircleLocation(
-    this.center,
-    azimuth * Angle.RADIANS_TO_DEGREES,
-    distance / globeRadius,
-    new Location(0, 0)
-  );
-};
-
-// Internal use only. Intentionally not documented.
-SurfaceRectangle.prototype.getReferencePosition = function () {
-  return this.center;
-};
-
-// Internal use only. Intentionally not documented.
-SurfaceRectangle.prototype.moveTo = function (globe, position) {
-  this.center = this.computeShiftedLocations(
-    globe,
-    this.getReferencePosition(),
-    position,
-    [this.center]
-  )[0];
-};
 
 export default SurfaceRectangle;

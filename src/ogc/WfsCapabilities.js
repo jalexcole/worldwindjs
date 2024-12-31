@@ -93,14 +93,16 @@ class WfsCapabilities {
         featureType.otherSRS = featureType.otherSRS || [];
         featureType.otherSRS.push(child.textContent);
       } else if (child.localName == "WGS84BoundingBox") {
-        featureType.wgs84BoundingBox = WfsCapabilities.assembleBoundingBox(child);
+        featureType.wgs84BoundingBox =
+          WfsCapabilities.assembleBoundingBox(child);
       } else if (child.localName == "DefaultCRS") {
         featureType.defaultCRS = child.textContent;
       } else if (child.localName == "OtherCRS") {
         featureType.otherCRS = featureType.otherCRS || [];
         featureType.otherCRS.push(child.textContent);
       } else if (child.localName == "OutputFormats") {
-        featureType.outputFormats = WfsCapabilities.assembleOutputFormats(child);
+        featureType.outputFormats =
+          WfsCapabilities.assembleOutputFormats(child);
       } else if (child.localName == "MetadataURL") {
         featureType.metadataUrl = WfsCapabilities.assembleMetadataUrl(child);
       }
@@ -440,7 +442,8 @@ class WfsCapabilities {
       if (child.localName == "Operations") {
         featureTypeList.operations = featureTypeList.operations || [];
         try {
-          featureTypeList.operations = WfsCapabilities.assembleOperations(child);
+          featureTypeList.operations =
+            WfsCapabilities.assembleOperations(child);
         } catch (e) {
           Logger.logMessage(
             Logger.LEVEL_SEVERE,
@@ -495,29 +498,5 @@ class WfsCapabilities {
     return filterCapabilities;
   }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 export default WfsCapabilities;

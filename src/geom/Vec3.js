@@ -187,7 +187,7 @@ class Vec3 extends Float64Array {
       );
     }
 
-    var x = (b[1] - a[1]) * (c[2] - a[2]) - (b[2] - a[2]) * (c[1] - a[1]),
+    let x = (b[1] - a[1]) * (c[2] - a[2]) - (b[2] - a[2]) * (c[1] - a[1]),
       y = (b[2] - a[2]) * (c[0] - a[0]) - (b[0] - a[0]) * (c[2] - a[2]),
       z = (b[0] - a[0]) * (c[1] - a[1]) - (b[1] - a[1]) * (c[0] - a[0]),
       length = x * x + y * y + z * z;
@@ -212,7 +212,7 @@ class Vec3 extends Float64Array {
    * contains fewer than three points.
    */
   static findThreeIndependentVertices(coords, stride) {
-    const xstride = stride && stride > 0 ? stride : 3;
+    let xstride = stride && stride > 0 ? stride : 3;
 
     if (!coords || coords.length < 3 * xstride) {
       return null;

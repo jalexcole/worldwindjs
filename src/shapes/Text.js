@@ -54,6 +54,7 @@ import WWMath from "../util/WWMath";
  */
 class Text extends Renderable {
   constructor(text) {
+    super()
     if (!text) {
       throw new ArgumentError(
         Logger.logMessage(
@@ -64,8 +65,6 @@ class Text extends Renderable {
         )
       );
     }
-
-    Renderable.call(this);
 
     /**
      * The text's attributes. If null and this text is not highlighted, this text is not drawn.

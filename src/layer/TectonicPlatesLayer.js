@@ -45,22 +45,80 @@ import SurfacePolygon from "../shapes/SurfacePolygon";
  * The default attributes draw only the outlines of the plates, in a solid color.
  * @augments RenderableLayer
  */
-var TectonicPlatesLayer = function (shapeAttributes) {
-  RenderableLayer.call(this, "Tectonic Plates");
+class TectonicPlatesLayer extends RenderableLayer {
+  constructor(shapeAttributes) {
+    super("Tectonic Plates");
 
-  if (shapeAttributes) {
-    this._attributes = shapeAttributes;
-  } else {
-    this._attributes = new ShapeAttributes(null);
-    this._attributes.drawInterior = false;
-    this._attributes.drawOutline = true;
-    this._attributes.outlineColor = Color.RED;
+    if (shapeAttributes) {
+      this._attributes = shapeAttributes;
+    } else {
+      this._attributes = new ShapeAttributes(null);
+      this._attributes.drawInterior = false;
+      this._attributes.drawOutline = true;
+      this._attributes.outlineColor = Color.RED;
+    }
+
+    this.loadPlateData();
   }
+  loadPlateData() {
+    var url = WorldWind.configuration.baseUrl + "images/TectonicPlates.json";
 
-  this.loadPlateData();
-};
+    var xhr = new XMLHttpRequest();
 
-TectonicPlatesLayer.prototype = Object.create(RenderableLayer.prototype);
+    xhr.open("GET", url, true);
+    xhr.onreadystatechange = function () {
+      if (xhr.readyState === 4) {
+        if (xhr.status === 200) {
+          this.parse(xhr.responseText);
+        } else {
+          Logger.log(
+            Logger.LEVEL_WARNING,
+            "Tectonic plate data retrieval failed (" +
+            xhr.statusText +
+            "): " +
+            url
+          );
+        }
+      }
+    }.bind(this);
+
+    xhr.onerror = function () {
+      Logger.log(
+        Logger.LEVEL_WARNING,
+        "Tectonic plate data retrieval failed: " + url
+      );
+    };
+
+    xhr.ontimeout = function () {
+      Logger.log(
+        Logger.LEVEL_WARNING,
+        "Tectonic plate data retrieval timed out: " + url
+      );
+    };
+
+    xhr.send(null);
+  }
+  parse(jsonText) {
+    var plateData = JSON.parse(jsonText);
+
+    var self = this;
+    plateData.features.map(function (feature, featureIndex, features) {
+      var locations = [];
+      feature.geometry.coordinates.map(function (
+        coordinate,
+        geometryIndex,
+        coordinates
+      ) {
+        locations.push(new Location(coordinate[1], coordinate[0]));
+      });
+
+      var polygon = new SurfacePolygon(locations, self._attributes);
+
+      self.addRenderable(polygon);
+    });
+  }
+}
+
 
 Object.defineProperties(TectonicPlatesLayer.prototype, {
   /**
@@ -82,63 +140,6 @@ Object.defineProperties(TectonicPlatesLayer.prototype, {
   },
 });
 
-TectonicPlatesLayer.prototype.loadPlateData = function () {
-  var url = WorldWind.configuration.baseUrl + "images/TectonicPlates.json";
 
-  var xhr = new XMLHttpRequest();
-
-  xhr.open("GET", url, true);
-  xhr.onreadystatechange = function () {
-    if (xhr.readyState === 4) {
-      if (xhr.status === 200) {
-        this.parse(xhr.responseText);
-      } else {
-        Logger.log(
-          Logger.LEVEL_WARNING,
-          "Tectonic plate data retrieval failed (" +
-            xhr.statusText +
-            "): " +
-            url
-        );
-      }
-    }
-  }.bind(this);
-
-  xhr.onerror = function () {
-    Logger.log(
-      Logger.LEVEL_WARNING,
-      "Tectonic plate data retrieval failed: " + url
-    );
-  };
-
-  xhr.ontimeout = function () {
-    Logger.log(
-      Logger.LEVEL_WARNING,
-      "Tectonic plate data retrieval timed out: " + url
-    );
-  };
-
-  xhr.send(null);
-};
-
-TectonicPlatesLayer.prototype.parse = function (jsonText) {
-  var plateData = JSON.parse(jsonText);
-
-  var self = this;
-  plateData.features.map(function (feature, featureIndex, features) {
-    var locations = [];
-    feature.geometry.coordinates.map(function (
-      coordinate,
-      geometryIndex,
-      coordinates
-    ) {
-      locations.push(new Location(coordinate[1], coordinate[0]));
-    });
-
-    var polygon = new SurfacePolygon(locations, self._attributes);
-
-    self.addRenderable(polygon);
-  });
-};
 
 export default TectonicPlatesLayer;

@@ -25,7 +25,6 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
-import AbstractError from "../../error/AbstractError";
 import ArgumentError from "../../error/ArgumentError";
 import GeoTiffConstants from "./GeoTiffConstants";
 import Logger from "../../util/Logger";
@@ -45,63 +44,96 @@ import Logger from "../../util/Logger";
  * @throws {ArgumentError} If either the specified keyId, tiffTagLocation, count or valueOffset
  * are null or undefined.
  */
-var GeoTiffKeyEntry = function (keyId, tiffTagLocation, count, valueOffset) {
-  if (!keyId) {
-    throw new ArgumentError(
-      Logger.logMessage(
-        Logger.LEVEL_SEVERE,
-        "GeoTiffKeyEntry",
-        "constructor",
-        "missingKeyId"
-      )
-    );
+class GeoTiffKeyEntry {
+  constructor(keyId, tiffTagLocation, count, valueOffset) {
+    if (!keyId) {
+      throw new ArgumentError(
+        Logger.logMessage(
+          Logger.LEVEL_SEVERE,
+          "GeoTiffKeyEntry",
+          "constructor",
+          "missingKeyId"
+        )
+      );
+    }
+
+    if (tiffTagLocation === null || tiffTagLocation === undefined) {
+      throw new ArgumentError(
+        Logger.logMessage(
+          Logger.LEVEL_SEVERE,
+          "GeoTiffKeyEntry",
+          "constructor",
+          "missingTiffTagLocation"
+        )
+      );
+    }
+
+    if (!count) {
+      throw new ArgumentError(
+        Logger.logMessage(
+          Logger.LEVEL_SEVERE,
+          "GeoTiffKeyEntry",
+          "constructor",
+          "missingCount"
+        )
+      );
+    }
+
+    if (valueOffset === null || valueOffset === undefined) {
+      throw new ArgumentError(
+        Logger.logMessage(
+          Logger.LEVEL_SEVERE,
+          "GeoTiffKeyEntry",
+          "constructor",
+          "missingValueOffset"
+        )
+      );
+    }
+
+    // Documented in defineProperties below.
+    this._keyId = keyId;
+
+    // Documented in defineProperties below.
+    this._tiffTagLocation = tiffTagLocation;
+
+    // Documented in defineProperties below.
+    this._count = count;
+
+    // Documented in defineProperties below.
+    this._valueOffset = valueOffset;
   }
+  /**
+   * Get the value of a GeoKey.
+   * @returns {Number}
+   */
+  getGeoKeyValue(geoDoubleParamsValue,
+    geoAsciiParamsValue) {
+    var keyValue;
 
-  if (tiffTagLocation === null || tiffTagLocation === undefined) {
-    throw new ArgumentError(
-      Logger.logMessage(
-        Logger.LEVEL_SEVERE,
-        "GeoTiffKeyEntry",
-        "constructor",
-        "missingTiffTagLocation"
-      )
-    );
+    if (this.tiffTagLocation === 0) {
+      keyValue = this.valueOffset;
+    } else if (this.tiffTagLocation === GeoTiffConstants.Tag.GEO_ASCII_PARAMS) {
+      var retVal = "";
+
+      if (geoAsciiParamsValue) {
+        for (var i = this.valueOffset; i < this.count - 1; i++) {
+          retVal += geoAsciiParamsValue[i];
+        }
+        if (geoAsciiParamsValue[this.count - 1] != "|") {
+          retVal += geoAsciiParamsValue[this.count - 1];
+        }
+
+        keyValue = retVal;
+      }
+    } else if (this.tiffTagLocation === GeoTiffConstants.Tag.GEO_DOUBLE_PARAMS) {
+      if (geoDoubleParamsValue) {
+        keyValue = geoDoubleParamsValue[this.valueOffset];
+      }
+    }
+
+    return keyValue;
   }
-
-  if (!count) {
-    throw new ArgumentError(
-      Logger.logMessage(
-        Logger.LEVEL_SEVERE,
-        "GeoTiffKeyEntry",
-        "constructor",
-        "missingCount"
-      )
-    );
-  }
-
-  if (valueOffset === null || valueOffset === undefined) {
-    throw new ArgumentError(
-      Logger.logMessage(
-        Logger.LEVEL_SEVERE,
-        "GeoTiffKeyEntry",
-        "constructor",
-        "missingValueOffset"
-      )
-    );
-  }
-
-  // Documented in defineProperties below.
-  this._keyId = keyId;
-
-  // Documented in defineProperties below.
-  this._tiffTagLocation = tiffTagLocation;
-
-  // Documented in defineProperties below.
-  this._count = count;
-
-  // Documented in defineProperties below.
-  this._valueOffset = valueOffset;
-};
+}
 
 Object.defineProperties(GeoTiffKeyEntry.prototype, {
   /**
@@ -153,38 +185,5 @@ Object.defineProperties(GeoTiffKeyEntry.prototype, {
   },
 });
 
-/**
- * Get the value of a GeoKey.
- * @returns {Number}
- */
-GeoTiffKeyEntry.prototype.getGeoKeyValue = function (
-  geoDoubleParamsValue,
-  geoAsciiParamsValue
-) {
-  var keyValue;
-
-  if (this.tiffTagLocation === 0) {
-    keyValue = this.valueOffset;
-  } else if (this.tiffTagLocation === GeoTiffConstants.Tag.GEO_ASCII_PARAMS) {
-    var retVal = "";
-
-    if (geoAsciiParamsValue) {
-      for (var i = this.valueOffset; i < this.count - 1; i++) {
-        retVal += geoAsciiParamsValue[i];
-      }
-      if (geoAsciiParamsValue[this.count - 1] != "|") {
-        retVal += geoAsciiParamsValue[this.count - 1];
-      }
-
-      keyValue = retVal;
-    }
-  } else if (this.tiffTagLocation === GeoTiffConstants.Tag.GEO_DOUBLE_PARAMS) {
-    if (geoDoubleParamsValue) {
-      keyValue = geoDoubleParamsValue[this.valueOffset];
-    }
-  }
-
-  return keyValue;
-};
 
 export default GeoTiffKeyEntry;

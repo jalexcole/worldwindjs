@@ -22,10 +22,12 @@ import Position from "../geom/Position";
  * @constructor
  * @classdesc A Position proxy class that is used for backward compatibility purposes by the deprecated LookAtNavigator class.
  */
-var LookAtPositionProxy = function (navigator) {
-  this.position = new Position(0, 0, 0);
-  this.lookAtNavigator = navigator;
-};
+class LookAtPositionProxy {
+  constructor(navigator) {
+    this.position = new Position(0, 0, 0);
+    this.lookAtNavigator = navigator;
+  }
+}
 
 Object.defineProperties(LookAtPositionProxy.prototype, {
   latitude: {

@@ -77,75 +77,235 @@ import Vec3 from "../geom/Vec3";
  * @throws {ArgumentError} If the specified positions array is null, empty or undefined, the number of indices
  * is less than 3 or too many positions are specified (limit is 65536).
  */
-var TriangleMesh = function (positions, indices, attributes) {
-  if (!positions) {
-    throw new ArgumentError(
-      Logger.logMessage(
-        Logger.LEVEL_SEVERE,
-        "TriangleMesh",
-        "constructor",
-        "missingPositions"
-      )
-    );
+class TriangleMesh extends AbstractMesh {
+  constructor(positions, indices, attributes) {
+    super(attributes)
+    if (!positions) {
+      throw new ArgumentError(
+        Logger.logMessage(
+          Logger.LEVEL_SEVERE,
+          "TriangleMesh",
+          "constructor",
+          "missingPositions"
+        )
+      );
+    }
+
+    if (positions.length < 1) {
+      throw new ArgumentError(
+        Logger.logMessage(
+          Logger.LEVEL_SEVERE,
+          "TriangleMesh",
+          "constructor",
+          "missingPositions"
+        )
+      );
+    }
+
+    // Check for size limit, which is the max number of available indices for a 16-bit unsigned int.
+    if (positions.length > 65536) {
+      throw new ArgumentError(
+        Logger.logMessage(
+          Logger.LEVEL_SEVERE,
+          "TriangleMesh",
+          "constructor",
+          "Too many positions. Must be fewer than 65537. Use TriangleMesh.split to split the shape."
+        )
+      );
+    }
+
+    if (!indices) {
+      throw new ArgumentError(
+        Logger.logMessage(
+          Logger.LEVEL_SEVERE,
+          "TriangleMesh",
+          "constructor",
+          "Indices array is null or undefined"
+        )
+      );
+    }
+
+    if (indices.length < 3) {
+      throw new ArgumentError(
+        Logger.logMessage(
+          Logger.LEVEL_SEVERE,
+          "TriangleMesh",
+          "constructor",
+          "Too few indices."
+        )
+      );
+    }
+
+    // Private. Documentation is with the defined property below and the constructor description above.
+    this._positions = positions;
+
+    // Private. Documentation is with the defined property below and the constructor description above.
+    this._indices = indices;
+
+    this.referencePosition = this._positions[0];
   }
+  /**
+   * Splits a triangle mesh into several meshes, each of which contains fewer than 65536 positions.
+   * @param {Position[]} positions An array containing the mesh vertices.
+   * @param {Number[]} indices An array of integers identifying the positions of each mesh triangle.
+   * Each sequence of three indices defines one triangle in the mesh. The indices identify the index of the
+   * position in the associated positions array.
+   * @param {Vec2[]} textureCoords The mesh's texture coordinates.
+   * @param {Number[]} outlineIndices The mesh's outline indices.
+   * @returns {Object[]} An array of objects, each of which defines one subdivision of the full mesh. Each object
+   * in the array has the properties of the same name as the input arguments.
+   */
+  static split(positions,
+    indices,
+    textureCoords,
+    outlineIndices) {
+    var splitPositions = [], splitTexCoords = [], splitIndices = [], indexMap = [], result = [], originalIndex, mappedIndex;
 
-  if (positions.length < 1) {
-    throw new ArgumentError(
-      Logger.logMessage(
-        Logger.LEVEL_SEVERE,
-        "TriangleMesh",
-        "constructor",
-        "missingPositions"
-      )
-    );
+    for (var i = 0; i <= indices.length; i++) {
+      if (i === indices.length ||
+        (splitPositions.length > 65533 && splitIndices.length % 3 === 0)) {
+        if (splitPositions.length > 0) {
+          var shape = {
+            positions: splitPositions,
+            indices: splitIndices,
+          };
+
+          if (textureCoords) {
+            shape.textureCoords = splitTexCoords;
+          }
+
+          if (outlineIndices) {
+            var splitOutline = [];
+            for (var j = 0; j < outlineIndices.length; j++) {
+              originalIndex = outlineIndices[j];
+              mappedIndex = indexMap[originalIndex];
+              if (mappedIndex) {
+                splitOutline.push(indexMap[outlineIndices[j]]);
+              }
+            }
+
+            shape.outlineIndices = splitOutline;
+          }
+
+          result.push(shape);
+        }
+
+        if (i === indices.length) {
+          break;
+        }
+
+        splitPositions = [];
+        splitIndices = [];
+        indexMap = [];
+      }
+
+      originalIndex = indices[i];
+      mappedIndex = indexMap[originalIndex];
+
+      if (!mappedIndex) {
+        mappedIndex = splitPositions.length;
+        indexMap[originalIndex] = mappedIndex;
+
+        splitPositions.push(positions[originalIndex]);
+
+        if (textureCoords) {
+          splitTexCoords.push(textureCoords[originalIndex]);
+        }
+      }
+
+      splitIndices.push(mappedIndex);
+    }
+
+    return result;
   }
+  // Overridden from AbstractShape base class.
+  createSurfaceShape() {
+    if (this._outlineIndices) {
+      var boundaries = [];
 
-  // Check for size limit, which is the max number of available indices for a 16-bit unsigned int.
-  if (positions.length > 65536) {
-    throw new ArgumentError(
-      Logger.logMessage(
-        Logger.LEVEL_SEVERE,
-        "TriangleMesh",
-        "constructor",
-        "Too many positions. Must be fewer than 65537. Use TriangleMesh.split to split the shape."
-      )
-    );
+      for (var i = 0; i < this._outlineIndices.length; i++) {
+        boundaries.push(this._positions[this._outlineIndices[i]]);
+      }
+
+      return new SurfacePolygon(boundaries, null);
+    } else {
+      return null;
+    }
   }
+  // Overridden from AbstractShape base class.
+  computeMeshPoints(dc, currentData) {
+    var eyeDistSquared = Number.MAX_VALUE, eyePoint = dc.eyePoint, meshPoints = new Float32Array(this._positions.length * 3), pt = new Vec3(0, 0, 0), k = 0, pos, dSquared;
 
-  if (!indices) {
-    throw new ArgumentError(
-      Logger.logMessage(
-        Logger.LEVEL_SEVERE,
-        "TriangleMesh",
-        "constructor",
-        "Indices array is null or undefined"
-      )
-    );
+    for (var i = 0; i < this._positions.length; i++) {
+      pos = this._positions[i];
+
+      dc.surfacePointForMode(
+        pos.latitude,
+        pos.longitude,
+        pos.altitude * this._altitudeScale,
+        this.altitudeMode,
+        pt
+      );
+
+      dSquared = pt.distanceToSquared(eyePoint);
+      if (dSquared < eyeDistSquared) {
+        eyeDistSquared = dSquared;
+      }
+
+      pt.subtract(this.currentData.referencePoint);
+
+      meshPoints[k++] = pt[0];
+      meshPoints[k++] = pt[1];
+      meshPoints[k++] = pt[2];
+    }
+
+    currentData.eyeDistance = Math.sqrt(eyeDistSquared);
+
+    return meshPoints;
   }
+  // Overridden from AbstractShape base class.
+  computeTexCoords() {
+    if (!this._textureCoordinates) {
+      return null;
+    } else {
+      // Capture the texture coordinates to a single array parallel to the mesh points array.
+      var texCoords = new Float32Array(2 * this._textureCoordinates.length), k = 0;
 
-  if (indices.length < 3) {
-    throw new ArgumentError(
-      Logger.logMessage(
-        Logger.LEVEL_SEVERE,
-        "TriangleMesh",
-        "constructor",
-        "Too few indices."
-      )
-    );
+      for (var i = 0, len = this._textureCoordinates.length; i < len; i++) {
+        var texCoord = this._textureCoordinates[i];
+
+        texCoords[k++] = texCoord[0];
+        texCoords[k++] = texCoord[1];
+      }
+
+      return texCoords;
+    }
   }
+  // Overridden from AbstractShape base class.
+  computeMeshIndices() {
+    var meshIndices = new Uint16Array(this._indices.length);
 
-  AbstractMesh.call(this, attributes);
+    for (var i = 0, len = this._indices.length; i < len; i++) {
+      meshIndices[i] = this._indices[i];
+    }
 
-  // Private. Documentation is with the defined property below and the constructor description above.
-  this._positions = positions;
+    return meshIndices;
+  }
+  // Overridden from AbstractShape base class.
+  computeOutlineIndices() {
+    if (!this._outlineIndices) {
+      return null;
+    } else {
+      var meshOutlineIndices = new Uint16Array(this._outlineIndices.length);
 
-  // Private. Documentation is with the defined property below and the constructor description above.
-  this._indices = indices;
+      for (var i = 0; i < this._outlineIndices.length; i++) {
+        meshOutlineIndices[i] = this._outlineIndices[i];
+      }
 
-  this.referencePosition = this._positions[0];
-};
-
-TriangleMesh.prototype = Object.create(AbstractMesh.prototype);
+      return meshOutlineIndices;
+    }
+  }
+}
 
 Object.defineProperties(TriangleMesh.prototype, {
   /**
@@ -260,188 +420,10 @@ Object.defineProperties(TriangleMesh.prototype, {
   },
 });
 
-// Overridden from AbstractShape base class.
-TriangleMesh.prototype.createSurfaceShape = function () {
-  if (this._outlineIndices) {
-    var boundaries = [];
 
-    for (var i = 0; i < this._outlineIndices.length; i++) {
-      boundaries.push(this._positions[this._outlineIndices[i]]);
-    }
 
-    return new SurfacePolygon(boundaries, null);
-  } else {
-    return null;
-  }
-};
 
-// Overridden from AbstractShape base class.
-TriangleMesh.prototype.computeMeshPoints = function (dc, currentData) {
-  var eyeDistSquared = Number.MAX_VALUE,
-    eyePoint = dc.eyePoint,
-    meshPoints = new Float32Array(this._positions.length * 3),
-    pt = new Vec3(0, 0, 0),
-    k = 0,
-    pos,
-    dSquared;
 
-  for (var i = 0; i < this._positions.length; i++) {
-    pos = this._positions[i];
 
-    dc.surfacePointForMode(
-      pos.latitude,
-      pos.longitude,
-      pos.altitude * this._altitudeScale,
-      this.altitudeMode,
-      pt
-    );
-
-    dSquared = pt.distanceToSquared(eyePoint);
-    if (dSquared < eyeDistSquared) {
-      eyeDistSquared = dSquared;
-    }
-
-    pt.subtract(this.currentData.referencePoint);
-
-    meshPoints[k++] = pt[0];
-    meshPoints[k++] = pt[1];
-    meshPoints[k++] = pt[2];
-  }
-
-  currentData.eyeDistance = Math.sqrt(eyeDistSquared);
-
-  return meshPoints;
-};
-
-// Overridden from AbstractShape base class.
-TriangleMesh.prototype.computeTexCoords = function () {
-  if (!this._textureCoordinates) {
-    return null;
-  } else {
-    // Capture the texture coordinates to a single array parallel to the mesh points array.
-    var texCoords = new Float32Array(2 * this._textureCoordinates.length),
-      k = 0;
-
-    for (var i = 0, len = this._textureCoordinates.length; i < len; i++) {
-      var texCoord = this._textureCoordinates[i];
-
-      texCoords[k++] = texCoord[0];
-      texCoords[k++] = texCoord[1];
-    }
-
-    return texCoords;
-  }
-};
-
-// Overridden from AbstractShape base class.
-TriangleMesh.prototype.computeMeshIndices = function () {
-  var meshIndices = new Uint16Array(this._indices.length);
-
-  for (var i = 0, len = this._indices.length; i < len; i++) {
-    meshIndices[i] = this._indices[i];
-  }
-
-  return meshIndices;
-};
-
-// Overridden from AbstractShape base class.
-TriangleMesh.prototype.computeOutlineIndices = function () {
-  if (!this._outlineIndices) {
-    return null;
-  } else {
-    var meshOutlineIndices = new Uint16Array(this._outlineIndices.length);
-
-    for (var i = 0; i < this._outlineIndices.length; i++) {
-      meshOutlineIndices[i] = this._outlineIndices[i];
-    }
-
-    return meshOutlineIndices;
-  }
-};
-
-/**
- * Splits a triangle mesh into several meshes, each of which contains fewer than 65536 positions.
- * @param {Position[]} positions An array containing the mesh vertices.
- * @param {Number[]} indices An array of integers identifying the positions of each mesh triangle.
- * Each sequence of three indices defines one triangle in the mesh. The indices identify the index of the
- * position in the associated positions array.
- * @param {Vec2[]} textureCoords The mesh's texture coordinates.
- * @param {Number[]} outlineIndices The mesh's outline indices.
- * @returns {Object[]} An array of objects, each of which defines one subdivision of the full mesh. Each object
- * in the array has the properties of the same name as the input arguments.
- */
-TriangleMesh.split = function (
-  positions,
-  indices,
-  textureCoords,
-  outlineIndices
-) {
-  var splitPositions = [],
-    splitTexCoords = [],
-    splitIndices = [],
-    indexMap = [],
-    result = [],
-    originalIndex,
-    mappedIndex;
-
-  for (var i = 0; i <= indices.length; i++) {
-    if (
-      i === indices.length ||
-      (splitPositions.length > 65533 && splitIndices.length % 3 === 0)
-    ) {
-      if (splitPositions.length > 0) {
-        var shape = {
-          positions: splitPositions,
-          indices: splitIndices,
-        };
-
-        if (textureCoords) {
-          shape.textureCoords = splitTexCoords;
-        }
-
-        if (outlineIndices) {
-          var splitOutline = [];
-          for (var j = 0; j < outlineIndices.length; j++) {
-            originalIndex = outlineIndices[j];
-            mappedIndex = indexMap[originalIndex];
-            if (mappedIndex) {
-              splitOutline.push(indexMap[outlineIndices[j]]);
-            }
-          }
-
-          shape.outlineIndices = splitOutline;
-        }
-
-        result.push(shape);
-      }
-
-      if (i === indices.length) {
-        break;
-      }
-
-      splitPositions = [];
-      splitIndices = [];
-      indexMap = [];
-    }
-
-    originalIndex = indices[i];
-    mappedIndex = indexMap[originalIndex];
-
-    if (!mappedIndex) {
-      mappedIndex = splitPositions.length;
-      indexMap[originalIndex] = mappedIndex;
-
-      splitPositions.push(positions[originalIndex]);
-
-      if (textureCoords) {
-        splitTexCoords.push(textureCoords[originalIndex]);
-      }
-    }
-
-    splitIndices.push(mappedIndex);
-  }
-
-  return result;
-};
 
 export default TriangleMesh;

@@ -26,33 +26,30 @@
  * PDF found in code  directory.
  */
 
-
-    /**
-     * Constructs a ColladaAsset
-     * @alias ColladaAsset
-     * @constructor
-     * @classdesc Represents a collada asset tag.
-     * @param {XML} xmlDoc The raw XML data of the collada file.
-     */
-    var ColladaAsset = function (xmlDoc) {
+/**
+ * Constructs a ColladaAsset
+ * @alias ColladaAsset
+ * @constructor
+ * @classdesc Represents a collada asset tag.
+ * @param {XML} xmlDoc The raw XML data of the collada file.
+ */
+class ColladaAsset {
+    constructor(xmlDoc) {
         this.xmlAsset = xmlDoc.getElementsByTagName("asset")[0];
         this.asset = {
-            daeVersion: xmlDoc.querySelector("COLLADA").getAttribute("version")
+            daeVersion: xmlDoc.querySelector("COLLADA").getAttribute("version"),
         };
-    };
-
+    }
     /**
      * Parses the asset tag.
      * Internal. Applications should not call this function.
      */
-    ColladaAsset.prototype.parse = function () {
-
+    parse() {
         if (!this.xmlAsset) {
             return null;
         }
 
         for (var i = 0; i < this.xmlAsset.childNodes.length; i++) {
-
             var child = this.xmlAsset.childNodes.item(i);
 
             if (child.nodeType !== 1) {
@@ -80,6 +77,8 @@
         this.xmlAsset = null;
 
         return this.asset;
-    };
+    }
+}
 
-    export default ColladaAsset;
+
+export default ColladaAsset;

@@ -52,6 +52,8 @@ import DrawContext from "./DrawContext";
  */
 class ImageTile extends TextureTile {
   constructor(sector, level, row, column, imagePath) {
+    super(sector, level, row, column); // args are checked in the superclass' constructor
+    
     if (!imagePath || imagePath.length < 1) {
       throw new ArgumentError(
         Logger.logMessage(
@@ -62,12 +64,6 @@ class ImageTile extends TextureTile {
         )
       );
     }
-
-    super(sector, level, row, column); // args are checked in the superclass' constructor
-
-
-
-
 
     /**
      * This tile's image path.

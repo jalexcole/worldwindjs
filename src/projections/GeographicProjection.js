@@ -49,9 +49,7 @@ import UnsupportedOperationError from "../error/UnsupportedOperationError";
          * range of latitude and longitude, +/- 90 degrees latitude, +/- 180 degrees longitude.
          */
 class GeographicProjection {
-  constructor(displayName,
-    continuous,
-    projectionLimits) {
+  constructor(displayName, continuous, projectionLimits) {
     /**
      * This projection's display name.
      * @type {string}
@@ -95,12 +93,7 @@ class GeographicProjection {
    * @returns {Vec3} The specified result argument containing the computed point.
    * @throws {ArgumentError} If the specified globe or result is null or undefined.
    */
-  geographicToCartesian(globe,
-    latitude,
-    longitude,
-    elevation,
-    offset,
-    result) {
+  geographicToCartesian(globe, latitude, longitude, elevation, offset, result) {
     throw new UnsupportedOperationError(
       Logger.logMessage(
         Logger.LEVEL_SEVERE,
@@ -142,14 +135,16 @@ class GeographicProjection {
    * @throws {ArgumentError} if any of the specified globe, sector, elevations array or results arrays is null or
    * undefined.
    */
-  geographicToCartesianGrid(globe,
+  geographicToCartesianGrid(
+    globe,
     sector,
     numLat,
     numLon,
     elevations,
     referencePoint,
     offset,
-    result) {
+    result
+  ) {
     throw new UnsupportedOperationError(
       Logger.logMessage(
         Logger.LEVEL_SEVERE,
@@ -173,12 +168,7 @@ class GeographicProjection {
    * @returns {Position} The specified result argument containing the computed position.
    * @throws {ArgumentError} If either the specified globe or result argument is null or undefined.
    */
-  cartesianToGeographic(globe,
-    x,
-    y,
-    z,
-    offset,
-    result) {
+  cartesianToGeographic(globe, x, y, z, offset, result) {
     throw new UnsupportedOperationError(
       Logger.logMessage(
         Logger.LEVEL_SEVERE,
@@ -200,10 +190,7 @@ class GeographicProjection {
    * @returns{Vec3} The specified result argument containing the computed vector.
    * @throws {ArgumentError} If either the specified globe or result argument is null or undefined.
    */
-  northTangentAtLocation(globe,
-    latitude,
-    longitude,
-    result) {
+  northTangentAtLocation(globe, latitude, longitude, result) {
     if (!result) {
       throw new ArgumentError(
         Logger.logMessage(
@@ -237,12 +224,7 @@ class GeographicProjection {
    * @returns{Vec3} The specified result argument containing the computed vector.
    * @throws {ArgumentError} If either the specified globe or result argument is null or undefined.
    */
-  northTangentAtPoint(globe,
-    x,
-    y,
-    z,
-    offset,
-    result) {
+  northTangentAtPoint(globe, x, y, z, offset, result) {
     if (!result) {
       throw new ArgumentError(
         Logger.logMessage(
@@ -271,10 +253,7 @@ class GeographicProjection {
    * @returns{Vec3} The specified result argument containing the computed vector.
    * @throws {ArgumentError} If either the specified globe or result argument is null or undefined.
    */
-  surfaceNormalAtLocation(globe,
-    latitude,
-    longitude,
-    result) {
+  surfaceNormalAtLocation(globe, latitude, longitude, result) {
     if (!result) {
       throw new ArgumentError(
         Logger.logMessage(
@@ -304,11 +283,7 @@ class GeographicProjection {
    * @returns{Vec3} The specified result argument containing the computed vector.
    * @throws {ArgumentError} If either the specified globe or result argument is null or undefined.
    */
-  surfaceNormalAtPoint(globe,
-    x,
-    y,
-    z,
-    result) {
+  surfaceNormalAtPoint(globe, x, y, z, result) {
     if (!result) {
       throw new ArgumentError(
         Logger.logMessage(
@@ -327,12 +302,5 @@ class GeographicProjection {
     return result;
   }
 }
-
-
-
-
-
-
-
 
 export default GeographicProjection;

@@ -55,38 +55,82 @@ import SurfaceShape from "./SurfaceShape";
  * @throws {ArgumentError} If the specified center location is null or undefined or the specified radius
  * is negative.
  */
-var SurfaceCircle = function (center, radius, attributes) {
-  if (!center) {
-    throw new ArgumentError(
-      Logger.logMessage(
-        Logger.LEVEL_SEVERE,
-        "SurfaceCircle",
-        "constructor",
-        "missingLocation"
-      )
+class SurfaceCircle extends SurfaceShape{
+  constructor(center, radius, attributes) {
+    super(attributes)
+    if (!center) {
+      throw new ArgumentError(
+        Logger.logMessage(
+          Logger.LEVEL_SEVERE,
+          "SurfaceCircle",
+          "constructor",
+          "missingLocation"
+        )
+      );
+    }
+
+    if (radius < 0) {
+      throw new ArgumentError(
+        Logger.logMessage(
+          Logger.LEVEL_SEVERE,
+          "SurfaceCircle",
+          "constructor",
+          "Radius is negative"
+        )
+      );
+    }
+
+    // All these are documented with their property accessors below.
+    this._center = center;
+    this._radius = radius;
+    this._intervals = SurfaceCircle.DEFAULT_NUM_INTERVALS;
+  }
+  // Internal use only. Intentionally not documented.
+  static staticStateKey(shape) {
+    let shapeStateKey = SurfaceShape.staticStateKey(shape);
+
+    return (
+      shapeStateKey +
+      " ce " +
+      shape.center.toString() +
+      " ra " +
+      shape.radius.toString()
     );
   }
-
-  if (radius < 0) {
-    throw new ArgumentError(
-      Logger.logMessage(
-        Logger.LEVEL_SEVERE,
-        "SurfaceCircle",
-        "constructor",
-        "Radius is negative"
-      )
-    );
+  // Internal use only. Intentionally not documented.
+  computeStateKey() {
+    return SurfaceCircle.staticStateKey(this);
   }
+  // Internal. Intentionally not documented.
+  computeBoundaries(dc) {
+    if (this.radius === 0) {
+      return null;
+    }
 
-  SurfaceShape.call(this, attributes);
+    var numLocations = 1 + Math.max(SurfaceCircle.MIN_NUM_INTERVALS, this.intervals), da = 360 / (numLocations - 1), arcLength = this.radius /
+      dc.globe.radiusAt(this.center.latitude, this.center.longitude);
 
-  // All these are documented with their property accessors below.
-  this._center = center;
-  this._radius = radius;
-  this._intervals = SurfaceCircle.DEFAULT_NUM_INTERVALS;
-};
+    this._boundaries = new Array(numLocations);
 
-SurfaceCircle.prototype = Object.create(SurfaceShape.prototype);
+    for (var i = 0; i < numLocations; i++) {
+      var azimuth = i !== numLocations - 1 ? i * da : 0;
+      this._boundaries[i] = Location.greatCircleLocation(
+        this.center,
+        azimuth, // In degrees
+        arcLength, // In radians
+        new Location(0, 0)
+      );
+    }
+  }
+  // Internal use only. Intentionally not documented.
+  getReferencePosition() {
+    return this.center;
+  }
+  // Internal use only. Intentionally not documented.
+  moveTo(globe, position) {
+    this.center = position;
+  }
+}
 
 Object.defineProperties(SurfaceCircle.prototype, {
   /**
@@ -139,59 +183,10 @@ Object.defineProperties(SurfaceCircle.prototype, {
   },
 });
 
-// Internal use only. Intentionally not documented.
-SurfaceCircle.staticStateKey = function (shape) {
-  var shapeStateKey = SurfaceShape.staticStateKey(shape);
 
-  return (
-    shapeStateKey +
-    " ce " +
-    shape.center.toString() +
-    " ra " +
-    shape.radius.toString()
-  );
-};
 
-// Internal use only. Intentionally not documented.
-SurfaceCircle.prototype.computeStateKey = function () {
-  return SurfaceCircle.staticStateKey(this);
-};
 
-// Internal. Intentionally not documented.
-SurfaceCircle.prototype.computeBoundaries = function (dc) {
-  if (this.radius === 0) {
-    return null;
-  }
 
-  var numLocations =
-      1 + Math.max(SurfaceCircle.MIN_NUM_INTERVALS, this.intervals),
-    da = 360 / (numLocations - 1),
-    arcLength =
-      this.radius /
-      dc.globe.radiusAt(this.center.latitude, this.center.longitude);
-
-  this._boundaries = new Array(numLocations);
-
-  for (var i = 0; i < numLocations; i++) {
-    var azimuth = i !== numLocations - 1 ? i * da : 0;
-    this._boundaries[i] = Location.greatCircleLocation(
-      this.center,
-      azimuth, // In degrees
-      arcLength, // In radians
-      new Location(0, 0)
-    );
-  }
-};
-
-// Internal use only. Intentionally not documented.
-SurfaceCircle.prototype.getReferencePosition = function () {
-  return this.center;
-};
-
-// Internal use only. Intentionally not documented.
-SurfaceCircle.prototype.moveTo = function (globe, position) {
-  this.center = position;
-};
 
 /**
  * The minimum number of intervals the circle generates.

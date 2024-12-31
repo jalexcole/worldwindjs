@@ -43,56 +43,57 @@ import Logger from "../../util/Logger";
  * @throws {ArgumentError} If the specified coordinates or type are null or undefined or if the coordinates
  * parameter is not a single position.
  */
-var GeoJSONGeometryPoint = function (coordinates, type, bbox) {
-  if (!coordinates) {
-    throw new ArgumentError(
-      Logger.logMessage(
-        Logger.LEVEL_SEVERE,
-        "GeoJSONGeometryPoint",
-        "constructor",
-        "missingCoordinates"
-      )
-    );
-  }
+class GeoJSONGeometryPoint extends GeoJSONGeometry {
+  constructor(coordinates, type, bbox) {
+    super(coordinates, type, bbox);
+    if (!coordinates) {
+      throw new ArgumentError(
+        Logger.logMessage(
+          Logger.LEVEL_SEVERE,
+          "GeoJSONGeometryPoint",
+          "constructor",
+          "missingCoordinates"
+        )
+      );
+    }
 
-  if (coordinates.length < 2) {
-    throw new ArgumentError(
-      Logger.logMessage(
-        Logger.LEVEL_SEVERE,
-        "GeoJSONGeometryPoint",
-        "constructor",
-        "invalidNumberOfCoordinates"
-      )
-    );
-  }
+    if (coordinates.length < 2) {
+      throw new ArgumentError(
+        Logger.logMessage(
+          Logger.LEVEL_SEVERE,
+          "GeoJSONGeometryPoint",
+          "constructor",
+          "invalidNumberOfCoordinates"
+        )
+      );
+    }
 
-  if (
-    Object.prototype.toString.call(coordinates) !== "[object Array]" ||
-    Object.prototype.toString.call(coordinates[0]) !== "[object Number]"
-  ) {
-    throw new ArgumentError(
-      Logger.logMessage(
-        Logger.LEVEL_SEVERE,
-        "GeoJSONGeometryPoint",
-        "constructor",
-        "invalidCoordinatesType"
-      )
-    );
-  }
+    if (Object.prototype.toString.call(coordinates) !== "[object Array]" ||
+      Object.prototype.toString.call(coordinates[0]) !== "[object Number]") {
+      throw new ArgumentError(
+        Logger.logMessage(
+          Logger.LEVEL_SEVERE,
+          "GeoJSONGeometryPoint",
+          "constructor",
+          "invalidCoordinatesType"
+        )
+      );
+    }
 
-  if (!type) {
-    throw new ArgumentError(
-      Logger.logMessage(
-        Logger.LEVEL_SEVERE,
-        "GeoJSONGeometryPoint",
-        "constructor",
-        "missingType"
-      )
-    );
-  }
+    if (!type) {
+      throw new ArgumentError(
+        Logger.logMessage(
+          Logger.LEVEL_SEVERE,
+          "GeoJSONGeometryPoint",
+          "constructor",
+          "missingType"
+        )
+      );
+    }
 
-  GeoJSONGeometry.call(this, coordinates, type, bbox);
-};
+    
+  }
+}
 
 GeoJSONGeometryPoint.prototype = Object.create(GeoJSONGeometry.prototype);
 

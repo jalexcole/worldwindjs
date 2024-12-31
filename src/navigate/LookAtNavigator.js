@@ -39,19 +39,19 @@ import Navigator from "./Navigator";
  * @classdesc Represents a navigator containing the required variables to enable the user to pan, zoom and tilt
  * the globe. Deprecated, see {@Link LookAt}.
  */
-var LookAtNavigator = function (worldWindow) {
-  Navigator.call(this, worldWindow);
+class LookAtNavigator extends Navigator{
+  constructor(worldWindow) {
+    super(worldWindow);
 
-  /**
-   * Internal use only.
-   * A temp variable used to hold the position during calculations and property retrieval. Using an object
-   * level temp property negates the need for ad-hoc allocations and reduces load on the garbage collector.
-   * @ignore
-   */
-  this.scratchLookAtPositionProxy = new LookAtPositionProxy(this);
-};
-
-LookAtNavigator.prototype = Object.create(Navigator.prototype);
+    /**
+     * Internal use only.
+     * A temp variable used to hold the position during calculations and property retrieval. Using an object
+     * level temp property negates the need for ad-hoc allocations and reduces load on the garbage collector.
+     * @ignore
+     */
+    this.scratchLookAtPositionProxy = new LookAtPositionProxy(this);
+  }
+}
 
 Object.defineProperties(LookAtNavigator.prototype, {
   /**

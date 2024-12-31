@@ -39,14 +39,13 @@ import ShapefileRecord from "./ShapefileRecord";
  * @param {ByteBuffer} buffer A buffer descriptor to read data from.
  * @throws {ArgumentError} If either the specified shapefile or buffer are null or undefined.
  */
-var ShapefileRecordPoint = function (shapefile, buffer) {
-  ShapefileRecord.call(this, shapefile, buffer);
-};
-
-ShapefileRecordPoint.prototype = Object.create(ShapefileRecord.prototype);
-
-ShapefileRecordPoint.prototype.readContents = function () {
-  this.readPointContents();
-};
+class ShapefileRecordPoint extends ShapefileRecord{
+  constructor(shapefile, buffer) {
+    super(shapefile, buffer);
+  }
+  readContents() {
+    this.readPointContents();
+  }
+}
 
 export default ShapefileRecordPoint;

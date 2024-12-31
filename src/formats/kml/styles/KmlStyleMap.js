@@ -27,7 +27,6 @@
  */
 import KmlElements from "../KmlElements";
 import KmlSubStyle from "./KmlSubStyle";
-import KmlPair from "../util/KmlPair.js";
 import { Promise } from "es6-promise";
 
 /**

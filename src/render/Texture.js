@@ -68,7 +68,9 @@ class Texture {
       wrapMode = gl.CLAMP_TO_EDGE;
     }
 
-    var textureId = gl.createTexture(), isPowerOfTwo = WWMath.isPowerOfTwo(image.width) && WWMath.isPowerOfTwo(image.height);
+    var textureId = gl.createTexture(),
+      isPowerOfTwo =
+        WWMath.isPowerOfTwo(image.width) && WWMath.isPowerOfTwo(image.height);
 
     this.originalImageWidth = image.width;
     this.originalImageHeight = image.height;
@@ -210,20 +212,13 @@ class Texture {
    * @param {Image} image The image to resize.
    */
   resizeImage(image) {
-    var canvas = document.createElement("canvas");
+    let canvas = document.createElement("canvas");
     canvas.width = WWMath.powerOfTwoFloor(image.width);
     canvas.height = WWMath.powerOfTwoFloor(image.height);
-    var ctx = canvas.getContext("2d");
+    let ctx = canvas.getContext("2d");
     ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
     return canvas;
   }
 }
-
-
-
-
-
-
-
 
 export default Texture;

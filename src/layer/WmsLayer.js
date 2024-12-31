@@ -58,180 +58,168 @@ import WmsUrlBuilder from "../util/WmsUrlBuilder";
  * null, in which case no time parameter is passed to the server.
  * @throws {ArgumentError} If the specified configuration is null or undefined.
  */
-var WmsLayer = function (config, timeString) {
-  if (!config) {
-    throw new ArgumentError(
-      Logger.logMessage(
-        Logger.LEVEL_SEVERE,
-        "WmsLayer",
-        "constructor",
-        "No configuration specified."
-      )
+class WmsLayer extends TiledImageLayer {
+  constructor(config, timeString) {
+    super(config.title,
+      config.sector,
+      config.levelZeroDelta,
+      config.numLevels,
+      config.format,
+      cachePath,
+      config.size,
+      config.size
     );
-  }
 
-  var cachePath = config.service + config.layerNames + config.styleNames;
-  if (timeString) {
-    cachePath = cachePath + timeString;
-  }
-
-  TiledImageLayer.call(
-    this,
-    config.title,
-    config.sector,
-    config.levelZeroDelta,
-    config.numLevels,
-    config.format,
-    cachePath,
-    config.size,
-    config.size
-  );
-
-  this.urlBuilder = new WmsUrlBuilder(
-    config.service,
-    config.layerNames,
-    config.styleNames,
-    config.version,
-    timeString
-  );
-  if (config.coordinateSystem) {
-    this.urlBuilder.crs = config.coordinateSystem;
-  }
-
-  /**
-   * The time string passed to this layer's constructor.
-   * @type {String}
-   * @readonly
-   */
-  this.timeString = timeString;
-};
-
-WmsLayer.prototype = Object.create(TiledImageLayer.prototype);
-
-/**
- * Forms a configuration object for a specified {@link WmsLayerCapabilities} layer description. The
- * configuration object created and returned is suitable for passing to the WmsLayer constructor.
- * <p>
- *     This method also parses any time dimensions associated with the layer and returns them in the
- *     configuration object's "timeSequences" property. This property is a mixed array of Date objects
- *     and {@link PeriodicTimeSequence} objects describing the dimensions found.
- * @param wmsLayerCapabilities {WmsLayerCapabilities} The WMS layer capabilities to create a configuration for.
- * @returns {{}} A configuration object.
- * @throws {ArgumentError} If the specified WMS layer capabilities is null or undefined.
- */
-WmsLayer.formLayerConfiguration = function (wmsLayerCapabilities) {
-  var config = {
-    title: wmsLayerCapabilities.title,
-    version: wmsLayerCapabilities.capability.capsDoc.version,
-  };
-
-  // Determine the layer's sector.
-  var bbox =
-    wmsLayerCapabilities.geographicBoundingBox ||
-    wmsLayerCapabilities.latLonBoundingBox;
-  if (bbox && bbox.westBoundLongitude) {
-    config.sector = new Sector(
-      bbox.southBoundLatitude,
-      bbox.northBoundLatitude,
-      bbox.westBoundLongitude,
-      bbox.eastBoundLongitude
-    );
-  } else if (bbox && bbox.minx) {
-    config.sector = new Sector(bbox.miny, bbox.maxy, bbox.minx, bbox.maxx);
-  } else {
-    config.sector = Sector.FULL_SPHERE;
-  }
-
-  // Determine level 0 delta.
-  config.levelZeroDelta = new Location(36, 36); // TODO: How to determine best delta
-
-  // Determine number of levels.
-  config.numLevels = 19; // TODO: How to determine appropriate num levels
-
-  config.size = 256;
-
-  // Assign layer name.
-  config.layerNames = wmsLayerCapabilities.name;
-
-  // Determine image format
-  var getMapInfo = wmsLayerCapabilities.capability.request.getMap,
-    formats = getMapInfo.formats;
-
-  if (formats.indexOf("image/png") >= 0) {
-    config.format = "image/png";
-  } else if (formats.indexOf("image/jpeg") >= 0) {
-    config.format = "image/jpeg";
-  } else if (formats.indexOf("image/tiff") >= 0) {
-    config.format = "image/tiff";
-  } else if (formats.indexOf("image/gif") >= 0) {
-    config.format = "image/gif";
-  }
-
-  // Determine the GetMap service address.
-  config.service = getMapInfo.getUrl;
-
-  // Determine the coordinate system to use.
-  var coordinateSystems = wmsLayerCapabilities.crses; // WMS 1.3.0 and greater
-  if (!coordinateSystems) {
-    coordinateSystems = wmsLayerCapabilities.srses; // WMS 1.1.1 and lower
-  }
-
-  if (coordinateSystems) {
-    if (
-      coordinateSystems.indexOf("EPSG:4326") >= 0 ||
-      coordinateSystems.indexOf("epsg:4326") >= 0
-    ) {
-      config.coordinateSystem = "EPSG:4326";
-    } else if (
-      coordinateSystems.indexOf("CRS84") >= 0 ||
-      coordinateSystems.indexOf("CRS:84") >= 0
-    ) {
-      config.coordinateSystem = "CRS:84";
+    if (!config) {
+      throw new ArgumentError(
+        Logger.logMessage(
+          Logger.LEVEL_SEVERE,
+          "WmsLayer",
+          "constructor",
+          "No configuration specified."
+        )
+      );
     }
+
+    var cachePath = config.service + config.layerNames + config.styleNames;
+    if (timeString) {
+      cachePath = cachePath + timeString;
+    }
+
+    
+
+    this.urlBuilder = new WmsUrlBuilder(
+      config.service,
+      config.layerNames,
+      config.styleNames,
+      config.version,
+      timeString
+    );
+    if (config.coordinateSystem) {
+      this.urlBuilder.crs = config.coordinateSystem;
+    }
+
+    /**
+     * The time string passed to this layer's constructor.
+     * @type {String}
+     * @readonly
+     */
+    this.timeString = timeString;
   }
+  /**
+   * Forms a configuration object for a specified {@link WmsLayerCapabilities} layer description. The
+   * configuration object created and returned is suitable for passing to the WmsLayer constructor.
+   * <p>
+   *     This method also parses any time dimensions associated with the layer and returns them in the
+   *     configuration object's "timeSequences" property. This property is a mixed array of Date objects
+   *     and {@link PeriodicTimeSequence} objects describing the dimensions found.
+   * @param wmsLayerCapabilities {WmsLayerCapabilities} The WMS layer capabilities to create a configuration for.
+   * @returns {{}} A configuration object.
+   * @throws {ArgumentError} If the specified WMS layer capabilities is null or undefined.
+   */
+  static formLayerConfiguration(wmsLayerCapabilities) {
+    var config = {
+      title: wmsLayerCapabilities.title,
+      version: wmsLayerCapabilities.capability.capsDoc.version,
+    };
 
-  var dimensions = WmsLayer.parseTimeDimensions(wmsLayerCapabilities);
-  if (dimensions && dimensions.length > 0) {
-    config.timeSequences = dimensions;
+    // Determine the layer's sector.
+    var bbox = wmsLayerCapabilities.geographicBoundingBox ||
+      wmsLayerCapabilities.latLonBoundingBox;
+    if (bbox && bbox.westBoundLongitude) {
+      config.sector = new Sector(
+        bbox.southBoundLatitude,
+        bbox.northBoundLatitude,
+        bbox.westBoundLongitude,
+        bbox.eastBoundLongitude
+      );
+    } else if (bbox && bbox.minx) {
+      config.sector = new Sector(bbox.miny, bbox.maxy, bbox.minx, bbox.maxx);
+    } else {
+      config.sector = Sector.FULL_SPHERE;
+    }
+
+    // Determine level 0 delta.
+    config.levelZeroDelta = new Location(36, 36); // TODO: How to determine best delta
+
+
+    // Determine number of levels.
+    config.numLevels = 19; // TODO: How to determine appropriate num levels
+
+    config.size = 256;
+
+    // Assign layer name.
+    config.layerNames = wmsLayerCapabilities.name;
+
+    // Determine image format
+    var getMapInfo = wmsLayerCapabilities.capability.request.getMap, formats = getMapInfo.formats;
+
+    if (formats.indexOf("image/png") >= 0) {
+      config.format = "image/png";
+    } else if (formats.indexOf("image/jpeg") >= 0) {
+      config.format = "image/jpeg";
+    } else if (formats.indexOf("image/tiff") >= 0) {
+      config.format = "image/tiff";
+    } else if (formats.indexOf("image/gif") >= 0) {
+      config.format = "image/gif";
+    }
+
+    // Determine the GetMap service address.
+    config.service = getMapInfo.getUrl;
+
+    // Determine the coordinate system to use.
+    var coordinateSystems = wmsLayerCapabilities.crses; // WMS 1.3.0 and greater
+    if (!coordinateSystems) {
+      coordinateSystems = wmsLayerCapabilities.srses; // WMS 1.1.1 and lower
+    }
+
+    if (coordinateSystems) {
+      if (coordinateSystems.indexOf("EPSG:4326") >= 0 ||
+        coordinateSystems.indexOf("epsg:4326") >= 0) {
+        config.coordinateSystem = "EPSG:4326";
+      } else if (coordinateSystems.indexOf("CRS84") >= 0 ||
+        coordinateSystems.indexOf("CRS:84") >= 0) {
+        config.coordinateSystem = "CRS:84";
+      }
+    }
+
+    var dimensions = WmsLayer.parseTimeDimensions(wmsLayerCapabilities);
+    if (dimensions && dimensions.length > 0) {
+      config.timeSequences = dimensions;
+    }
+
+    return config;
   }
+  static parseTimeDimensions(wmsLayerCapabilities) {
+    var dimensions = wmsLayerCapabilities.extents || wmsLayerCapabilities.dimensions, parsedDimensions = null;
 
-  return config;
-};
+    if (dimensions) {
+      parsedDimensions = [];
 
-WmsLayer.parseTimeDimensions = function (wmsLayerCapabilities) {
-  var dimensions =
-      wmsLayerCapabilities.extents || wmsLayerCapabilities.dimensions,
-    parsedDimensions = null;
+      for (var i = 0; i < dimensions.length; i++) {
+        var dimension = dimensions[i];
 
-  if (dimensions) {
-    parsedDimensions = [];
+        if (dimension.name.toLowerCase() === "time" &&
+          (!dimension.units || dimension.units.toLowerCase() === "iso8601")) {
+          var individualDimensions = dimension.content.split(",");
 
-    for (var i = 0; i < dimensions.length; i++) {
-      var dimension = dimensions[i];
+          for (var j = 0; j < individualDimensions.length; j++) {
+            var individualDimension = individualDimensions[j], splitDimension = individualDimension.split("/");
 
-      if (
-        dimension.name.toLowerCase() === "time" &&
-        (!dimension.units || dimension.units.toLowerCase() === "iso8601")
-      ) {
-        var individualDimensions = dimension.content.split(",");
-
-        for (var j = 0; j < individualDimensions.length; j++) {
-          var individualDimension = individualDimensions[j],
-            splitDimension = individualDimension.split("/");
-
-          if (splitDimension.length === 1) {
-            parsedDimensions.push(new Date(individualDimension));
-          } else if (splitDimension.length === 3) {
-            parsedDimensions.push(
-              new PeriodicTimeSequence(individualDimension)
-            );
+            if (splitDimension.length === 1) {
+              parsedDimensions.push(new Date(individualDimension));
+            } else if (splitDimension.length === 3) {
+              parsedDimensions.push(
+                new PeriodicTimeSequence(individualDimension)
+              );
+            }
           }
         }
       }
     }
-  }
 
-  return parsedDimensions;
-};
+    return parsedDimensions;
+  }
+}
 
 export default WmsLayer;

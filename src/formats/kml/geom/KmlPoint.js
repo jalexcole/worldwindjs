@@ -25,12 +25,9 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
-import Color from "../../../util/Color";
 import KmlElements from "../KmlElements";
 import KmlGeometry from "./KmlGeometry.js";
-import Location from "../../../geom/Location";
 import KmlNodeTransformers from "../util/KmlNodeTransformers";
-import Polygon from "../../../shapes/Polygon";
 import Position from "../../../geom/Position";
 
 /**

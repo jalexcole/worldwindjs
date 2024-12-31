@@ -42,17 +42,17 @@ import KmlNodeTransformers from "./util/KmlNodeTransformers";
  * @augments KmlTimePrimitive
  */
 class KmlTimeStamp extends KmlTimePrimitive {
-    constructor(options) {
-        //noinspection JSUndefinedPropertyAssignment
-        options.isTimeStamp = true;
-        super(options);
-    }
-    /**
-     * @inheritDoc
-     */
-    getTagNames() {
-        return ["TimeStamp"];
-    }
+  constructor(options) {
+    //noinspection JSUndefinedPropertyAssignment
+    super(options);
+    options.isTimeStamp = true;
+  }
+  /**
+   * @inheritDoc
+   */
+  getTagNames() {
+    return ["TimeStamp"];
+  }
 }
 
 Object.defineProperties(KmlTimeStamp.prototype, {
@@ -71,7 +71,6 @@ Object.defineProperties(KmlTimeStamp.prototype, {
     },
   },
 });
-
 
 KmlElements.addKey(KmlTimeStamp.prototype.getTagNames()[0], KmlTimeStamp);
 

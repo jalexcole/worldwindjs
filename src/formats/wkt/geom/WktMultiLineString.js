@@ -28,7 +28,6 @@
 import Path from "../../../shapes/Path";
 import ShapeAttributes from "../../../shapes/ShapeAttributes";
 import SurfacePolyline from "../../../shapes/SurfacePolyline";
-import WktElements from "../WktElements";
 import WktObject from "./WktObject.js";
 import WktType from "../WktType";
 

@@ -41,7 +41,7 @@ import Vec3 from "../geom/Vec3";
  */
 class ProjectionEquirectangular extends GeographicProjection{
   constructor() {
-    GeographicProjection.call(this, "Equirectangular", true, null);
+    super("Equirectangular", true, null);
   }
   // Documented in base class.
   geographicToCartesian(globe, latitude, longitude, elevation, offset, result) {

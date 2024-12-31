@@ -43,15 +43,21 @@ import WWMath from "../util/WWMath";
  * for the south aspect.
  */
 class ProjectionUPS extends GeographicProjection {
+  /**
+   * {Sector}
+   * @private
+   */
+  limits = null;
   constructor(pole) {
+    super("Uniform Polar Stereographic", false, this.limits);
     // Internal. Intentionally not documented.
     this.north = !(pole === "South");
 
-    var limits = this.north
+    this.limits = this.north
       ? new Sector(0, 90, -180, 180)
       : new Sector(-90, 0, -180, 180);
 
-    super("Uniform Polar Stereographic", false, limits);
+    
 
     // Internal. Intentionally not documented. See "pole" property accessor below for public interface.
     this._pole = pole;

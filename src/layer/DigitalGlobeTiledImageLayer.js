@@ -44,119 +44,113 @@ import MercatorTiledImageLayer from "./MercatorTiledImageLayer";
  * issued by Digital Globe.
  * @throws {ArgumentError} If the specified map ID or access token is null or undefined.
  */
-var DigitalGlobeTiledImageLayer = function (displayName, mapId, accessToken) {
-  if (!mapId) {
-    throw new ArgumentError(
-      Logger.logMessage(
-        Logger.LEVEL_SEVERE,
-        "DigitalGlobeTiledImageLayer",
-        "constructor",
-        "The map ID is null or undefined."
-      )
-    );
-  }
+class DigitalGlobeTiledImageLayer extends MercatorTiledImageLayer{
+  constructor(displayName, mapId, accessToken) {
+     super(displayName || "Digital Globe",
+       19,
+       "image/jpeg",
+       displayName,
+       256,
+       1
+     );
+    if (!mapId) {
+      throw new ArgumentError(
+        Logger.logMessage(
+          Logger.LEVEL_SEVERE,
+          "DigitalGlobeTiledImageLayer",
+          "constructor",
+          "The map ID is null or undefined."
+        )
+      );
+    }
 
-  if (!accessToken) {
-    throw new ArgumentError(
-      Logger.logMessage(
-        Logger.LEVEL_SEVERE,
-        "DigitalGlobeTiledImageLayer",
-        "constructor",
-        "The access token is null or undefined."
-      )
-    );
-  }
+    if (!accessToken) {
+      throw new ArgumentError(
+        Logger.logMessage(
+          Logger.LEVEL_SEVERE,
+          "DigitalGlobeTiledImageLayer",
+          "constructor",
+          "The access token is null or undefined."
+        )
+      );
+    }
 
-  MercatorTiledImageLayer.call(
-    this,
-    displayName || "Digital Globe",
-    19,
-    "image/jpeg",
-    displayName,
-    256,
-    1
-  );
+   
 
-  /**
-   * The map ID identifying the dataset displayed by this layer.
-   * @type {String}
-   * @readonly
-   */
-  this.mapId = mapId;
+    /**
+     * The map ID identifying the dataset displayed by this layer.
+     * @type {String}
+     * @readonly
+     */
+    this.mapId = mapId;
 
-  /**
-   * The access token used when requesting imagery from Digital Globe.
-   * @type {String}
-   */
-  this.accessToken = accessToken;
-  //"pk.eyJ1IjoiZGlnaXRhbGdsb2JlIiwiYSI6IjljZjQwNmEyMTNhOWUyMWM5NWUzYWIwOGNhYTY2ZDViIn0.Ju3tOUUUc0C_gcCSAVpFIA";
+    /**
+     * The access token used when requesting imagery from Digital Globe.
+     * @type {String}
+     */
+    this.accessToken = accessToken;
+    //"pk.eyJ1IjoiZGlnaXRhbGdsb2JlIiwiYSI6IjljZjQwNmEyMTNhOWUyMWM5NWUzYWIwOGNhYTY2ZDViIn0.Ju3tOUUUc0C_gcCSAVpFIA";
+    // TODO: Picking is enabled as a temporary measure for screen credit hyperlinks to work (see Layer.render)
+    this.pickEnabled = true;
 
-  // TODO: Picking is enabled as a temporary measure for screen credit hyperlinks to work (see Layer.render)
-  this.pickEnabled = true;
+    // Create a canvas we can use when unprojecting retrieved images.
+    this.destCanvas = document.createElement("canvas");
+    this.destContext = this.destCanvas.getContext("2d");
 
-  // Create a canvas we can use when unprojecting retrieved images.
-  this.destCanvas = document.createElement("canvas");
-  this.destContext = this.destCanvas.getContext("2d");
+    this.requestMetadata();
 
-  this.requestMetadata();
-
-  var self = this;
-  this.urlBuilder = {
-    urlForTile: function (tile, imageFormat) {
-      if (!self.metadataRetrievalInProcess) {
-        return self.urlTemplate
-          .replace("{z}", tile.level.levelNumber + 1)
-          .replace("{x}", tile.column)
-          .replace("{y}", tile.row);
-      } else {
-        return null;
-      }
-    },
-  };
-};
-
-DigitalGlobeTiledImageLayer.prototype = Object.create(
-  MercatorTiledImageLayer.prototype
-);
-
-DigitalGlobeTiledImageLayer.prototype.requestMetadata = function () {
-  if (!this.metadataRetrievalInProcess) {
-    this.metadataRetrievalInProcess = true;
-
-    var url =
-      "https://api.mapbox.com/v4/" +
-      this.mapId +
-      ".json?secure&access_token=" +
-      this.accessToken;
-
-    var xhr = new XMLHttpRequest();
     var self = this;
-    xhr.onreadystatechange = function () {
-      if (xhr.readyState === 4 && xhr.status === 200) {
-        var json = JSON.parse(xhr.responseText);
-        self.urlTemplate = json.tiles[0];
-
-        // Send an event to request a redraw.
-        var e = document.createEvent("Event");
-        e.initEvent(WorldWindConstants.REDRAW_EVENT_TYPE, true, true);
-        window.dispatchEvent(e);
-
-        self.metadataRetrievalInProcess = false;
-      }
+    this.urlBuilder = {
+      urlForTile: function (tile, imageFormat) {
+        if (!self.metadataRetrievalInProcess) {
+          return self.urlTemplate
+            .replace("{z}", tile.level.levelNumber + 1)
+            .replace("{x}", tile.column)
+            .replace("{y}", tile.row);
+        } else {
+          return null;
+        }
+      },
     };
-    xhr.open("GET", url, true);
-    xhr.send();
   }
-};
+  requestMetadata() {
+    if (!this.metadataRetrievalInProcess) {
+      this.metadataRetrievalInProcess = true;
 
-DigitalGlobeTiledImageLayer.prototype.doRender = function (dc) {
-  MercatorTiledImageLayer.prototype.doRender.call(this, dc);
-  if (this.inCurrentFrame) {
-    dc.screenCreditController.addCredit(
-      "\u00A9 Digital Globe",
-      Color.DARK_GRAY
-    );
+      var url = "https://api.mapbox.com/v4/" +
+        this.mapId +
+        ".json?secure&access_token=" +
+        this.accessToken;
+
+      var xhr = new XMLHttpRequest();
+      var self = this;
+      xhr.onreadystatechange = function () {
+        if (xhr.readyState === 4 && xhr.status === 200) {
+          var json = JSON.parse(xhr.responseText);
+          self.urlTemplate = json.tiles[0];
+
+          // Send an event to request a redraw.
+          var e = document.createEvent("Event");
+          e.initEvent(WorldWindConstants.REDRAW_EVENT_TYPE, true, true);
+          window.dispatchEvent(e);
+
+          self.metadataRetrievalInProcess = false;
+        }
+      };
+      xhr.open("GET", url, true);
+      xhr.send();
+    }
   }
-};
+  doRender(dc) {
+    MercatorTiledImageLayer.prototype.doRender.call(this, dc);
+    if (this.inCurrentFrame) {
+      dc.screenCreditController.addCredit(
+        "\u00A9 Digital Globe",
+        Color.DARK_GRAY
+      );
+    }
+  }
+}
+
 
 export default DigitalGlobeTiledImageLayer;

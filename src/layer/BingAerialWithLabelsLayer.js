@@ -45,14 +45,13 @@ import BingImageryUrlBuilder from "../util/BingImageryUrlBuilder";
  * [Bing Maps Portal]{@link https://www.microsoft.com/maps/choose-your-bing-maps-API.aspx}
  * and either pass it as a parameter to this constructor or specify it as the property WorldWind.BingMapsKey.
  */
-var BingAerialWithLabelsLayer = function (bingMapsKey) {
-  BingTiledImageLayer.call(this, "Bing Aerial with Labels");
+class BingAerialWithLabelsLayer extends BingTiledImageLayer{
+  constructor(bingMapsKey) {
+    super("Bing Aerial with Labels");
 
-  this.urlBuilder = new BingImageryUrlBuilder("AerialWithLabels", bingMapsKey);
-};
+    this.urlBuilder = new BingImageryUrlBuilder("AerialWithLabels", bingMapsKey);
+  }
+}
 
-BingAerialWithLabelsLayer.prototype = Object.create(
-  BingTiledImageLayer.prototype
-);
 
 export default BingAerialWithLabelsLayer;

@@ -37,21 +37,21 @@ import WWUtil from "../util/WWUtil";
  * @augments RenderableLayer
  * @classdesc Displays a Blue Marble image layer that spans the entire globe with a single image.
  */
-var BMNGOneImageLayer = function () {
-  RenderableLayer.call(this, "Blue Marble Image");
+class BMNGOneImageLayer extends RenderableLayer {
+  constructor() {
+    super("Blue Marble Image");
 
-  var surfaceImage = new SurfaceImage(
-    Sector.FULL_SPHERE,
-    WorldWind.configuration.baseUrl +
+    var surfaceImage = new SurfaceImage(
+      Sector.FULL_SPHERE,
+      WorldWind.configuration.baseUrl +
       "images/BMNG_world.topo.bathy.200405.3.2048x1024.jpg"
-  );
+    );
 
-  this.addRenderable(surfaceImage);
+    this.addRenderable(surfaceImage);
 
-  this.pickEnabled = false;
-  this.minActiveAltitude = 3e6;
-};
-
-BMNGOneImageLayer.prototype = Object.create(RenderableLayer.prototype);
+    this.pickEnabled = false;
+    this.minActiveAltitude = 3e6;
+  }
+}
 
 export default BMNGOneImageLayer;

@@ -59,46 +59,101 @@ import WWMath from "../util/WWMath";
  * @throws {ArgumentError} If the specified center location is null or undefined or if either specified radii
  * is negative.
  */
-var SurfaceEllipse = function (
-  center,
-  majorRadius,
-  minorRadius,
-  heading,
-  attributes
-) {
-  if (!center) {
-    throw new ArgumentError(
-      Logger.logMessage(
-        Logger.LEVEL_SEVERE,
-        "SurfaceEllipse",
-        "constructor",
-        "missingLocation"
-      )
+class SurfaceEllipse extends SurfaceShape{
+  constructor(center,
+    majorRadius,
+    minorRadius,
+    heading,
+    attributes) {
+    super(attributes);
+    if (!center) {
+      throw new ArgumentError(
+        Logger.logMessage(
+          Logger.LEVEL_SEVERE,
+          "SurfaceEllipse",
+          "constructor",
+          "missingLocation"
+        )
+      );
+    }
+
+    if (majorRadius < 0 || minorRadius < 0) {
+      throw new ArgumentError(
+        Logger.logMessage(
+          Logger.LEVEL_SEVERE,
+          "SurfaceEllipse",
+          "constructor",
+          "Radius is negative."
+        )
+      );
+    }
+
+    
+
+    // All these are documented with their property accessors below.
+    this._center = center;
+    this._majorRadius = majorRadius;
+    this._minorRadius = minorRadius;
+    this._heading = heading;
+    this._intervals = SurfaceEllipse.DEFAULT_NUM_INTERVALS;
+  }
+  // Internal use only. Intentionally not documented.
+  static staticStateKey(shape) {
+    var shapeStateKey = SurfaceShape.staticStateKey(shape);
+
+    return (
+      shapeStateKey +
+      " ce " +
+      shape.center.toString() +
+      " ma " +
+      shape.majorRadius.toString() +
+      " mi " +
+      shape.minorRadius.toString() +
+      " he " +
+      shape.heading.toString() +
+      " in " +
+      shape.intervals.toString()
     );
   }
-
-  if (majorRadius < 0 || minorRadius < 0) {
-    throw new ArgumentError(
-      Logger.logMessage(
-        Logger.LEVEL_SEVERE,
-        "SurfaceEllipse",
-        "constructor",
-        "Radius is negative."
-      )
-    );
+  // Internal use only. Intentionally not documented.
+  computeStateKey() {
+    return SurfaceEllipse.staticStateKey(this);
   }
+  // Internal. Intentionally not documented.
+  computeBoundaries(dc) {
+    if (this.majorRadius == 0 && this.minorRadius == 0) {
+      return null;
+    }
 
-  SurfaceShape.call(this, attributes);
+    var globe = dc.globe, numLocations = 1 + Math.max(SurfaceEllipse.MIN_NUM_INTERVALS, this.intervals), da = (2 * Math.PI) / (numLocations - 1), globeRadius = globe.radiusAt(this.center.latitude, this.center.longitude);
 
-  // All these are documented with their property accessors below.
-  this._center = center;
-  this._majorRadius = majorRadius;
-  this._minorRadius = minorRadius;
-  this._heading = heading;
-  this._intervals = SurfaceEllipse.DEFAULT_NUM_INTERVALS;
-};
+    this._boundaries = new Array(numLocations);
 
-SurfaceEllipse.prototype = Object.create(SurfaceShape.prototype);
+    for (var i = 0; i < numLocations; i++) {
+      var angle = i != numLocations - 1 ? i * da : 0, xLength = this.majorRadius * Math.cos(angle), yLength = this.minorRadius * Math.sin(angle), distance = Math.sqrt(xLength * xLength + yLength * yLength);
+
+      // azimuth runs positive clockwise from north and through 360 degrees.
+      var azimuth = Math.PI / 2.0 -
+        (Math.acos(xLength / distance) * WWMath.signum(yLength) -
+          this.heading * Angle.DEGREES_TO_RADIANS);
+
+      this._boundaries[i] = Location.greatCircleLocation(
+        this.center,
+        azimuth * Angle.RADIANS_TO_DEGREES,
+        distance / globeRadius,
+        new Location(0, 0)
+      );
+    }
+  }
+  // Internal use only. Intentionally not documented.
+  getReferencePosition() {
+    return this.center;
+  }
+  // Internal use only. Intentionally not documented.
+  moveTo(globe, position) {
+    this.center = position;
+  }
+}
 
 Object.defineProperties(SurfaceEllipse.prototype, {
   /**
@@ -184,74 +239,10 @@ Object.defineProperties(SurfaceEllipse.prototype, {
   },
 });
 
-// Internal use only. Intentionally not documented.
-SurfaceEllipse.staticStateKey = function (shape) {
-  var shapeStateKey = SurfaceShape.staticStateKey(shape);
 
-  return (
-    shapeStateKey +
-    " ce " +
-    shape.center.toString() +
-    " ma " +
-    shape.majorRadius.toString() +
-    " mi " +
-    shape.minorRadius.toString() +
-    " he " +
-    shape.heading.toString() +
-    " in " +
-    shape.intervals.toString()
-  );
-};
 
-// Internal use only. Intentionally not documented.
-SurfaceEllipse.prototype.computeStateKey = function () {
-  return SurfaceEllipse.staticStateKey(this);
-};
 
-// Internal. Intentionally not documented.
-SurfaceEllipse.prototype.computeBoundaries = function (dc) {
-  if (this.majorRadius == 0 && this.minorRadius == 0) {
-    return null;
-  }
 
-  var globe = dc.globe,
-    numLocations =
-      1 + Math.max(SurfaceEllipse.MIN_NUM_INTERVALS, this.intervals),
-    da = (2 * Math.PI) / (numLocations - 1),
-    globeRadius = globe.radiusAt(this.center.latitude, this.center.longitude);
-
-  this._boundaries = new Array(numLocations);
-
-  for (var i = 0; i < numLocations; i++) {
-    var angle = i != numLocations - 1 ? i * da : 0,
-      xLength = this.majorRadius * Math.cos(angle),
-      yLength = this.minorRadius * Math.sin(angle),
-      distance = Math.sqrt(xLength * xLength + yLength * yLength);
-
-    // azimuth runs positive clockwise from north and through 360 degrees.
-    var azimuth =
-      Math.PI / 2.0 -
-      (Math.acos(xLength / distance) * WWMath.signum(yLength) -
-        this.heading * Angle.DEGREES_TO_RADIANS);
-
-    this._boundaries[i] = Location.greatCircleLocation(
-      this.center,
-      azimuth * Angle.RADIANS_TO_DEGREES,
-      distance / globeRadius,
-      new Location(0, 0)
-    );
-  }
-};
-
-// Internal use only. Intentionally not documented.
-SurfaceEllipse.prototype.getReferencePosition = function () {
-  return this.center;
-};
-
-// Internal use only. Intentionally not documented.
-SurfaceEllipse.prototype.moveTo = function (globe, position) {
-  this.center = position;
-};
 
 /**
  * The minimum number of intervals the ellipse generates.

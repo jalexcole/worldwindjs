@@ -29,27 +29,29 @@ import ArgumentError from "../../error/ArgumentError";
 import Logger from "../../util/Logger";
 import OwsLanguageString from "./OwsLanguageString";
 
-var OwsKeywords = function (element) {
-  if (!element) {
-    throw new ArgumentError(
-      Logger.logMessage(
-        Logger.LEVEL_SEVERE,
-        "OwsKeywords",
-        "constructor",
-        "missingDomElement"
-      )
-    );
-  }
+class OwsKeywords {
+  constructor(element) {
+    if (!element) {
+      throw new ArgumentError(
+        Logger.logMessage(
+          Logger.LEVEL_SEVERE,
+          "OwsKeywords",
+          "constructor",
+          "missingDomElement"
+        )
+      );
+    }
 
-  var children = element.children || element.childNodes;
-  for (var c = 0; c < children.length; c++) {
-    var child = children[c];
+    var children = element.children || element.childNodes;
+    for (var c = 0; c < children.length; c++) {
+      var child = children[c];
 
-    if (child.localName === "keyword") {
-      this.keywords = this.keywords || [];
-      this.keywords.push(new OwsLanguageString(child));
+      if (child.localName === "keyword") {
+        this.keywords = this.keywords || [];
+        this.keywords.push(new OwsLanguageString(child));
+      }
     }
   }
-};
+}
 
 export default OwsKeywords;

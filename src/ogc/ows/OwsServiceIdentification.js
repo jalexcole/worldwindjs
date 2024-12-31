@@ -41,41 +41,40 @@ import OwsDescription from "./OwsDescription";
  * @param {Element} element An XML DOM element representing the OWS Service Identification section.
  * @throws {ArgumentError} If the specified XML DOM element is null or undefined.
  */
-var OwsServiceIdentification = function (element) {
-  if (!element) {
-    throw new ArgumentError(
-      Logger.logMessage(
-        Logger.LEVEL_SEVERE,
-        "OwsServiceIdentification",
-        "constructor",
-        "missingDomElement"
-      )
-    );
-  }
+class OwsServiceIdentification extends OwsDescription{
+  constructor(element) {
+    super(element)
+    if (!element) {
+      throw new ArgumentError(
+        Logger.logMessage(
+          Logger.LEVEL_SEVERE,
+          "OwsServiceIdentification",
+          "constructor",
+          "missingDomElement"
+        )
+      );
+    }
+    var children = element.children || element.childNodes;
+    for (var c = 0; c < children.length; c++) {
+      var child = children[c];
 
-  OwsDescription.call(this, element);
-
-  var children = element.children || element.childNodes;
-  for (var c = 0; c < children.length; c++) {
-    var child = children[c];
-
-    if (child.localName === "ServiceType") {
-      this.serviceType = child.textContent;
-    } else if (child.localName === "ServiceTypeVersion") {
-      this.serviceTypeVersions = this.serviceTypeVersions || [];
-      this.serviceTypeVersions.push(child.textContent);
-    } else if (child.localName === "Profile") {
-      this.profile = this.profile || [];
-      this.profile.push(child.textContent);
-    } else if (child.localName === "Fees") {
-      this.fees = child.textContent;
-    } else if (child.localName === "AccessConstraints") {
-      this.accessConstraints = this.accessConstraints || [];
-      this.accessConstraints.push(child.textContent);
+      if (child.localName === "ServiceType") {
+        this.serviceType = child.textContent;
+      } else if (child.localName === "ServiceTypeVersion") {
+        this.serviceTypeVersions = this.serviceTypeVersions || [];
+        this.serviceTypeVersions.push(child.textContent);
+      } else if (child.localName === "Profile") {
+        this.profile = this.profile || [];
+        this.profile.push(child.textContent);
+      } else if (child.localName === "Fees") {
+        this.fees = child.textContent;
+      } else if (child.localName === "AccessConstraints") {
+        this.accessConstraints = this.accessConstraints || [];
+        this.accessConstraints.push(child.textContent);
+      }
     }
   }
-};
+}
 
-OwsServiceIdentification.prototype = Object.create(OwsDescription.prototype);
 
 export default OwsServiceIdentification;

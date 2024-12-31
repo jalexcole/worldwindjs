@@ -48,14 +48,16 @@ import Logger from "../util/Logger";
  */
 class BasicProgram extends GpuProgram {
   constructor(gl) {
-    var vertexShaderSource = "attribute vec4 vertexPoint;\n" +
-      "uniform mat4 mvpMatrix;\n" +
-      "void main() {gl_Position = mvpMatrix * vertexPoint;}", fragmentShaderSource = "precision mediump float;\n" +
+    // Call to the superclass, which performs shader program compiling and linking.
+    super(gl, vertexShaderSource, fragmentShaderSource);
+    var vertexShaderSource =
+        "attribute vec4 vertexPoint;\n" +
+        "uniform mat4 mvpMatrix;\n" +
+        "void main() {gl_Position = mvpMatrix * vertexPoint;}",
+      fragmentShaderSource =
+        "precision mediump float;\n" +
         "uniform vec4 color;\n" +
         "void main() {gl_FragColor = color;}";
-
-    // Call to the superclass, which performs shader program compiling and linking.
-    GpuProgram.call(this, gl, vertexShaderSource, fragmentShaderSource);
 
     /**
      * The WebGL location for this program's 'vertexPoint' attribute.

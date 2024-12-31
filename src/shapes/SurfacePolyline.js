@@ -50,34 +50,59 @@ import SurfaceShape from "./SurfaceShape";
  * attributes must be set directly before the shape is drawn.
  * @throws {ArgumentError} If the specified locations are null or undefined.
  */
-var SurfacePolyline = function (locations, attributes) {
-  if (!locations) {
-    throw new ArgumentError(
-      Logger.logMessage(
-        Logger.LEVEL_SEVERE,
-        "SurfacePolyline",
-        "constructor",
-        "The specified locations array is null or undefined."
-      )
+class SurfacePolyline extends SurfaceShape{
+  constructor(locations, attributes) {
+    super(attributes);
+    if (!locations) {
+      throw new ArgumentError(
+        Logger.logMessage(
+          Logger.LEVEL_SEVERE,
+          "SurfacePolyline",
+          "constructor",
+          "The specified locations array is null or undefined."
+        )
+      );
+    }
+
+    
+
+    /**
+     * This shape's locations, specified as an array locations.
+     * @type {Array}
+     */
+    this._boundaries = locations;
+
+    this._stateId = SurfacePolyline.stateId++;
+
+    // Internal use only.
+    this._isInteriorInhibited = true;
+  }
+  // Internal use only. Intentionally not documented.
+  static staticStateKey(shape) {
+    var shapeStateKey = SurfaceShape.staticStateKey(shape);
+
+    return shapeStateKey + " pl " + shape._stateId;
+  }
+  // Internal use only. Intentionally not documented.
+  computeStateKey() {
+    return SurfacePolyline.staticStateKey(this);
+  }
+  // Internal. Polyline doesn't generate its own boundaries. See SurfaceShape.prototype.computeBoundaries.
+  computeBoundaries(dc) { }
+  // Internal use only. Intentionally not documented.
+  getReferencePosition() {
+    return this.boundaries.length > 1 ? this.boundaries[0] : null;
+  }
+  // Internal use only. Intentionally not documented.
+  moveTo(globe, position) {
+    this.boundaries = this.computeShiftedLocations(
+      globe,
+      this.getReferencePosition(),
+      position,
+      this._boundaries
     );
   }
-
-  SurfaceShape.call(this, attributes);
-
-  /**
-   * This shape's locations, specified as an array locations.
-   * @type {Array}
-   */
-  this._boundaries = locations;
-
-  this._stateId = SurfacePolyline.stateId++;
-
-  // Internal use only.
-  this._isInteriorInhibited = true;
-};
-
-SurfacePolyline.prototype = Object.create(SurfaceShape.prototype);
-
+}
 Object.defineProperties(SurfacePolyline.prototype, {
   /**
    * This polyline's boundaries. The polylines locations.
@@ -110,34 +135,9 @@ Object.defineProperties(SurfacePolyline.prototype, {
 // Internal use only. Intentionally not documented.
 SurfacePolyline.stateId = Number.MIN_SAFE_INTEGER;
 
-// Internal use only. Intentionally not documented.
-SurfacePolyline.staticStateKey = function (shape) {
-  var shapeStateKey = SurfaceShape.staticStateKey(shape);
 
-  return shapeStateKey + " pl " + shape._stateId;
-};
 
-// Internal use only. Intentionally not documented.
-SurfacePolyline.prototype.computeStateKey = function () {
-  return SurfacePolyline.staticStateKey(this);
-};
 
-// Internal. Polyline doesn't generate its own boundaries. See SurfaceShape.prototype.computeBoundaries.
-SurfacePolyline.prototype.computeBoundaries = function (dc) {};
 
-// Internal use only. Intentionally not documented.
-SurfacePolyline.prototype.getReferencePosition = function () {
-  return this.boundaries.length > 1 ? this.boundaries[0] : null;
-};
-
-// Internal use only. Intentionally not documented.
-SurfacePolyline.prototype.moveTo = function (globe, position) {
-  this.boundaries = this.computeShiftedLocations(
-    globe,
-    this.getReferencePosition(),
-    position,
-    this._boundaries
-  );
-};
 
 export default SurfacePolyline;

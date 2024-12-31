@@ -329,10 +329,4 @@ class GpuProgram {
 }
 
 
-
-
-
-
-
-
 export default GpuProgram;

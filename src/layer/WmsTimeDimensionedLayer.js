@@ -42,52 +42,50 @@ import WmsLayer from "./WmsLayer";
  * See the constructor description for {@link WmsLayer} for a description of the required properties.
  * @throws {ArgumentError} If the specified configuration is null or undefined.
  */
-var WmsTimeDimensionedLayer = function (config) {
-  if (!config) {
-    throw new ArgumentError(
-      Logger.logMessage(
-        Logger.LEVEL_SEVERE,
-        "WmsTimeDimensionedLayer",
-        "constructor",
-        "No configuration specified."
-      )
-    );
-  }
-
-  Layer.call(this, "WMS Time Dimensioned Layer");
-
-  /**
-   * The configuration object specified at construction.
-   * @type {{}}
-   * @readonly
-   */
-  this.config = config;
-
-  // Intentionally not documented.
-  this.displayName = config.title;
-  this.pickEnabled = false;
-
-  // Intentionally not documented. Contains the lazily loaded list of sub-layers.
-  this.layers = {};
-};
-
-WmsTimeDimensionedLayer.prototype = Object.create(Layer.prototype);
-
-WmsTimeDimensionedLayer.prototype.doRender = function (dc) {
-  if (this.time) {
-    var currentTimeString = this.time.toISOString(),
-      layer = this.layers[currentTimeString];
-
-    if (!layer) {
-      layer = new WmsLayer(this.config, currentTimeString);
-      this.layers[currentTimeString] = layer;
+class WmsTimeDimensionedLayer extends Layer {
+  constructor(config) {
+    super("WMS Time Dimensioned Layer");
+    if (!config) {
+      throw new ArgumentError(
+        Logger.logMessage(
+          Logger.LEVEL_SEVERE,
+          "WmsTimeDimensionedLayer",
+          "constructor",
+          "No configuration specified."
+        )
+      );
     }
 
-    layer.opacity = this.opacity;
-    layer.doRender(dc);
+    /**
+     * The configuration object specified at construction.
+     * @type {{}}
+     * @readonly
+     */
+    this.config = config;
 
-    this.inCurrentFrame = layer.inCurrentFrame;
+    // Intentionally not documented.
+    this.displayName = config.title;
+    this.pickEnabled = false;
+
+    // Intentionally not documented. Contains the lazily loaded list of sub-layers.
+    this.layers = {};
   }
-};
+  doRender(dc) {
+    if (this.time) {
+      var currentTimeString = this.time.toISOString(),
+        layer = this.layers[currentTimeString];
+
+      if (!layer) {
+        layer = new WmsLayer(this.config, currentTimeString);
+        this.layers[currentTimeString] = layer;
+      }
+
+      layer.opacity = this.opacity;
+      layer.doRender(dc);
+
+      this.inCurrentFrame = layer.inCurrentFrame;
+    }
+  }
+}
 
 export default WmsTimeDimensionedLayer;

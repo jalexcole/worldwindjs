@@ -45,73 +45,75 @@ import WorldWindConstants from "../WorldWindConstants";
  * @param {PlacemarkAttributes} attributes Attributes to initialize this attributes instance to. May be null,
  * in which case the new instance contains default attributes.
  */
-var PlacemarkAttributes = function (attributes) {
-  // These are all documented with their property accessors below.
-  this._imageColor = attributes
-    ? attributes._imageColor.clone()
-    : Color.WHITE.clone();
-  this._imageOffset = attributes
-    ? attributes._imageOffset
-    : new Offset(
+class PlacemarkAttributes {
+  constructor(attributes) {
+    // These are all documented with their property accessors below.
+    this._imageColor = attributes
+      ? attributes._imageColor.clone()
+      : Color.WHITE.clone();
+    this._imageOffset = attributes
+      ? attributes._imageOffset
+      : new Offset(
         WorldWindConstants.OFFSET_FRACTION,
         0.5,
         WorldWindConstants.OFFSET_FRACTION,
         0.5
       );
-  this._imageInitialWidth = attributes ? attributes._imageInitialWidth : null;
-  this._imageInitialHeight = attributes ? attributes._imageInitialHeight : null;
-  this._imageScale = attributes ? attributes._imageScale : 1;
-  this._imageSource = attributes ? attributes._imageSource : null;
-  this._depthTest = attributes ? attributes._depthTest : true;
-  this._labelAttributes = attributes
-    ? new TextAttributes(attributes._labelAttributes)
-    : new TextAttributes(null);
-  this._drawLeaderLine = attributes ? attributes._drawLeaderLine : false;
-  this._leaderLineAttributes = attributes
-    ? new ShapeAttributes(attributes._leaderLineAttributes)
-    : new ShapeAttributes(null);
+    this._imageInitialWidth = attributes ? attributes._imageInitialWidth : null;
+    this._imageInitialHeight = attributes ? attributes._imageInitialHeight : null;
+    this._imageScale = attributes ? attributes._imageScale : 1;
+    this._imageSource = attributes ? attributes._imageSource : null;
+    this._depthTest = attributes ? attributes._depthTest : true;
+    this._labelAttributes = attributes
+      ? new TextAttributes(attributes._labelAttributes)
+      : new TextAttributes(null);
+    this._drawLeaderLine = attributes ? attributes._drawLeaderLine : false;
+    this._leaderLineAttributes = attributes
+      ? new ShapeAttributes(attributes._leaderLineAttributes)
+      : new ShapeAttributes(null);
 
+    /**
+     * Indicates whether this object's state key is invalid. Subclasses must set this value to true when their
+     * attributes change. The state key will be automatically computed the next time it's requested. This flag
+     * will be set to false when that occurs.
+     * @type {Boolean}
+     * @protected
+     */
+    this.stateKeyInvalid = true;
+  }
   /**
-   * Indicates whether this object's state key is invalid. Subclasses must set this value to true when their
-   * attributes change. The state key will be automatically computed the next time it's requested. This flag
-   * will be set to false when that occurs.
-   * @type {Boolean}
+   * Computes the state key for this attributes object. Subclasses that define additional attributes must
+   * override this method, call it from that method, and append the state of their attributes to its
+   * return value.
+   * @returns {String} The state key for this object.
    * @protected
    */
-  this.stateKeyInvalid = true;
-};
+  computeStateKey() {
+    return (
+      "ic " +
+      this._imageColor.toHexString(true) +
+      " io " +
+      this._imageOffset.toString() +
+      " iiw " +
+      this._imageInitialWidth +
+      " iih " +
+      this._imageInitialHeight +
+      " is " +
+      this._imageScale +
+      " ip " +
+      this._imageSource +
+      " dt " +
+      this._depthTest +
+      " la " +
+      this._labelAttributes.stateKey +
+      " dll " +
+      this._drawLeaderLine +
+      " lla " +
+      this._leaderLineAttributes.stateKey
+    );
+  }
+}
 
-/**
- * Computes the state key for this attributes object. Subclasses that define additional attributes must
- * override this method, call it from that method, and append the state of their attributes to its
- * return value.
- * @returns {String} The state key for this object.
- * @protected
- */
-PlacemarkAttributes.prototype.computeStateKey = function () {
-  return (
-    "ic " +
-    this._imageColor.toHexString(true) +
-    " io " +
-    this._imageOffset.toString() +
-    " iiw " +
-    this._imageInitialWidth +
-    " iih " +
-    this._imageInitialHeight +
-    " is " +
-    this._imageScale +
-    " ip " +
-    this._imageSource +
-    " dt " +
-    this._depthTest +
-    " la " +
-    this._labelAttributes.stateKey +
-    " dll " +
-    this._drawLeaderLine +
-    " lla " +
-    this._leaderLineAttributes.stateKey
-  );
-};
 
 Object.defineProperties(PlacemarkAttributes.prototype, {
   /**

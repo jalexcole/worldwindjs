@@ -29,31 +29,33 @@ import ArgumentError from "../../error/ArgumentError";
 import GmlRectifiedGrid from "./GmlRectifiedGrid";
 import Logger from "../../util/Logger";
 
-var GmlDomainSet = function (element) {
-  if (!element) {
-    throw new ArgumentError(
-      Logger.logMessage(
-        Logger.LEVEL_SEVERE,
-        "GmlAbstractGeometry",
-        "constructor",
-        "missingDom"
-      )
-    );
+class GmlDomainSet {
+  constructor(element) {
+    if (!element) {
+      throw new ArgumentError(
+        Logger.logMessage(
+          Logger.LEVEL_SEVERE,
+          "GmlAbstractGeometry",
+          "constructor",
+          "missingDom"
+        )
+      );
+    }
+
+    this.assembleElement(element);
   }
+  // Internal. Intentionally not documented.
+  assembleElement(element) {
+    var children = element.children || element.childNodes;
+    for (var c = 0; c < children.length; c++) {
+      var child = children[c];
 
-  this.assembleElement(element);
-};
-
-// Internal. Intentionally not documented.
-GmlDomainSet.prototype.assembleElement = function (element) {
-  var children = element.children || element.childNodes;
-  for (var c = 0; c < children.length; c++) {
-    var child = children[c];
-
-    if (child.localName === "RectifiedGrid") {
-      this.rectifiedGrid = new GmlRectifiedGrid(child);
+      if (child.localName === "RectifiedGrid") {
+        this.rectifiedGrid = new GmlRectifiedGrid(child);
+      }
     }
   }
-};
+}
+
 
 export default GmlDomainSet;

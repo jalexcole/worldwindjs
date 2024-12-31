@@ -31,7 +31,9 @@ import Renderable from "../../../render/Renderable";
 import WktElements from "../WktElements";
 import WktType from "../WktType";
 
-
+/**
+ * @abstract
+ */
 class WktObject {
   type;
   _is3d;

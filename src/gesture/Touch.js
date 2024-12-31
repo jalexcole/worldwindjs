@@ -35,26 +35,28 @@
  * @param {Number} clientX The X coordinate of the touch point's location.
  * @param {Number} clientY The Y coordinate of the touch point's location.
  */
-var Touch = function (identifier, clientX, clientY) {
-  /**
-   * A number uniquely identifying this touch point.
-   * @type {Number}
-   * @readonly
-   */
-  this.identifier = identifier;
+class Touch {
+  constructor(identifier, clientX, clientY) {
+    /**
+     * A number uniquely identifying this touch point.
+     * @type {Number}
+     * @readonly
+     */
+    this.identifier = identifier;
 
-  // Intentionally not documented.
-  this._clientX = clientX;
+    // Intentionally not documented.
+    this._clientX = clientX;
 
-  // Intentionally not documented.
-  this._clientY = clientY;
+    // Intentionally not documented.
+    this._clientY = clientY;
 
-  // Intentionally not documented.
-  this._clientStartX = clientX;
+    // Intentionally not documented.
+    this._clientStartX = clientX;
 
-  // Intentionally not documented.
-  this._clientStartY = clientY;
-};
+    // Intentionally not documented.
+    this._clientStartY = clientY;
+  }
+}
 
 Object.defineProperties(Touch.prototype, {
   /**

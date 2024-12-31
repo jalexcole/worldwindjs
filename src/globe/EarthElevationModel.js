@@ -36,14 +36,16 @@ import UsgsNedHiElevationCoverage from "./UsgsNedHiElevationCoverage";
  * @alias EarthElevationModel
  * @constructor
  */
-var EarthElevationModel = function () {
-  ElevationModel.call(this);
+class EarthElevationModel {
+  constructor() {
+    super();
 
-  this.addCoverage(new GebcoElevationCoverage());
-  this.addCoverage(new AsterV2ElevationCoverage());
-  this.addCoverage(new UsgsNedElevationCoverage());
-  this.addCoverage(new UsgsNedHiElevationCoverage());
-};
+    this.addCoverage(new GebcoElevationCoverage());
+    this.addCoverage(new AsterV2ElevationCoverage());
+    this.addCoverage(new UsgsNedElevationCoverage());
+    this.addCoverage(new UsgsNedHiElevationCoverage());
+  }
+}
 
 EarthElevationModel.prototype = Object.create(ElevationModel.prototype);
 

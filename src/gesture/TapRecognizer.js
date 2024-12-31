@@ -39,151 +39,143 @@ import GestureRecognizer from "./GestureRecognizer";
  * e.g., <code>gestureCallback(recognizer)</code>.
  * @throws {ArgumentError} If the specified target is null or undefined.
  */
-var TapRecognizer = function (target, callback) {
-  GestureRecognizer.call(this, target, callback);
+class TapRecognizer extends GestureRecognizer{
+  constructor(target, callback) {
+    super(target, callback);
 
-  /**
-   *
-   * @type {Number}
-   */
-  this.numberOfTaps = 1;
+    /**
+     *
+     * @type {Number}
+     */
+    this.numberOfTaps = 1;
 
-  /**
-   *
-   * @type {Number}
-   */
-  this.numberOfTouches = 1;
+    /**
+     *
+     * @type {Number}
+     */
+    this.numberOfTouches = 1;
 
-  // Intentionally not documented.
-  this.maxTouchMovement = 20;
+    // Intentionally not documented.
+    this.maxTouchMovement = 20;
 
-  // Intentionally not documented.
-  this.maxTapDuration = 500;
+    // Intentionally not documented.
+    this.maxTapDuration = 500;
 
-  // Intentionally not documented.
-  this.maxTapInterval = 400;
+    // Intentionally not documented.
+    this.maxTapInterval = 400;
 
-  // Intentionally not documented.
-  this.taps = [];
+    // Intentionally not documented.
+    this.taps = [];
 
-  // Intentionally not documented.
-  this.timeout = null;
-};
-
-TapRecognizer.prototype = Object.create(GestureRecognizer.prototype);
-
-// Documented in superclass.
-TapRecognizer.prototype.reset = function () {
-  GestureRecognizer.prototype.reset.call(this);
-
-  this.taps = [];
-  this.cancelFailAfterDelay();
-};
-
-// Documented in superclass.
-TapRecognizer.prototype.mouseDown = function (event) {
-  if (this.state != WorldWindConstants.POSSIBLE) {
-    return;
+    // Intentionally not documented.
+    this.timeout = null;
   }
+  // Documented in superclass.
+  reset() {
+    GestureRecognizer.prototype.reset.call(this);
 
-  this.state = WorldWindConstants.FAILED; // touch gestures fail upon receiving a mouse event
-};
-
-// Documented in superclass.
-TapRecognizer.prototype.touchStart = function (touch) {
-  if (this.state != WorldWindConstants.POSSIBLE) {
-    return;
+    this.taps = [];
+    this.cancelFailAfterDelay();
   }
-
-  var tap;
-
-  if (this.touchCount > this.numberOfTouches) {
-    this.state = WorldWindConstants.FAILED;
-  } else if (this.touchCount == 1) {
-    // first touch started
-    tap = {
-      touchCount: this.touchCount,
-      clientX: this.clientX,
-      clientY: this.clientY,
-    };
-    this.taps.push(tap);
-    this.failAfterDelay(this.maxTapDuration); // fail if the tap is down too long
-  } else {
-    tap = this.taps[this.taps.length - 1];
-    tap.touchCount = this.touchCount; // max number of simultaneous touches
-    tap.clientX = this.clientX; // touch centroid
-    tap.clientY = this.clientY;
-  }
-};
-
-// Documented in superclass.
-TapRecognizer.prototype.touchMove = function (touch) {
-  if (this.state != WorldWindConstants.POSSIBLE) {
-    return;
-  }
-
-  var dx = this.translationX,
-    dy = this.translationY,
-    distance = Math.sqrt(dx * dx + dy * dy);
-  if (distance > this.maxTouchMovement) {
-    this.state = WorldWindConstants.FAILED;
-  }
-};
-
-// Documented in superclass.
-TapRecognizer.prototype.touchEnd = function (touch) {
-  if (this.state != WorldWindConstants.POSSIBLE) {
-    return;
-  }
-
-  if (this.touchCount != 0) {
-    return; // wait until the last touch ends
-  }
-
-  var tapCount = this.taps.length,
-    tap = this.taps[tapCount - 1];
-  if (tap.touchCount != this.numberOfTouches) {
-    this.state = WorldWindConstants.FAILED; // wrong number of touches
-  } else if (tapCount == this.numberOfTaps) {
-    this.clientX = this.taps[0].clientX;
-    this.clientY = this.taps[0].clientY;
-    this.state = WorldWindConstants.RECOGNIZED;
-  } else {
-    this.failAfterDelay(this.maxTapInterval); // fail if the interval between taps is too long
-  }
-};
-
-// Documented in superclass.
-TapRecognizer.prototype.touchCancel = function (touch) {
-  if (this.state != WorldWindConstants.POSSIBLE) {
-    return;
-  }
-
-  this.state = WorldWindConstants.FAILED;
-};
-
-// Intentionally not documented.
-TapRecognizer.prototype.failAfterDelay = function (delay) {
-  var self = this;
-  if (self.timeout) {
-    window.clearTimeout(self.timeout);
-  }
-
-  self.timeout = window.setTimeout(function () {
-    self.timeout = null;
-    if (self.state == WorldWindConstants.POSSIBLE) {
-      self.state = WorldWindConstants.FAILED; // fail if we haven't already reached a terminal state
+  // Documented in superclass.
+  mouseDown(event) {
+    if (this.state != WorldWindConstants.POSSIBLE) {
+      return;
     }
-  }, delay);
-};
 
-// Intentionally not documented.
-TapRecognizer.prototype.cancelFailAfterDelay = function () {
-  var self = this;
-  if (self.timeout) {
-    window.clearTimeout(self.timeout);
-    self.timeout = null;
+    this.state = WorldWindConstants.FAILED; // touch gestures fail upon receiving a mouse event
   }
-};
+  // Documented in superclass.
+  touchStart(touch) {
+    if (this.state != WorldWindConstants.POSSIBLE) {
+      return;
+    }
+
+    var tap;
+
+    if (this.touchCount > this.numberOfTouches) {
+      this.state = WorldWindConstants.FAILED;
+    } else if (this.touchCount == 1) {
+      // first touch started
+      tap = {
+        touchCount: this.touchCount,
+        clientX: this.clientX,
+        clientY: this.clientY,
+      };
+      this.taps.push(tap);
+      this.failAfterDelay(this.maxTapDuration); // fail if the tap is down too long
+    } else {
+      tap = this.taps[this.taps.length - 1];
+      tap.touchCount = this.touchCount; // max number of simultaneous touches
+      tap.clientX = this.clientX; // touch centroid
+      tap.clientY = this.clientY;
+    }
+  }
+  // Documented in superclass.
+  touchMove(touch) {
+    if (this.state != WorldWindConstants.POSSIBLE) {
+      return;
+    }
+
+    var dx = this.translationX, dy = this.translationY, distance = Math.sqrt(dx * dx + dy * dy);
+    if (distance > this.maxTouchMovement) {
+      this.state = WorldWindConstants.FAILED;
+    }
+  }
+  // Documented in superclass.
+  touchEnd(touch) {
+    if (this.state != WorldWindConstants.POSSIBLE) {
+      return;
+    }
+
+    if (this.touchCount != 0) {
+      return; // wait until the last touch ends
+    }
+
+    var tapCount = this.taps.length, tap = this.taps[tapCount - 1];
+    if (tap.touchCount != this.numberOfTouches) {
+      this.state = WorldWindConstants.FAILED; // wrong number of touches
+    } else if (tapCount == this.numberOfTaps) {
+      this.clientX = this.taps[0].clientX;
+      this.clientY = this.taps[0].clientY;
+      this.state = WorldWindConstants.RECOGNIZED;
+    } else {
+      this.failAfterDelay(this.maxTapInterval); // fail if the interval between taps is too long
+    }
+  }
+  // Documented in superclass.
+  touchCancel(touch) {
+    if (this.state != WorldWindConstants.POSSIBLE) {
+      return;
+    }
+
+    this.state = WorldWindConstants.FAILED;
+  }
+  // Intentionally not documented.
+  failAfterDelay(delay) {
+    var self = this;
+    if (self.timeout) {
+      window.clearTimeout(self.timeout);
+    }
+
+    self.timeout = window.setTimeout(function () {
+      self.timeout = null;
+      if (self.state == WorldWindConstants.POSSIBLE) {
+        self.state = WorldWindConstants.FAILED; // fail if we haven't already reached a terminal state
+      }
+    }, delay);
+  }
+  // Intentionally not documented.
+  cancelFailAfterDelay() {
+    var self = this;
+    if (self.timeout) {
+      window.clearTimeout(self.timeout);
+      self.timeout = null;
+    }
+  }
+}
+
+
+
 
 export default TapRecognizer;

@@ -40,26 +40,52 @@ import MercatorTiledImageLayer from "./MercatorTiledImageLayer";
  *
  * @param {String} displayName This layer's display name.
  */
-var BingTiledImageLayer = function (displayName) {
-  MercatorTiledImageLayer.call(
-    this,
-    displayName,
-    23,
-    "image/jpeg",
-    displayName,
-    256,
-    1
-  );
+class BingTiledImageLayer extends MercatorTiledImageLayer{
+  constructor(displayName) {
+   super(
+      displayName,
+      23,
+      "image/jpeg",
+      displayName,
+      256,
+      1
+    );
 
-  // TODO: Picking is enabled as a temporary measure for screen credit hyperlinks to work (see Layer.render)
-  this.pickEnabled = true;
+    // TODO: Picking is enabled as a temporary measure for screen credit hyperlinks to work (see Layer.render)
+    this.pickEnabled = true;
 
-  this.detectBlankImages = true;
+    this.detectBlankImages = true;
 
-  // Set the detail control so the resolution is a close match
-  // to the resolution on the Bing maps website
-  this.detailControl = 1.25;
-};
+    // Set the detail control so the resolution is a close match
+    // to the resolution on the Bing maps website
+    this.detailControl = 1.25;
+  }
+  doRender(dc) {
+    MercatorTiledImageLayer.prototype.doRender.call(this, dc);
+
+    if (this.inCurrentFrame) {
+      this.renderLogo(dc);
+    }
+  }
+  renderLogo(dc) {
+    if (!BingTiledImageLayer.logoImage) {
+      BingTiledImageLayer.logoImage = new ScreenImage(
+        WorldWind.configuration.bingLogoPlacement,
+        WorldWind.configuration.baseUrl + "images/powered-by-bing.png"
+      );
+      BingTiledImageLayer.logoImage.imageColor = new Color(1, 1, 1, 0.5); // Make Bing logo semi transparent.
+    }
+
+    if (BingTiledImageLayer.logoLastFrameTime !== dc.timestamp) {
+      BingTiledImageLayer.logoImage.screenOffset =
+        WorldWind.configuration.bingLogoPlacement;
+      BingTiledImageLayer.logoImage.imageOffset =
+        WorldWind.configuration.bingLogoAlignment;
+      BingTiledImageLayer.logoImage.render(dc);
+      BingTiledImageLayer.logoLastFrameTime = dc.timestamp;
+    }
+  }
+}
 
 // Internal use only. Intentionally not documented.
 BingTiledImageLayer.logoImage = null;
@@ -67,35 +93,5 @@ BingTiledImageLayer.logoImage = null;
 // Internal use only. Intentionally not documented.
 BingTiledImageLayer.logoLastFrameTime = 0;
 
-BingTiledImageLayer.prototype = Object.create(
-  MercatorTiledImageLayer.prototype
-);
-
-BingTiledImageLayer.prototype.doRender = function (dc) {
-  MercatorTiledImageLayer.prototype.doRender.call(this, dc);
-
-  if (this.inCurrentFrame) {
-    this.renderLogo(dc);
-  }
-};
-
-BingTiledImageLayer.prototype.renderLogo = function (dc) {
-  if (!BingTiledImageLayer.logoImage) {
-    BingTiledImageLayer.logoImage = new ScreenImage(
-      WorldWind.configuration.bingLogoPlacement,
-      WorldWind.configuration.baseUrl + "images/powered-by-bing.png"
-    );
-    BingTiledImageLayer.logoImage.imageColor = new Color(1, 1, 1, 0.5); // Make Bing logo semi transparent.
-  }
-
-  if (BingTiledImageLayer.logoLastFrameTime !== dc.timestamp) {
-    BingTiledImageLayer.logoImage.screenOffset =
-      WorldWind.configuration.bingLogoPlacement;
-    BingTiledImageLayer.logoImage.imageOffset =
-      WorldWind.configuration.bingLogoAlignment;
-    BingTiledImageLayer.logoImage.render(dc);
-    BingTiledImageLayer.logoLastFrameTime = dc.timestamp;
-  }
-};
 
 export default BingTiledImageLayer;

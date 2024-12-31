@@ -48,98 +48,209 @@ import TiffConstants from "./TiffConstants";
  * @throws {ArgumentError} If either the specified tag, type, count, valueOffset, geoTiffData or isLittleEndian
  * are null or undefined.
  */
-var TiffIFDEntry = function (
-  tag,
-  type,
-  count,
-  valueOffset,
-  geoTiffData,
-  isLittleEndian
-) {
-  if (!tag) {
-    throw new ArgumentError(
-      Logger.logMessage(
-        Logger.LEVEL_SEVERE,
-        "TiffIFDEntry",
-        "constructor",
-        "missingTag"
-      )
-    );
+class TiffIFDEntry {
+  constructor(tag, type, count, valueOffset, geoTiffData, isLittleEndian) {
+    if (!tag) {
+      throw new ArgumentError(
+        Logger.logMessage(
+          Logger.LEVEL_SEVERE,
+          "TiffIFDEntry",
+          "constructor",
+          "missingTag"
+        )
+      );
+    }
+
+    if (!type) {
+      throw new ArgumentError(
+        Logger.logMessage(
+          Logger.LEVEL_SEVERE,
+          "TiffIFDEntry",
+          "constructor",
+          "missingType"
+        )
+      );
+    }
+
+    if (!count) {
+      throw new ArgumentError(
+        Logger.logMessage(
+          Logger.LEVEL_SEVERE,
+          "TiffIFDEntry",
+          "constructor",
+          "missingCount"
+        )
+      );
+    }
+
+    if (valueOffset === null || valueOffset === undefined) {
+      throw new ArgumentError(
+        Logger.logMessage(
+          Logger.LEVEL_SEVERE,
+          "TiffIFDEntry",
+          "constructor",
+          "missingValueOffset"
+        )
+      );
+    }
+
+    if (!geoTiffData) {
+      throw new ArgumentError(
+        Logger.logMessage(
+          Logger.LEVEL_SEVERE,
+          "TiffIFDEntry",
+          "constructor",
+          "missingGeoTiffData"
+        )
+      );
+    }
+
+    if (isLittleEndian === null || isLittleEndian === undefined) {
+      throw new ArgumentError(
+        Logger.logMessage(
+          Logger.LEVEL_SEVERE,
+          "TiffIFDEntry",
+          "constructor",
+          "missingIsLittleEndian"
+        )
+      );
+    }
+
+    // Documented in defineProperties below.
+    this._tag = tag;
+
+    // Documented in defineProperties below.
+    this._type = type;
+
+    // Documented in defineProperties below.
+    this._count = count;
+
+    // Documented in defineProperties below.
+    this._valueOffset = valueOffset;
+
+    // Documented in defineProperties below.
+    this._geoTiffData = geoTiffData;
+
+    // Documented in defineProperties below.
+    this._isLittleEndian = isLittleEndian;
   }
-
-  if (!type) {
-    throw new ArgumentError(
-      Logger.logMessage(
-        Logger.LEVEL_SEVERE,
-        "TiffIFDEntry",
-        "constructor",
-        "missingType"
-      )
-    );
+  /**
+   * Get the number of bytes of an image file directory depending on its type.
+   * @returns {Number}
+   */
+  getIFDTypeLength() {
+    switch (this.type) {
+      case TiffConstants.Type.BYTE:
+      case TiffConstants.Type.ASCII:
+      case TiffConstants.Type.SBYTE:
+      case TiffConstants.Type.UNDEFINED:
+        return 1;
+      case TiffConstants.Type.SHORT:
+      case TiffConstants.Type.SSHORT:
+        return 2;
+      case TiffConstants.Type.LONG:
+      case TiffConstants.Type.SLONG:
+      case TiffConstants.Type.FLOAT:
+        return 4;
+      case TiffConstants.Type.RATIONAL:
+      case TiffConstants.Type.SRATIONAL:
+      case TiffConstants.Type.DOUBLE:
+        return 8;
+      default:
+        return -1;
+    }
   }
+  /**
+   * Get the value of an image file directory.
+   * @returns {Number[]}
+   */
+  getIFDEntryValue() {
+    var ifdValues = [];
+    var value = null;
+    var ifdTypeLength = this.getIFDTypeLength();
+    var ifdValueSize = ifdTypeLength * this.count;
 
-  if (!count) {
-    throw new ArgumentError(
-      Logger.logMessage(
-        Logger.LEVEL_SEVERE,
-        "TiffIFDEntry",
-        "constructor",
-        "missingCount"
-      )
-    );
+    if (ifdValueSize <= 4) {
+      if (this.isLittleEndian === false) {
+        value = this.valueOffset >>> ((4 - ifdTypeLength) * 8);
+      } else {
+        value = this.valueOffset;
+      }
+      ifdValues.push(value);
+    } else {
+      for (var i = 0; i < this.count; i++) {
+        var indexOffset = ifdTypeLength * i;
+
+        if (ifdTypeLength >= 8) {
+          if (
+            this.type === TiffConstants.Type.RATIONAL ||
+            this.type === TiffConstants.Type.SRATIONAL
+          ) {
+            // Numerator
+            ifdValues.push(
+              GeoTiffUtil.getBytes(
+                this.geoTiffData,
+                this.valueOffset + indexOffset,
+                4,
+                this.isLittleEndian
+              )
+            );
+            // Denominator
+            ifdValues.push(
+              GeoTiffUtil.getBytes(
+                this.geoTiffData,
+                this.valueOffset + indexOffset + 4,
+                4,
+                this.isLittleEndian
+              )
+            );
+          } else if (this.type === TiffConstants.Type.DOUBLE) {
+            ifdValues.push(
+              GeoTiffUtil.getBytes(
+                this.geoTiffData,
+                this.valueOffset + indexOffset,
+                8,
+                this.isLittleEndian
+              )
+            );
+          } else {
+            throw new AbstractError(
+              Logger.logMessage(
+                Logger.LEVEL_SEVERE,
+                "TiffIFDEntry",
+                "parse",
+                "invalidTypeOfIFD"
+              )
+            );
+          }
+        } else {
+          ifdValues.push(
+            GeoTiffUtil.getBytes(
+              this.geoTiffData,
+              this.valueOffset + indexOffset,
+              ifdTypeLength,
+              this.isLittleEndian
+            )
+          );
+        }
+      }
+    }
+
+    if (this.type === TiffConstants.Type.ASCII) {
+      ifdValues.forEach(function (element, index, array) {
+        if (element === 0) {
+          array.splice(index, 1);
+        } else {
+          array[index] = String.fromCharCode(element);
+        }
+      });
+
+      return ifdValues.join("");
+    }
+
+    return ifdValues;
   }
-
-  if (valueOffset === null || valueOffset === undefined) {
-    throw new ArgumentError(
-      Logger.logMessage(
-        Logger.LEVEL_SEVERE,
-        "TiffIFDEntry",
-        "constructor",
-        "missingValueOffset"
-      )
-    );
-  }
-
-  if (!geoTiffData) {
-    throw new ArgumentError(
-      Logger.logMessage(
-        Logger.LEVEL_SEVERE,
-        "TiffIFDEntry",
-        "constructor",
-        "missingGeoTiffData"
-      )
-    );
-  }
-
-  if (isLittleEndian === null || isLittleEndian === undefined) {
-    throw new ArgumentError(
-      Logger.logMessage(
-        Logger.LEVEL_SEVERE,
-        "TiffIFDEntry",
-        "constructor",
-        "missingIsLittleEndian"
-      )
-    );
-  }
-
-  // Documented in defineProperties below.
-  this._tag = tag;
-
-  // Documented in defineProperties below.
-  this._type = type;
-
-  // Documented in defineProperties below.
-  this._count = count;
-
-  // Documented in defineProperties below.
-  this._valueOffset = valueOffset;
-
-  // Documented in defineProperties below.
-  this._geoTiffData = geoTiffData;
-
-  // Documented in defineProperties below.
-  this._isLittleEndian = isLittleEndian;
-};
+}
 
 Object.defineProperties(TiffIFDEntry.prototype, {
   /**
@@ -214,123 +325,5 @@ Object.defineProperties(TiffIFDEntry.prototype, {
     },
   },
 });
-
-/**
- * Get the number of bytes of an image file directory depending on its type.
- * @returns {Number}
- */
-TiffIFDEntry.prototype.getIFDTypeLength = function () {
-  switch (this.type) {
-    case TiffConstants.Type.BYTE:
-    case TiffConstants.Type.ASCII:
-    case TiffConstants.Type.SBYTE:
-    case TiffConstants.Type.UNDEFINED:
-      return 1;
-    case TiffConstants.Type.SHORT:
-    case TiffConstants.Type.SSHORT:
-      return 2;
-    case TiffConstants.Type.LONG:
-    case TiffConstants.Type.SLONG:
-    case TiffConstants.Type.FLOAT:
-      return 4;
-    case TiffConstants.Type.RATIONAL:
-    case TiffConstants.Type.SRATIONAL:
-    case TiffConstants.Type.DOUBLE:
-      return 8;
-    default:
-      return -1;
-  }
-};
-
-/**
- * Get the value of an image file directory.
- * @returns {Number[]}
- */
-TiffIFDEntry.prototype.getIFDEntryValue = function () {
-  var ifdValues = [];
-  var value = null;
-  var ifdTypeLength = this.getIFDTypeLength();
-  var ifdValueSize = ifdTypeLength * this.count;
-
-  if (ifdValueSize <= 4) {
-    if (this.isLittleEndian === false) {
-      value = this.valueOffset >>> ((4 - ifdTypeLength) * 8);
-    } else {
-      value = this.valueOffset;
-    }
-    ifdValues.push(value);
-  } else {
-    for (var i = 0; i < this.count; i++) {
-      var indexOffset = ifdTypeLength * i;
-
-      if (ifdTypeLength >= 8) {
-        if (
-          this.type === TiffConstants.Type.RATIONAL ||
-          this.type === TiffConstants.Type.SRATIONAL
-        ) {
-          // Numerator
-          ifdValues.push(
-            GeoTiffUtil.getBytes(
-              this.geoTiffData,
-              this.valueOffset + indexOffset,
-              4,
-              this.isLittleEndian
-            )
-          );
-          // Denominator
-          ifdValues.push(
-            GeoTiffUtil.getBytes(
-              this.geoTiffData,
-              this.valueOffset + indexOffset + 4,
-              4,
-              this.isLittleEndian
-            )
-          );
-        } else if (this.type === TiffConstants.Type.DOUBLE) {
-          ifdValues.push(
-            GeoTiffUtil.getBytes(
-              this.geoTiffData,
-              this.valueOffset + indexOffset,
-              8,
-              this.isLittleEndian
-            )
-          );
-        } else {
-          throw new AbstractError(
-            Logger.logMessage(
-              Logger.LEVEL_SEVERE,
-              "TiffIFDEntry",
-              "parse",
-              "invalidTypeOfIFD"
-            )
-          );
-        }
-      } else {
-        ifdValues.push(
-          GeoTiffUtil.getBytes(
-            this.geoTiffData,
-            this.valueOffset + indexOffset,
-            ifdTypeLength,
-            this.isLittleEndian
-          )
-        );
-      }
-    }
-  }
-
-  if (this.type === TiffConstants.Type.ASCII) {
-    ifdValues.forEach(function (element, index, array) {
-      if (element === 0) {
-        array.splice(index, 1);
-      } else {
-        array[index] = String.fromCharCode(element);
-      }
-    });
-
-    return ifdValues.join("");
-  }
-
-  return ifdValues;
-};
 
 export default TiffIFDEntry;

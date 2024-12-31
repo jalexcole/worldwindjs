@@ -31,6 +31,7 @@ import Logger from "../../../util/Logger";
   * Every control used by the KML should inherit from this class. It contains common functionality and basically
   * serves as a reference to what needs to be implemented in the descendants.
   * @alias KmlControls
+  * @interface
   * @constructor
   */
 class KmlControls {

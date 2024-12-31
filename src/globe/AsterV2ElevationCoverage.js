@@ -37,26 +37,25 @@ import WmsUrlBuilder from "../util/WmsUrlBuilder";
  * @augments TiledElevationCoverage
  * @classdesc Provides elevations for Earth. Elevations are drawn from the NASA WorldWind elevation service.
  */
-var AsterV2ElevationCoverage = function () {
-  TiledElevationCoverage.call(this, {
-    coverageSector: new Sector(-83.0001, 83.0001, -180, 180),
-    resolution: 0.000277777777778,
-    retrievalImageFormat: "application/bil16",
-    minElevation: -11000,
-    maxElevation: 8850,
-    urlBuilder: new WmsUrlBuilder(
-      "https://worldwind26.arc.nasa.gov/elev",
-      "aster_v2",
-      "",
-      "1.3.0"
-    ),
-  });
+class AsterV2ElevationCoverage extends TiledElevationCoverage{
+  constructor() {
+    super( {
+      coverageSector: new Sector(-83.0001, 83.0001, -180, 180),
+      resolution: 0.000277777777778,
+      retrievalImageFormat: "application/bil16",
+      minElevation: -11000,
+      maxElevation: 8850,
+      urlBuilder: new WmsUrlBuilder(
+        "https://worldwind26.arc.nasa.gov/elev",
+        "aster_v2",
+        "",
+        "1.3.0"
+      ),
+    });
 
-  this.displayName = "ASTER V2 Earth Elevation Coverage";
-};
+    this.displayName = "ASTER V2 Earth Elevation Coverage";
+  }
+}
 
-AsterV2ElevationCoverage.prototype = Object.create(
-  TiledElevationCoverage.prototype
-);
 
 export default AsterV2ElevationCoverage;

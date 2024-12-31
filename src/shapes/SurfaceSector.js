@@ -55,31 +55,84 @@ import SurfaceShape from "./SurfaceShape";
  * attributes must be set directly before the shape is drawn.
  * @throws {ArgumentError} If the specified boundaries are null or undefined.
  */
-var SurfaceSector = function (sector, attributes) {
-  if (!sector) {
-    throw new ArgumentError(
-      Logger.logMessage(
-        Logger.LEVEL_SEVERE,
-        "SurfaceSector",
-        "constructor",
-        "missingSector"
-      )
+class SurfaceSector extends SurfaceShape{
+  constructor(sector, attributes) {
+    super(attributes);
+    if (!sector) {
+      throw new ArgumentError(
+        Logger.logMessage(
+          Logger.LEVEL_SEVERE,
+          "SurfaceSector",
+          "constructor",
+          "missingSector"
+        )
+      );
+    }
+
+    
+
+    /**
+     * This shape's sector.
+     * @type {Sector}
+     */
+    this._sector = sector;
+
+    // The default path type for a surface sector is linear so that it represents a bounding box by default.
+    this._pathType = WorldWindConstants.LINEAR;
+  }
+  // Internal use only. Intentionally not documented.
+  static staticStateKey(shape) {
+    var shapeStateKey = SurfaceShape.staticStateKey(shape);
+
+    return shapeStateKey;
+  }
+  // Internal use only. Intentionally not documented.
+  computeStateKey() {
+    return SurfaceSector.staticStateKey(this);
+  }
+  // Internal. Intentionally not documented.
+  computeBoundaries(dc) {
+    var sector = this._sector;
+
+    this._boundaries = new Array(4);
+
+    this._boundaries[0] = new Location(sector.minLatitude, sector.minLongitude);
+    this._boundaries[1] = new Location(sector.maxLatitude, sector.minLongitude);
+    this._boundaries[2] = new Location(sector.maxLatitude, sector.maxLongitude);
+    this._boundaries[3] = new Location(sector.minLatitude, sector.maxLongitude);
+  }
+  // Internal use only. Intentionally not documented.
+  getReferencePosition() {
+    return new Location(
+      this.sector.centroidLatitude(),
+      this.sector.centroidLongitude()
     );
   }
+  // Internal use only. Intentionally not documented.
+  moveTo(globe, position) {
+    var sector = this._sector;
 
-  SurfaceShape.call(this, attributes);
+    var locations = new Array(3);
 
-  /**
-   * This shape's sector.
-   * @type {Sector}
-   */
-  this._sector = sector;
+    locations[0] = new Location(sector.minLatitude, sector.minLongitude);
+    locations[1] = new Location(sector.maxLatitude, sector.minLongitude);
+    locations[2] = new Location(sector.maxLatitude, sector.maxLongitude);
 
-  // The default path type for a surface sector is linear so that it represents a bounding box by default.
-  this._pathType = WorldWindConstants.LINEAR;
-};
+    locations = this.computeShiftedLocations(
+      globe,
+      this.getReferencePosition(),
+      position,
+      locations
+    );
 
-SurfaceSector.prototype = Object.create(SurfaceShape.prototype);
+    this.sector = new WorldWind.Sector(
+      locations[0].latitude,
+      locations[1].latitude,
+      locations[1].longitude,
+      locations[2].longitude
+    );
+  }
+}
 
 Object.defineProperties(SurfaceSector.prototype, {
   /**
@@ -99,61 +152,9 @@ Object.defineProperties(SurfaceSector.prototype, {
   },
 });
 
-// Internal use only. Intentionally not documented.
-SurfaceSector.staticStateKey = function (shape) {
-  var shapeStateKey = SurfaceShape.staticStateKey(shape);
 
-  return shapeStateKey;
-};
 
-// Internal use only. Intentionally not documented.
-SurfaceSector.prototype.computeStateKey = function () {
-  return SurfaceSector.staticStateKey(this);
-};
 
-// Internal. Intentionally not documented.
-SurfaceSector.prototype.computeBoundaries = function (dc) {
-  var sector = this._sector;
 
-  this._boundaries = new Array(4);
-
-  this._boundaries[0] = new Location(sector.minLatitude, sector.minLongitude);
-  this._boundaries[1] = new Location(sector.maxLatitude, sector.minLongitude);
-  this._boundaries[2] = new Location(sector.maxLatitude, sector.maxLongitude);
-  this._boundaries[3] = new Location(sector.minLatitude, sector.maxLongitude);
-};
-
-// Internal use only. Intentionally not documented.
-SurfaceSector.prototype.getReferencePosition = function () {
-  return new Location(
-    this.sector.centroidLatitude(),
-    this.sector.centroidLongitude()
-  );
-};
-
-// Internal use only. Intentionally not documented.
-SurfaceSector.prototype.moveTo = function (globe, position) {
-  var sector = this._sector;
-
-  var locations = new Array(3);
-
-  locations[0] = new Location(sector.minLatitude, sector.minLongitude);
-  locations[1] = new Location(sector.maxLatitude, sector.minLongitude);
-  locations[2] = new Location(sector.maxLatitude, sector.maxLongitude);
-
-  locations = this.computeShiftedLocations(
-    globe,
-    this.getReferencePosition(),
-    position,
-    locations
-  );
-
-  this.sector = new WorldWind.Sector(
-    locations[0].latitude,
-    locations[1].latitude,
-    locations[1].longitude,
-    locations[2].longitude
-  );
-};
 
 export default SurfaceSector;

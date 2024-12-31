@@ -38,28 +38,30 @@ import LookAt from "../geom/LookAt";
  * directly. Deprecated, see  {@Link Camera}.
  * @param {WorldWindow} worldWindow The WorldWindow to associate with this navigator.
  */
-var Navigator = function (worldWindow) {
-  if (!worldWindow) {
-    throw new ArgumentError(
-      Logger.logMessage(
-        Logger.LEVEL_SEVERE,
-        "Navigator",
-        "constructor",
-        "missingWorldWindow"
-      )
-    );
+class Navigator {
+  constructor(worldWindow) {
+    if (!worldWindow) {
+      throw new ArgumentError(
+        Logger.logMessage(
+          Logger.LEVEL_SEVERE,
+          "Navigator",
+          "constructor",
+          "missingWorldWindow"
+        )
+      );
+    }
+
+    this.wwd = worldWindow;
+
+    /**
+     * Internal use only.
+     * A temp variable used to hold the look view during calculations. Using an object level temp property
+     * negates the need for ad-hoc allocations and reduces load on the garbage collector.
+     * @ignore
+     */
+    this.scratchLookAt = new LookAt();
   }
-
-  this.wwd = worldWindow;
-
-  /**
-   * Internal use only.
-   * A temp variable used to hold the look view during calculations. Using an object level temp property
-   * negates the need for ad-hoc allocations and reduces load on the garbage collector.
-   * @ignore
-   */
-  this.scratchLookAt = new LookAt();
-};
+}
 
 Object.defineProperties(Navigator.prototype, {
   /**

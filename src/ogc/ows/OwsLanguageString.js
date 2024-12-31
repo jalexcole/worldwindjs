@@ -39,35 +39,37 @@ import Logger from "../../util/Logger";
  * @param {Element} element An XML DOM element representing the OWS LanguageString element.
  * @throws {ArgumentError} If the specified XML DOM element is null or undefined.
  */
-var OwsLanguageString = function (element) {
-  if (!element) {
-    throw new ArgumentError(
-      Logger.logMessage(
-        Logger.LEVEL_SEVERE,
-        "LanguageString",
-        "constructor",
-        "missingDomElement"
-      )
-    );
+class OwsLanguageString {
+  constructor(element) {
+    if (!element) {
+      throw new ArgumentError(
+        Logger.logMessage(
+          Logger.LEVEL_SEVERE,
+          "LanguageString",
+          "constructor",
+          "missingDomElement"
+        )
+      );
+    }
+
+    /**
+     * The text content of the element.
+     * @type {string}
+     */
+    this.value = element.textContent;
+
+    /**
+     * Identifier of a language used by the data(set) contents. This language identifier shall be as specified
+     * in IETF RFC 4646. When this element is omitted, the language used is not identified.
+     * @type {string}
+     */
+    this.lang;
+
+    var lang = element.getAttribute("lang");
+    if (lang) {
+      this.lang = lang;
+    }
   }
-
-  /**
-   * The text content of the element.
-   * @type {string}
-   */
-  this.value = element.textContent;
-
-  /**
-   * Identifier of a language used by the data(set) contents. This language identifier shall be as specified
-   * in IETF RFC 4646. When this element is omitted, the language used is not identified.
-   * @type {string}
-   */
-  this.lang;
-
-  var lang = element.getAttribute("lang");
-  if (lang) {
-    this.lang = lang;
-  }
-};
+}
 
 export default OwsLanguageString;

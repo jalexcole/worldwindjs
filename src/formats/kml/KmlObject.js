@@ -26,11 +26,8 @@
  * PDF found in code  directory.
  */
 import ArgumentError from "../../error/ArgumentError";
-import KmlAttribute from "./util/KmlAttribute";
-import KmlElements from "./KmlElements";
 import KmlElementsFactoryCached from "./util/KmlElementsFactoryCached";
 import Logger from "../../util/Logger";
-import { Promise } from "es6-promise";
 import Renderable from "../../render/Renderable";
 
 /**

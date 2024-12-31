@@ -52,6 +52,7 @@ class GeographicText extends Text {
    */
   placePoint = new Vec3(0, 0, 0); // Cartesian point corresponding to this placemark's geographic position
   constructor(position, text) {
+    super(text);
     if (!position) {
       throw new ArgumentError(
         Logger.logMessage(
@@ -63,7 +64,7 @@ class GeographicText extends Text {
       );
     }
 
-    super(text);
+    
 
     /**
      * This text's geographic position.

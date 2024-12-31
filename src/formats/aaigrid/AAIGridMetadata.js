@@ -32,25 +32,27 @@
  * @constructor
  * @classdesc Contains the metadata for an AAIGrid file.
  */
-var AAIGridMetadata = function () {
-  // Documented in defineProperties below.
-  this._ncols = null;
+class AAIGridMetadata {
+  constructor() {
+    // Documented in defineProperties below.
+    this._ncols = null;
 
-  // Documented in defineProperties below.
-  this._nrows = null;
+    // Documented in defineProperties below.
+    this._nrows = null;
 
-  // Documented in defineProperties below.
-  this._xllcorner = null;
+    // Documented in defineProperties below.
+    this._xllcorner = null;
 
-  // Documented in defineProperties below.
-  this._yllcorner = null;
+    // Documented in defineProperties below.
+    this._yllcorner = null;
 
-  // Documented in defineProperties below.
-  this._cellsize = null;
+    // Documented in defineProperties below.
+    this._cellsize = null;
 
-  // Documented in defineProperties below.
-  this._NODATA_value = undefined;
-};
+    // Documented in defineProperties below.
+    this._NODATA_value = undefined;
+  }
+}
 
 Object.defineProperties(AAIGridMetadata.prototype, {
   /**

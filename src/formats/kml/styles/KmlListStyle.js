@@ -25,7 +25,6 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
-import KmlItemIcon from "../util/KmlItemIcon.js";
 import KmlElements from "../KmlElements";
 import KmlSubStyle from "./KmlSubStyle";
 import KmlNodeTransformers from "../util/KmlNodeTransformers";

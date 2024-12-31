@@ -42,7 +42,7 @@ import ScreenText from "../shapes/ScreenText";
  */
 class ScreenCreditController extends Layer {
   constructor() {
-    Layer.call(this, "ScreenCreditController");
+    super( "ScreenCreditController");
 
     /**
      * An {@link Offset} indicating where to place the attributions on the screen.

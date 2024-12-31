@@ -42,16 +42,16 @@ import KmlNodeTransformers from "../util/KmlNodeTransformers";
  * @augments KmlSubStyle
  */
 class KmlBalloonStyle extends KmlSubStyle {
-    constructor(options) {
-        super(options);
-    }
-    static update() { }
-    /**
-     * @inheritDoc
-     */
-    getTagNames() {
-        return ["BalloonStyle"];
-    }
+  constructor(options) {
+    super(options);
+  }
+  static update() {}
+  /**
+   * @inheritDoc
+   */
+  getTagNames() {
+    return ["BalloonStyle"];
+  }
 }
 
 Object.defineProperties(KmlBalloonStyle.prototype, {
@@ -115,8 +115,6 @@ Object.defineProperties(KmlBalloonStyle.prototype, {
     },
   },
 });
-
-
 
 KmlElements.addKey(KmlBalloonStyle.prototype.getTagNames()[0], KmlBalloonStyle);
 

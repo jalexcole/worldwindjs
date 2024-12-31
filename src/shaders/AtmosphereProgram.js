@@ -47,9 +47,7 @@ import Logger from "../util/Logger";
 class AtmosphereProgram extends GpuProgram{
   constructor(gl, vertexShaderSource, fragmentShaderSource, attribute) {
     // Call to the superclass, which performs shader program compiling and linking.
-    GpuProgram.call(
-      this,
-      gl,
+    super(gl,
       vertexShaderSource,
       fragmentShaderSource,
       attribute

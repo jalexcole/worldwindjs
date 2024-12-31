@@ -87,7 +87,12 @@ class Camera {
   copy(copyObject) {
     if (!copyObject) {
       throw new ArgumentError(
-        Logger.logMessage(Logger.LEVEL_SEVERE, "Camera", "copy", "missingObject")
+        Logger.logMessage(
+          Logger.LEVEL_SEVERE,
+          "Camera",
+          "copy",
+          "missingObject"
+        )
       );
     }
 
@@ -142,9 +147,5 @@ Object.defineProperties(Camera.prototype, {
     },
   },
 });
-
-
-
-
 
 export default Camera;

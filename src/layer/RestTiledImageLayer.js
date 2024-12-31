@@ -55,29 +55,25 @@ import WWUtil from "../util/WWUtil";
  * </ul>
  * The specified default is used for any property not specified.
  */
-var RestTiledImageLayer = function (
-  serverAddress,
-  pathToData,
-  displayName,
-  configuration
-) {
-  var cachePath = WWUtil.urlPath(serverAddress + "/" + pathToData);
-
-  TiledImageLayer.call(
-    this,
+class RestTiledImageLayer extends TiledImageLayer{
+  constructor(serverAddress,
+    pathToData,
     displayName,
-    (configuration && configuration.sector) || Sector.FULL_SPHERE,
-    (configuration && configuration.levelZeroTileDelta) || new Location(45, 45),
-    (configuration && configuration.numLevels) || 5,
-    (configuration && configuration.imageFormat) || "image/jpeg",
-    cachePath,
-    (configuration && configuration.tileWidth) || 256,
-    (configuration && configuration.tileHeight) || 256
-  );
+    configuration) {
+    
 
-  this.urlBuilder = new LevelRowColumnUrlBuilder(serverAddress, pathToData);
-};
-
-RestTiledImageLayer.prototype = Object.create(TiledImageLayer.prototype);
+    super(displayName,
+      (configuration && configuration.sector) || Sector.FULL_SPHERE,
+      (configuration && configuration.levelZeroTileDelta) || new Location(45, 45),
+      (configuration && configuration.numLevels) || 5,
+      (configuration && configuration.imageFormat) || "image/jpeg",
+      cachePath,
+      (configuration && configuration.tileWidth) || 256,
+      (configuration && configuration.tileHeight) || 256
+    );
+    let cachePath = WWUtil.urlPath(serverAddress + "/" + pathToData);
+    this.urlBuilder = new LevelRowColumnUrlBuilder(serverAddress, pathToData);
+  }
+}
 
 export default RestTiledImageLayer;

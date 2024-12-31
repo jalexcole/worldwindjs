@@ -45,35 +45,37 @@ import Logger from "../../util/Logger";
  * @param {Object} bbox An object containing the value of GeoJSON FeatureCollection bbox member.
  * @throws {ArgumentError} If the specified mandatory features parameter is null or undefined.
  */
-var GeoJSONFeatureCollection = function (features, bbox) {
-  if (!features) {
-    throw new ArgumentError(
-      Logger.logMessage(
-        Logger.LEVEL_SEVERE,
-        "GeoJSONFeatureCollection",
-        "constructor",
-        "missingFeatures"
-      )
-    );
+class GeoJSONFeatureCollection {
+  constructor(features, bbox) {
+    if (!features) {
+      throw new ArgumentError(
+        Logger.logMessage(
+          Logger.LEVEL_SEVERE,
+          "GeoJSONFeatureCollection",
+          "constructor",
+          "missingFeatures"
+        )
+      );
+    }
+
+    if (Object.prototype.toString.call(features) !== "[object Array]") {
+      throw new ArgumentError(
+        Logger.logMessage(
+          Logger.LEVEL_SEVERE,
+          "GeoJSONFeatureCollection",
+          "constructor",
+          "invalidFeatures"
+        )
+      );
+    }
+
+    // Documented in defineProperties below.
+    this._features = features;
+
+    // Documented in defineProperties below.
+    this._bbox = bbox;
   }
-
-  if (Object.prototype.toString.call(features) !== "[object Array]") {
-    throw new ArgumentError(
-      Logger.logMessage(
-        Logger.LEVEL_SEVERE,
-        "GeoJSONFeatureCollection",
-        "constructor",
-        "invalidFeatures"
-      )
-    );
-  }
-
-  // Documented in defineProperties below.
-  this._features = features;
-
-  // Documented in defineProperties below.
-  this._bbox = bbox;
-};
+}
 
 Object.defineProperties(GeoJSONFeatureCollection.prototype, {
   /**

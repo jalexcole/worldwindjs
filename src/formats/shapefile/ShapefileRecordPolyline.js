@@ -29,7 +29,7 @@ import Shapefile from "./Shapefile";
 import ShapefileRecord from "./ShapefileRecord";
 
 
-class ShapefileRecordPolyline {
+class ShapefileRecordPolyline extends ShapefileRecord {
   /**
    * Constructs a shapefile record for a polyline. Applications typically do not call this constructor. It is called by
    * {@link Shapefile} as shapefile records are read.
@@ -42,14 +42,12 @@ class ShapefileRecordPolyline {
    * @throws {ArgumentError} If either the specified shapefile or buffer are null or undefined.
    */
   constructor(shapefile, buffer) {
-    ShapefileRecord.call(this, shapefile, buffer);
+    super(shapefile, buffer);
   }
   readContents() {
     this.readPolylineContents();
   }
 }
-
-ShapefileRecordPolyline.prototype = Object.create(ShapefileRecord.prototype);
 
 
 export default ShapefileRecordPolyline;

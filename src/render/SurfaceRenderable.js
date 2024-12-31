@@ -32,6 +32,7 @@ import DrawContext from "./DrawContext";
 /**
  * Applications must not call this constructor. It is an interface class and is not meant to be instantiated
  * directly.
+ * @abstract
  * @alias SurfaceRenderable
  * @constructor
  * @classdesc Represents a surface renderable.

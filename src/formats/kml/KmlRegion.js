@@ -26,12 +26,12 @@
  * PDF found in code  directory.
  */
 import BoundingBox from "../../geom/BoundingBox";
-import Color from "../../util/Color";
+
 import KmlElements from "./KmlElements";
 import KmlLatLonAltBox from "./KmlLatLonAltBox";
 import KmlLod from "./KmlLod";
 import KmlObject from "./KmlObject";
-import KmlStyle from "./styles/KmlStyle";
+
 import KmlNodeTransformers from "./util/KmlNodeTransformers";
 import Sector from "../../geom/Sector";
 

@@ -76,6 +76,8 @@ import Vec3 from "../geom/Vec3";
  */
 class GeographicMesh extends AbstractMesh {
   constructor(positions, attributes) {
+    super(attributes);
+
     if (!positions) {
       throw new ArgumentError(
         Logger.logMessage(
@@ -127,7 +129,7 @@ class GeographicMesh extends AbstractMesh {
     var numRows = positions.length,
       numCols = positions[0].length;
 
-    super(attributes);
+    
 
     /**
      * Indicates whether this mesh is pickable when the pick point intersects transparent pixels of the
@@ -336,8 +338,6 @@ class GeographicMesh extends AbstractMesh {
     return outlineIndices;
   }
 }
-
-GeographicMesh.prototype = Object.create(AbstractMesh.prototype);
 
 Object.defineProperties(GeographicMesh.prototype, {
   /**

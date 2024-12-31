@@ -46,15 +46,16 @@ import BingImageryUrlBuilder from "../util/BingImageryUrlBuilder";
  * [Bing Maps Portal]{@link https://www.microsoft.com/maps/choose-your-bing-maps-API.aspx}
  * and either pass it as a parameter to this constructor or specify it as the property WorldWind.BingMapsKey.
  */
-var BingRoadsLayer = function (bingMapsKey) {
-  BingTiledImageLayer.call(this, "Bing Roads");
+class BingRoadsLayer extends BingTiledImageLayer{
+  constructor(bingMapsKey) {
+    super("Bing Roads");
 
-  this.urlBuilder = new BingImageryUrlBuilder("Road", bingMapsKey);
+    this.urlBuilder = new BingImageryUrlBuilder("Road", bingMapsKey);
 
-  // Disable blank-image detection.
-  this.detectBlankImages = false;
-};
+    // Disable blank-image detection.
+    this.detectBlankImages = false;
+  }
+}
 
-BingRoadsLayer.prototype = Object.create(BingTiledImageLayer.prototype);
 
 export default BingRoadsLayer;

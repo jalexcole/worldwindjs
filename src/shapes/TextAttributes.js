@@ -39,62 +39,64 @@ import WorldWindConstants from "../WorldWindConstants";
  * @param {TextAttributes} attributes Attributes to initialize this attributes instance to. May be null,
  * in which case the new instance contains default attributes.
  */
-var TextAttributes = function (attributes) {
-  this._color = attributes ? attributes._color.clone() : Color.WHITE.clone();
-  this._font = attributes ? attributes._font : new Font(14);
-  this._offset = attributes
-    ? attributes._offset
-    : new Offset(
+class TextAttributes {
+  constructor(attributes) {
+    this._color = attributes ? attributes._color.clone() : Color.WHITE.clone();
+    this._font = attributes ? attributes._font : new Font(14);
+    this._offset = attributes
+      ? attributes._offset
+      : new Offset(
         WorldWindConstants.OFFSET_FRACTION,
         0.5,
         WorldWindConstants.OFFSET_FRACTION,
         0.0
       );
-  this._scale = attributes ? attributes._scale : 1;
-  this._depthTest = attributes ? attributes._depthTest : false;
-  this._enableOutline = attributes ? attributes._enableOutline : true;
-  this._outlineWidth = attributes ? attributes._outlineWidth : 4;
-  this._outlineColor = attributes
-    ? attributes._outlineColor
-    : new Color(0, 0, 0, 0.5);
+    this._scale = attributes ? attributes._scale : 1;
+    this._depthTest = attributes ? attributes._depthTest : false;
+    this._enableOutline = attributes ? attributes._enableOutline : true;
+    this._outlineWidth = attributes ? attributes._outlineWidth : 4;
+    this._outlineColor = attributes
+      ? attributes._outlineColor
+      : new Color(0, 0, 0, 0.5);
 
+    /**
+     * Indicates whether this object's state key is invalid. Subclasses must set this value to true when their
+     * attributes change. The state key will be automatically computed the next time it's requested. This flag
+     * will be set to false when that occurs.
+     * @type {boolean}
+     * @protected
+     */
+    this.stateKeyInvalid = true;
+  }
   /**
-   * Indicates whether this object's state key is invalid. Subclasses must set this value to true when their
-   * attributes change. The state key will be automatically computed the next time it's requested. This flag
-   * will be set to false when that occurs.
-   * @type {boolean}
+   * Computes the state key for this attributes object. Subclasses that define additional attributes must
+   * override this method, call it from that method, and append the state of their attributes to its
+   * return value.
+   * @returns {String} The state key for this object.
    * @protected
    */
-  this.stateKeyInvalid = true;
-};
+  computeStateKey() {
+    return (
+      "c " +
+      this._color.toHexString(true) +
+      " f " +
+      this._font.toString() +
+      " o " +
+      this._offset.toString() +
+      " s " +
+      this._scale +
+      " dt " +
+      this._depthTest +
+      " eo " +
+      this._enableOutline +
+      " ow " +
+      this._outlineWidth +
+      " oc " +
+      this._outlineColor.toHexString(true)
+    );
+  }
+}
 
-/**
- * Computes the state key for this attributes object. Subclasses that define additional attributes must
- * override this method, call it from that method, and append the state of their attributes to its
- * return value.
- * @returns {String} The state key for this object.
- * @protected
- */
-TextAttributes.prototype.computeStateKey = function () {
-  return (
-    "c " +
-    this._color.toHexString(true) +
-    " f " +
-    this._font.toString() +
-    " o " +
-    this._offset.toString() +
-    " s " +
-    this._scale +
-    " dt " +
-    this._depthTest +
-    " eo " +
-    this._enableOutline +
-    " ow " +
-    this._outlineWidth +
-    " oc " +
-    this._outlineColor.toHexString(true)
-  );
-};
 
 Object.defineProperties(TextAttributes.prototype, {
   /**

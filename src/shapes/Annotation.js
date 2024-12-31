@@ -59,6 +59,7 @@ class Annotation extends Renderable {
   static scratchPoint = new Vec3(0, 0, 0);
 
   constructor(position, attributes) {
+    super();
     if (!position) {
       throw new ArgumentError(
         Logger.logMessage(
@@ -70,7 +71,7 @@ class Annotation extends Renderable {
       );
     }
 
-    super();
+    
 
     /**
      * This annotation's geographic position.

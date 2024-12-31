@@ -52,10 +52,6 @@ class TextureTile extends Tile {
   constructor(sector, level, row, column) {
     super(sector, level, row, column); // args are checked in the superclass' constructor
 
-
-
-
-
     /**
      * GPU cache key
      * @type {string}

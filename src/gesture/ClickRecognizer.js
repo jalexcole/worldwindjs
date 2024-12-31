@@ -40,130 +40,123 @@ import WorldWindConstants from "../WorldWindConstants";
  * e.g., <code>gestureCallback(recognizer)</code>.
  * @throws {ArgumentError} If the specified target is null or undefined.
  */
-var ClickRecognizer = function (target, callback) {
-  GestureRecognizer.call(this, target, callback);
+class ClickRecognizer extends GestureRecognizer{
+  constructor(target, callback) {
+    super(target, callback);
 
-  /**
-   *
-   * @type {Number}
-   */
-  this.numberOfClicks = 1;
+    /**
+     *
+     * @type {Number}
+     */
+    this.numberOfClicks = 1;
 
-  /**
-   *
-   * @type {Number}
-   */
-  this.button = 0;
+    /**
+     *
+     * @type {Number}
+     */
+    this.button = 0;
 
-  // Intentionally not documented.
-  this.maxMouseMovement = 5;
+    // Intentionally not documented.
+    this.maxMouseMovement = 5;
 
-  // Intentionally not documented.
-  this.maxClickDuration = 500;
+    // Intentionally not documented.
+    this.maxClickDuration = 500;
 
-  // Intentionally not documented.
-  this.maxClickInterval = 400;
+    // Intentionally not documented.
+    this.maxClickInterval = 400;
 
-  // Intentionally not documented.
-  this.clicks = [];
+    // Intentionally not documented.
+    this.clicks = [];
 
-  // Intentionally not documented.
-  this.timeout = null;
-};
-
-ClickRecognizer.prototype = Object.create(GestureRecognizer.prototype);
-
-// Documented in superclass.
-ClickRecognizer.prototype.reset = function () {
-  GestureRecognizer.prototype.reset.call(this);
-
-  this.clicks = [];
-  this.cancelFailAfterDelay();
-};
-
-// Documented in superclass.
-ClickRecognizer.prototype.mouseDown = function (event) {
-  if (this.state != WorldWindConstants.POSSIBLE) {
-    return;
+    // Intentionally not documented.
+    this.timeout = null;
   }
+  // Documented in superclass.
+  reset() {
+    GestureRecognizer.prototype.reset.call(this);
 
-  if (this.button != event.button) {
-    this.state = WorldWindConstants.FAILED;
-  } else {
-    var click = {
-      clientX: this.clientX,
-      clientY: this.clientY,
-    };
-    this.clicks.push(click);
-    this.failAfterDelay(this.maxClickDuration); // fail if the click is down too long
+    this.clicks = [];
+    this.cancelFailAfterDelay();
   }
-};
-
-// Documented in superclass.
-ClickRecognizer.prototype.mouseMove = function (event) {
-  if (this.state != WorldWindConstants.POSSIBLE) {
-    return;
-  }
-
-  var dx = this.translationX,
-    dy = this.translationY,
-    distance = Math.sqrt(dx * dx + dy * dy);
-  if (distance > this.maxMouseMovement) {
-    this.state = WorldWindConstants.FAILED;
-  }
-};
-
-// Documented in superclass.
-ClickRecognizer.prototype.mouseUp = function (event) {
-  if (this.state != WorldWindConstants.POSSIBLE) {
-    return;
-  }
-
-  if (this.mouseButtonMask != 0) {
-    return; // wait until the last button is up
-  }
-
-  var clickCount = this.clicks.length;
-  if (clickCount == this.numberOfClicks) {
-    this.clientX = this.clicks[0].clientX;
-    this.clientY = this.clicks[0].clientY;
-    this.state = WorldWindConstants.RECOGNIZED;
-  } else {
-    this.failAfterDelay(this.maxClickInterval); // fail if the interval between clicks is too long
-  }
-};
-
-// Documented in superclass.
-ClickRecognizer.prototype.touchStart = function (touch) {
-  if (this.state != WorldWindConstants.POSSIBLE) {
-    return;
-  }
-
-  this.state = WorldWindConstants.FAILED; // mouse gestures fail upon receiving a touch event
-};
-
-// Intentionally not documented.
-ClickRecognizer.prototype.failAfterDelay = function (delay) {
-  var self = this;
-  if (self.timeout) {
-    window.clearTimeout(self.timeout);
-  }
-
-  self.timeout = window.setTimeout(function () {
-    self.timeout = null;
-    if (self.state == WorldWindConstants.POSSIBLE) {
-      self.state = WorldWindConstants.FAILED; // fail if we haven't already reached a terminal state
+  // Documented in superclass.
+  mouseDown(event) {
+    if (this.state != WorldWindConstants.POSSIBLE) {
+      return;
     }
-  }, delay);
-};
 
-// Intentionally not documented.
-ClickRecognizer.prototype.cancelFailAfterDelay = function () {
-  var self = this;
-  if (self.timeout) {
-    window.clearTimeout(self.timeout);
-    self.timeout = null;
+    if (this.button != event.button) {
+      this.state = WorldWindConstants.FAILED;
+    } else {
+      var click = {
+        clientX: this.clientX,
+        clientY: this.clientY,
+      };
+      this.clicks.push(click);
+      this.failAfterDelay(this.maxClickDuration); // fail if the click is down too long
+    }
   }
-};
+  // Documented in superclass.
+  mouseMove(event) {
+    if (this.state != WorldWindConstants.POSSIBLE) {
+      return;
+    }
+
+    var dx = this.translationX, dy = this.translationY, distance = Math.sqrt(dx * dx + dy * dy);
+    if (distance > this.maxMouseMovement) {
+      this.state = WorldWindConstants.FAILED;
+    }
+  }
+  // Documented in superclass.
+  mouseUp(event) {
+    if (this.state != WorldWindConstants.POSSIBLE) {
+      return;
+    }
+
+    if (this.mouseButtonMask != 0) {
+      return; // wait until the last button is up
+    }
+
+    var clickCount = this.clicks.length;
+    if (clickCount == this.numberOfClicks) {
+      this.clientX = this.clicks[0].clientX;
+      this.clientY = this.clicks[0].clientY;
+      this.state = WorldWindConstants.RECOGNIZED;
+    } else {
+      this.failAfterDelay(this.maxClickInterval); // fail if the interval between clicks is too long
+    }
+  }
+  // Documented in superclass.
+  touchStart(touch) {
+    if (this.state != WorldWindConstants.POSSIBLE) {
+      return;
+    }
+
+    this.state = WorldWindConstants.FAILED; // mouse gestures fail upon receiving a touch event
+  }
+  // Intentionally not documented.
+  failAfterDelay(delay) {
+    var self = this;
+    if (self.timeout) {
+      window.clearTimeout(self.timeout);
+    }
+
+    self.timeout = window.setTimeout(function () {
+      self.timeout = null;
+      if (self.state == WorldWindConstants.POSSIBLE) {
+        self.state = WorldWindConstants.FAILED; // fail if we haven't already reached a terminal state
+      }
+    }, delay);
+  }
+  // Intentionally not documented.
+  cancelFailAfterDelay() {
+    var self = this;
+    if (self.timeout) {
+      window.clearTimeout(self.timeout);
+      self.timeout = null;
+    }
+  }
+}
+
+
 
 export default ClickRecognizer;

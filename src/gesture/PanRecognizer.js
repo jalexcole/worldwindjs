@@ -41,110 +41,99 @@ import GestureRecognizer from "./GestureRecognizer";
  * e.g., <code>gestureCallback(recognizer)</code>.
  * @throws {ArgumentError} If the specified target is null or undefined.
  */
-var PanRecognizer = function (target, callback) {
-  GestureRecognizer.call(this, target, callback);
+class PanRecognizer extends GestureRecognizer {
+  constructor(target, callback) {
+    super(target, callback);
 
-  /**
-   *
-   * @type {Number}
-   */
-  this.minNumberOfTouches = 1;
+    /**
+     *
+     * @type {Number}
+     */
+    this.minNumberOfTouches = 1;
 
-  /**
-   *
-   * @type {Number}
-   */
-  this.maxNumberOfTouches = Number.MAX_VALUE;
+    /**
+     *
+     * @type {Number}
+     */
+    this.maxNumberOfTouches = Number.MAX_VALUE;
 
-  // Intentionally not documented.
-  this.interpretDistance = 20;
-};
-
-PanRecognizer.prototype = Object.create(GestureRecognizer.prototype);
-
-// Documented in superclass.
-PanRecognizer.prototype.mouseDown = function (event) {
-  if (this.state == WorldWindConstants.POSSIBLE) {
-    this.state = WorldWindConstants.FAILED; // touch gestures fail upon receiving a mouse event
+    // Intentionally not documented.
+    this.interpretDistance = 20;
   }
-};
-
-// Documented in superclass.
-PanRecognizer.prototype.touchMove = function (touch) {
-  if (this.state == WorldWindConstants.POSSIBLE) {
-    if (this.shouldInterpret()) {
-      if (this.shouldRecognize()) {
-        this.state = WorldWindConstants.BEGAN;
-      } else {
+  // Documented in superclass.
+  mouseDown(event) {
+    if (this.state == WorldWindConstants.POSSIBLE) {
+      this.state = WorldWindConstants.FAILED; // touch gestures fail upon receiving a mouse event
+    }
+  }
+  // Documented in superclass.
+  touchMove(touch) {
+    if (this.state == WorldWindConstants.POSSIBLE) {
+      if (this.shouldInterpret()) {
+        if (this.shouldRecognize()) {
+          this.state = WorldWindConstants.BEGAN;
+        } else {
+          this.state = WorldWindConstants.FAILED;
+        }
+      }
+    } else if (this.state == WorldWindConstants.BEGAN || this.state == WorldWindConstants.CHANGED) {
+      this.state = WorldWindConstants.CHANGED;
+    }
+  }
+  // Documented in superclass.
+  touchEnd(touch) {
+    if (this.touchCount == 0) {
+      // last touch ended
+      if (this.state == WorldWindConstants.POSSIBLE) {
         this.state = WorldWindConstants.FAILED;
+      } else if (this.state == WorldWindConstants.BEGAN ||
+        this.state == WorldWindConstants.CHANGED) {
+        this.state = WorldWindConstants.ENDED;
       }
     }
-  } else if (this.state == WorldWindConstants.BEGAN || this.state == WorldWindConstants.CHANGED) {
-    this.state = WorldWindConstants.CHANGED;
   }
-};
-
-// Documented in superclass.
-PanRecognizer.prototype.touchEnd = function (touch) {
-  if (this.touchCount == 0) {
-    // last touch ended
-    if (this.state == WorldWindConstants.POSSIBLE) {
-      this.state = WorldWindConstants.FAILED;
-    } else if (
-      this.state == WorldWindConstants.BEGAN ||
-      this.state == WorldWindConstants.CHANGED
-    ) {
-      this.state = WorldWindConstants.ENDED;
+  // Documented in superclass.
+  touchCancel(touch) {
+    if (this.touchCount == 0) {
+      // last touch cancelled
+      if (this.state == WorldWindConstants.POSSIBLE) {
+        this.state = WorldWindConstants.FAILED;
+      } else if (this.state == WorldWindConstants.BEGAN ||
+        this.state == WorldWindConstants.CHANGED) {
+        this.state = WorldWindConstants.CANCELLED;
+      }
     }
   }
-};
-
-// Documented in superclass.
-PanRecognizer.prototype.touchCancel = function (touch) {
-  if (this.touchCount == 0) {
-    // last touch cancelled
-    if (this.state == WorldWindConstants.POSSIBLE) {
-      this.state = WorldWindConstants.FAILED;
-    } else if (
-      this.state == WorldWindConstants.BEGAN ||
-      this.state == WorldWindConstants.CHANGED
-    ) {
-      this.state = WorldWindConstants.CANCELLED;
-    }
+  // Documented in superclass.
+  prepareToRecognize() {
+    // set translation to zero when the pan begins
+    this.translationX = 0;
+    this.translationY = 0;
   }
-};
+  /**
+   *
+   * @returns {boolean}
+   * @protected
+   */
+  shouldInterpret() {
+    var dx = this.translationX, dy = this.translationY, distance = Math.sqrt(dx * dx + dy * dy);
+    return distance > this.interpretDistance; // interpret touches when the touch centroid moves far enough
+  }
+  /**
+   *
+   * @returns {boolean}
+   * @protected
+   */
+  shouldRecognize() {
+    var touchCount = this.touchCount;
+    return (
+      touchCount != 0 &&
+      touchCount >= this.minNumberOfTouches &&
+      touchCount <= this.maxNumberOfTouches
+    );
+  }
+}
 
-// Documented in superclass.
-PanRecognizer.prototype.prepareToRecognize = function () {
-  // set translation to zero when the pan begins
-  this.translationX = 0;
-  this.translationY = 0;
-};
 
-/**
- *
- * @returns {boolean}
- * @protected
- */
-PanRecognizer.prototype.shouldInterpret = function () {
-  var dx = this.translationX,
-    dy = this.translationY,
-    distance = Math.sqrt(dx * dx + dy * dy);
-  return distance > this.interpretDistance; // interpret touches when the touch centroid moves far enough
-};
-
-/**
- *
- * @returns {boolean}
- * @protected
- */
-PanRecognizer.prototype.shouldRecognize = function () {
-  var touchCount = this.touchCount;
-  return (
-    touchCount != 0 &&
-    touchCount >= this.minNumberOfTouches &&
-    touchCount <= this.maxNumberOfTouches
-  );
-};
 
 export default PanRecognizer;

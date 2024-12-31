@@ -51,11 +51,13 @@ class ProjectionGnomonic extends GeographicProjection {
    */
 
   constructor(pole) {
+    super("Polar Gnomonic", false, limits);
+    
     let limits = this.north
       ? new Sector(30, 90, -180, 180)
       : new Sector(-90, -30, -180, 180);
 
-    super("Polar Gnomonic", false, limits);
+    
 
     // Internal. Intentionally not documented. See "pole" property accessor below for public interface.
     // Internal. Intentionally not documented.

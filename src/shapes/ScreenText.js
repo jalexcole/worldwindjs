@@ -45,59 +45,55 @@ import Text from "./Text";
  * @param {String} text The text to display.
  * @throws {ArgumentError} If either the specified screen offset or text is null or undefined.
  */
-var ScreenText = function (screenOffset, text) {
-  if (!screenOffset) {
-    throw new ArgumentError(
-      Logger.logMessage(
-        Logger.LEVEL_SEVERE,
-        "Text",
-        "constructor",
-        "missingOffset"
-      )
-    );
+class ScreenText extends Text{
+  constructor(screenOffset, text) {
+    super(text);
+    if (!screenOffset) {
+      throw new ArgumentError(
+        Logger.logMessage(
+          Logger.LEVEL_SEVERE,
+          "Text",
+          "constructor",
+          "missingOffset"
+        )
+      );
+    }
+
+    /**
+     * The offset indicating this text's placement on the screen.
+     * The [TextAttributes.offset]{@link TextAttributes#offset} property indicates the relationship of the text
+     * string to this location.
+     * @type {Offset}
+     */
+    this.screenOffset = screenOffset;
+
+    /**
+     * Inherited from [Text]{@link Text#altitudeMode} but not utilized by screen text.
+     */
+    this.altitudeMode = null;
   }
-
-  Text.call(this, text);
-
-  /**
-   * The offset indicating this text's placement on the screen.
-   * The [TextAttributes.offset]{@link TextAttributes#offset} property indicates the relationship of the text
-   * string to this location.
-   * @type {Offset}
-   */
-  this.screenOffset = screenOffset;
-
-  /**
-   * Inherited from [Text]{@link Text#altitudeMode} but not utilized by screen text.
-   */
-  this.altitudeMode = null;
-};
-
-ScreenText.prototype = Object.create(Text.prototype);
-
-// Documented in superclass.
-ScreenText.prototype.render = function (dc) {
-  // Ensure that this text is drawn only once per frame.
-  if (this.lastFrameTime !== dc.timestamp) {
-    Text.prototype.render.call(this, dc);
+  // Documented in superclass.
+  render(dc) {
+    // Ensure that this text is drawn only once per frame.
+    if (this.lastFrameTime !== dc.timestamp) {
+      Text.prototype.render.call(this, dc);
+    }
   }
-};
-
-// Documented in superclass.
-ScreenText.prototype.computeScreenPointAndEyeDistance = function (dc) {
-  var gl = dc.currentGlContext,
-    offset = this.screenOffset.offsetForSize(
+  // Documented in superclass.
+  computeScreenPointAndEyeDistance(dc) {
+    var gl = dc.currentGlContext, offset = this.screenOffset.offsetForSize(
       gl.drawingBufferWidth,
       gl.drawingBufferHeight
     );
 
-  this.screenPoint[0] = offset[0];
-  this.screenPoint[1] = offset[1];
-  this.screenPoint[2] = 0;
+    this.screenPoint[0] = offset[0];
+    this.screenPoint[1] = offset[1];
+    this.screenPoint[2] = 0;
 
-  this.eyeDistance = 0;
+    this.eyeDistance = 0;
 
-  return true;
-};
+    return true;
+  }
+}
 
 export default ScreenText;

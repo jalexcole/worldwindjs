@@ -48,93 +48,91 @@ import TextAttributes from "../shapes/TextAttributes";
  * instance of this layer if each window is to have a frame statistics display.
  * @throws {ArgumentError} If the specified WorldWindow is null or undefined.
  */
-var FrameStatisticsLayer = function (worldWindow) {
-  if (!worldWindow) {
-    throw new ArgumentError(
-      Logger.logMessage(
-        Logger.LEVEL_SEVERE,
-        "FrameStatisticsLayer",
-        "constructor",
-        "missingWorldWindow"
-      )
+class FrameStatisticsLayer extends Layer{
+  constructor(worldWindow) {
+    super("Frame Statistics");
+    if (!worldWindow) {
+      throw new ArgumentError(
+        Logger.logMessage(
+          Logger.LEVEL_SEVERE,
+          "FrameStatisticsLayer",
+          "constructor",
+          "missingWorldWindow"
+        )
+      );
+    }
+
+    
+
+    // No picking of this layer's screen elements.
+    this.pickEnabled = false;
+
+    var textAttributes = new TextAttributes(null);
+    textAttributes.color = Color.GREEN;
+    textAttributes.font = new Font(12);
+    textAttributes.offset = new Offset(
+      WorldWindConstants.OFFSET_FRACTION,
+      0,
+      WorldWindConstants.OFFSET_FRACTION,
+      1
     );
+
+    // Intentionally not documented.
+    this.frameTime = new ScreenText(
+      new Offset(
+        WorldWindConstants.OFFSET_PIXELS,
+        5,
+        WorldWindConstants.OFFSET_INSET_PIXELS,
+        5
+      ),
+      " "
+    );
+    this.frameTime.attributes = textAttributes;
+
+    // Intentionally not documented.
+    this.frameRate = new ScreenText(
+      new Offset(
+        WorldWindConstants.OFFSET_PIXELS,
+        5,
+        WorldWindConstants.OFFSET_INSET_PIXELS,
+        25
+      ),
+      " "
+    );
+    this.frameRate.attributes = textAttributes;
+
+    // Register a redraw callback on the WorldWindow.
+    var thisLayer = this;
+
+    function redrawCallback(worldWindow, stage) {
+      thisLayer.handleRedraw(worldWindow, stage);
+    }
+
+    worldWindow.redrawCallbacks.push(redrawCallback);
   }
-
-  Layer.call(this, "Frame Statistics");
-
-  // No picking of this layer's screen elements.
-  this.pickEnabled = false;
-
-  var textAttributes = new TextAttributes(null);
-  textAttributes.color = Color.GREEN;
-  textAttributes.font = new Font(12);
-  textAttributes.offset = new Offset(
-    WorldWindConstants.OFFSET_FRACTION,
-    0,
-    WorldWindConstants.OFFSET_FRACTION,
-    1
-  );
-
+  // Documented in superclass.
+  doRender(dc) {
+    this.frameRate.render(dc);
+    this.frameTime.render(dc);
+    this.inCurrentFrame = true;
+  }
   // Intentionally not documented.
-  this.frameTime = new ScreenText(
-    new Offset(
-      WorldWindConstants.OFFSET_PIXELS,
-      5,
-      WorldWindConstants.OFFSET_INSET_PIXELS,
-      5
-    ),
-    " "
-  );
-  this.frameTime.attributes = textAttributes;
+  handleRedraw(worldWindow, stage) {
+    if (stage !== WorldWindConstants.BEFORE_REDRAW) {
+      return; // ignore after redraw events
+    }
 
-  // Intentionally not documented.
-  this.frameRate = new ScreenText(
-    new Offset(
-      WorldWindConstants.OFFSET_PIXELS,
-      5,
-      WorldWindConstants.OFFSET_INSET_PIXELS,
-      25
-    ),
-    " "
-  );
-  this.frameRate.attributes = textAttributes;
-
-  // Register a redraw callback on the WorldWindow.
-  var thisLayer = this;
-
-  function redrawCallback(worldWindow, stage) {
-    thisLayer.handleRedraw(worldWindow, stage);
+    var frameStats = worldWindow.frameStatistics;
+    this.frameTime.text =
+      "Frame time  " +
+      frameStats.frameTimeAverage.toFixed(0) +
+      " ms  (" +
+      frameStats.frameTimeMin.toFixed(0) +
+      " - " +
+      frameStats.frameTimeMax.toFixed(0) +
+      ")";
+    this.frameRate.text =
+      "Frame rate  " + frameStats.frameRateAverage.toFixed(0) + " fps";
   }
-
-  worldWindow.redrawCallbacks.push(redrawCallback);
-};
-
-FrameStatisticsLayer.prototype = Object.create(Layer.prototype);
-
-// Documented in superclass.
-FrameStatisticsLayer.prototype.doRender = function (dc) {
-  this.frameRate.render(dc);
-  this.frameTime.render(dc);
-  this.inCurrentFrame = true;
-};
-
-// Intentionally not documented.
-FrameStatisticsLayer.prototype.handleRedraw = function (worldWindow, stage) {
-  if (stage !== WorldWindConstants.BEFORE_REDRAW) {
-    return; // ignore after redraw events
-  }
-
-  var frameStats = worldWindow.frameStatistics;
-  this.frameTime.text =
-    "Frame time  " +
-    frameStats.frameTimeAverage.toFixed(0) +
-    " ms  (" +
-    frameStats.frameTimeMin.toFixed(0) +
-    " - " +
-    frameStats.frameTimeMax.toFixed(0) +
-    ")";
-  this.frameRate.text =
-    "Frame rate  " + frameStats.frameRateAverage.toFixed(0) + " fps";
-};
-
+}
 export default FrameStatisticsLayer;

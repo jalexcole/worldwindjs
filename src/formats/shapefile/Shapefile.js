@@ -28,7 +28,7 @@
 import Angle from "../../geom/Angle";
 import ArgumentError from "../../error/ArgumentError";
 import ByteBuffer from "../../util/ByteBuffer";
-import Color from "../../util/Color";
+
 import DBaseFile from "./DBaseFile";
 import Location from "../../geom/Location";
 import Logger from "../../util/Logger";

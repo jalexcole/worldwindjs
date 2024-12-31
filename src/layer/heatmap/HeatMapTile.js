@@ -48,157 +48,152 @@
  * @param options.intensityGradient {Object} Keys represent the opacity between 0 and 1 and the values represent
  *  color strings.
  */
-var HeatMapTile = function (data, options) {
-  this._data = data;
+class HeatMapTile {
+  constructor(data, options) {
+    this._data = data;
 
-  this._sector = options.sector;
+    this._sector = options.sector;
 
-  this._canvas = this.createCanvas(options.width, options.height);
+    this._canvas = this.createCanvas(options.width, options.height);
 
-  this._width = options.width;
-  this._height = options.height;
-  this._intensityGradient = options.intensityGradient;
+    this._width = options.width;
+    this._height = options.height;
+    this._intensityGradient = options.intensityGradient;
 
-  this._radius = options.radius;
+    this._radius = options.radius;
 
-  this._incrementPerIntensity = options.incrementPerIntensity;
-};
-
-/**
- * Returns the drawn HeatMapTile in the form of URL.
- * @return {String} Data URL of the tile.
- */
-HeatMapTile.prototype.url = function () {
-  return this.draw().toDataURL();
-};
-
-/**
- * Returns the whole Canvas. It is then possible to use further. This one is actually used in the
- * HeatMapLayer mechanism so if you want to provide some custom implementation of Canvas creation in your tile,
- * change this method.
- * @return {HTMLCanvasElement} Canvas Element representing the drawn tile.
- */
-HeatMapTile.prototype.canvas = function () {
-  return this.draw();
-};
-
-/**
- * Draws the shapes on the canvas. Create shapes based on the gradient. Each of the gradient colors has associated
- * shape, which defines how strong will be the center point.
- * @protected
- * @returns {HTMLCanvasElement}
- */
-HeatMapTile.prototype.draw = function () {
-  var shapes = [];
-  for (var intensityKey in this._intensityGradient) {
-    if (this._intensityGradient.hasOwnProperty(intensityKey)) {
-      shapes.push({
-        shape: this.shape(intensityKey),
-        min: intensityKey,
-      });
-    }
+    this._incrementPerIntensity = options.incrementPerIntensity;
   }
-
-  var ctx = this._canvas.getContext("2d");
-
-  var percentage,
-    shapeToDraw = null;
-  for (var i = 0; i < this._data.length; i++) {
-    var location = this._data[i];
-    percentage = location.measure * this._incrementPerIntensity;
-    ctx.globalAlpha = percentage;
-    shapes.forEach(function (shape) {
-      if (percentage > shape.min) {
-        shapeToDraw = shape.shape;
+  /**
+   * Returns the drawn HeatMapTile in the form of URL.
+   * @return {String} Data URL of the tile.
+   */
+  url() {
+    return this.draw().toDataURL();
+  }
+  /**
+   * Returns the whole Canvas. It is then possible to use further. This one is actually used in the
+   * HeatMapLayer mechanism so if you want to provide some custom implementation of Canvas creation in your tile,
+   * change this method.
+   * @return {HTMLCanvasElement} Canvas Element representing the drawn tile.
+   */
+  canvas() {
+    return this.draw();
+  }
+  /**
+   * Draws the shapes on the canvas. Create shapes based on the gradient. Each of the gradient colors has associated
+   * shape, which defines how strong will be the center point.
+   * @protected
+   * @returns {HTMLCanvasElement}
+   */
+  draw() {
+    var shapes = [];
+    for (var intensityKey in this._intensityGradient) {
+      if (this._intensityGradient.hasOwnProperty(intensityKey)) {
+        shapes.push({
+          shape: this.shape(intensityKey),
+          min: intensityKey,
+        });
       }
-    });
-    ctx.drawImage(
-      shapeToDraw,
-      this.longitudeInSector(location, this._sector, this._width) -
-        shapeToDraw.width / 2,
-      this._height -
-        this.latitudeInSector(location, this._sector, this._height) -
-        shapeToDraw.height / 2
-    );
+    }
+
+    var ctx = this._canvas.getContext("2d");
+
+    var percentage,
+      shapeToDraw = null;
+    for (var i = 0; i < this._data.length; i++) {
+      var location = this._data[i];
+      percentage = location.measure * this._incrementPerIntensity;
+      ctx.globalAlpha = percentage;
+      shapes.forEach(function (shape) {
+        if (percentage > shape.min) {
+          shapeToDraw = shape.shape;
+        }
+      });
+      ctx.drawImage(
+        shapeToDraw,
+        this.longitudeInSector(location, this._sector, this._width) -
+          shapeToDraw.width / 2,
+        this._height -
+          this.latitudeInSector(location, this._sector, this._height) -
+          shapeToDraw.height / 2
+      );
+    }
+
+    return this._canvas;
   }
+  /**
+   * Creates canvas element of given size.
+   * @protected
+   * @param width {Number} Width of the canvas in pixels
+   * @param height {Number} Height of the canvas in pixels
+   * @returns {HTMLCanvasElement} Created the canvas
+   */
+  createCanvas(width, height) {
+    var canvas = document.createElement("canvas");
+    canvas.width = width;
+    canvas.height = height;
+    return canvas;
+  }
+  /**
+   * Creates a canvas containing the circle of the right size. THe default shape is circle, but subclasses can
+   * change this behavior.
+   *
+   * @protected
+   * @returns {HTMLCanvasElement} Canvas representing the circle.
+   */
+  shape(measure) {
+    var shape = this.createCanvas(this._radius * 2, this._radius * 2),
+      ctx = shape.getContext("2d");
 
-  return this._canvas;
-};
+    var gradient = ctx.createRadialGradient(
+      this._radius,
+      this._radius,
+      0,
+      this._radius,
+      this._radius,
+      this._radius
+    );
+    gradient.addColorStop(0, "rgba(0,0,0," + measure + ")");
+    gradient.addColorStop(1, "rgba(0,0,0,0)");
 
-/**
- * Creates canvas element of given size.
- * @protected
- * @param width {Number} Width of the canvas in pixels
- * @param height {Number} Height of the canvas in pixels
- * @returns {HTMLCanvasElement} Created the canvas
- */
-HeatMapTile.prototype.createCanvas = function (width, height) {
-  var canvas = document.createElement("canvas");
-  canvas.width = width;
-  canvas.height = height;
-  return canvas;
-};
+    ctx.beginPath();
 
-/**
- * Creates a canvas containing the circle of the right size. THe default shape is circle, but subclasses can
- * change this behavior.
- *
- * @protected
- * @returns {HTMLCanvasElement} Canvas representing the circle.
- */
-HeatMapTile.prototype.shape = function (measure) {
-  var shape = this.createCanvas(this._radius * 2, this._radius * 2),
-    ctx = shape.getContext("2d");
+    ctx.arc(this._radius, this._radius, this._radius, 0, Math.PI * 2, true);
 
-  var gradient = ctx.createRadialGradient(
-    this._radius,
-    this._radius,
-    0,
-    this._radius,
-    this._radius,
-    this._radius
-  );
-  gradient.addColorStop(0, "rgba(0,0,0," + measure + ")");
-  gradient.addColorStop(1, "rgba(0,0,0,0)");
+    ctx.fillStyle = gradient;
+    ctx.fill();
 
-  ctx.beginPath();
+    ctx.closePath();
 
-  ctx.arc(this._radius, this._radius, this._radius, 0, Math.PI * 2, true);
-
-  ctx.fillStyle = gradient;
-  ctx.fill();
-
-  ctx.closePath();
-
-  return shape;
-};
-
-/**
- * Calculates position in pixels of the point based on its latitude.
- * @param location {Location} Location to transform
- * @param sector {Sector} Sector to which transform
- * @param height {Number} Height of the tile to draw to.
- * @private
- * @returns {Number} Position on the height in pixels.
- */
-HeatMapTile.prototype.latitudeInSector = function (location, sector, height) {
-  var sizeOfArea = sector.maxLatitude - sector.minLatitude;
-  var locationInArea = location.latitude - sector.minLatitude;
-  return Math.ceil((locationInArea / sizeOfArea) * height);
-};
-
-/**
- * Calculates position in pixels of the point based on its longitude.
- * @param location {Location} Location to transform
- * @param sector {Sector} Sector to which transform
- * @param width {Number} Width of the tile to draw to.
- * @private
- * @returns {Number} Position on the width in pixels.
- */
-HeatMapTile.prototype.longitudeInSector = function (location, sector, width) {
-  var sizeOfArea = sector.maxLongitude - sector.minLongitude;
-  var locationInArea = location.longitude - sector.minLongitude;
-  return Math.ceil((locationInArea / sizeOfArea) * width);
-};
+    return shape;
+  }
+  /**
+   * Calculates position in pixels of the point based on its latitude.
+   * @param location {Location} Location to transform
+   * @param sector {Sector} Sector to which transform
+   * @param height {Number} Height of the tile to draw to.
+   * @private
+   * @returns {Number} Position on the height in pixels.
+   */
+  latitudeInSector(location, sector, height) {
+    var sizeOfArea = sector.maxLatitude - sector.minLatitude;
+    var locationInArea = location.latitude - sector.minLatitude;
+    return Math.ceil((locationInArea / sizeOfArea) * height);
+  }
+  /**
+   * Calculates position in pixels of the point based on its longitude.
+   * @param location {Location} Location to transform
+   * @param sector {Sector} Sector to which transform
+   * @param width {Number} Width of the tile to draw to.
+   * @private
+   * @returns {Number} Position on the width in pixels.
+   */
+  longitudeInSector(location, sector, width) {
+    var sizeOfArea = sector.maxLongitude - sector.minLongitude;
+    var locationInArea = location.longitude - sector.minLongitude;
+    return Math.ceil((locationInArea / sizeOfArea) * width);
+  }
+}
 
 export default HeatMapTile;

@@ -37,28 +37,26 @@ import WmsUrlBuilder from "../util/WmsUrlBuilder";
  * @augments TiledElevationCoverage
  * @classdesc Provides elevations for Earth. Elevations are drawn from the NASA WorldWind elevation service.
  */
-var UsgsNedHiElevationCoverage = function () {
-  // Hawaii Extent: (-178.443593, 18.865460) - (-154.755792, 28.517269)
-  // TODO: Remove this class when the server NO_DATA value issue is resolved.
-  TiledElevationCoverage.call(this, {
-    coverageSector: new Sector(18.86546, 28.517269, -178.443593, -154.755792),
-    resolution: 0.000092592592593,
-    retrievalImageFormat: "application/bil16",
-    minElevation: -11000,
-    maxElevation: 8850,
-    urlBuilder: new WmsUrlBuilder(
-      "https://worldwind26.arc.nasa.gov/elev",
-      "USGS-NED",
-      "",
-      "1.3.0"
-    ),
-  });
+class UsgsNedHiElevationCoverage extends TiledElevationCoverage{
+  constructor() {
+    // Hawaii Extent: (-178.443593, 18.865460) - (-154.755792, 28.517269)
+    // TODO: Remove this class when the server NO_DATA value issue is resolved.
+    super({
+      coverageSector: new Sector(18.86546, 28.517269, -178.443593, -154.755792),
+      resolution: 0.000092592592593,
+      retrievalImageFormat: "application/bil16",
+      minElevation: -11000,
+      maxElevation: 8850,
+      urlBuilder: new WmsUrlBuilder(
+        "https://worldwind26.arc.nasa.gov/elev",
+        "USGS-NED",
+        "",
+        "1.3.0"
+      ),
+    });
 
-  this.displayName = "USGS NED Hawaii Elevation Coverage";
-};
-
-UsgsNedHiElevationCoverage.prototype = Object.create(
-  TiledElevationCoverage.prototype
-);
+    this.displayName = "USGS NED Hawaii Elevation Coverage";
+  }
+}
 
 export default UsgsNedHiElevationCoverage;

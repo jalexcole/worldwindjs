@@ -40,27 +40,27 @@ import WmsUrlBuilder from "../util/WmsUrlBuilder";
  * "BlueMarble-200402", ... "BlueMarble-200412". "BlueMarble-200405" is used if the argument is null
  * or undefined.
  */
-var BMNGLayer = function (layerName) {
-  // This LevelSet configuration captures the Blue Marble resolution of 4.166666667E-03 degrees/pixel
-  TiledImageLayer.call(
-    this,
-    "Blue Marble",
-    Sector.FULL_SPHERE,
-    new Location(45, 45),
-    7,
-    "image/jpeg",
-    layerName || "BMNG256",
-    256,
-    256
-  );
+class BMNGLayer {
+  constructor(layerName) {
+    // This LevelSet configuration captures the Blue Marble resolution of 4.166666667E-03 degrees/pixel
+    super("Blue Marble",
+      Sector.FULL_SPHERE,
+      new Location(45, 45),
+      7,
+      "image/jpeg",
+      layerName || "BMNG256",
+      256,
+      256
+    );
 
-  this.urlBuilder = new WmsUrlBuilder(
-    "https://worldwind25.arc.nasa.gov/wms",
-    layerName || "BlueMarble-200405",
-    "",
-    "1.3.0"
-  );
-};
+    this.urlBuilder = new WmsUrlBuilder(
+      "https://worldwind25.arc.nasa.gov/wms",
+      layerName || "BlueMarble-200405",
+      "",
+      "1.3.0"
+    );
+  }
+}
 
 BMNGLayer.prototype = Object.create(TiledImageLayer.prototype);
 

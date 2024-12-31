@@ -26,7 +26,6 @@
  * PDF found in code  directory.
  */
 import Placemark from "../../../shapes/Placemark";
-import PlacemarkAttributes from "../../../shapes/PlacemarkAttributes";
 import WktElements from "../WktElements";
 import WktObject from "./WktObject";
 import WktPoint from "./WktPoint";

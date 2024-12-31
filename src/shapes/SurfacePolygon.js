@@ -70,8 +70,6 @@ class SurfacePolygon extends SurfaceShape {
       );
     }
 
-    
-
     this._boundaries = boundaries;
 
     this._stateId = SurfacePolygon.stateId++;
@@ -87,7 +85,7 @@ class SurfacePolygon extends SurfaceShape {
     return SurfacePolygon.staticStateKey(this);
   }
   // Internal. Polygon doesn't generate its own boundaries. See SurfaceShape.prototype.computeBoundaries.
-  computeBoundaries(dc) { }
+  computeBoundaries(dc) {}
   // Internal use only. Intentionally not documented.
   getReferencePosition() {
     // Assign the first position as the reference position.
@@ -124,8 +122,6 @@ class SurfacePolygon extends SurfaceShape {
   }
 }
 
-
-
 Object.defineProperties(SurfacePolygon.prototype, {
   /**
    * This polygon's boundaries. The polygons boundary locations. If this argument is an array of
@@ -159,10 +155,5 @@ Object.defineProperties(SurfacePolygon.prototype, {
 
 // Internal use only. Intentionally not documented.
 SurfacePolygon.stateId = Number.MIN_SAFE_INTEGER;
-
-
-
-
-
 
 export default SurfacePolygon;

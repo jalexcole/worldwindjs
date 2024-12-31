@@ -41,83 +41,81 @@ import WmtsLayer from "./WmtsLayer";
  * @param {String} displayName This layer's display name. "Open Street Map" if this parameter is
  * null or undefined.
  */
-var OpenStreetMapImageLayer = function (displayName) {
-  Layer.call(this, this.displayName);
+class OpenStreetMapImageLayer extends Layer{
+  constructor(displayName) {
+    super(this.displayName);
 
-  this.displayName = displayName || "Open Street Map";
+    this.displayName = displayName || "Open Street Map";
 
-  this.layer = null;
+    this.layer = null;
 
-  this.xhr = null;
+    this.xhr = null;
 
-  // TODO: Picking is enabled as a temporary measure for screen credit hyperlinks to work (see Layer.render)
-  this.pickEnabled = true;
-};
+    // TODO: Picking is enabled as a temporary measure for screen credit hyperlinks to work (see Layer.render)
+    this.pickEnabled = true;
+  }
+  doRender(dc) {
+    this.configureLayer(dc);
 
-OpenStreetMapImageLayer.prototype = Object.create(Layer.prototype);
+    if (this.layer) {
+      this.layer.opacity = this.opacity;
+      this.layer.doRender(dc);
+      this.inCurrentFrame = this.layer.inCurrentFrame;
 
-OpenStreetMapImageLayer.prototype.doRender = function (dc) {
-  this.configureLayer(dc);
-
-  if (this.layer) {
-    this.layer.opacity = this.opacity;
-    this.layer.doRender(dc);
-    this.inCurrentFrame = this.layer.inCurrentFrame;
-
-    // Add a screen credit to attribute the data source to OSM and EOX
-    // The pattern for this attribute is described in the WMTS Capabilities document and demonstrated at EOX
-    // Maps site: http://maps.eox.at/
-    if (this.inCurrentFrame) {
-      dc.screenCreditController.addCredit("OpenStreetMap ©", Color.DARK_GRAY);
-      dc.screenCreditController.addCredit("EOX.at ©", Color.DARK_GRAY);
+      // Add a screen credit to attribute the data source to OSM and EOX
+      // The pattern for this attribute is described in the WMTS Capabilities document and demonstrated at EOX
+      // Maps site: http://maps.eox.at/
+      if (this.inCurrentFrame) {
+        dc.screenCreditController.addCredit("OpenStreetMap ©", Color.DARK_GRAY);
+        dc.screenCreditController.addCredit("EOX.at ©", Color.DARK_GRAY);
+      }
     }
   }
-};
-
-OpenStreetMapImageLayer.prototype.configureLayer = function (dc) {
-  if (!this.xhr) {
-    var self = this;
-    var canvas = dc.currentGlContext.canvas;
-    this.xhr = new XMLHttpRequest();
-    this.xhr.open(
-      "GET",
-      "https://tiles.maps.eox.at/wmts/1.0.0/WMTSCapabilities.xml",
-      true
-    );
-    this.xhr.onreadystatechange = function () {
-      if (self.xhr.readyState === 4) {
-        if (self.xhr.status === 200) {
-          // Create a layer from the WMTS capabilities.
-          var wmtsCapabilities = new WmtsCapabilities(self.xhr.responseXML);
-          var wmtsLayerCapabilities = wmtsCapabilities.getLayer("osm");
-          var wmtsConfig = WmtsLayer.formLayerConfiguration(
-            wmtsLayerCapabilities
-          );
-          wmtsConfig.title = self.displayName;
-          self.layer = new WmtsLayer(wmtsConfig);
-          // Send an event to request a redraw.
-          var e = document.createEvent("Event");
-          e.initEvent(WorldWindConstants.REDRAW_EVENT_TYPE, true, true);
-          canvas.dispatchEvent(e);
-        } else {
-          Logger.log(
-            Logger.LEVEL_WARNING,
-            "OSM retrieval failed (" + xhr.statusText + "): " + url
-          );
+  configureLayer(dc) {
+    if (!this.xhr) {
+      var self = this;
+      var canvas = dc.currentGlContext.canvas;
+      this.xhr = new XMLHttpRequest();
+      this.xhr.open(
+        "GET",
+        "https://tiles.maps.eox.at/wmts/1.0.0/WMTSCapabilities.xml",
+        true
+      );
+      this.xhr.onreadystatechange = function () {
+        if (self.xhr.readyState === 4) {
+          if (self.xhr.status === 200) {
+            // Create a layer from the WMTS capabilities.
+            var wmtsCapabilities = new WmtsCapabilities(self.xhr.responseXML);
+            var wmtsLayerCapabilities = wmtsCapabilities.getLayer("osm");
+            var wmtsConfig = WmtsLayer.formLayerConfiguration(
+              wmtsLayerCapabilities
+            );
+            wmtsConfig.title = self.displayName;
+            self.layer = new WmtsLayer(wmtsConfig);
+            // Send an event to request a redraw.
+            var e = document.createEvent("Event");
+            e.initEvent(WorldWindConstants.REDRAW_EVENT_TYPE, true, true);
+            canvas.dispatchEvent(e);
+          } else {
+            Logger.log(
+              Logger.LEVEL_WARNING,
+              "OSM retrieval failed (" + xhr.statusText + "): " + url
+            );
+          }
         }
-      }
-    };
+      };
 
-    this.xhr.onerror = function () {
-      Logger.log(Logger.LEVEL_WARNING, "OSM retrieval failed: " + url);
-    };
+      this.xhr.onerror = function () {
+        Logger.log(Logger.LEVEL_WARNING, "OSM retrieval failed: " + url);
+      };
 
-    this.xhr.ontimeout = function () {
-      Logger.log(Logger.LEVEL_WARNING, "OSM retrieval timed out: " + url);
-    };
+      this.xhr.ontimeout = function () {
+        Logger.log(Logger.LEVEL_WARNING, "OSM retrieval timed out: " + url);
+      };
 
-    this.xhr.send(null);
+      this.xhr.send(null);
+    }
   }
-};
+}
 
 export default OpenStreetMapImageLayer;

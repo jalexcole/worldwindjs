@@ -36,61 +36,104 @@ import WcsUrlBuilder from "../../ogc/wcs/WcsUrlBuilder";
  * @param {WebCoverageService} webCoverageService the WebCoverageService providing the coverage
  * @constructor
  */
-var WcsCoverage = function (coverageId, webCoverageService) {
-  if (!coverageId) {
-    throw new ArgumentError(
-      Logger.logMessage(
-        Logger.LEVEL_SEVERE,
-        "WcsCoverage",
-        "constructor",
-        "missingId"
-      )
+class WcsCoverage {
+  constructor(coverageId, webCoverageService) {
+    if (!coverageId) {
+      throw new ArgumentError(
+        Logger.logMessage(
+          Logger.LEVEL_SEVERE,
+          "WcsCoverage",
+          "constructor",
+          "missingId"
+        )
+      );
+    }
+
+    if (!webCoverageService) {
+      throw new ArgumentError(
+        Logger.logMessage(
+          Logger.LEVEL_SEVERE,
+          "WcsCoverage",
+          "constructor",
+          "missingWebCoverageService"
+        )
+      );
+    }
+
+    /**
+     * The Web Coverage Service Coverages id or name as assigned by the providing service.
+     * @type {String}
+     */
+    this.coverageId = coverageId;
+
+    /**
+     * The WebCoverageService responsible for managing this Coverage and Web Coverage Service.
+     * @type {WebCoverageService}
+     */
+    this.service = webCoverageService;
+
+    /**
+     * The Sector representing the bounds of the coverage.
+     * @type {Sector}
+     */
+    this.sector = this.service.coverageDescriptions.getSector(this.coverageId);
+
+    /**
+     * The resolution of the coverage, in degrees.
+     * @type {Number}
+     */
+    this.resolution = this.service.coverageDescriptions.getResolution(
+      this.coverageId
     );
+
+    /**
+     * A configuration object for use by TiledElevationCoverage.
+     * @type {{}}
+     */
+    this.elevationConfig = this.createElevationConfig();
   }
-
-  if (!webCoverageService) {
-    throw new ArgumentError(
-      Logger.logMessage(
-        Logger.LEVEL_SEVERE,
-        "WcsCoverage",
-        "constructor",
-        "missingWebCoverageService"
-      )
-    );
+  // Internal use only
+  createElevationConfig() {
+    return {
+      resolution: this.resolution,
+      coverageSector: this.sector,
+      retrievalImageFormat: this.determineFormatFromService(),
+      urlBuilder: new WcsUrlBuilder(this.coverageId, this.service),
+    };
   }
+  // Internal use only
+  determineFormatFromService() {
+    var version = this.service.capabilities.version, availableFormats, format, coverageDescription, i, len;
 
-  /**
-   * The Web Coverage Service Coverages id or name as assigned by the providing service.
-   * @type {String}
-   */
-  this.coverageId = coverageId;
+    // find the service supported format identifiers
+    if (version === "1.0.0") {
+      // find the associated coverage description
+      for (i = 0, len = this.service.coverageDescriptions.coverages.length; i < len; i++) {
+        if (this.coverageId === this.service.coverageDescriptions.coverages[i].name) {
+          availableFormats =
+            this.service.coverageDescriptions.coverages[i].supportedFormats
+              .formats;
+          break;
+        }
+      }
+    } else if (version === "2.0.1" || version === "2.0.0") {
+      availableFormats =
+        this.service.capabilities.serviceMetadata.formatsSupported;
+    }
 
-  /**
-   * The WebCoverageService responsible for managing this Coverage and Web Coverage Service.
-   * @type {WebCoverageService}
-   */
-  this.service = webCoverageService;
+    if (!availableFormats) {
+      return WcsCoverage.DEFAULT_FORMAT;
+    }
 
-  /**
-   * The Sector representing the bounds of the coverage.
-   * @type {Sector}
-   */
-  this.sector = this.service.coverageDescriptions.getSector(this.coverageId);
+    for (i = 0, len = availableFormats.length; i < len; i++) {
+      if (WcsCoverage.PREFERRED_FORMATS.hasOwnProperty(availableFormats[i])) {
+        return availableFormats[i];
+      }
+    }
 
-  /**
-   * The resolution of the coverage, in degrees.
-   * @type {Number}
-   */
-  this.resolution = this.service.coverageDescriptions.getResolution(
-    this.coverageId
-  );
-
-  /**
-   * A configuration object for use by TiledElevationCoverage.
-   * @type {{}}
-   */
-  this.elevationConfig = this.createElevationConfig();
-};
+    return WcsCoverage.DEFAULT_FORMAT;
+  }
+}
 
 /**
  * Preferred formats used for fuzzy comparison to available formats.
@@ -108,58 +151,6 @@ WcsCoverage.PREFERRED_FORMATS = {
  */
 WcsCoverage.DEFAULT_FORMAT = "image/tiff";
 
-// Internal use only
-WcsCoverage.prototype.createElevationConfig = function () {
-  return {
-    resolution: this.resolution,
-    coverageSector: this.sector,
-    retrievalImageFormat: this.determineFormatFromService(),
-    urlBuilder: new WcsUrlBuilder(this.coverageId, this.service),
-  };
-};
 
-// Internal use only
-WcsCoverage.prototype.determineFormatFromService = function () {
-  var version = this.service.capabilities.version,
-    availableFormats,
-    format,
-    coverageDescription,
-    i,
-    len;
-
-  // find the service supported format identifiers
-  if (version === "1.0.0") {
-    // find the associated coverage description
-    for (
-      i = 0, len = this.service.coverageDescriptions.coverages.length;
-      i < len;
-      i++
-    ) {
-      if (
-        this.coverageId === this.service.coverageDescriptions.coverages[i].name
-      ) {
-        availableFormats =
-          this.service.coverageDescriptions.coverages[i].supportedFormats
-            .formats;
-        break;
-      }
-    }
-  } else if (version === "2.0.1" || version === "2.0.0") {
-    availableFormats =
-      this.service.capabilities.serviceMetadata.formatsSupported;
-  }
-
-  if (!availableFormats) {
-    return WcsCoverage.DEFAULT_FORMAT;
-  }
-
-  for (i = 0, len = availableFormats.length; i < len; i++) {
-    if (WcsCoverage.PREFERRED_FORMATS.hasOwnProperty(availableFormats[i])) {
-      return availableFormats[i];
-    }
-  }
-
-  return WcsCoverage.DEFAULT_FORMAT;
-};
 
 export default WcsCoverage;

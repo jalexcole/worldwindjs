@@ -78,36 +78,518 @@ import Vec3 from "../geom/Vec3";
  * default attributes are associated.
  * @throws {ArgumentError} If the specified positions array is null or undefined.
  */
-var Path = function (positions, attributes) {
-  if (!positions) {
-    throw new ArgumentError(
-      Logger.logMessage(
-        Logger.LEVEL_SEVERE,
-        "Path",
-        "constructor",
-        "missingPositions"
-      )
+class Path extends AbstractShape{
+  constructor(positions, attributes) {
+    super(attributes);
+    if (!positions) {
+      throw new ArgumentError(
+        Logger.logMessage(
+          Logger.LEVEL_SEVERE,
+          "Path",
+          "constructor",
+          "missingPositions"
+        )
+      );
+    }
+
+    
+
+    // Private. Documentation is with the defined property below.
+    this._positions = positions;
+
+    // Private. Documentation is with the defined property below.
+    this._pathType = WorldWindConstants.GREAT_CIRCLE;
+
+    // Private. Documentation is with the defined property below.
+    this._terrainConformance = 10;
+
+    // Private. Documentation is with the defined property below.
+    this._numSubSegments = 10;
+
+    this.referencePosition = this.determineReferencePosition(this._positions);
+
+    this.scratchPoint = new Vec3(0, 0, 0); // scratch variable
+  }
+  // Intentionally not documented.
+  determineReferencePosition(positions) {
+    // Assign the first position as the reference position.
+    return positions.length > 0 ? positions[0] : null;
+  }
+  // Internal. Determines whether this shape's geometry must be re-computed.
+  mustGenerateGeometry(dc) {
+    if (!this.currentData.tessellatedPoints) {
+      return true;
+    }
+
+    if (this.currentData.drawInterior !== this.activeAttributes.drawInterior ||
+      this.currentData.drawVerticals !== this.activeAttributes.drawVerticals) {
+      return true;
+    }
+
+    if (!this.followTerrain &&
+      this.currentData.numSubSegments !== this.numSubSegments) {
+      return true;
+    }
+
+    if (this.followTerrain &&
+      this.currentData.terrainConformance !== this.terrainConformance) {
+      return true;
+    }
+
+    if (this.altitudeMode === WorldWindConstants.ABSOLUTE) {
+      return false;
+    }
+
+    return this.currentData.isExpired;
+  }
+  createSurfaceShape() {
+    return new SurfacePolyline(this.positions, null);
+  }
+  // Overridden from AbstractShape base class.
+  doMakeOrderedRenderable(dc) {
+    // A null reference position is a signal that there are no positions to render.
+    if (!this.referencePosition) {
+      return null;
+    }
+
+    // See if the current shape data can be re-used.
+    if (!this.mustGenerateGeometry(dc)) {
+      return this;
+    }
+
+    // Set the transformation matrix to correspond to the reference position.
+    var refPt = this.currentData.referencePoint;
+    dc.surfacePointForMode(
+      this.referencePosition.latitude,
+      this.referencePosition.longitude,
+      this.referencePosition.altitude,
+      this._altitudeMode,
+      refPt
+    );
+    this.currentData.transformationMatrix.setToTranslation(
+      refPt[0],
+      refPt[1],
+      refPt[2]
+    );
+
+    // Tessellate the path in geographic coordinates.
+    var tessellatedPositions = this.makeTessellatedPositions(dc);
+    if (tessellatedPositions.length < 2) {
+      return null;
+    }
+
+    // Convert the tessellated geographic coordinates to the Cartesian coordinates that will be rendered.
+    var tessellatedPoints = this.computeRenderedPath(dc, tessellatedPositions);
+
+    this.currentData.tessellatedPoints = tessellatedPoints;
+    this.currentData.drawInterior = this.activeAttributes.drawInterior;
+    this.currentData.drawVerticals = this.activeAttributes.drawVerticals;
+    this.currentData.numSubSegments = this.numSubSegments;
+    this.currentData.terrainConformance = this.terrainConformance;
+    this.resetExpiration(this.currentData);
+    this.currentData.fillVbo = true;
+
+    // Create the extent from the Cartesian points. Those points are relative to this path's reference point, so
+    // translate the computed extent to the reference point.
+    if (!this.currentData.extent) {
+      this.currentData.extent = new BoundingBox();
+    }
+    this.currentData.extent.setToPoints(tessellatedPoints);
+    this.currentData.extent.translate(this.currentData.referencePoint);
+
+    return this;
+  }
+  // Private. Intentionally not documented.
+  makeTessellatedPositions(dc) {
+    var tessellatedPositions = [], eyePoint = dc.eyePoint, showVerticals = this.mustDrawVerticals(dc), ptA = new Vec3(0, 0, 0), ptB = new Vec3(0, 0, 0), posA = this._positions[0], posB, eyeDistance, pixelSize;
+
+    if (showVerticals) {
+      this.currentData.verticalIndices = new Int16Array(
+        this.positions.length * 2
+      );
+      this.currentData.verticalIndices[0] = 0;
+      this.currentData.verticalIndices[1] = 1;
+    }
+
+    tessellatedPositions.push(posA);
+
+    dc.surfacePointForMode(
+      posA.latitude,
+      posA.longitude,
+      posA.altitude,
+      this._altitudeMode,
+      ptA
+    );
+
+    for (var i = 1, len = this._positions.length; i < len; i++) {
+      posB = this._positions[i];
+      dc.surfacePointForMode(
+        posB.latitude,
+        posB.longitude,
+        posB.altitude,
+        this._altitudeMode,
+        ptB
+      );
+      eyeDistance = eyePoint.distanceTo(ptA);
+      pixelSize = dc.pixelSizeAtDistance(eyeDistance);
+      if (ptA.distanceTo(ptB) < pixelSize * 8 &&
+        this.altitudeMode !== WorldWindConstants.ABSOLUTE) {
+        tessellatedPositions.push(posB); // distance is short so no need for sub-segments
+      } else {
+        this.makeSegment(dc, posA, posB, ptA, ptB, tessellatedPositions);
+      }
+
+      posA = posB;
+      ptA.copy(ptB);
+
+      if (showVerticals) {
+        var k = 2 * (tessellatedPositions.length - 1);
+        this.currentData.verticalIndices[i * 2] = k;
+        this.currentData.verticalIndices[i * 2 + 1] = k + 1;
+      }
+    }
+
+    return tessellatedPositions;
+  }
+  // Private. Intentionally not documented.
+  makeSegment(dc,
+    posA,
+    posB,
+    ptA,
+    ptB,
+    tessellatedPositions) {
+    var eyePoint = dc.eyePoint, pos = new Location(0, 0), height = 0, arcLength, segmentAzimuth, segmentDistance, s, p, distance;
+
+    // If it's just a straight line and not terrain following, then the segment is just two points.
+    if (this._pathType === WorldWindConstants.LINEAR && !this._followTerrain) {
+      if (!ptA.equals(ptB)) {
+        tessellatedPositions.push(posB);
+      }
+      return;
+    }
+
+    // Compute the segment length.
+    if (this._pathType === WorldWindConstants.LINEAR) {
+      segmentDistance = Location.linearDistance(posA, posB);
+    } else if (this._pathType === WorldWindConstants.RHUMB_LINE) {
+      segmentDistance = Location.rhumbDistance(posA, posB);
+    } else {
+      segmentDistance = Location.greatCircleDistance(posA, posB);
+    }
+
+    if (this._altitudeMode !== WorldWindConstants.CLAMP_TO_GROUND) {
+      height = 0.5 * (posA.altitude + posB.altitude);
+    }
+
+    arcLength =
+      segmentDistance *
+      (dc.globe.equatorialRadius + height * dc.verticalExaggeration);
+
+    if (arcLength <= 0) {
+      // segment is 0 length
+      return;
+    }
+
+    // Compute the azimuth to apply while tessellating the segment.
+    if (this._pathType === WorldWindConstants.LINEAR) {
+      segmentAzimuth = Location.linearAzimuth(posA, posB);
+    } else if (this._pathType === WorldWindConstants.RHUMB_LINE) {
+      segmentAzimuth = Location.rhumbAzimuth(posA, posB);
+    } else {
+      segmentAzimuth = Location.greatCircleAzimuth(posA, posB);
+    }
+
+    this.scratchPoint.copy(ptA);
+    for (s = 0, p = 0; s < 1;) {
+      if (this._followTerrain) {
+        p +=
+          this._terrainConformance *
+          dc.pixelSizeAtDistance(this.scratchPoint.distanceTo(eyePoint));
+      } else {
+        p += arcLength / this._numSubSegments;
+      }
+
+      // Stop adding intermediate positions when we reach the arc length, or the remaining distance is in
+      // millimeters on Earth.
+      if (arcLength < p || arcLength - p < 1e-9) break;
+
+      s = p / arcLength;
+      distance = s * segmentDistance;
+
+      if (this._pathType === WorldWindConstants.LINEAR) {
+        Location.linearLocation(posA, segmentAzimuth, distance, pos);
+      } else if (this._pathType === WorldWindConstants.RHUMB_LINE) {
+        Location.rhumbLocation(posA, segmentAzimuth, distance, pos);
+      } else {
+        Location.greatCircleLocation(posA, segmentAzimuth, distance, pos);
+      }
+
+      pos.altitude = (1 - s) * posA.altitude + s * posB.altitude;
+      tessellatedPositions.push(
+        new Position(pos.latitude, pos.longitude, pos.altitude)
+      );
+
+      if (this._followTerrain) {
+        // Compute a new reference point for eye distance.
+        dc.surfacePointForMode(
+          pos.latitude,
+          pos.longitude,
+          pos.altitude,
+          WorldWindConstants.CLAMP_TO_GROUND,
+          this.scratchPoint
+        );
+      }
+    }
+
+    tessellatedPositions.push(posB);
+  }
+  // Private. Intentionally not documented.
+  computeRenderedPath(dc, tessellatedPositions) {
+    var capturePoles = this.mustDrawInterior(dc) || this.mustDrawVerticals(dc), eyeDistSquared = Number.MAX_VALUE, eyePoint = dc.eyePoint, numPoints = (capturePoles ? 2 : 1) * tessellatedPositions.length, tessellatedPoints = new Float32Array(numPoints * 3), stride = capturePoles ? 6 : 3, pt = new Vec3(0, 0, 0), altitudeMode, pos, k, dSquared;
+
+    if (this._followTerrain &&
+      this.altitudeMode !== WorldWindConstants.CLAMP_TO_GROUND) {
+      altitudeMode = WorldWindConstants.RELATIVE_TO_GROUND;
+    } else {
+      altitudeMode = this.altitudeMode;
+    }
+
+    for (var i = 0, len = tessellatedPositions.length; i < len; i++) {
+      pos = tessellatedPositions[i];
+
+      dc.surfacePointForMode(
+        pos.latitude,
+        pos.longitude,
+        pos.altitude,
+        altitudeMode,
+        pt
+      );
+
+      dSquared = pt.distanceToSquared(eyePoint);
+      if (dSquared < eyeDistSquared) {
+        eyeDistSquared = dSquared;
+      }
+
+      pt.subtract(this.currentData.referencePoint);
+
+      k = stride * i;
+      tessellatedPoints[k] = pt[0];
+      tessellatedPoints[k + 1] = pt[1];
+      tessellatedPoints[k + 2] = pt[2];
+
+      if (capturePoles) {
+        dc.surfacePointForMode(
+          pos.latitude,
+          pos.longitude,
+          0,
+          WorldWindConstants.CLAMP_TO_GROUND,
+          pt
+        );
+
+        dSquared = pt.distanceToSquared(eyePoint);
+        if (dSquared < eyeDistSquared) {
+          eyeDistSquared = dSquared;
+        }
+
+        pt.subtract(this.currentData.referencePoint);
+
+        tessellatedPoints[k + 3] = pt[0];
+        tessellatedPoints[k + 4] = pt[1];
+        tessellatedPoints[k + 5] = pt[2];
+      }
+    }
+
+    this.currentData.pointBufferHasExtrusionPoints = capturePoles;
+    this.currentData.eyeDistance = Math.sqrt(eyeDistSquared);
+
+    return tessellatedPoints;
+  }
+  // Private. Intentionally not documented.
+  mustDrawInterior(dc) {
+    return (
+      this.activeAttributes.drawInterior &&
+      this._extrude &&
+      this._altitudeMode !== WorldWindConstants.CLAMP_TO_GROUND
     );
   }
+  // Private. Intentionally not documented.
+  mustDrawVerticals(dc) {
+    return (
+      this.activeAttributes.drawOutline &&
+      this.activeAttributes.drawVerticals &&
+      this.altitudeMode !== WorldWindConstants.CLAMP_TO_GROUND
+    );
+  }
+  // Overridden from AbstractShape base class.
+  doRenderOrdered(dc) {
+    var gl = dc.currentGlContext, program = dc.currentProgram, currentData = this.currentData, numPoints = currentData.tessellatedPoints.length / 3, vboId, color, pickColor, stride, nPts;
 
-  AbstractShape.call(this, attributes);
+    this.applyMvpMatrix(dc);
 
-  // Private. Documentation is with the defined property below.
-  this._positions = positions;
+    if (!currentData.vboCacheKey) {
+      currentData.vboCacheKey = dc.gpuResourceCache.generateCacheKey();
+    }
 
-  // Private. Documentation is with the defined property below.
-  this._pathType = WorldWindConstants.GREAT_CIRCLE;
+    vboId = dc.gpuResourceCache.resourceForKey(currentData.vboCacheKey);
+    if (!vboId) {
+      vboId = gl.createBuffer();
+      dc.gpuResourceCache.putResource(
+        this.currentData.vboCacheKey,
+        vboId,
+        currentData.tessellatedPoints.length * 4
+      );
+      currentData.fillVbo = true;
+    }
 
-  // Private. Documentation is with the defined property below.
-  this._terrainConformance = 10;
+    // Bind and if necessary fill the VBO. We fill the VBO here rather than in doMakeOrderedRenderable so that
+    // there's no possibility of the VBO being ejected from the cache between the time it's filled and
+    // the time it's used.
+    gl.bindBuffer(gl.ARRAY_BUFFER, vboId);
+    if (currentData.fillVbo) {
+      gl.bufferData(
+        gl.ARRAY_BUFFER,
+        currentData.tessellatedPoints,
+        gl.STATIC_DRAW
+      );
+      dc.frameStatistics.incrementVboLoadCount(1);
+    }
 
-  // Private. Documentation is with the defined property below.
-  this._numSubSegments = 10;
+    program.loadTextureEnabled(gl, false);
 
-  this.referencePosition = this.determineReferencePosition(this._positions);
+    if (dc.pickingMode) {
+      pickColor = dc.uniquePickColor();
+    }
 
-  this.scratchPoint = new Vec3(0, 0, 0); // scratch variable
-};
+    if (this.mustDrawInterior(dc)) {
+      color = this.activeAttributes.interiorColor;
+      // Disable writing the shape's fragments to the depth buffer when the interior is semi-transparent.
+      gl.depthMask(color.alpha * this.layer.opacity >= 1 || dc.pickingMode);
+      program.loadColor(gl, dc.pickingMode ? pickColor : color);
+      program.loadOpacity(gl, dc.pickingMode ? 1 : this.layer.opacity);
+
+      gl.vertexAttribPointer(
+        program.vertexPointLocation,
+        3,
+        gl.FLOAT,
+        false,
+        0,
+        0
+      );
+      gl.drawArrays(gl.TRIANGLE_STRIP, 0, numPoints);
+    }
+
+    if (this.activeAttributes.drawOutline) {
+      if ((this.mustDrawVerticals(dc) && this.mustDrawInterior(dc)) ||
+        this.altitudeMode === WorldWindConstants.CLAMP_TO_GROUND) {
+        // Make the verticals stand out from the interior, or the outline stand out from the terrain.
+        this.applyMvpMatrixForOutline(dc);
+      }
+
+      color = this.activeAttributes.outlineColor;
+      // Disable writing the shape's fragments to the depth buffer when the interior is semi-transparent.
+      gl.depthMask(color.alpha * this.layer.opacity >= 1 || dc.pickingMode);
+      program.loadColor(gl, dc.pickingMode ? pickColor : color);
+      program.loadOpacity(gl, dc.pickingMode ? 1 : this.layer.opacity);
+
+      gl.lineWidth(this.activeAttributes.outlineWidth);
+
+      if (this.currentData.pointBufferHasExtrusionPoints) {
+        stride = 24;
+        nPts = numPoints / 2;
+      } else {
+        stride = 12;
+        nPts = numPoints;
+      }
+
+      gl.vertexAttribPointer(
+        program.vertexPointLocation,
+        3,
+        gl.FLOAT,
+        false,
+        stride,
+        0
+      );
+      gl.drawArrays(gl.LINE_STRIP, 0, nPts);
+
+      if (this.mustDrawVerticals(dc)) {
+        if (!currentData.verticalIndicesVboCacheKey) {
+          currentData.verticalIndicesVboCacheKey =
+            dc.gpuResourceCache.generateCacheKey();
+        }
+
+        vboId = dc.gpuResourceCache.resourceForKey(
+          currentData.verticalIndicesVboCacheKey
+        );
+        if (!vboId) {
+          vboId = gl.createBuffer();
+          dc.gpuResourceCache.putResource(
+            currentData.verticalIndicesVboCacheKey,
+            vboId,
+            currentData.verticalIndices.length * 4
+          );
+          currentData.fillVbo = true;
+        }
+
+        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, vboId);
+        if (currentData.fillVbo) {
+          gl.bufferData(
+            gl.ELEMENT_ARRAY_BUFFER,
+            currentData.verticalIndices,
+            gl.STATIC_DRAW
+          );
+          dc.frameStatistics.incrementVboLoadCount(1);
+        }
+
+        gl.vertexAttribPointer(
+          program.vertexPointLocation,
+          3,
+          gl.FLOAT,
+          false,
+          0,
+          0
+        );
+        gl.drawElements(
+          gl.LINES,
+          currentData.verticalIndices.length,
+          gl.UNSIGNED_SHORT,
+          0
+        );
+      }
+    }
+    currentData.fillVbo = false;
+
+    if (dc.pickingMode) {
+      var po = new PickedObject(
+        pickColor,
+        this.pickDelegate ? this.pickDelegate : this,
+        null,
+        this.layer,
+        false
+      );
+      dc.resolvePick(po);
+    }
+  }
+  // Overridden from AbstractShape base class.
+  beginDrawing(dc) {
+    var gl = dc.currentGlContext;
+
+    if (this.mustDrawInterior(dc)) {
+      gl.disable(gl.CULL_FACE);
+    }
+
+    dc.findAndBindProgram(BasicTextureProgram);
+    gl.enableVertexAttribArray(dc.currentProgram.vertexPointLocation);
+  }
+  // Overridden from AbstractShape base class.
+  endDrawing(dc) {
+    var gl = dc.currentGlContext;
+
+    gl.disableVertexAttribArray(dc.currentProgram.vertexPointLocation);
+    gl.depthMask(true);
+    gl.lineWidth(1);
+    gl.enable(gl.CULL_FACE);
+  }
+}
 
 Path.prototype = Object.create(AbstractShape.prototype);
 
@@ -232,545 +714,16 @@ Object.defineProperties(Path.prototype, {
   },
 });
 
-// Intentionally not documented.
-Path.prototype.determineReferencePosition = function (positions) {
-  // Assign the first position as the reference position.
-  return positions.length > 0 ? positions[0] : null;
-};
 
-// Internal. Determines whether this shape's geometry must be re-computed.
-Path.prototype.mustGenerateGeometry = function (dc) {
-  if (!this.currentData.tessellatedPoints) {
-    return true;
-  }
 
-  if (
-    this.currentData.drawInterior !== this.activeAttributes.drawInterior ||
-    this.currentData.drawVerticals !== this.activeAttributes.drawVerticals
-  ) {
-    return true;
-  }
 
-  if (
-    !this.followTerrain &&
-    this.currentData.numSubSegments !== this.numSubSegments
-  ) {
-    return true;
-  }
 
-  if (
-    this.followTerrain &&
-    this.currentData.terrainConformance !== this.terrainConformance
-  ) {
-    return true;
-  }
 
-  if (this.altitudeMode === WorldWindConstants.ABSOLUTE) {
-    return false;
-  }
 
-  return this.currentData.isExpired;
-};
 
-Path.prototype.createSurfaceShape = function () {
-  return new SurfacePolyline(this.positions, null);
-};
 
-// Overridden from AbstractShape base class.
-Path.prototype.doMakeOrderedRenderable = function (dc) {
-  // A null reference position is a signal that there are no positions to render.
-  if (!this.referencePosition) {
-    return null;
-  }
 
-  // See if the current shape data can be re-used.
-  if (!this.mustGenerateGeometry(dc)) {
-    return this;
-  }
 
-  // Set the transformation matrix to correspond to the reference position.
-  var refPt = this.currentData.referencePoint;
-  dc.surfacePointForMode(
-    this.referencePosition.latitude,
-    this.referencePosition.longitude,
-    this.referencePosition.altitude,
-    this._altitudeMode,
-    refPt
-  );
-  this.currentData.transformationMatrix.setToTranslation(
-    refPt[0],
-    refPt[1],
-    refPt[2]
-  );
 
-  // Tessellate the path in geographic coordinates.
-  var tessellatedPositions = this.makeTessellatedPositions(dc);
-  if (tessellatedPositions.length < 2) {
-    return null;
-  }
-
-  // Convert the tessellated geographic coordinates to the Cartesian coordinates that will be rendered.
-  var tessellatedPoints = this.computeRenderedPath(dc, tessellatedPositions);
-
-  this.currentData.tessellatedPoints = tessellatedPoints;
-  this.currentData.drawInterior = this.activeAttributes.drawInterior;
-  this.currentData.drawVerticals = this.activeAttributes.drawVerticals;
-  this.currentData.numSubSegments = this.numSubSegments;
-  this.currentData.terrainConformance = this.terrainConformance;
-  this.resetExpiration(this.currentData);
-  this.currentData.fillVbo = true;
-
-  // Create the extent from the Cartesian points. Those points are relative to this path's reference point, so
-  // translate the computed extent to the reference point.
-  if (!this.currentData.extent) {
-    this.currentData.extent = new BoundingBox();
-  }
-  this.currentData.extent.setToPoints(tessellatedPoints);
-  this.currentData.extent.translate(this.currentData.referencePoint);
-
-  return this;
-};
-
-// Private. Intentionally not documented.
-Path.prototype.makeTessellatedPositions = function (dc) {
-  var tessellatedPositions = [],
-    eyePoint = dc.eyePoint,
-    showVerticals = this.mustDrawVerticals(dc),
-    ptA = new Vec3(0, 0, 0),
-    ptB = new Vec3(0, 0, 0),
-    posA = this._positions[0],
-    posB,
-    eyeDistance,
-    pixelSize;
-
-  if (showVerticals) {
-    this.currentData.verticalIndices = new Int16Array(
-      this.positions.length * 2
-    );
-    this.currentData.verticalIndices[0] = 0;
-    this.currentData.verticalIndices[1] = 1;
-  }
-
-  tessellatedPositions.push(posA);
-
-  dc.surfacePointForMode(
-    posA.latitude,
-    posA.longitude,
-    posA.altitude,
-    this._altitudeMode,
-    ptA
-  );
-
-  for (var i = 1, len = this._positions.length; i < len; i++) {
-    posB = this._positions[i];
-    dc.surfacePointForMode(
-      posB.latitude,
-      posB.longitude,
-      posB.altitude,
-      this._altitudeMode,
-      ptB
-    );
-    eyeDistance = eyePoint.distanceTo(ptA);
-    pixelSize = dc.pixelSizeAtDistance(eyeDistance);
-    if (
-      ptA.distanceTo(ptB) < pixelSize * 8 &&
-      this.altitudeMode !== WorldWindConstants.ABSOLUTE
-    ) {
-      tessellatedPositions.push(posB); // distance is short so no need for sub-segments
-    } else {
-      this.makeSegment(dc, posA, posB, ptA, ptB, tessellatedPositions);
-    }
-
-    posA = posB;
-    ptA.copy(ptB);
-
-    if (showVerticals) {
-      var k = 2 * (tessellatedPositions.length - 1);
-      this.currentData.verticalIndices[i * 2] = k;
-      this.currentData.verticalIndices[i * 2 + 1] = k + 1;
-    }
-  }
-
-  return tessellatedPositions;
-};
-
-// Private. Intentionally not documented.
-Path.prototype.makeSegment = function (
-  dc,
-  posA,
-  posB,
-  ptA,
-  ptB,
-  tessellatedPositions
-) {
-  var eyePoint = dc.eyePoint,
-    pos = new Location(0, 0),
-    height = 0,
-    arcLength,
-    segmentAzimuth,
-    segmentDistance,
-    s,
-    p,
-    distance;
-
-  // If it's just a straight line and not terrain following, then the segment is just two points.
-  if (this._pathType === WorldWindConstants.LINEAR && !this._followTerrain) {
-    if (!ptA.equals(ptB)) {
-      tessellatedPositions.push(posB);
-    }
-    return;
-  }
-
-  // Compute the segment length.
-
-  if (this._pathType === WorldWindConstants.LINEAR) {
-    segmentDistance = Location.linearDistance(posA, posB);
-  } else if (this._pathType === WorldWindConstants.RHUMB_LINE) {
-    segmentDistance = Location.rhumbDistance(posA, posB);
-  } else {
-    segmentDistance = Location.greatCircleDistance(posA, posB);
-  }
-
-  if (this._altitudeMode !== WorldWindConstants.CLAMP_TO_GROUND) {
-    height = 0.5 * (posA.altitude + posB.altitude);
-  }
-
-  arcLength =
-    segmentDistance *
-    (dc.globe.equatorialRadius + height * dc.verticalExaggeration);
-
-  if (arcLength <= 0) {
-    // segment is 0 length
-    return;
-  }
-
-  // Compute the azimuth to apply while tessellating the segment.
-
-  if (this._pathType === WorldWindConstants.LINEAR) {
-    segmentAzimuth = Location.linearAzimuth(posA, posB);
-  } else if (this._pathType === WorldWindConstants.RHUMB_LINE) {
-    segmentAzimuth = Location.rhumbAzimuth(posA, posB);
-  } else {
-    segmentAzimuth = Location.greatCircleAzimuth(posA, posB);
-  }
-
-  this.scratchPoint.copy(ptA);
-  for (s = 0, p = 0; s < 1; ) {
-    if (this._followTerrain) {
-      p +=
-        this._terrainConformance *
-        dc.pixelSizeAtDistance(this.scratchPoint.distanceTo(eyePoint));
-    } else {
-      p += arcLength / this._numSubSegments;
-    }
-
-    // Stop adding intermediate positions when we reach the arc length, or the remaining distance is in
-    // millimeters on Earth.
-    if (arcLength < p || arcLength - p < 1e-9) break;
-
-    s = p / arcLength;
-    distance = s * segmentDistance;
-
-    if (this._pathType === WorldWindConstants.LINEAR) {
-      Location.linearLocation(posA, segmentAzimuth, distance, pos);
-    } else if (this._pathType === WorldWindConstants.RHUMB_LINE) {
-      Location.rhumbLocation(posA, segmentAzimuth, distance, pos);
-    } else {
-      Location.greatCircleLocation(posA, segmentAzimuth, distance, pos);
-    }
-
-    pos.altitude = (1 - s) * posA.altitude + s * posB.altitude;
-    tessellatedPositions.push(
-      new Position(pos.latitude, pos.longitude, pos.altitude)
-    );
-
-    if (this._followTerrain) {
-      // Compute a new reference point for eye distance.
-      dc.surfacePointForMode(
-        pos.latitude,
-        pos.longitude,
-        pos.altitude,
-        WorldWindConstants.CLAMP_TO_GROUND,
-        this.scratchPoint
-      );
-    }
-  }
-
-  tessellatedPositions.push(posB);
-};
-
-// Private. Intentionally not documented.
-Path.prototype.computeRenderedPath = function (dc, tessellatedPositions) {
-  var capturePoles = this.mustDrawInterior(dc) || this.mustDrawVerticals(dc),
-    eyeDistSquared = Number.MAX_VALUE,
-    eyePoint = dc.eyePoint,
-    numPoints = (capturePoles ? 2 : 1) * tessellatedPositions.length,
-    tessellatedPoints = new Float32Array(numPoints * 3),
-    stride = capturePoles ? 6 : 3,
-    pt = new Vec3(0, 0, 0),
-    altitudeMode,
-    pos,
-    k,
-    dSquared;
-
-  if (
-    this._followTerrain &&
-    this.altitudeMode !== WorldWindConstants.CLAMP_TO_GROUND
-  ) {
-    altitudeMode = WorldWindConstants.RELATIVE_TO_GROUND;
-  } else {
-    altitudeMode = this.altitudeMode;
-  }
-
-  for (var i = 0, len = tessellatedPositions.length; i < len; i++) {
-    pos = tessellatedPositions[i];
-
-    dc.surfacePointForMode(
-      pos.latitude,
-      pos.longitude,
-      pos.altitude,
-      altitudeMode,
-      pt
-    );
-
-    dSquared = pt.distanceToSquared(eyePoint);
-    if (dSquared < eyeDistSquared) {
-      eyeDistSquared = dSquared;
-    }
-
-    pt.subtract(this.currentData.referencePoint);
-
-    k = stride * i;
-    tessellatedPoints[k] = pt[0];
-    tessellatedPoints[k + 1] = pt[1];
-    tessellatedPoints[k + 2] = pt[2];
-
-    if (capturePoles) {
-      dc.surfacePointForMode(
-        pos.latitude,
-        pos.longitude,
-        0,
-        WorldWindConstants.CLAMP_TO_GROUND,
-        pt
-      );
-
-      dSquared = pt.distanceToSquared(eyePoint);
-      if (dSquared < eyeDistSquared) {
-        eyeDistSquared = dSquared;
-      }
-
-      pt.subtract(this.currentData.referencePoint);
-
-      tessellatedPoints[k + 3] = pt[0];
-      tessellatedPoints[k + 4] = pt[1];
-      tessellatedPoints[k + 5] = pt[2];
-    }
-  }
-
-  this.currentData.pointBufferHasExtrusionPoints = capturePoles;
-  this.currentData.eyeDistance = Math.sqrt(eyeDistSquared);
-
-  return tessellatedPoints;
-};
-
-// Private. Intentionally not documented.
-Path.prototype.mustDrawInterior = function (dc) {
-  return (
-    this.activeAttributes.drawInterior &&
-    this._extrude &&
-    this._altitudeMode !== WorldWindConstants.CLAMP_TO_GROUND
-  );
-};
-
-// Private. Intentionally not documented.
-Path.prototype.mustDrawVerticals = function (dc) {
-  return (
-    this.activeAttributes.drawOutline &&
-    this.activeAttributes.drawVerticals &&
-    this.altitudeMode !== WorldWindConstants.CLAMP_TO_GROUND
-  );
-};
-
-// Overridden from AbstractShape base class.
-Path.prototype.doRenderOrdered = function (dc) {
-  var gl = dc.currentGlContext,
-    program = dc.currentProgram,
-    currentData = this.currentData,
-    numPoints = currentData.tessellatedPoints.length / 3,
-    vboId,
-    color,
-    pickColor,
-    stride,
-    nPts;
-
-  this.applyMvpMatrix(dc);
-
-  if (!currentData.vboCacheKey) {
-    currentData.vboCacheKey = dc.gpuResourceCache.generateCacheKey();
-  }
-
-  vboId = dc.gpuResourceCache.resourceForKey(currentData.vboCacheKey);
-  if (!vboId) {
-    vboId = gl.createBuffer();
-    dc.gpuResourceCache.putResource(
-      this.currentData.vboCacheKey,
-      vboId,
-      currentData.tessellatedPoints.length * 4
-    );
-    currentData.fillVbo = true;
-  }
-
-  // Bind and if necessary fill the VBO. We fill the VBO here rather than in doMakeOrderedRenderable so that
-  // there's no possibility of the VBO being ejected from the cache between the time it's filled and
-  // the time it's used.
-  gl.bindBuffer(gl.ARRAY_BUFFER, vboId);
-  if (currentData.fillVbo) {
-    gl.bufferData(
-      gl.ARRAY_BUFFER,
-      currentData.tessellatedPoints,
-      gl.STATIC_DRAW
-    );
-    dc.frameStatistics.incrementVboLoadCount(1);
-  }
-
-  program.loadTextureEnabled(gl, false);
-
-  if (dc.pickingMode) {
-    pickColor = dc.uniquePickColor();
-  }
-
-  if (this.mustDrawInterior(dc)) {
-    color = this.activeAttributes.interiorColor;
-    // Disable writing the shape's fragments to the depth buffer when the interior is semi-transparent.
-    gl.depthMask(color.alpha * this.layer.opacity >= 1 || dc.pickingMode);
-    program.loadColor(gl, dc.pickingMode ? pickColor : color);
-    program.loadOpacity(gl, dc.pickingMode ? 1 : this.layer.opacity);
-
-    gl.vertexAttribPointer(
-      program.vertexPointLocation,
-      3,
-      gl.FLOAT,
-      false,
-      0,
-      0
-    );
-    gl.drawArrays(gl.TRIANGLE_STRIP, 0, numPoints);
-  }
-
-  if (this.activeAttributes.drawOutline) {
-    if (
-      (this.mustDrawVerticals(dc) && this.mustDrawInterior(dc)) ||
-      this.altitudeMode === WorldWindConstants.CLAMP_TO_GROUND
-    ) {
-      // Make the verticals stand out from the interior, or the outline stand out from the terrain.
-      this.applyMvpMatrixForOutline(dc);
-    }
-
-    color = this.activeAttributes.outlineColor;
-    // Disable writing the shape's fragments to the depth buffer when the interior is semi-transparent.
-    gl.depthMask(color.alpha * this.layer.opacity >= 1 || dc.pickingMode);
-    program.loadColor(gl, dc.pickingMode ? pickColor : color);
-    program.loadOpacity(gl, dc.pickingMode ? 1 : this.layer.opacity);
-
-    gl.lineWidth(this.activeAttributes.outlineWidth);
-
-    if (this.currentData.pointBufferHasExtrusionPoints) {
-      stride = 24;
-      nPts = numPoints / 2;
-    } else {
-      stride = 12;
-      nPts = numPoints;
-    }
-
-    gl.vertexAttribPointer(
-      program.vertexPointLocation,
-      3,
-      gl.FLOAT,
-      false,
-      stride,
-      0
-    );
-    gl.drawArrays(gl.LINE_STRIP, 0, nPts);
-
-    if (this.mustDrawVerticals(dc)) {
-      if (!currentData.verticalIndicesVboCacheKey) {
-        currentData.verticalIndicesVboCacheKey =
-          dc.gpuResourceCache.generateCacheKey();
-      }
-
-      vboId = dc.gpuResourceCache.resourceForKey(
-        currentData.verticalIndicesVboCacheKey
-      );
-      if (!vboId) {
-        vboId = gl.createBuffer();
-        dc.gpuResourceCache.putResource(
-          currentData.verticalIndicesVboCacheKey,
-          vboId,
-          currentData.verticalIndices.length * 4
-        );
-        currentData.fillVbo = true;
-      }
-
-      gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, vboId);
-      if (currentData.fillVbo) {
-        gl.bufferData(
-          gl.ELEMENT_ARRAY_BUFFER,
-          currentData.verticalIndices,
-          gl.STATIC_DRAW
-        );
-        dc.frameStatistics.incrementVboLoadCount(1);
-      }
-
-      gl.vertexAttribPointer(
-        program.vertexPointLocation,
-        3,
-        gl.FLOAT,
-        false,
-        0,
-        0
-      );
-      gl.drawElements(
-        gl.LINES,
-        currentData.verticalIndices.length,
-        gl.UNSIGNED_SHORT,
-        0
-      );
-    }
-  }
-  currentData.fillVbo = false;
-
-  if (dc.pickingMode) {
-    var po = new PickedObject(
-      pickColor,
-      this.pickDelegate ? this.pickDelegate : this,
-      null,
-      this.layer,
-      false
-    );
-    dc.resolvePick(po);
-  }
-};
-
-// Overridden from AbstractShape base class.
-Path.prototype.beginDrawing = function (dc) {
-  var gl = dc.currentGlContext;
-
-  if (this.mustDrawInterior(dc)) {
-    gl.disable(gl.CULL_FACE);
-  }
-
-  dc.findAndBindProgram(BasicTextureProgram);
-  gl.enableVertexAttribArray(dc.currentProgram.vertexPointLocation);
-};
-
-// Overridden from AbstractShape base class.
-Path.prototype.endDrawing = function (dc) {
-  var gl = dc.currentGlContext;
-
-  gl.disableVertexAttribArray(dc.currentProgram.vertexPointLocation);
-  gl.depthMask(true);
-  gl.lineWidth(1);
-  gl.enable(gl.CULL_FACE);
-};
 
 export default Path;

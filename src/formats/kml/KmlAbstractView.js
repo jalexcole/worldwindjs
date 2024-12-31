@@ -62,7 +62,7 @@ class KmlAbstractView extends KmlObject {
    */
   get kmlTimePrimitive() {
     return this._factory.any(this, {
-      name: KmlTimePrimitive.prototype.getTagNames(),
+      name: KmlTimePrimitive.getTagNames(),
     });
   }
 }

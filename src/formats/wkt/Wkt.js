@@ -25,8 +25,7 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
-import ArgumentError from "../../error/ArgumentError";
-import Logger from "../../util/Logger";
+
 import WktTokens from "./WktTokens";
 
 /**

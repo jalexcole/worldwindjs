@@ -26,18 +26,14 @@
  * PDF found in code  directory.
  */
 import AbstractShape from "./AbstractShape";
-import ArgumentError from "../error/ArgumentError";
+
 import BasicTextureProgram from "../shaders/BasicTextureProgram";
 import BoundingBox from "../geom/BoundingBox";
-import Color from "../util/Color";
-import ImageSource from "../util/ImageSource";
+
 import Line from "../geom/Line";
-import Location from "../geom/Location";
 import Logger from "../util/Logger";
-import Matrix from "../geom/Matrix";
 import PickedObject from "../pick/PickedObject";
 import Position from "../geom/Position";
-import Vec2 from "../geom/Vec2";
 import Vec3 from "../geom/Vec3";
 import WWMath from "../util/WWMath";
 
@@ -607,7 +603,7 @@ class AbstractMesh extends AbstractShape {
   }
   // Overridden from AbstractShape base class.
   beginDrawing(dc) {
-    var gl = dc.currentGlContext;
+    let gl = dc.currentGlContext;
 
     if (this.activeAttributes.drawInterior) {
       gl.disable(gl.CULL_FACE);

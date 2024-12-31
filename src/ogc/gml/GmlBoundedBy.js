@@ -28,68 +28,69 @@
 import ArgumentError from "../../error/ArgumentError";
 import Logger from "../../util/Logger";
 
-var GmlBoundedBy = function (element) {
-  if (!element) {
-    throw new ArgumentError(
-      Logger.logMessage(
-        Logger.LEVEL_SEVERE,
-        "GmlAbstractGeometry",
-        "constructor",
-        "missingDom"
-      )
-    );
-  }
-
-  this.assembleElement(element);
-};
-
-// Internal. Intentionally not documented.
-GmlBoundedBy.prototype.assembleElement = function (element) {
-  var children = element.children || element.childNodes;
-  this.nilReason = element.getAttribute("nilReason");
-
-  for (var c = 0; c < children.length; c++) {
-    var child = children[c];
-
-    if (child.localName === "Envelope") {
-      this.envelope = this.assembleEnvelope(child);
+class GmlBoundedBy {
+  constructor(element) {
+    if (!element) {
+      throw new ArgumentError(
+        Logger.logMessage(
+          Logger.LEVEL_SEVERE,
+          "GmlAbstractGeometry",
+          "constructor",
+          "missingDom"
+        )
+      );
     }
+
+    this.assembleElement(element);
   }
-};
+  // Internal. Intentionally not documented.
+  assembleElement(element) {
+    var children = element.children || element.childNodes;
+    this.nilReason = element.getAttribute("nilReason");
 
-// Internal. Intentionally not documented.
-GmlBoundedBy.prototype.assembleEnvelope = function (element) {
-  var children = element.children || element.childNodes,
-    envelop = {};
+    for (var c = 0; c < children.length; c++) {
+      var child = children[c];
 
-  envelop.srsName = element.getAttribute("srsName");
-  envelop.srsDimension = parseInt(element.getAttribute("srsDimension"));
-  envelop.axisLabels = element.getAttribute("axisLabels");
-  if (envelop.axisLabels) {
-    envelop.axisLabels = envelop.axisLabels.split(/\s+/);
-  }
-  envelop.uomLabels = element.getAttribute("uomLabels");
-  if (envelop.uomLabels) {
-    envelop.uomLabels = envelop.uomLabels.split(/\s+/);
-  }
-
-  for (var c = 0; c < children.length; c++) {
-    var child = children[c];
-
-    if (child.localName === "lowerCorner") {
-      envelop.lower = child.textContent.split(/\s+/);
-      for (var i = 0; i < envelop.lower.length; i++) {
-        envelop.lower[i] = parseFloat(envelop.lower[i]);
-      }
-    } else if (child.localName === "upperCorner") {
-      envelop.upper = child.textContent.split(/\s+/);
-      for (var i = 0; i < envelop.upper.length; i++) {
-        envelop.upper[i] = parseFloat(envelop.upper[i]);
+      if (child.localName === "Envelope") {
+        this.envelope = this.assembleEnvelope(child);
       }
     }
   }
+  // Internal. Intentionally not documented.
+  assembleEnvelope(element) {
+    var children = element.children || element.childNodes, envelop = {};
 
-  return envelop;
-};
+    envelop.srsName = element.getAttribute("srsName");
+    envelop.srsDimension = parseInt(element.getAttribute("srsDimension"));
+    envelop.axisLabels = element.getAttribute("axisLabels");
+    if (envelop.axisLabels) {
+      envelop.axisLabels = envelop.axisLabels.split(/\s+/);
+    }
+    envelop.uomLabels = element.getAttribute("uomLabels");
+    if (envelop.uomLabels) {
+      envelop.uomLabels = envelop.uomLabels.split(/\s+/);
+    }
+
+    for (var c = 0; c < children.length; c++) {
+      var child = children[c];
+
+      if (child.localName === "lowerCorner") {
+        envelop.lower = child.textContent.split(/\s+/);
+        for (var i = 0; i < envelop.lower.length; i++) {
+          envelop.lower[i] = parseFloat(envelop.lower[i]);
+        }
+      } else if (child.localName === "upperCorner") {
+        envelop.upper = child.textContent.split(/\s+/);
+        for (var i = 0; i < envelop.upper.length; i++) {
+          envelop.upper[i] = parseFloat(envelop.upper[i]);
+        }
+      }
+    }
+
+    return envelop;
+  }
+}
+
+
 
 export default GmlBoundedBy;

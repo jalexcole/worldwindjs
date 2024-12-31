@@ -51,234 +51,221 @@ import WWMath from "../util/WWMath";
  * @throws {ArgumentError} If any of the specified cache path or image format arguments are
  * null or undefined, or if the specified number of levels or tile size is less than 1.
  */
-var MercatorTiledImageLayer = function (
-  displayName,
-  numLevels,
-  imageFormat,
-  cachePath,
-  imageSize,
-  firstLevelOffset
-) {
-  function gudermannian(percent) {
-    var x = percent * Math.PI;
-    // var sinh = (Math.exp(x) - Math.exp(-x)) / 2;
-    var y = Math.exp(x);
-    var sinh = (y - 1 / y) / 2;
-    return (Math.atan(sinh) * 180) / Math.PI;
-  }
-
-  function levelZeroDelta(firstLevelOffset) {
-    var levelZeroDelta = 360 / (1 << firstLevelOffset);
-    return new Location(levelZeroDelta / 2, levelZeroDelta);
-  }
-
-  var sector = new Sector(gudermannian(-1), gudermannian(1), -180, 180);
-
-  TiledImageLayer.call(
-    this,
+class MercatorTiledImageLayer extends TiledImageLayer {
+  constructor(
     displayName,
-    sector,
-    levelZeroDelta(firstLevelOffset),
-    numLevels - firstLevelOffset,
+    numLevels,
     imageFormat,
     cachePath,
     imageSize,
-    imageSize
-  );
+    firstLevelOffset
+  ) {
+    super(
+      displayName,
+      sector,
+      MercatorTiledImageLayer.levelZeroDelta(firstLevelOffset),
+      numLevels - firstLevelOffset,
+      imageFormat,
+      cachePath,
+      imageSize,
+      imageSize
+    );
 
-  this.detectBlankImages = false;
-  this.imageSize = imageSize;
-  this.firstLevelOffset = firstLevelOffset;
-
-  // These pixels are tested in retrieved images to determine whether the image is blank.
-  this.testPixels = [
-    new Vec2(20, 20),
-    new Vec2(235, 20),
-    new Vec2(20, 235),
-    new Vec2(235, 235),
-  ];
-
-  // Create a canvas we can use when unprojecting retrieved images.
-  this.destCanvas = document.createElement("canvas");
-  this.destContext = this.destCanvas.getContext("2d");
-};
-
-MercatorTiledImageLayer.prototype = Object.create(TiledImageLayer.prototype);
-
-// Overridden from TiledImageLayer. Computes a tile's sector and creates the tile.
-// Unlike typical tiles, Tiles at the same level do not have the same sector size.
-MercatorTiledImageLayer.prototype.createTile = function (
-  sector,
-  level,
-  row,
-  column
-) {
-  var mapSize = this.mapSizeForLevel(level.levelNumber),
-    swX = WWMath.clamp(column * this.imageSize, 0, mapSize),
-    neY = WWMath.clamp(row * this.imageSize, 0, mapSize),
-    neX = WWMath.clamp(swX + this.imageSize, 0, mapSize),
-    swY = WWMath.clamp(neY + this.imageSize, 0, mapSize),
-    x,
-    y,
-    swLat,
-    swLon,
-    neLat,
-    neLon;
-
-  x = swX / mapSize - 0.5;
-  y = 0.5 - swY / mapSize;
-  swLat = 90 - (360 * Math.atan(Math.exp(-y * 2 * Math.PI))) / Math.PI;
-  swLon = 360 * x;
-
-  x = neX / mapSize - 0.5;
-  y = 0.5 - neY / mapSize;
-  neLat = 90 - (360 * Math.atan(Math.exp(-y * 2 * Math.PI))) / Math.PI;
-  neLon = 360 * x;
-
-  sector = new Sector(swLat, neLat, swLon, neLon);
-
-  return TiledImageLayer.prototype.createTile.call(
-    this,
-    sector,
-    level,
-    row,
-    column
-  );
-};
-
-// Overridden from TiledImageLayer to unproject the retrieved image prior to creating a texture for it.
-MercatorTiledImageLayer.prototype.createTexture = function (dc, tile, image) {
-  var srcCanvas = dc.canvas2D,
-    srcContext = dc.ctx2D,
-    srcImageData,
-    destCanvas = this.destCanvas,
-    destContext = this.destContext,
-    destImageData = destContext.createImageData(image.width, image.height),
-    sector = tile.sector,
-    tMin = WWMath.gudermannianInverse(sector.minLatitude),
-    tMax = WWMath.gudermannianInverse(sector.maxLatitude),
-    lat,
-    g,
-    srcRow,
-    kSrc,
-    kDest,
-    sy,
-    dy;
-
-  srcCanvas.width = image.width;
-  srcCanvas.height = image.height;
-  destCanvas.width = image.width;
-  destCanvas.height = image.height;
-
-  // Draw the original image to a canvas so image data can be had for it.
-  srcContext.drawImage(image, 0, 0, image.width, image.height);
-  srcImageData = srcContext.getImageData(0, 0, image.width, image.height);
-
-  // If it's a blank image, mark it as permanently absent.
-  if (this.detectBlankImages && this.isBlankImage(image, srcImageData)) {
-    this.absentResourceList.markResourceAbsentPermanently(tile.imagePath);
-    return null;
-  }
-
-  // Unproject the retrieved image.
-  for (var n = 0; n < 1; n++) {
-    for (var y = 0; y < image.height; y++) {
-      sy = 1 - y / (image.height - 1);
-      lat = sy * sector.deltaLatitude() + sector.minLatitude;
-      g = WWMath.gudermannianInverse(lat);
-      dy = 1 - (g - tMin) / (tMax - tMin);
-      dy = WWMath.clamp(dy, 0, 1);
-      srcRow = Math.floor(dy * (image.height - 1));
-      for (var x = 0; x < image.width; x++) {
-        kSrc = 4 * (x + srcRow * image.width);
-        kDest = 4 * (x + y * image.width);
-
-        destImageData.data[kDest] = srcImageData.data[kSrc];
-        destImageData.data[kDest + 1] = srcImageData.data[kSrc + 1];
-        destImageData.data[kDest + 2] = srcImageData.data[kSrc + 2];
-        destImageData.data[kDest + 3] = srcImageData.data[kSrc + 3];
-      }
+    function gudermannian(percent) {
+      var x = percent * Math.PI;
+      // var sinh = (Math.exp(x) - Math.exp(-x)) / 2;
+      var y = Math.exp(x);
+      var sinh = (y - 1 / y) / 2;
+      return (Math.atan(sinh) * 180) / Math.PI;
     }
+
+    var sector = new Sector(gudermannian(-1), gudermannian(1), -180, 180);
+
+    this.detectBlankImages = false;
+    this.imageSize = imageSize;
+    this.firstLevelOffset = firstLevelOffset;
+
+    // These pixels are tested in retrieved images to determine whether the image is blank.
+    this.testPixels = [
+      new Vec2(20, 20),
+      new Vec2(235, 20),
+      new Vec2(20, 235),
+      new Vec2(235, 235),
+    ];
+
+    // Create a canvas we can use when unprojecting retrieved images.
+    this.destCanvas = document.createElement("canvas");
+    this.destContext = this.destCanvas.getContext("2d");
   }
-
-  destContext.putImageData(destImageData, 0, 0);
-
-  return TiledImageLayer.prototype.createTexture.call(
-    this,
-    dc,
-    tile,
-    destCanvas
-  );
-};
-
-// Determines whether a retrieved image is blank.
-MercatorTiledImageLayer.prototype.isBlankImage = function (
-  image,
-  srcImageData
-) {
-  var pixel,
-    k,
-    pixelValue = null;
-
-  for (var i = 0, len = this.testPixels.length; i < len; i++) {
-    pixel = this.testPixels[i];
-    k = 4 * (pixel[0] + pixel[1] * image.width);
-
-    if (!pixelValue) {
-      pixelValue = [
-        srcImageData.data[k],
-        srcImageData.data[k + 1],
-        srcImageData.data[k + 2],
-      ];
-    } else {
-      if (
-        srcImageData.data[k] != pixelValue[0] ||
-        srcImageData.data[k + 1] != pixelValue[1] ||
-        srcImageData.data[k + 2] != pixelValue[2]
-      ) {
-        return false;
-      }
-    }
+  /**
+   * @private
+   * @param {Number} firstLevelOffset
+   * @returns
+   */
+  static levelZeroDelta(firstLevelOffset) {
+    let levelZeroDelta = 360 / (1 << firstLevelOffset);
+    return new Location(levelZeroDelta / 2, levelZeroDelta);
   }
+  // Overridden from TiledImageLayer. Computes a tile's sector and creates the tile.
+  // Unlike typical tiles, Tiles at the same level do not have the same sector size.
+  createTile(sector, level, row, column) {
+    var mapSize = this.mapSizeForLevel(level.levelNumber),
+      swX = WWMath.clamp(column * this.imageSize, 0, mapSize),
+      neY = WWMath.clamp(row * this.imageSize, 0, mapSize),
+      neX = WWMath.clamp(swX + this.imageSize, 0, mapSize),
+      swY = WWMath.clamp(neY + this.imageSize, 0, mapSize),
+      x,
+      y,
+      swLat,
+      swLon,
+      neLat,
+      neLon;
 
-  return true;
-};
+    x = swX / mapSize - 0.5;
+    y = 0.5 - swY / mapSize;
+    swLat = 90 - (360 * Math.atan(Math.exp(-y * 2 * Math.PI))) / Math.PI;
+    swLon = 360 * x;
 
-/**
- * Calculates map size in pixels for specified level.
- *
- * @param {Number} levelNumber The number of level to calculate map size for.
- */
-MercatorTiledImageLayer.prototype.mapSizeForLevel = function (levelNumber) {
-  return this.imageSize << (levelNumber + this.firstLevelOffset);
-};
+    x = neX / mapSize - 0.5;
+    y = 0.5 - neY / mapSize;
+    neLat = 90 - (360 * Math.atan(Math.exp(-y * 2 * Math.PI))) / Math.PI;
+    neLon = 360 * x;
 
-// Overridden from TiledImageLayer to add possibility to create simple child layers with URL builder built-in.
-MercatorTiledImageLayer.prototype.resourceUrlForTile = function (
-  tile,
-  imageFormat
-) {
-  if (this.urlBuilder) {
-    return this.urlBuilder.urlForTile(tile, imageFormat);
-  } else {
-    return this.getImageSourceUrl(
-      tile.column,
-      tile.row,
-      tile.level.levelNumber + this.firstLevelOffset
+    sector = new Sector(swLat, neLat, swLon, neLon);
+
+    return TiledImageLayer.prototype.createTile.call(
+      this,
+      sector,
+      level,
+      row,
+      column
     );
   }
-};
+  // Overridden from TiledImageLayer to unproject the retrieved image prior to creating a texture for it.
+  createTexture(dc, tile, image) {
+    var srcCanvas = dc.canvas2D,
+      srcContext = dc.ctx2D,
+      srcImageData,
+      destCanvas = this.destCanvas,
+      destContext = this.destContext,
+      destImageData = destContext.createImageData(image.width, image.height),
+      sector = tile.sector,
+      tMin = WWMath.gudermannianInverse(sector.minLatitude),
+      tMax = WWMath.gudermannianInverse(sector.maxLatitude),
+      lat,
+      g,
+      srcRow,
+      kSrc,
+      kDest,
+      sy,
+      dy;
 
-/**
- * Simple version of URL builder based on commonly used by online maps input parameters x, y and z.
- *
- * @param {Number} x The X coordinate of tile.
- * @param {Number} y The Y coordinate of tile.
- * @param {Number} z The zoom level of tile.
- */
-MercatorTiledImageLayer.prototype.getImageSourceUrl = function (x, y, z) {
-  // Intentionally empty. Can be override in child layer and return URL for specified tile instead of builder
-  return null;
-};
+    srcCanvas.width = image.width;
+    srcCanvas.height = image.height;
+    destCanvas.width = image.width;
+    destCanvas.height = image.height;
+
+    // Draw the original image to a canvas so image data can be had for it.
+    srcContext.drawImage(image, 0, 0, image.width, image.height);
+    srcImageData = srcContext.getImageData(0, 0, image.width, image.height);
+
+    // If it's a blank image, mark it as permanently absent.
+    if (this.detectBlankImages && this.isBlankImage(image, srcImageData)) {
+      this.absentResourceList.markResourceAbsentPermanently(tile.imagePath);
+      return null;
+    }
+
+    // Unproject the retrieved image.
+    for (var n = 0; n < 1; n++) {
+      for (var y = 0; y < image.height; y++) {
+        sy = 1 - y / (image.height - 1);
+        lat = sy * sector.deltaLatitude() + sector.minLatitude;
+        g = WWMath.gudermannianInverse(lat);
+        dy = 1 - (g - tMin) / (tMax - tMin);
+        dy = WWMath.clamp(dy, 0, 1);
+        srcRow = Math.floor(dy * (image.height - 1));
+        for (var x = 0; x < image.width; x++) {
+          kSrc = 4 * (x + srcRow * image.width);
+          kDest = 4 * (x + y * image.width);
+
+          destImageData.data[kDest] = srcImageData.data[kSrc];
+          destImageData.data[kDest + 1] = srcImageData.data[kSrc + 1];
+          destImageData.data[kDest + 2] = srcImageData.data[kSrc + 2];
+          destImageData.data[kDest + 3] = srcImageData.data[kSrc + 3];
+        }
+      }
+    }
+
+    destContext.putImageData(destImageData, 0, 0);
+
+    return TiledImageLayer.prototype.createTexture.call(
+      this,
+      dc,
+      tile,
+      destCanvas
+    );
+  }
+  // Determines whether a retrieved image is blank.
+  isBlankImage(image, srcImageData) {
+    var pixel,
+      k,
+      pixelValue = null;
+
+    for (var i = 0, len = this.testPixels.length; i < len; i++) {
+      pixel = this.testPixels[i];
+      k = 4 * (pixel[0] + pixel[1] * image.width);
+
+      if (!pixelValue) {
+        pixelValue = [
+          srcImageData.data[k],
+          srcImageData.data[k + 1],
+          srcImageData.data[k + 2],
+        ];
+      } else {
+        if (
+          srcImageData.data[k] != pixelValue[0] ||
+          srcImageData.data[k + 1] != pixelValue[1] ||
+          srcImageData.data[k + 2] != pixelValue[2]
+        ) {
+          return false;
+        }
+      }
+    }
+
+    return true;
+  }
+  /**
+   * Calculates map size in pixels for specified level.
+   *
+   * @param {Number} levelNumber The number of level to calculate map size for.
+   */
+  mapSizeForLevel(levelNumber) {
+    return this.imageSize << (levelNumber + this.firstLevelOffset);
+  }
+  // Overridden from TiledImageLayer to add possibility to create simple child layers with URL builder built-in.
+  resourceUrlForTile(tile, imageFormat) {
+    if (this.urlBuilder) {
+      return this.urlBuilder.urlForTile(tile, imageFormat);
+    } else {
+      return this.getImageSourceUrl(
+        tile.column,
+        tile.row,
+        tile.level.levelNumber + this.firstLevelOffset
+      );
+    }
+  }
+  /**
+   * Simple version of URL builder based on commonly used by online maps input parameters x, y and z.
+   *
+   * @param {Number} x The X coordinate of tile.
+   * @param {Number} y The Y coordinate of tile.
+   * @param {Number} z The zoom level of tile.
+   */
+  getImageSourceUrl(x, y, z) {
+    // Intentionally empty. Can be override in child layer and return URL for specified tile instead of builder
+    return null;
+  }
+}
+
 
 export default MercatorTiledImageLayer;

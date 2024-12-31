@@ -26,19 +26,13 @@
  * PDF found in code  directory.
  */
 import Angle from "./geom/Angle";
-import ArgumentError from "./error/ArgumentError";
-import Camera from "./geom/Camera";
-import ClickRecognizer from "./gesture/ClickRecognizer";
 import DragRecognizer from "./gesture/DragRecognizer";
 import GestureRecognizer from "./gesture/GestureRecognizer";
-import Logger from "./util/Logger";
 import LookAt from "./geom/LookAt";
 import Matrix from "./geom/Matrix";
 import PanRecognizer from "./gesture/PanRecognizer";
 import PinchRecognizer from "./gesture/PinchRecognizer";
-import Position from "./geom/Position";
 import RotationRecognizer from "./gesture/RotationRecognizer";
-import TapRecognizer from "./gesture/TapRecognizer";
 import TiltRecognizer from "./gesture/TiltRecognizer";
 import Vec2 from "./geom/Vec2";
 import Vec3 from "./geom/Vec3";

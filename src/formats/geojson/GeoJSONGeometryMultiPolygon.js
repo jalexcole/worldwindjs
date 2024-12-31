@@ -42,51 +42,48 @@ import Logger from "../../util/Logger";
  * @throws {ArgumentError} If the specified coordinates or type are null or undefined or if the coordinates
  * parameter is not an array of Polygon coordinate arrays.
  */
-var GeoJSONGeometryMultiPolygon = function (coordinates, type, bbox) {
-  if (!coordinates) {
-    throw new ArgumentError(
-      Logger.logMessage(
-        Logger.LEVEL_SEVERE,
-        "GeoJSONGeometryMultiPolygon",
-        "constructor",
-        "missingCoordinates"
-      )
-    );
+class GeoJSONGeometryMultiPolygon extends GeoJSONGeometry {
+  constructor(coordinates, type, bbox) {
+    super(coordinates, type, bbox);
+    if (!coordinates) {
+      throw new ArgumentError(
+        Logger.logMessage(
+          Logger.LEVEL_SEVERE,
+          "GeoJSONGeometryMultiPolygon",
+          "constructor",
+          "missingCoordinates"
+        )
+      );
+    }
+
+    if (Object.prototype.toString.call(coordinates[0]) !== "[object Array]" ||
+      Object.prototype.toString.call(coordinates[0][0]) !== "[object Array]" ||
+      Object.prototype.toString.call(coordinates[0][0][0]) !== "[object Array]" ||
+      Object.prototype.toString.call(coordinates[0][0][0][0]) !==
+      "[object Number]") {
+      throw new ArgumentError(
+        Logger.logMessage(
+          Logger.LEVEL_SEVERE,
+          "GeoJSONGeometryPolygon",
+          "constructor",
+          "invalidCoordinatesType"
+        )
+      );
+    }
+
+    if (!type) {
+      throw new ArgumentError(
+        Logger.logMessage(
+          Logger.LEVEL_SEVERE,
+          "GeoJSONGeometryPolygon",
+          "constructor",
+          "missingType"
+        )
+      );
+    }
+
+    
   }
-
-  if (
-    Object.prototype.toString.call(coordinates[0]) !== "[object Array]" ||
-    Object.prototype.toString.call(coordinates[0][0]) !== "[object Array]" ||
-    Object.prototype.toString.call(coordinates[0][0][0]) !== "[object Array]" ||
-    Object.prototype.toString.call(coordinates[0][0][0][0]) !==
-      "[object Number]"
-  ) {
-    throw new ArgumentError(
-      Logger.logMessage(
-        Logger.LEVEL_SEVERE,
-        "GeoJSONGeometryPolygon",
-        "constructor",
-        "invalidCoordinatesType"
-      )
-    );
-  }
-
-  if (!type) {
-    throw new ArgumentError(
-      Logger.logMessage(
-        Logger.LEVEL_SEVERE,
-        "GeoJSONGeometryPolygon",
-        "constructor",
-        "missingType"
-      )
-    );
-  }
-
-  GeoJSONGeometry.call(this, coordinates, type, bbox);
-};
-
-GeoJSONGeometryMultiPolygon.prototype = Object.create(
-  GeoJSONGeometry.prototype
-);
+}
 
 export default GeoJSONGeometryMultiPolygon;

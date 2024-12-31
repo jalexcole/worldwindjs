@@ -99,6 +99,7 @@ import Vec3 from "../geom/Vec3";
  */
 class Polygon extends AbstractShape {
   constructor(boundaries, attributes) {
+    super(attributes);
     if (!boundaries) {
       throw new ArgumentError(
         Logger.logMessage(
@@ -110,7 +111,7 @@ class Polygon extends AbstractShape {
       );
     }
 
-    super(attributes);
+    
 
     if (boundaries.length > 0 && boundaries[0].latitude) {
       boundaries = [boundaries];

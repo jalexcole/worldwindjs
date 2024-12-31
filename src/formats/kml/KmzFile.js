@@ -25,7 +25,7 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
-import JSZip from "jszip";
+
 import { Promise } from "es6-promise";
 import WWUtil from "../../util/WWUtil";
 import KmlFile from "./KmlFile";
