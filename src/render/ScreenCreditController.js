@@ -26,12 +26,12 @@
  * PDF found in code  directory.
  */
 import ArgumentError from "../error/ArgumentError";
-import Color from "../util/Color";
-import Font from "../util/Font";
 import Layer from "../layer/Layer";
+import ScreenText from "../shapes/ScreenText";
+import Font from "../util/Font";
 import Logger from "../util/Logger";
 import Offset from "../util/Offset";
-import ScreenText from "../shapes/ScreenText";
+import WorldWindConstants from "../WorldWindConstants";
 
 /**
  * Constructs a screen credit controller.
@@ -42,7 +42,7 @@ import ScreenText from "../shapes/ScreenText";
  */
 class ScreenCreditController extends Layer {
   constructor() {
-    super( "ScreenCreditController");
+    super("ScreenCreditController");
 
     /**
      * An {@link Offset} indicating where to place the attributions on the screen.

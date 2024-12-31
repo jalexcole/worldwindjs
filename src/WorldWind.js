@@ -217,41 +217,12 @@ export { default as ViewControlsLayer } from "./layer/ViewControlsLayer.js";
 export { default as WWMessage } from "./util/WWMessage.js";
 export { default as WWUtil } from "./util/WWUtil.js";
 export { default as XmlDocument } from "./util/XmlDocument.js";
-// import WWUtil from "./util/WWUtil.js";
 
 export { default as configuration } from "./WorldWindConfiguration.js";
 
-// export { WWUtil } from "./util/WWUtil.js";
 /**
- * This is the top-level WorldWind module. It is global.
- * @exports WorldWind
- * @global
+ * The WorldWind version number.
+ * @default "0.9.0"
+ * @constant
  */
-const WorldWind = {
-
-
-  /**
-   * The WorldWind version number.
-   * @default "0.9.0"
-   * @constant
-   */
-  VERSION: "1.6.90",
-
-
-
-
-  // /**
-  //  * Indicates the Bing Maps key to use when requesting Bing Maps resources.
-  //  * @type {String}
-  //  * @default null
-  //  */
-  // WorldWind.BingMapsKey = null;
-
-  // WorldWindow.WorldWind = WorldWind,
-
-};
-
-
-
-
-export default WorldWind;
+export const VERSION = "1.6.90"
