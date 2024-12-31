@@ -92,7 +92,7 @@ class PrjFile {
           );
         }
 
-        if (!!this._completionCallback) {
+        if (this._completionCallback) {
           this._completionCallback(this);
         }
       }
@@ -101,7 +101,7 @@ class PrjFile {
     xhr.onerror = function () {
       Logger.log(Logger.LEVEL_WARNING, "PrjFile retrieval failed: " + url);
 
-      if (!!this._completionCallback) {
+      if (this._completionCallback) {
         this._completionCallback(this);
       }
     }.bind(this);
@@ -109,7 +109,7 @@ class PrjFile {
     xhr.ontimeout = function () {
       Logger.log(Logger.LEVEL_WARNING, "PrjFile retrieval timed out: " + url);
 
-      if (!!this._completionCallback) {
+      if (this._completionCallback) {
         this._completionCallback(this);
       }
     }.bind(this);
@@ -152,7 +152,7 @@ class PrjFile {
       params[PrjFile.COORDINATE_SYSTEM] = PrjFile.COORDINATE_SYSTEM_GEOGRAPHIC;
     } else {
       var result = text.match(PrjFile.PROJCS_WKT_PATTERN);
-      if (!!result) {
+      if (result) {
         params[PrfFile.COORDINATE_SYSTEM] = PrjFile.COORDINATE_SYSTEM_PROJECTED;
 
         throw new NotYetImplementedError(

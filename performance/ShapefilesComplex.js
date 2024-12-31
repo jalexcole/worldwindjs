@@ -67,7 +67,7 @@ requirejs(
         attributes.values.name ||
         attributes.values.Name ||
         attributes.values.NAME;
-      if (!!name) {
+      if (name) {
         var bounds = record.boundingRectangle;
         var position = new WorldWind.Position(
           0.5 * (bounds[0] + bounds[1]),
@@ -86,7 +86,7 @@ requirejs(
     var cityAttributeCallback = function (layer) {
       return function (attributes, record) {
         // Add the label for a name record in the database to a separate layer.
-        if (!!layer) {
+        if (layer) {
           addLabelForName(attributes, record, layer);
         }
 
@@ -114,7 +114,7 @@ requirejs(
     var defaultAttributeCallback = function (layer) {
       return function (attributes, record) {
         // Add the label for a name record in the database to a separate layer.
-        if (!!layer) {
+        if (layer) {
           addLabelForName(attributes, record, layer);
         }
 

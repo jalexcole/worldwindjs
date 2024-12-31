@@ -966,17 +966,17 @@ Object.defineProperties(SurfaceShape.prototype, {
       if (!this._attributesStateKey) {
         // Update the state key for the appropriate attributes for future
         if (this._highlighted) {
-          if (!!this._highlightAttributes) {
+          if (this._highlightAttributes) {
             this._attributesStateKey = this._highlightAttributes.stateKey;
           }
         } else {
-          if (!!this._attributes) {
+          if (this._attributes) {
             this._attributesStateKey = this._attributes.stateKey;
           }
         }
 
         // If we now actually have a state key for the attributes, it was previously invalid.
-        if (!!this._attributesStateKey) {
+        if (this._attributesStateKey) {
           this.stateKeyInvalid = true;
         }
       } else {
@@ -985,11 +985,11 @@ Object.defineProperties(SurfaceShape.prototype, {
 
         if (this._highlighted) {
           // If there are highlight attributes associated with this shape, ...
-          if (!!this._highlightAttributes) {
+          if (this._highlightAttributes) {
             currentAttributesStateKey = this._highlightAttributes.stateKey;
           }
         } else {
-          if (!!this._attributes) {
+          if (this._attributes) {
             currentAttributesStateKey = this._attributes.stateKey;
           }
         }

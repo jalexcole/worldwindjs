@@ -309,7 +309,7 @@ class Shapefile {
     }
 
     // Note: for points, there should be only ONE part, and only ONE point per record.
-    for (var record = this.next(); !!record; record = this.next()) {
+    for (var record = this.next(); record; record = this.next()) {
       var configuration = this.shapeConfigurationCallback(
           record.attributes,
           record
@@ -398,7 +398,7 @@ class Shapefile {
     }
 
     // Note: for multi-points, there should only be ONE part.
-    for (var record = this.next(); !!record; record = this.next()) {
+    for (var record = this.next(); record; record = this.next()) {
       var configuration = this.shapeConfigurationCallback(
           record.attributes,
           record
@@ -487,7 +487,7 @@ class Shapefile {
       );
     }
 
-    for (var record = this.next(); !!record; record = this.next()) {
+    for (var record = this.next(); record; record = this.next()) {
       var configuration = this.shapeConfigurationCallback(
           record.attributes,
           record
@@ -590,7 +590,7 @@ class Shapefile {
       );
     }
 
-    for (var record = this.next(); !!record; record = this.next()) {
+    for (var record = this.next(); record; record = this.next()) {
       var configuration = this.shapeConfigurationCallback(
         record.attributes,
         record
@@ -694,7 +694,7 @@ class Shapefile {
           );
         }
 
-        if (!!this._parserCompletionCallback) {
+        if (this._parserCompletionCallback) {
           this._parserCompletionCallback(this);
         }
       }
@@ -703,7 +703,7 @@ class Shapefile {
     xhr.onerror = function () {
       Logger.log(Logger.LEVEL_WARNING, "Shapefile retrieval failed: " + url);
 
-      if (!!this._parserCompletionCallback) {
+      if (this._parserCompletionCallback) {
         this._parserCompletionCallback(this);
       }
     };
@@ -711,7 +711,7 @@ class Shapefile {
     xhr.ontimeout = function () {
       Logger.log(Logger.LEVEL_WARNING, "Shapefile retrieval timed out: " + url);
 
-      if (!!this._parserCompletionCallback) {
+      if (this._parserCompletionCallback) {
         this._parserCompletionCallback(this);
       }
     };

@@ -180,7 +180,7 @@ class DBaseFile {
 
           this.parse();
 
-          if (!!this._completionCallback) {
+          if (this._completionCallback) {
             this._completionCallback(this);
           }
         } else {
@@ -189,7 +189,7 @@ class DBaseFile {
             "DBaseFile retrieval failed (" + xhr.statusText + "): " + url
           );
 
-          if (!!this._completionCallback) {
+          if (this._completionCallback) {
             this._completionCallback(this);
           }
         }
@@ -199,7 +199,7 @@ class DBaseFile {
     xhr.onerror = function () {
       Logger.log(Logger.LEVEL_WARNING, "DBaseFile retrieval failed: " + url);
 
-      if (!!this._completionCallback) {
+      if (this._completionCallback) {
         this._completionCallback(this);
       }
     };
@@ -207,7 +207,7 @@ class DBaseFile {
     xhr.ontimeout = function () {
       Logger.log(Logger.LEVEL_WARNING, "DBaseFile retrieval timed out: " + url);
 
-      if (!!this._completionCallback) {
+      if (this._completionCallback) {
         this._completionCallback(this);
       }
     };
