@@ -26,7 +26,7 @@
  * PDF found in code  directory.
  */
 
-class Angle {
+export class Angle {
   /**
    * Conversion factor for degrees to radians.
    * @constant
@@ -36,7 +36,7 @@ class Angle {
    * Conversion factor for radians to degrees.
    * @constant
    */
-  static RADIANS_TO_DEGREES= 180.0 / Math.PI;
+  static RADIANS_TO_DEGREES = 180.0 / Math.PI;
   /**
    * 2 pi.
    * @constant
@@ -64,7 +64,7 @@ class Angle {
    * @param {Number} degrees The value to normalize, in degrees.
    * @returns {Number} The specified value normalized to the normal range of latitude.
    */
-  static normalizedDegreesLatitude (degrees) {
+  static normalizedDegreesLatitude(degrees) {
     var lat = degrees % 180;
 
     return lat > 90 ? 180 - lat : lat < -90 ? -180 - lat : lat;
@@ -75,7 +75,7 @@ class Angle {
    * @param {Number} degrees The value to normalize, in degrees.
    * @returns {Number} The specified value normalized to the normal range of longitude.
    */
-  static normalizedDegreesLongitude (degrees) {
+  static normalizedDegreesLongitude(degrees) {
     var lon = degrees % 360;
 
     return lon > 180 ? lon - 360 : lon < -180 ? 360 + lon : lon;
@@ -86,14 +86,14 @@ class Angle {
    * @param {Number} radians The value to normalize, in radians.
    * @returns {Number} The specified value normalized to [-Pi, Pi] radians.
    */
-  static normalizedRadians (radians) {
+  static normalizedRadians(radians) {
     var angle = radians % this.TWO_PI;
 
     return angle > Math.PI
       ? angle - this.TWO_PI
       : angle < -Math.PI
-      ? this.TWO_PI + angle
-      : angle;
+        ? this.TWO_PI + angle
+        : angle;
   }
 
   /**
@@ -101,14 +101,14 @@ class Angle {
    * @param {Number} radians The value to normalize, in radians.
    * @returns {Number} The specified value normalized to the normal range of latitude.
    */
-  static normalizedRadiansLatitude (radians) {
+  static normalizedRadiansLatitude(radians) {
     var lat = radians % Math.PI;
 
     return lat > this.HALF_PI
       ? Math.PI - lat
       : lat < -this.HALF_PI
-      ? -Math.PI - lat
-      : lat;
+        ? -Math.PI - lat
+        : lat;
   }
 
   /**
@@ -116,14 +116,14 @@ class Angle {
    * @param {Number} radians The value to normalize, in radians.
    * @returns {Number} The specified value normalized to the normal range of longitude.
    */
-  static normalizedRadiansLongitude (radians) {
+  static normalizedRadiansLongitude(radians) {
     var lon = radians % this.TWO_PI;
 
     return lon > Math.PI
       ? lon - this.TWO_PI
       : lon < -Math.PI
-      ? this.TWO_PI + lon
-      : lon;
+        ? this.TWO_PI + lon
+        : lon;
   }
 
   /**
@@ -131,7 +131,7 @@ class Angle {
    * @param {Number} degrees The value to test, in degrees.
    * @returns {Boolean} true if the value is within the normal range of latitude, otherwise false.
    */
-  static isValidLatitude (degrees) {
+  static isValidLatitude(degrees) {
     return degrees >= -90 && degrees <= 90;
   }
 
@@ -140,7 +140,7 @@ class Angle {
    * @param {Number} degrees The value to test, in degrees.
    * @returns {boolean} true if the value is within the normal range of longitude, otherwise false.
    */
-  static  isValidLongitude (degrees) {
+  static isValidLongitude(degrees) {
     return degrees >= -180 && degrees <= 180;
   }
 
@@ -149,7 +149,7 @@ class Angle {
    * @param {Number} degrees The value for which to compute the string.
    * @returns {String} The computed string, which is a decimal degrees value followed by the degree symbol.
    */
-  static toString (degrees) {
+  static toString(degrees) {
     return degrees.toString() + "\u00B0";
   }
 
@@ -158,7 +158,7 @@ class Angle {
    * @param {Number} degrees The value for which to compute the string.
    * @returns {String} The computed string, which is a decimal degrees value followed by the degree symbol.
    */
-  static toDecimalDegreesString (degrees) {
+  static toDecimalDegreesString(degrees) {
     return degrees.toString() + "\u00B0";
   }
 
@@ -167,7 +167,7 @@ class Angle {
    * @param {Number} degrees The value for which to compute the string.
    * @returns {String} The computed string in degrees, minutes and decimal seconds.
    */
-  static toDMSString (degrees) {
+  static toDMSString(degrees) {
     var sign, temp, d, m, s;
 
     sign = degrees < 0 ? -1 : 1;
@@ -205,7 +205,7 @@ class Angle {
    * @param {Number} degrees The value for which to compute the string.
    * @returns {String} The computed string in degrees and decimal minutes.
    */
-  static toDMString (degrees) {
+  static toDMString(degrees) {
     var sign, temp, d, m, s, mf;
 
     sign = degrees < 0 ? -1 : 1;

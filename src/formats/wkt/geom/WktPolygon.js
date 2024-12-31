@@ -29,8 +29,8 @@ import Polygon from "../../../shapes/Polygon";
 import ShapeAttributes from "../../../shapes/ShapeAttributes";
 import SurfacePolygon from "../../../shapes/SurfacePolygon";
 import WktElements from "../WktElements";
-import WktObject from "./WktObject";
 import WktType from "../WktType";
+import WktObject from "./WktObject";
 
 /**
  * It represents the polygon.
@@ -38,7 +38,7 @@ import WktType from "../WktType";
  * @augments WktObject
  * @constructor
  */
-class WktPolygon extends WktObject {
+export class WktPolygon extends WktObject {
   constructor() {
     super(WktType.SupportedGeometries.POLYGON);
 

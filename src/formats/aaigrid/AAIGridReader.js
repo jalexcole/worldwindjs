@@ -25,10 +25,10 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
-import AAIGridConstants from "./AAIGridConstants";
-import AAIGridMetadata from "./AAIGridMetadata";
 import ArgumentError from "../../error/ArgumentError";
 import Logger from "../../util/Logger";
+import AAIGridConstants from "./AAIGridConstants";
+import AAIGridMetadata from "./AAIGridMetadata";
 
 /**
  * Constructs an AAIGrid reader object for the specified data source.
@@ -40,7 +40,7 @@ import Logger from "../../util/Logger";
  * @param {String|ArrayBuffer} dataSource The data source for the AAIGrid.
  * @throws {ArgumentError} If the specified data source is not a string or an array buffer.
  */
-var AAIGridReader = function (dataSource) {
+const AAIGridReader = function (dataSource) {
   if (!dataSource) {
     throw new ArgumentError(
       Logger.logMessage(
@@ -69,7 +69,7 @@ var AAIGridReader = function (dataSource) {
   //Documented in defineProperties below.
   this._metadata = new AAIGridMetadata();
 
-  var dataString = this.decodeData(dataSource);
+  const dataString = this.decodeData(dataSource);
   this.parse(dataString);
 };
 

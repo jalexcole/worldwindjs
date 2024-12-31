@@ -25,41 +25,40 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
-import ArgumentError from "../error/ArgumentError";
-import Color from "../util/Color";
-import FrameStatistics from "../util/FrameStatistics";
-import FramebufferTexture from "./FramebufferTexture";
-import FramebufferTileController from "./FramebufferTileController";
-import Frustum from "../geom/Frustum";
-import Globe from "../globe/Globe";
-import GpuProgram from "../shaders/GpuProgram";
 import GpuResourceCache from "../cache/GpuResourceCache";
-import Layer from "../layer/Layer";
+import ArgumentError from "../error/ArgumentError";
+import Frustum from "../geom/Frustum";
 import Line from "../geom/Line";
-import Logger from "../util/Logger";
 import Matrix from "../geom/Matrix";
-import PickedObjectList from "../pick/PickedObjectList";
 import Plane from "../geom/Plane";
 import Position from "../geom/Position";
 import Rectangle from "../geom/Rectangle";
-import ScreenCreditController from "../render/ScreenCreditController";
-import Sector from "../geom/Sector";
-import SurfaceShape from "../shapes/SurfaceShape";
-import SurfaceShapeTileBuilder from "../shapes/SurfaceShapeTileBuilder";
-import TextRenderer from "./TextRenderer";
 import Vec2 from "../geom/Vec2";
 import Vec3 from "../geom/Vec3";
+import Globe from "../globe/Globe";
+import Layer from "../layer/Layer";
+import PickedObjectList from "../pick/PickedObjectList";
+import ScreenCreditController from "../render/ScreenCreditController";
+import GpuProgram from "../shaders/GpuProgram";
+import SurfaceShape from "../shapes/SurfaceShape";
+import SurfaceShapeTileBuilder from "../shapes/SurfaceShapeTileBuilder";
+import Color from "../util/Color";
+import FrameStatistics from "../util/FrameStatistics";
+import Logger from "../util/Logger";
 import WWMath from "../util/WWMath";
+import FramebufferTexture from "./FramebufferTexture";
+import FramebufferTileController from "./FramebufferTileController";
+import TextRenderer from "./TextRenderer";
 
-import SurfaceTileRenderer from "./SurfaceTileRenderer";
 import Terrain from "../globe/Terrain";
 import LookAtNavigator from "../navigate/LookAtNavigator";
-import SurfaceRenderable from "./SurfaceRenderable";
-import OrderedRenderable from "./OrderedRenderable";
 import PickedObject from "../pick/PickedObject";
 import TextAttributes from "../shapes/TextAttributes";
+import WorldWindConfiguration from "../WorldWindConfiguration";
+import OrderedRenderable from "./OrderedRenderable";
+import SurfaceRenderable from "./SurfaceRenderable";
+import SurfaceTileRenderer from "./SurfaceTileRenderer";
 import Texture from "./Texture";
-
 /**
  * Constructs a DrawContext. Applications do not call this constructor. A draw context is created by a
  * {@link WorldWindow} during its construction.
@@ -112,8 +111,8 @@ class DrawContext {
      * @type {GpuResourceCache}
      */
     this.gpuResourceCache = new GpuResourceCache(
-      WorldWind.configuration.gpuCacheSize,
-      0.8 * WorldWind.configuration.gpuCacheSize
+      WorldWindConfiguration.gpuCacheSize,
+      0.8 * WorldWindConfiguration.gpuCacheSize
     );
 
     /**
@@ -1404,7 +1403,7 @@ class DrawContext {
       var h =
         offset +
         this.globe.elevationAtLocation(latitude, longitude) *
-          this.verticalExaggeration;
+        this.verticalExaggeration;
       this.globe.computePointFromPosition(latitude, longitude, h, result);
     }
 

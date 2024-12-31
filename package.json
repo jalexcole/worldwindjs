@@ -19,7 +19,8 @@
     "url": "https://github.com/emxsys/worldwindjs.git"
   },
   "scripts": {
-    "build": "webpack -c webpack.config.js",
+    "build": "vite build",
+    "dev": "vite",
     "clean": "grunt clean",
     "doc": "grunt jsdoc",
     "prepare": "npm run build",
@@ -91,7 +92,7 @@
     "jsconfig.json": "^2.3.3",
     "jszip": "^3.10.1",
     "libtess": "^1.2.2",
-    "proj4": "^2.9.0",
+    "proj4": "2.15.0",
     "requires": "^1.0.2"
   }
 }
