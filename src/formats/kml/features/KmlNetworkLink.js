@@ -66,7 +66,7 @@ class KmlNetworkLink extends KmlFeature {
      * @inheritDoc
      */
     render(dc, kmlOptions) {
-        KmlFeature.prototype.render.call(this, dc, kmlOptions);
+        super.render(this, dc, kmlOptions);
 
         // Not visible and wasn't displayed yet.
         if (!kmlOptions.lastVisibility && !this.displayed) {

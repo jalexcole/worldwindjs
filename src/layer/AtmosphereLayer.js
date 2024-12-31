@@ -318,8 +318,6 @@ class AtmosphereLayer extends Layer{
   }
 }
 
-AtmosphereLayer.prototype = Object.create(Layer.prototype);
-
 Object.defineProperties(AtmosphereLayer.prototype, {
   /**
    * Url for the night texture.

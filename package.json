@@ -23,7 +23,6 @@
     "dev": "vite",
     "clean": "grunt clean",
     "doc": "grunt jsdoc",
-    "prepare": "npm run build",
     "test": "vitest --config vitest.config.js",
     "test:watch": "karma start karma.conf.js"
   },
@@ -59,6 +58,7 @@
     "karma-junit-reporter": "^1.2.0",
     "karma-requirejs": "^1.1.0",
     "recursive-readdir": "^2.2.2",
+    "vite": "^6.0.6",
     "vitest": "^0.34.6",
     "webpack": "^5.88.2",
     "webpack-cli": "^5.1.4"

@@ -40,7 +40,7 @@ import WmsUrlBuilder from "../util/WmsUrlBuilder";
  * "BlueMarble-200402", ... "BlueMarble-200412". "BlueMarble-200405" is used if the argument is null
  * or undefined.
  */
-class BMNGLayer {
+class BMNGLayer extends TiledImageLayer {
   constructor(layerName) {
     // This LevelSet configuration captures the Blue Marble resolution of 4.166666667E-03 degrees/pixel
     super("Blue Marble",
@@ -61,7 +61,5 @@ class BMNGLayer {
     );
   }
 }
-
-BMNGLayer.prototype = Object.create(TiledImageLayer.prototype);
 
 export default BMNGLayer;

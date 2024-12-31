@@ -35,8 +35,9 @@ import UsgsNedHiElevationCoverage from "./UsgsNedHiElevationCoverage";
  * Constructs an EarthElevationModel consisting of three elevation coverages GEBCO, Aster V2, and USGS NED.
  * @alias EarthElevationModel
  * @constructor
+ * @augments ElevationModel
  */
-class EarthElevationModel {
+class EarthElevationModel extends ElevationModel{
   constructor() {
     super();
 
@@ -46,7 +47,5 @@ class EarthElevationModel {
     this.addCoverage(new UsgsNedHiElevationCoverage());
   }
 }
-
-EarthElevationModel.prototype = Object.create(ElevationModel.prototype);
 
 export default EarthElevationModel;

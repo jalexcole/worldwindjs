@@ -44,7 +44,7 @@ import Tile from "../util/Tile";
  * @throws {ArgumentError} If the specified sector or level is null or undefined or the row or column arguments
  * are less than zero.
  */
-class TerrainTile {
+class TerrainTile extends Tile{
   constructor(sector, level, row, column) {
     super(sector, level, row, column); // args are checked in the superclass' constructor
 

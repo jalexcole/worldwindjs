@@ -61,7 +61,7 @@ describe("Line Tests", function () {
     it("Should construct a line from a segment", function () {
       var A = new Vec3(0, 1, 2);
       var B = new Vec3(2, 3, 4);
-      var line = new Line.fromSegment(A, B);
+      var line = Line.fromSegment(A, B);
 
       var expectedOrigin = new Vec3(0, 1, 2);
       var expectedDirection = new Vec3(2, 2, 2);

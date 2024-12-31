@@ -591,8 +591,6 @@ class Path extends AbstractShape{
   }
 }
 
-Path.prototype = Object.create(AbstractShape.prototype);
-
 Object.defineProperties(Path.prototype, {
   /**
    * This path's positions.

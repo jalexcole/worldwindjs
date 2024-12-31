@@ -157,8 +157,6 @@ class RotationRecognizer extends GestureRecognizer{
   }
 }
 
-RotationRecognizer.prototype = Object.create(GestureRecognizer.prototype);
-
 Object.defineProperties(RotationRecognizer.prototype, {
   rotation: {
     get: function () {
