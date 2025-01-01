@@ -19,10 +19,10 @@ import Globe from "../../src/globe/Globe.js";
 
 
 import TestUtils from "../util/TestUtils.test.js";
-import { beforeEach, describe,expect, it } from "vitest";
+import {describe,expect, it } from "vitest";
 
 var mockGlobe = new Globe(new ElevationModel());
-var wwd = TestUtils.getMockWwd(mockGlobe);
+// var wwd = TestUtils.getMockWwd(mockGlobe);
 
 describe("View tests", function () {
   describe("View calculations", function () {

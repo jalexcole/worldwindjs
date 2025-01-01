@@ -27,7 +27,7 @@
  */
 import ArgumentError from "../error/ArgumentError";
 import Logger from "../util/Logger";
-import ShapeAttributes from "./ShapeAttributes";
+
 import SurfaceShape from "./SurfaceShape";
 
 /**
@@ -85,7 +85,11 @@ class SurfacePolygon extends SurfaceShape {
     return SurfacePolygon.staticStateKey(this);
   }
   // Internal. Polygon doesn't generate its own boundaries. See SurfaceShape.prototype.computeBoundaries.
-  computeBoundaries(dc) {}
+  /**
+   * @private
+   * @param {DrawContext} dc 
+   */
+  // computeBoundaries(dc) {}
   // Internal use only. Intentionally not documented.
   getReferencePosition() {
     // Assign the first position as the reference position.

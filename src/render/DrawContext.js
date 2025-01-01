@@ -28,37 +28,32 @@
 import GpuResourceCache from "../cache/GpuResourceCache";
 import ArgumentError from "../error/ArgumentError";
 import Frustum from "../geom/Frustum";
-import Line from "../geom/Line";
+
 import Matrix from "../geom/Matrix";
 import Plane from "../geom/Plane";
 import Position from "../geom/Position";
 import Rectangle from "../geom/Rectangle";
 import Vec2 from "../geom/Vec2";
 import Vec3 from "../geom/Vec3";
-import Globe from "../globe/Globe";
-import Layer from "../layer/Layer";
+
 import PickedObjectList from "../pick/PickedObjectList";
 import ScreenCreditController from "../render/ScreenCreditController";
-import GpuProgram from "../shaders/GpuProgram";
+
 import SurfaceShape from "../shapes/SurfaceShape";
 import SurfaceShapeTileBuilder from "../shapes/SurfaceShapeTileBuilder";
 import Color from "../util/Color";
-import FrameStatistics from "../util/FrameStatistics";
+
 import Logger from "../util/Logger";
 import WWMath from "../util/WWMath";
 import FramebufferTexture from "./FramebufferTexture";
 import FramebufferTileController from "./FramebufferTileController";
 import TextRenderer from "./TextRenderer";
 
-import Terrain from "../globe/Terrain";
-import LookAtNavigator from "../navigate/LookAtNavigator";
-import PickedObject from "../pick/PickedObject";
-import TextAttributes from "../shapes/TextAttributes";
+
 import WorldWindConfiguration from "../WorldWindConfiguration";
-import OrderedRenderable from "./OrderedRenderable";
-import SurfaceRenderable from "./SurfaceRenderable";
+
 import SurfaceTileRenderer from "./SurfaceTileRenderer";
-import Texture from "./Texture";
+
 /**
  * Constructs a DrawContext. Applications do not call this constructor. A draw context is created by a
  * {@link WorldWindow} during its construction.

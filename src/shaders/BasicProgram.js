@@ -26,7 +26,6 @@
  * PDF found in code  directory.
  */
 import ArgumentError from "../error/ArgumentError";
-import Color from "../util/Color";
 import GpuProgram from "./GpuProgram";
 import Logger from "../util/Logger";
 
@@ -47,17 +46,21 @@ import Logger from "../util/Logger";
  * the compiled shaders into a program fails.
  */
 class BasicProgram extends GpuProgram {
+  static vertexShaderSource =
+    "attribute vec4 vertexPoint;\n" +
+    "uniform mat4 mvpMatrix;\n" +
+    "void main() {gl_Position = mvpMatrix * vertexPoint;}";
+  static fragmentShaderSource =
+    "precision mediump float;\n" +
+    "uniform vec4 color;\n" +
+    "void main() {gl_FragColor = color;}";
   constructor(gl) {
     // Call to the superclass, which performs shader program compiling and linking.
-    super(gl, vertexShaderSource, fragmentShaderSource);
-    var vertexShaderSource =
-        "attribute vec4 vertexPoint;\n" +
-        "uniform mat4 mvpMatrix;\n" +
-        "void main() {gl_Position = mvpMatrix * vertexPoint;}",
-      fragmentShaderSource =
-        "precision mediump float;\n" +
-        "uniform vec4 color;\n" +
-        "void main() {gl_FragColor = color;}";
+    super(
+      gl,
+      BasicProgram.vertexShaderSource,
+      BasicProgram.fragmentShaderSource
+    );
 
     /**
      * The WebGL location for this program's 'vertexPoint' attribute.
@@ -131,11 +134,7 @@ class BasicProgram extends GpuProgram {
    * @param {Number} blue The blue component, a number between 0 and 1.
    * @param {Number} alpha The alpha component, a number between 0 and 1.
    */
-  loadColorComponents(gl,
-    red,
-    green,
-    blue,
-    alpha) {
+  loadColorComponents(gl, red, green, blue, alpha) {
     this.loadUniformColorComponents(
       gl,
       red,
@@ -156,8 +155,5 @@ BasicProgram.key = "WorldWindGpuBasicProgram";
 
 // Inherit from GpuProgram.
 // BasicProgram.prototype = Object.create(GpuProgram.prototype);
-
-
-
 
 export default BasicProgram;

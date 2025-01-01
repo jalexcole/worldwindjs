@@ -28,7 +28,7 @@
 import Line from "../../src/geom/Line";
 import Vec3 from "../../src/geom/Vec3";
 
-import { beforeEach, describe,expect, it } from "vitest";
+import {  describe,expect, it } from "vitest";
 
 describe("Line Tests", function () {
   describe("Line Constructor", function () {

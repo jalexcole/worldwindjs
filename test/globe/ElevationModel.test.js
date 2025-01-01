@@ -27,7 +27,7 @@
  */
 
 import ElevationModel from "../../src/globe/ElevationModel";
-import Angle from "../../src/geom/Angle";
+
 import Location from "../../src/geom/Location";
 import Sector from "../../src/geom/Sector";
 import EarthElevationModel from "../../src/globe/EarthElevationModel";

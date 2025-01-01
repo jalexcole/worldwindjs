@@ -30,9 +30,9 @@ import ArgumentError from "../error/ArgumentError";
 
 import Logger from "../util/Logger";
 
-import ShapeAttributes from "./ShapeAttributes";
+
 import SurfacePolygon from "./SurfacePolygon";
-import Vec2 from "../geom/Vec2";
+
 import Vec3 from "../geom/Vec3";
 
 /**

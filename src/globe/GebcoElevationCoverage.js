@@ -26,7 +26,7 @@
  * PDF found in code  directory.
  */
 
-import Location from "../geom/Location";
+
 import Sector from "../geom/Sector";
 import TiledElevationCoverage from "./TiledElevationCoverage";
 import WmsUrlBuilder from "../util/WmsUrlBuilder";

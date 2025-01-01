@@ -26,10 +26,10 @@
  * PDF found in code  directory.
  */
 
-import KmlIcon from "../../../src/WorldWind.js";
+import { KmlIcon } from "../../../src/WorldWind.js";
 import { XmlDocument } from "../../../src/WorldWind.js";
 
-import { beforeAll, beforeEach, describe, expect, it } from "vitest";
+import {  describe, expect, it } from "vitest";
 import KmlFileCache from "../../../src/formats/kml/KmlFileCache.js";
 describe("KmlIconTest", function () {
   var validKml =

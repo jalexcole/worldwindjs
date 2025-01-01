@@ -27,7 +27,7 @@
  */
 
 import Color from "../util/Color";
-import Font from "../util/Font";
+
 import Offset from "../util/Offset";
 import ShapeAttributes from "../shapes/ShapeAttributes";
 import TextAttributes from "./TextAttributes";

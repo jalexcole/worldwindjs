@@ -29,7 +29,7 @@ import ArgumentError from "../error/ArgumentError";
 import Location from "../geom/Location";
 import Logger from "../util/Logger";
 import Sector from "../geom/Sector";
-import ShapeAttributes from "./ShapeAttributes";
+
 import SurfaceShape from "./SurfaceShape";
 import WorldWindConstants from "../WorldWindConstants";
 /**

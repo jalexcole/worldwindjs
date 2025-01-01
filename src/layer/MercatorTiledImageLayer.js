@@ -25,7 +25,7 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
-import Color from "../util/Color";
+
 import Sector from "../geom/Sector";
 import Location from "../geom/Location";
 import TiledImageLayer from "./TiledImageLayer";

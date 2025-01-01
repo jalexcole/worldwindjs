@@ -27,7 +27,7 @@
  */
 import ArgumentError from "../error/ArgumentError";
 import Logger from "../util/Logger";
-import ShapeAttributes from "./ShapeAttributes";
+
 import SurfaceShape from "./SurfaceShape";
 
 /**

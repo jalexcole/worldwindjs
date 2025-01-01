@@ -25,13 +25,13 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
-import ArgumentError from "../error/ArgumentError";
+
 import Location from "../geom/Location";
-import Logger from "../util/Logger";
+
 import Sector from "../geom/Sector";
 import TiledImageLayer from "./TiledImageLayer";
 import WWUtil from "../util/WWUtil";
-
+import LevelRowColumnUrlBuilder from "../util/LevelRowColumnUrlBuilder";
 /**
  * Constructs a tiled image layer that uses a REST interface to retrieve its imagery.
  * @alias RestTiledImageLayer

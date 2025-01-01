@@ -36,6 +36,8 @@
  * @classdesc Provides a layer manager to interactively control layer visibility for a WorldWindow.
  * @param {WorldWindow} worldWindow The WorldWindow to associated this layer manager with.
  */
+import * as WorldWind from "../src/WorldWind.js";
+
 var LayerManager = function (worldWindow) {
   var thisExplorer = this;
 

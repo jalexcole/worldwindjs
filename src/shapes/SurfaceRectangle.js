@@ -29,7 +29,7 @@ import Angle from "../geom/Angle";
 import ArgumentError from "../error/ArgumentError";
 import Location from "../geom/Location";
 import Logger from "../util/Logger";
-import ShapeAttributes from "./ShapeAttributes";
+
 import SurfaceShape from "./SurfaceShape";
 import WWMath from "../util/WWMath";
 

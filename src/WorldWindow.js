@@ -30,16 +30,13 @@ import ArgumentError from "./error/ArgumentError";
 import Camera from "./geom/Camera";
 import Frustum from "./geom/Frustum";
 import Line from "./geom/Line";
-import LookAt from "./geom/LookAt";
 import Matrix from "./geom/Matrix";
 import Position from "./geom/Position";
 import Rectangle from "./geom/Rectangle";
 import Vec2 from "./geom/Vec2";
 import Vec3 from "./geom/Vec3";
 import EarthElevationModel from "./globe/EarthElevationModel";
-import ElevationModel from "./globe/ElevationModel";
 import Globe from "./globe/Globe";
-import Layer from "./layer/Layer";
 import LookAtNavigator from "./navigate/LookAtNavigator";
 import PickedObjectList from "./pick/PickedObjectList";
 import DrawContext from "./render/DrawContext";
@@ -50,7 +47,6 @@ import KeyboardControls from "./util/KeyboardControls";
 import Logger from "./util/Logger";
 import WWMath from "./util/WWMath";
 import WorldWindConstants from "./WorldWindConstants";
-import WorldWindowController from "./WorldWindowController";
 
 /**
  * Constructs a WorldWind window for an HTML canvas.
@@ -189,7 +185,7 @@ class WorldWindow {
     /**
      * The camera used to view the globe.
      * @type {Camera}
-     * @default [Camera]{@link Camera}
+     * @default [Camera] {@link Camera}
      */
     this.camera = new Camera();
 

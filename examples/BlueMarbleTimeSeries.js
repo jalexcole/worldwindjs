@@ -29,62 +29,57 @@
  * Displays a time series of the 12 months of Blue Marble imagery.
  */
 
-requirejs(['./WorldWindShim',
-        './LayerManager'],
-    function (WorldWind,
-              LayerManager) {
-        "use strict";
+import * as WorldWind from "../src/WorldWind.js";
+// Tell WorldWind to log only warnings and errors.
+WorldWind.Logger.setLoggingLevel(WorldWind.Logger.LEVEL_WARNING);
 
-        // Tell WorldWind to log only warnings and errors.
-        WorldWind.Logger.setLoggingLevel(WorldWind.Logger.LEVEL_WARNING);
+// Create the WorldWindow.
+var wwd = new WorldWind.WorldWindow("canvasOne");
 
-        // Create the WorldWindow.
-        var wwd = new WorldWind.WorldWindow("canvasOne");
+// Add WorldWind UI layers.
+wwd.addLayer(new WorldWind.CompassLayer());
+wwd.addLayer(new WorldWind.CoordinatesDisplayLayer(wwd));
+wwd.addLayer(new WorldWind.ViewControlsLayer(wwd));
 
-        // Add WorldWind UI layers.
-        wwd.addLayer(new WorldWind.CompassLayer());
-        wwd.addLayer(new WorldWind.CoordinatesDisplayLayer(wwd));
-        wwd.addLayer(new WorldWind.ViewControlsLayer(wwd));
+// Create a background layer.
+var backgroundLayer = new WorldWind.BMNGOneImageLayer();
+backgroundLayer.hide = true; // Don't show it in the layer manager.
+wwd.addLayer(backgroundLayer);
 
-        // Create a background layer.
-        var backgroundLayer = new WorldWind.BMNGOneImageLayer();
-        backgroundLayer.hide = true; // Don't show it in the layer manager.
-        wwd.addLayer(backgroundLayer);
+// Create the Blue Marble time series layer using REST tiles hosted at worldwind32.arc.nasa.gov.
+// Disable it until its images are cached, which is initiated below.
+var timeSeriesLayer = new WorldWind.BMNGRestLayer(
+  "https://worldwind.arc.nasa.gov/standalonedata/Earth/BlueMarble256"
+);
+timeSeriesLayer.enabled = false;
+timeSeriesLayer.showSpinner = true;
+wwd.addLayer(timeSeriesLayer);
 
-        // Create the Blue Marble time series layer using REST tiles hosted at worldwind32.arc.nasa.gov.
-        // Disable it until its images are cached, which is initiated below.
-        var timeSeriesLayer = new WorldWind.BMNGRestLayer(
-            "https://worldwind.arc.nasa.gov/standalonedata/Earth/BlueMarble256");
-        timeSeriesLayer.enabled = false;
-        timeSeriesLayer.showSpinner = true;
-        wwd.addLayer(timeSeriesLayer);
+// Add atmosphere layer on top of base imagery layer.
+wwd.addLayer(new WorldWind.AtmosphereLayer());
 
-        // Add atmosphere layer on top of base imagery layer.
-        wwd.addLayer(new WorldWind.AtmosphereLayer());
+var timeIndex = 0;
+var animationStep = 200;
 
-        var timeIndex = 0;
-        var animationStep = 200;
+function animateTimeSeries() {
+  // Pre-load all of the time series layer data before starting the animation, so that we don't see image
+  // tiles flashing as they're downloaded.
+  if (!timeSeriesLayer.isPrePopulated(wwd)) {
+    timeSeriesLayer.prePopulate(wwd);
+    return;
+  }
 
-        function animateTimeSeries() {
-            // Pre-load all of the time series layer data before starting the animation, so that we don't see image
-            // tiles flashing as they're downloaded.
-            if (!timeSeriesLayer.isPrePopulated(wwd)) {
-                timeSeriesLayer.prePopulate(wwd);
-                return;
-            }
+  // Increment the Blue Marble layer's time at a specified frequency.
+  timeIndex = ++timeIndex % WorldWind.BMNGRestLayer.availableTimes.length;
+  timeSeriesLayer.time = WorldWind.BMNGRestLayer.availableTimes[timeIndex];
+  timeSeriesLayer.enabled = true;
+  timeSeriesLayer.showSpinner = false;
+  layerManager.synchronizeLayerList();
+  wwd.redraw();
+}
 
-            // Increment the Blue Marble layer's time at a specified frequency.
-            timeIndex = ++timeIndex % WorldWind.BMNGRestLayer.availableTimes.length;
-            timeSeriesLayer.time = WorldWind.BMNGRestLayer.availableTimes[timeIndex];
-            timeSeriesLayer.enabled = true;
-            timeSeriesLayer.showSpinner = false;
-            layerManager.synchronizeLayerList();
-            wwd.redraw();
-        }
+// Run the animation at the desired frequency.
+window.setInterval(animateTimeSeries, animationStep);
 
-        // Run the animation at the desired frequency.
-        window.setInterval(animateTimeSeries, animationStep);
-
-        // Create a layer manager for controlling layer visibility.
-        var layerManager = new LayerManager(wwd);
-    });
+// Create a layer manager for controlling layer visibility.
+var layerManager = new LayerManager(wwd);

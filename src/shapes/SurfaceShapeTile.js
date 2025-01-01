@@ -26,12 +26,9 @@
  * PDF found in code  directory.
  */
 
-import Level from "../util/Level";
-import Sector from "../geom/Sector";
 import Texture from "../render/Texture";
 import TextureTile from "../render/TextureTile";
-import SurfaceShape from "./SurfaceShape";
-import DrawContext from "../render/DrawContext";
+
 
 /**
  * Constructs a surface shape tile.

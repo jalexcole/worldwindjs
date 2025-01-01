@@ -28,7 +28,15 @@
 import ArgumentError from "../../error/ArgumentError";
 import Logger from "../../util/Logger";
 import WktType from "./WktType";
-
+import Placemark from "../../shapes/Placemark";
+import Path from "../../shapes/Path";
+import Polygon from "../../shapes/Polygon";
+import SurfacePolyline from "../../shapes/SurfacePolyline";
+import SurfacePolygon from "../../shapes/SurfacePolygon";
+import SurfaceEllipse from "../../shapes/SurfaceEllipse";
+import SurfaceCircle from "../../shapes/SurfaceCircle";
+import SurfaceRectangle from "../../shapes/SurfaceRectangle";
+import SurfaceSector from "../../shapes/SurfaceSector";
 /**
  * Provides WKT exporter functions.
  * The following renderables can be exported:
@@ -161,7 +169,7 @@ class WktExporter {
    * @returns {String} WKT format.
    */
   static exportPlacemark(renderable) {
-    if (!(renderable instanceof WorldWind.Placemark)) {
+    if (!(renderable instanceof Placemark)) {
       throw new ArgumentError(
         Logger.logMessage(
           Logger.LEVEL_SEVERE,
@@ -186,7 +194,7 @@ class WktExporter {
    * @returns {String} WKT format.
    */
   static exportPath(renderable) {
-    if (!(renderable instanceof WorldWind.Path)) {
+    if (!(renderable instanceof Path)) {
       throw new ArgumentError(
         Logger.logMessage(
           Logger.LEVEL_SEVERE,
@@ -217,7 +225,7 @@ class WktExporter {
    * @returns {String} WKT format.
    */
   static exportPolygon(renderable) {
-    if (!(renderable instanceof WorldWind.Polygon)) {
+    if (!(renderable instanceof Polygon)) {
       throw new ArgumentError(
         Logger.logMessage(
           Logger.LEVEL_SEVERE,
@@ -275,7 +283,7 @@ class WktExporter {
    * @returns {String} WKT format.
    */
   static exportSurfacePolyline(renderable) {
-    if (!(renderable instanceof WorldWind.SurfacePolyline)) {
+    if (!(renderable instanceof SurfacePolyline)) {
       throw new ArgumentError(
         Logger.logMessage(
           Logger.LEVEL_SEVERE,
@@ -307,7 +315,7 @@ class WktExporter {
    * @returns {String} WKT format.
    */
   static exportSurfacePolygon (renderable) {
-    if (!(renderable instanceof WorldWind.SurfacePolygon)) {
+    if (!(renderable instanceof SurfacePolygon)) {
       throw new ArgumentError(
         Logger.logMessage(
           Logger.LEVEL_SEVERE,
@@ -364,7 +372,7 @@ class WktExporter {
    * @returns {String} WKT format.
    */
   static exportSurfaceEllipse (renderable) {
-    if (!(renderable instanceof WorldWind.SurfaceEllipse)) {
+    if (!(renderable instanceof SurfaceEllipse)) {
       throw new ArgumentError(
         Logger.logMessage(
           Logger.LEVEL_SEVERE,
@@ -400,7 +408,7 @@ class WktExporter {
    * @returns {String} WKT format.
    */
   static exportSurfaceCircle(renderable) {
-    if (!(renderable instanceof WorldWind.SurfaceCircle)) {
+    if (!(renderable instanceof SurfaceCircle)) {
       throw new ArgumentError(
         Logger.logMessage(
           Logger.LEVEL_SEVERE,
@@ -436,7 +444,7 @@ class WktExporter {
    * @returns {String} WKT format.
    */
   static exportSurfaceRectangle(renderable) {
-    if (!(renderable instanceof WorldWind.SurfaceRectangle)) {
+    if (!(renderable instanceof SurfaceRectangle)) {
       throw new ArgumentError(
         Logger.logMessage(
           Logger.LEVEL_SEVERE,
@@ -472,7 +480,7 @@ class WktExporter {
    * @returns {String} WKT format.
    */
   static exportSurfaceSector(renderable) {
-    if (!(renderable instanceof WorldWind.SurfaceSector)) {
+    if (!(renderable instanceof SurfaceSector)) {
       throw new ArgumentError(
         Logger.logMessage(
           Logger.LEVEL_SEVERE,

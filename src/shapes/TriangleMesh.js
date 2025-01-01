@@ -27,20 +27,13 @@
  */
 import AbstractMesh from "../shapes/AbstractMesh";
 import ArgumentError from "../error/ArgumentError";
-import BasicTextureProgram from "../shaders/BasicTextureProgram";
-import BoundingBox from "../geom/BoundingBox";
-import Color from "../util/Color";
-import ImageSource from "../util/ImageSource";
-import Location from "../geom/Location";
+
 import Logger from "../util/Logger";
-import Matrix from "../geom/Matrix";
-import PickedObject from "../pick/PickedObject";
-import Position from "../geom/Position";
-import ShapeAttributes from "./ShapeAttributes";
+
 import SurfacePolygon from "./SurfacePolygon";
-import Vec2 from "../geom/Vec2";
+
 import Vec3 from "../geom/Vec3";
-import WorldWindConstants from "../WorldWindConstants";
+
 /**
  * Constructs a triangle mesh.
  * @alias TriangleMesh

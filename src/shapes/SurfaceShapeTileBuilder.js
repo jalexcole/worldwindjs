@@ -26,24 +26,19 @@
  * PDF found in code  directory.
  */
 import ArgumentError from "../error/ArgumentError";
-import DrawContext from "../render/DrawContext";
-import GpuProgram from "../shaders/GpuProgram";
-import Level from "../util/Level";
+
 import LevelSet from "../util/LevelSet";
 import Location from "../geom/Location";
 import Logger from "../util/Logger";
-import Matrix from "../geom/Matrix";
+
 import MemoryCache from "../cache/MemoryCache";
-import NotYetImplementedError from "../error/NotYetImplementedError";
+
 import PickedObject from "../pick/PickedObject";
-import Rectangle from "../geom/Rectangle";
+
 import Sector from "../geom/Sector";
 import SurfaceShape from "./SurfaceShape";
 import SurfaceShapeTile from "./SurfaceShapeTile";
-import Terrain from "../globe/Terrain";
-import TerrainTile from "../globe/TerrainTile";
-import TerrainTileList from "../globe/TerrainTileList";
-import TextureTile from "../render/TextureTile";
+
 import Tile from "../util/Tile";
 
 class SurfaceShapeTileBuilder {
