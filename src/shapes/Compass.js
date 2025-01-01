@@ -29,6 +29,8 @@ import ArgumentError from "../error/ArgumentError";
 import Logger from "../util/Logger";
 import Offset from "../util/Offset";
 import ScreenImage from "../shapes/ScreenImage";
+import WorldWindConstants from "../WorldWindConstants";
+import WorldWindConfiguration from "../WorldWindConfiguration";
 /**
  * @exports Compass
  */
@@ -58,7 +60,7 @@ class Compass extends ScreenImage {
           ), // upper-right placement
       iPath = imagePath
         ? imagePath
-        : WorldWind.configuration.baseUrl + "images/notched-compass.png";
+        : WorldWindConfiguration.baseUrl + "images/notched-compass.png";
 
     super(sOffset, iPath);
 

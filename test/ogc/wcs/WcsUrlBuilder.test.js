@@ -33,7 +33,7 @@ import { Tile } from "../../../src/WorldWind";
 import WcsUrlBuilder from "../../../src/ogc/wcs/WcsUrlBuilder";
 import WcsCapabilities from "../../../src/ogc/wcs/WcsCapabilities";
 import WebCoverageService from "../../../src/ogc/wcs/WebCoverageService.js";
-import { beforeAll, beforeEach, describe,expect, it } from "vitest";
+import { beforeAll, describe,expect, it } from "vitest";
 
     describe("1.0.0 WCS Url Builder", function () {
 

@@ -113,12 +113,12 @@ Object.defineProperties(KmlPhotoOverlay.prototype, {
    * the scene.
    * @memberof KmlPhotoOverlay.prototype
    * @readonly
-   * @type {ViewVolume}
+   * @type {KmlViewVolume}
    */
   kmlViewVolume: {
     get: function () {
       return this._factory.any(this, {
-        name: ViewVolume.prototype.getTagNames(),
+        name: KmlViewVolume.prototype.getTagNames(),
       });
     },
   },
@@ -136,12 +136,12 @@ Object.defineProperties(KmlPhotoOverlay.prototype, {
    * include specifications for which tiles to load.
    * @memberof KmlPhotoOverlay.prototype
    * @readonly
-   * @type {ImagePyramid}
+   * @type {KmlImagePyramid}
    */
   kmlImagePyramid: {
     get: function () {
       return this._factory.any(this, {
-        name: ImagePyramid.prototype.getTagNames(),
+        name: KmlImagePyramid.prototype.getTagNames(),
       });
     },
   },

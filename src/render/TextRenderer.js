@@ -35,7 +35,7 @@ import Logger from "../util/Logger";
 
 import Texture from "./Texture";
 import Vec2 from "../geom/Vec2";
-import DrawContext from "./DrawContext";
+// import DrawContext from "./DrawContext";
 
 /**
  * Constructs a TextRenderer instance.

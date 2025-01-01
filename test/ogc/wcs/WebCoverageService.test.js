@@ -29,11 +29,11 @@
 import { Promise } from "es6-promise";
 import WcsCapabilities from "../../../src/ogc/wcs/WcsCapabilities";
 import WebCoverageService from "../../../src/ogc/wcs/WebCoverageService";
-import { beforeAll, beforeEach, describe, expect, it } from "vitest";
+import { beforeAll, fail, describe, expect, it } from "vitest";
 
     describe("1.0.0 WebCoverageService", function () {
 
-        var webCoverageService;
+        var webCoverageService = new WebCoverageService();
 
         beforeAll(function (done) {
 

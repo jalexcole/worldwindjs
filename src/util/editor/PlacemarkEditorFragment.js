@@ -15,67 +15,62 @@
  * limitations under the License.
  */
 import BaseSurfaceEditorFragment from "./BaseSurfaceEditorFragment";
-import Location from "../../geom/Location";
 import ShapeEditorConstants from "./ShapeEditorConstants";
 import Placemark from "../../shapes/Placemark";
 
 // Internal use only.
-var PlacemarkEditorFragment = function () {};
+class PlacemarkEditorFragment {
+  constructor() { }
+  // Internal use only.
+  canHandle(shape) {
+    return shape instanceof Placemark;
+  }
+  // Internal use only.
+  createShadowShape(shape) {
+    return new Placemark(shape.position, null, shape.attributes);
+  }
+  // Internal use only.
+  getShapeCenter(shape) {
+    return shape.position;
+  }
+  // Internal use only.
+  initializeControlElements(shape,
+    controlPoints,
+    shadowControlPoints,
+    accessories,
+    resizeControlPointAttributes,
+    rotateControlPointAttributes,
+    moveControlPointAttributes) {
+    if (moveControlPointAttributes) {
+      // we will use the same Placemark as control point
+      shape.userProperties.purpose = ShapeEditorConstants.DRAG;
+      controlPoints.push(shape);
+    }
+  }
+  // Internal use only.
+  updateControlElements(shape,
+    globe,
+    controlPoints) {
+    controlPoints[0].position = shape.position;
+  }
+  // Internal use only.
+  reshape(shape,
+    globe,
+    controlPoint,
+    currentPosition,
+    previousPosition) {
+    return false;
+  }
+}
 
 PlacemarkEditorFragment.prototype = Object.create(
   BaseSurfaceEditorFragment.prototype
 );
 
-// Internal use only.
-PlacemarkEditorFragment.prototype.canHandle = function (shape) {
-  return shape instanceof Placemark;
-};
 
-// Internal use only.
-PlacemarkEditorFragment.prototype.createShadowShape = function (shape) {
-  return new Placemark(shape.position, null, shape.attributes);
-};
 
-// Internal use only.
-PlacemarkEditorFragment.prototype.getShapeCenter = function (shape) {
-  return shape.position;
-};
 
-// Internal use only.
-PlacemarkEditorFragment.prototype.initializeControlElements = function (
-  shape,
-  controlPoints,
-  shadowControlPoints,
-  accessories,
-  resizeControlPointAttributes,
-  rotateControlPointAttributes,
-  moveControlPointAttributes
-) {
-  if (moveControlPointAttributes) {
-    // we will use the same Placemark as control point
-    shape.userProperties.purpose = ShapeEditorConstants.DRAG;
-    controlPoints.push(shape);
-  }
-};
 
-// Internal use only.
-PlacemarkEditorFragment.prototype.updateControlElements = function (
-  shape,
-  globe,
-  controlPoints
-) {
-  controlPoints[0].position = shape.position;
-};
 
-// Internal use only.
-PlacemarkEditorFragment.prototype.reshape = function (
-  shape,
-  globe,
-  controlPoint,
-  currentPosition,
-  previousPosition
-) {
-  return false;
-};
 
 export default PlacemarkEditorFragment;

@@ -74,11 +74,19 @@ import Logger from "./Logger";
             }
             return parsedDocument;
         } else {
+            throw new ArgumentError(
+                Logger.logMessage(
+                    Logger.LEVEL_SEVERE,
+                    "XmlDocument",
+                    "dom",
+                    "DOMParser is not supported in this browser. Will not support IE6"
+                )
+            );
             // Support for IE6
-            var xmlDoc = new ActiveXObject("Microsoft.XMLDOM");
-            xmlDoc.async = false;
-            xmlDoc.loadXML(text);
-            return xmlDoc;
+            // var xmlDoc = new ActiveXObject("Microsoft.XMLDOM");
+            // xmlDoc.async = false;
+            // xmlDoc.loadXML(text);
+            // return xmlDoc;
         }
     }
 }

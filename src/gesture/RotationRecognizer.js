@@ -28,7 +28,7 @@
 
 import Angle from "../geom/Angle";
 import GestureRecognizer from "./GestureRecognizer";
-
+import WorldWindConstants from "../WorldWindConstants";
 /**
  * Constructs a rotation gesture recognizer.
  * @alias RotationRecognizer

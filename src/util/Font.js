@@ -27,7 +27,6 @@
  */
 
 import ArgumentError from "../error/ArgumentError";
-import Color from "./Color";
 import Logger from "./Logger";
 /**
  * @exports Font
@@ -47,46 +46,55 @@ import Logger from "./Logger";
  * the textual features of {@link Placemark} and other shapes. The values used for these attributes are those
  * defined by the [CSS Font property]{@link http://www.w3schools.com/cssref/pr_font_font.asp}.
  */
-var Font = function (
-  size,
-  style,
-  variant,
-  weight,
-  family,
-  horizontalAlignment
-) {
-  /*
-   * All properties of Font are intended to be private and must be accessed via public getters and setters.
-   */
+class Font {
+  constructor(size,
+    style,
+    variant,
+    weight,
+    family,
+    horizontalAlignment) {
+    /*
+     * All properties of Font are intended to be private and must be accessed via public getters and setters.
+     */
+    if (!size) {
+      throw new ArgumentError(
+        Logger.logMessage(
+          Logger.LEVEL_SEVERE,
+          "Font",
+          "constructor",
+          "missingSize"
+        )
+      );
+    } else if (size <= 0) {
+      throw new ArgumentError(
+        Logger.logMessage(
+          Logger.LEVEL_SEVERE,
+          "Font",
+          "constructor",
+          "invalidSize"
+        )
+      );
+    } else {
+      this._size = size;
+    }
 
-  if (!size) {
-    throw new ArgumentError(
-      Logger.logMessage(
-        Logger.LEVEL_SEVERE,
-        "Font",
-        "constructor",
-        "missingSize"
-      )
-    );
-  } else if (size <= 0) {
-    throw new ArgumentError(
-      Logger.logMessage(
-        Logger.LEVEL_SEVERE,
-        "Font",
-        "constructor",
-        "invalidSize"
-      )
-    );
-  } else {
-    this._size = size;
+    this.style = style || "normal";
+    this.variant = variant || "normal";
+    this.weight = weight || "normal";
+    this.family = family || "sans-serif";
+    this.horizontalAlignment = horizontalAlignment || "center";
   }
-
-  this.style = style || "normal";
-  this.variant = variant || "normal";
-  this.weight = weight || "normal";
-  this.family = family || "sans-serif";
-  this.horizontalAlignment = horizontalAlignment || "center";
-};
+  /**
+   * Returns a string representation of this object.
+   * @returns {String} A string representation of this object.
+   */
+  toString() {
+    if (!this._toString || !this._fontString) {
+      this._toString = this.fontString + " " + this.horizontalAlignment;
+    }
+    return this._toString;
+  }
+}
 
 Object.defineProperties(Font.prototype, {
   /**
@@ -208,15 +216,5 @@ Object.defineProperties(Font.prototype, {
   },
 });
 
-/**
- * Returns a string representation of this object.
- * @returns {String} A string representation of this object.
- */
-Font.prototype.toString = function () {
-  if (!this._toString || !this._fontString) {
-    this._toString = this.fontString + " " + this.horizontalAlignment;
-  }
-  return this._toString;
-};
 
 export default Font;

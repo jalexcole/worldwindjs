@@ -25,6 +25,8 @@ import {
   WorldWindow,
 } from "../../src/WorldWind.js";
 
+import {expect} from "vitest";
+
 var TestUtils = function () {};
 
 TestUtils.expectPlaneCloseTo = function (p1, p2) {

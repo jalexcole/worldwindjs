@@ -29,7 +29,15 @@ import ArgumentError from "../../error/ArgumentError";
 import GeoJSONConstants from "./GeoJSONConstants";
 import Logger from "../../util/Logger";
 import WorldWindConstants from "../../WorldWindConstants";
-
+import Placemark from "../../renderable/Placemark";
+import SurfacePolyline from "../../shapes/SurfacePolyline";
+import SurfacePolygon from "../../shapes/SurfacePolygon";
+import SurfaceEllipse from "../../shapes/SurfaceEllipse";
+import SurfaceCircle from "../../shapes/SurfaceCircle";
+import SurfaceRectangle from "../../shapes/SurfaceRectangle";
+import SurfaceSector from "../../shapes/SurfaceSector";
+import Path from "../../shapes/Path";
+import Polygon from "../../shapes/Polygon";
 /**
  * Provides GeoJSON exporter functions.
  * The following renderables can be exported:
@@ -63,23 +71,23 @@ var GeoJSONExporter = {
       );
     }
 
-    if (renderable instanceof WorldWindConstants.Placemark) {
+    if (renderable instanceof Placemark) {
       return this.exportPlacemark(renderable);
-    } else if (renderable instanceof WorldWindConstants.SurfacePolyline) {
+    } else if (renderable instanceof SurfacePolyline) {
       return this.exportSurfacePolyline(renderable);
-    } else if (renderable instanceof WorldWindConstants.SurfacePolygon) {
+    } else if (renderable instanceof SurfacePolygon) {
       return this.exportSurfacePolygon(renderable);
-    } else if (renderable instanceof WorldWindConstants.SurfaceEllipse) {
+    } else if (renderable instanceof SurfaceEllipse) {
       return this.exportSurfaceEllipse(renderable);
-    } else if (renderable instanceof WorldWindConstants.SurfaceCircle) {
+    } else if (renderable instanceof SurfaceCircle) {
       return this.exportSurfaceCircle(renderable);
-    } else if (renderable instanceof WorldWindConstants.SurfaceRectangle) {
+    } else if (renderable instanceof SurfaceRectangle) {
       return this.exportSurfaceRectangle(renderable);
-    } else if (renderable instanceof WorldWindConstants.SurfaceSector) {
+    } else if (renderable instanceof SurfaceSector) {
       return this.exportSurfaceSector(renderable);
-    } else if (renderable instanceof WorldWindConstants.Path) {
+    } else if (renderable instanceof Path) {
       return this.exportPath(renderable);
-    } else if (renderable instanceof WorldWindConstants.Polygon) {
+    } else if (renderable instanceof Polygon) {
       return this.exportPolygon(renderable);
     } else {
       Logger.log(
@@ -167,7 +175,7 @@ var GeoJSONExporter = {
    * @returns {String} GeoJSON format.
    */
   exportPlacemark: function (renderable) {
-    if (!(renderable instanceof WorldWindConstants.Placemark)) {
+    if (!(renderable instanceof Placemark)) {
       throw new ArgumentError(
         Logger.logMessage(
           Logger.LEVEL_SEVERE,
@@ -205,7 +213,7 @@ var GeoJSONExporter = {
    * @returns {String} GeoJSON format.
    */
   exportSurfacePolyline: function (renderable) {
-    if (!(renderable instanceof WorldWindConstants.SurfacePolyline)) {
+    if (!(renderable instanceof SurfacePolyline)) {
       throw new ArgumentError(
         Logger.logMessage(
           Logger.LEVEL_SEVERE,
@@ -249,7 +257,7 @@ var GeoJSONExporter = {
    * @returns {String} GeoJSON format.
    */
   exportSurfacePolygon: function (renderable) {
-    if (!(renderable instanceof WorldWindConstants.SurfacePolygon)) {
+    if (!(renderable instanceof SurfacePolygon)) {
       throw new ArgumentError(
         Logger.logMessage(
           Logger.LEVEL_SEVERE,

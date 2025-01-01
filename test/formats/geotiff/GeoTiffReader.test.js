@@ -27,7 +27,7 @@
  */
 
 import { GeoTiffReader } from "../../../src/WorldWind";
-import { beforeAll, beforeEach, describe,expect, it } from "vitest";
+import { beforeEach, describe,expect, it } from "vitest";
 describe("GeoTiffReader RGB Parsing", function () {
   var geoTiff;
 

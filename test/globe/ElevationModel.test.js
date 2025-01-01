@@ -40,54 +40,51 @@ import TiledElevationCoverage from "../../src/globe/TiledElevationCoverage";
 import { describe, expect, it } from "vitest";
 
 describe("ElevationModel tests", function () {
-  var MockCoverage = function (resolution, minElevation, maxElevation) {
-    TiledElevationCoverage.call(this, {
-      coverageSector: Sector.FULL_SPHERE,
-      resolution: resolution,
-      retrievalImageFormat: "application/bil16",
-      levelZeroDelta: new Location(45, 45),
-      numLevels: 1,
-      tileWidth: 256,
-      tileHeight: 256,
-      minElevation: minElevation ? minElevation : -11000,
-      maxElevation: maxElevation ? maxElevation : 8850,
-    });
+  class MockCoverage extends TiledElevationCoverage {
+    constructor(resolution, minElevation, maxElevation) {
+      super({
+        coverageSector: Sector.FULL_SPHERE,
+        resolution: resolution,
+        retrievalImageFormat: "application/bil16",
+        levelZeroDelta: new Location(45, 45),
+        numLevels: 1,
+        tileWidth: 256,
+        tileHeight: 256,
+        minElevation: minElevation ? minElevation : -11000,
+        maxElevation: maxElevation ? maxElevation : 8850,
+      });
 
-    this.displayName = "Mock Elevation Coverage";
-  };
-
-  MockCoverage.prototype = Object.create(TiledElevationCoverage.prototype);
-
-  MockCoverage.prototype.minAndMaxElevationsForSector = function (
-    sector,
-    result
-  ) {
-    if (result[0] > this.minElevation) {
-      result[0] = this.minElevation;
+      this.displayName = "Mock Elevation Coverage";
     }
-    if (result[1] < this.maxElevation) {
-      result[1] = this.maxElevation;
+    minAndMaxElevationsForSector(sector,
+      result) {
+      if (result[0] > this.minElevation) {
+        result[0] = this.minElevation;
+      }
+      if (result[1] < this.maxElevation) {
+        result[1] = this.maxElevation;
+      }
+
+      return true;
     }
-
-    return true;
-  };
-
-  MockCoverage.prototype.elevationAtLocation = function (latitude, longitude) {
-    return this.maxElevation;
-  };
-
-  MockCoverage.prototype.elevationsForGrid = function (
-    sector,
-    numLat,
-    numLon,
-    result
-  ) {
-    for (var i = 0, n = result.length; i < n; i++) {
-      result[i] = this.maxElevation;
+    elevationAtLocation(latitude, longitude) {
+      return this.maxElevation;
     }
+    elevationsForGrid(sector,
+      numLat,
+      numLon,
+      result) {
+      for (var i = 0, n = result.length; i < n; i++) {
+        result[i] = this.maxElevation;
+      }
 
-    return 1;
-  };
+      return 1;
+    }
+  }
+
+
+
+
 
   // TODO: It would appear that Array.fill is not supported by the unit test engine. (PhantomJS 2.1.1 at the time of this writing)
   // TODO: Revisit the need for this hack with future versions of PhantomJS.

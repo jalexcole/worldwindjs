@@ -157,7 +157,6 @@ describe("Vec3Test", function () {
     expect(destination).toEqual(source);
   });
 
-
   it("Reproduces a Vec3", function () {
     const source = new Vec3(1, 2, 3);
     const clone = Vec3.fromVec3(source);

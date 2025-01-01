@@ -16,7 +16,6 @@
  */
 import BaseSurfaceEditorFragment from "./BaseSurfaceEditorFragment";
 import Location from "../../geom/Location";
-import Position from "../../geom/Position";
 import Sector from "../../geom/Sector";
 import ShapeEditorConstants from "./ShapeEditorConstants";
 import SurfaceSector from "../../shapes/SurfaceSector";

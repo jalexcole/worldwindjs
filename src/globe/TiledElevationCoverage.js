@@ -39,7 +39,7 @@ import Sector from "../geom/Sector";
 import Tile from "../util/Tile";
 import WWMath from "../util/WWMath";
 import WorldWindConfiguration from "../WorldWindConfiguration";
-
+import WorldWindConstants from "../WorldWindConstants";
 /**
  * Constructs a TiledElevationCoverage
  * @alias TiledElevationCoverage

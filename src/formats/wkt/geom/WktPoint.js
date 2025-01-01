@@ -33,7 +33,8 @@ import WktObject from "./WktObject";
 import WktType from "../WktType";
 import Offset from "../../../util/Offset";
 import WorldWindConstants from "../../../WorldWindConstants";
-
+import WorldWindConfiguration from "../../../WorldWindConfiguration";
+import Color from "../../../util/Color";
 /**
  * It represents Point
  * @alias WktPoint
@@ -58,18 +59,18 @@ class WktPoint extends WktObject {
       WorldWindConstants.OFFSET_FRACTION,
       0.0
     );
-    placemarkAttributes._imageColor = WorldWindConstants.Color.WHITE;
+    placemarkAttributes._imageColor = Color.WHITE;
     placemarkAttributes._labelAttributes._offset = new Offset(
       WorldWindConstants.OFFSET_FRACTION,
       0.5,
       WorldWindConstants.OFFSET_FRACTION,
       1.0
     );
-    placemarkAttributes._labelAttributes._color = WorldWindConstants.Color.YELLOW;
+    placemarkAttributes._labelAttributes._color = Color.YELLOW;
     placemarkAttributes._drawLeaderLine = true;
-    placemarkAttributes._leaderLineAttributes._outlineColor = WorldWindConstants.Color.RED;
+    placemarkAttributes._leaderLineAttributes._outlineColor = Color.RED;
     placemarkAttributes._imageSource =
-      WorldWindConstants.configuration.baseUrl + "images/pushpins/castshadow-purple.png";
+      WorldWindConfiguration.baseUrl + "images/pushpins/castshadow-purple.png";
 
     var placemark = new Placemark(coordinates, true, placemarkAttributes);
     placemark.altitudeMode = WorldWindConstants.RELATIVE_TO_GROUND;

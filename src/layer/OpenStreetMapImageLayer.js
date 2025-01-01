@@ -30,7 +30,7 @@ import Layer from "./Layer";
 import Logger from "../util/Logger";
 import WmtsCapabilities from "../ogc/wmts/WmtsCapabilities";
 import WmtsLayer from "./WmtsLayer";
-
+import WorldWindConstants from "../WorldWindConstants";
 /**
  * Constructs an Open Street Map layer.
  * @alias OpenStreetMapImageLayer

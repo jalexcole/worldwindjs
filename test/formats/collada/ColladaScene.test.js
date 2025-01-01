@@ -25,10 +25,17 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
-import Position from "../../../src/geom/Position"
-import ColladaScene from "../../../src/formats/collada/ColladaScene"
-import { beforeAll, beforeEach, describe,expect, it } from "vitest";
+import Position from "../../../src/geom/Position";
+import ColladaScene from "../../../src/formats/collada/ColladaScene";
+import {describe, expect, it } from "vitest";
 import ColladaLoader from "../../../src/formats/collada/ColladaLoader";
+import Matrix from "../../../src/geom/Matrix";
+import Vec3 from "../../../src/geom/Vec3";
+import Line from "../../../src/geom/Line";
+import Globe from "../../../src/globe/Globe";
+import ProjectionWgs84 from "../../../src/projections/ProjectionWgs84";
+import ElevationModel from "../../../src/globe/ElevationModel";
+
 describe("ColladaScene calculation and data manipulation testing", function () {
   it("Should properly calculate new normals and create proper vertex order", function () {
     var indices = [
@@ -111,9 +118,7 @@ describe("ColladaScene calculation and data manipulation testing", function () {
   });
 
   it("Should properly compute intersection points with a ray", function () {
-    var colladaLoader = new ColladaLoader(
-      new Position(44, -96, 10000)
-    );
+    var colladaLoader = new ColladaLoader(new Position(44, -96, 10000));
     colladaLoader.init({ dirPath: "../base/test/formats/collada/" });
     colladaLoader.load("bad_normals.dae", function (scene) {
       scene.scale = 5000;
@@ -148,10 +153,7 @@ describe("ColladaScene calculation and data manipulation testing", function () {
       );
       var pointRay = new Line(origin, direction);
       var intersections = [];
-      var globe = new Globe(
-        new ElevationModel(),
-        new ProjectionWgs84()
-      );
+      var globe = new Globe(new ElevationModel(), new ProjectionWgs84());
       var intersectionsFound = scene.computePointIntersections(
         globe,
         pointRay,

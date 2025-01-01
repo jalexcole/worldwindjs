@@ -29,7 +29,7 @@ import ArgumentError from "../error/ArgumentError";
 import Color from "../util/Color";
 import Logger from "../util/Logger";
 import MercatorTiledImageLayer from "./MercatorTiledImageLayer";
-
+import WorldWindConstants from "../WorldWindConstants";
 /**
  * Constructs Digital Globe tiled image layer for a specified dataset distributed by Digital Globe.
  * @alias DigitalGlobeTiledImageLayer

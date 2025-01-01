@@ -30,8 +30,7 @@ import Matrix from "../../src/geom/Matrix";
 import Plane from "../../src/geom/Plane";
 import Vec3 from "../../src/geom/Vec3";
 
-
-import { beforeEach, describe,expect, it } from "vitest";
+import { beforeEach, describe, expect, it } from "vitest";
 
 describe("Frustum Tests", function () {
   describe("Frustum constructor", function () {

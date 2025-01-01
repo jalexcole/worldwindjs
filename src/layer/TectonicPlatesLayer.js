@@ -26,14 +26,14 @@
  * PDF found in code  directory.
  */
 
-import ArgumentError from "../error/ArgumentError";
+
 import Color from "../util/Color";
 import Location from "../geom/Location";
 import Logger from "../util/Logger";
 import RenderableLayer from "./RenderableLayer";
 import ShapeAttributes from "../shapes/ShapeAttributes";
 import SurfacePolygon from "../shapes/SurfacePolygon";
-
+import WorldWindConfiguration from "../WorldWindConfiguration";
 /**
  * Constructs a layer showing the Earth's tectonic plates.
  * @alias TectonicPlatesLayer
@@ -61,7 +61,7 @@ class TectonicPlatesLayer extends RenderableLayer {
     this.loadPlateData();
   }
   loadPlateData() {
-    var url = WorldWind.configuration.baseUrl + "images/TectonicPlates.json";
+    var url = WorldWindConfiguration.baseUrl + "images/TectonicPlates.json";
 
     var xhr = new XMLHttpRequest();
 

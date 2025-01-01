@@ -29,17 +29,17 @@ import AbstractShape from "./AbstractShape";
 import ArgumentError from "../error/ArgumentError";
 import BasicTextureProgram from "../shaders/BasicTextureProgram";
 import BoundingBox from "../geom/BoundingBox";
-import Color from "../util/Color";
+
 import Location from "../geom/Location";
 import Logger from "../util/Logger";
-import Matrix from "../geom/Matrix";
+
 import PickedObject from "../pick/PickedObject";
 import Position from "../geom/Position";
 import ShapeAttributes from "./ShapeAttributes";
 import SurfacePolyline from "./SurfacePolyline";
-import Vec2 from "../geom/Vec2";
-import Vec3 from "../geom/Vec3";
 
+import Vec3 from "../geom/Vec3";
+import WorldWindConstants from "../WorldWindConstants";
 /**
  * Constructs a path.
  * @alias Path
@@ -78,7 +78,7 @@ import Vec3 from "../geom/Vec3";
  * default attributes are associated.
  * @throws {ArgumentError} If the specified positions array is null or undefined.
  */
-class Path extends AbstractShape{
+class Path extends AbstractShape {
   constructor(positions, attributes) {
     super(attributes);
     if (!positions) {
@@ -91,8 +91,6 @@ class Path extends AbstractShape{
         )
       );
     }
-
-    
 
     // Private. Documentation is with the defined property below.
     this._positions = positions;
@@ -121,18 +119,24 @@ class Path extends AbstractShape{
       return true;
     }
 
-    if (this.currentData.drawInterior !== this.activeAttributes.drawInterior ||
-      this.currentData.drawVerticals !== this.activeAttributes.drawVerticals) {
+    if (
+      this.currentData.drawInterior !== this.activeAttributes.drawInterior ||
+      this.currentData.drawVerticals !== this.activeAttributes.drawVerticals
+    ) {
       return true;
     }
 
-    if (!this.followTerrain &&
-      this.currentData.numSubSegments !== this.numSubSegments) {
+    if (
+      !this.followTerrain &&
+      this.currentData.numSubSegments !== this.numSubSegments
+    ) {
       return true;
     }
 
-    if (this.followTerrain &&
-      this.currentData.terrainConformance !== this.terrainConformance) {
+    if (
+      this.followTerrain &&
+      this.currentData.terrainConformance !== this.terrainConformance
+    ) {
       return true;
     }
 
@@ -201,7 +205,15 @@ class Path extends AbstractShape{
   }
   // Private. Intentionally not documented.
   makeTessellatedPositions(dc) {
-    var tessellatedPositions = [], eyePoint = dc.eyePoint, showVerticals = this.mustDrawVerticals(dc), ptA = new Vec3(0, 0, 0), ptB = new Vec3(0, 0, 0), posA = this._positions[0], posB, eyeDistance, pixelSize;
+    var tessellatedPositions = [],
+      eyePoint = dc.eyePoint,
+      showVerticals = this.mustDrawVerticals(dc),
+      ptA = new Vec3(0, 0, 0),
+      ptB = new Vec3(0, 0, 0),
+      posA = this._positions[0],
+      posB,
+      eyeDistance,
+      pixelSize;
 
     if (showVerticals) {
       this.currentData.verticalIndices = new Int16Array(
@@ -232,8 +244,10 @@ class Path extends AbstractShape{
       );
       eyeDistance = eyePoint.distanceTo(ptA);
       pixelSize = dc.pixelSizeAtDistance(eyeDistance);
-      if (ptA.distanceTo(ptB) < pixelSize * 8 &&
-        this.altitudeMode !== WorldWindConstants.ABSOLUTE) {
+      if (
+        ptA.distanceTo(ptB) < pixelSize * 8 &&
+        this.altitudeMode !== WorldWindConstants.ABSOLUTE
+      ) {
         tessellatedPositions.push(posB); // distance is short so no need for sub-segments
       } else {
         this.makeSegment(dc, posA, posB, ptA, ptB, tessellatedPositions);
@@ -252,13 +266,16 @@ class Path extends AbstractShape{
     return tessellatedPositions;
   }
   // Private. Intentionally not documented.
-  makeSegment(dc,
-    posA,
-    posB,
-    ptA,
-    ptB,
-    tessellatedPositions) {
-    var eyePoint = dc.eyePoint, pos = new Location(0, 0), height = 0, arcLength, segmentAzimuth, segmentDistance, s, p, distance;
+  makeSegment(dc, posA, posB, ptA, ptB, tessellatedPositions) {
+    var eyePoint = dc.eyePoint,
+      pos = new Location(0, 0),
+      height = 0,
+      arcLength,
+      segmentAzimuth,
+      segmentDistance,
+      s,
+      p,
+      distance;
 
     // If it's just a straight line and not terrain following, then the segment is just two points.
     if (this._pathType === WorldWindConstants.LINEAR && !this._followTerrain) {
@@ -300,7 +317,7 @@ class Path extends AbstractShape{
     }
 
     this.scratchPoint.copy(ptA);
-    for (s = 0, p = 0; s < 1;) {
+    for (s = 0, p = 0; s < 1; ) {
       if (this._followTerrain) {
         p +=
           this._terrainConformance *
@@ -345,10 +362,22 @@ class Path extends AbstractShape{
   }
   // Private. Intentionally not documented.
   computeRenderedPath(dc, tessellatedPositions) {
-    var capturePoles = this.mustDrawInterior(dc) || this.mustDrawVerticals(dc), eyeDistSquared = Number.MAX_VALUE, eyePoint = dc.eyePoint, numPoints = (capturePoles ? 2 : 1) * tessellatedPositions.length, tessellatedPoints = new Float32Array(numPoints * 3), stride = capturePoles ? 6 : 3, pt = new Vec3(0, 0, 0), altitudeMode, pos, k, dSquared;
+    var capturePoles = this.mustDrawInterior(dc) || this.mustDrawVerticals(dc),
+      eyeDistSquared = Number.MAX_VALUE,
+      eyePoint = dc.eyePoint,
+      numPoints = (capturePoles ? 2 : 1) * tessellatedPositions.length,
+      tessellatedPoints = new Float32Array(numPoints * 3),
+      stride = capturePoles ? 6 : 3,
+      pt = new Vec3(0, 0, 0),
+      altitudeMode,
+      pos,
+      k,
+      dSquared;
 
-    if (this._followTerrain &&
-      this.altitudeMode !== WorldWindConstants.CLAMP_TO_GROUND) {
+    if (
+      this._followTerrain &&
+      this.altitudeMode !== WorldWindConstants.CLAMP_TO_GROUND
+    ) {
       altitudeMode = WorldWindConstants.RELATIVE_TO_GROUND;
     } else {
       altitudeMode = this.altitudeMode;
@@ -422,7 +451,15 @@ class Path extends AbstractShape{
   }
   // Overridden from AbstractShape base class.
   doRenderOrdered(dc) {
-    var gl = dc.currentGlContext, program = dc.currentProgram, currentData = this.currentData, numPoints = currentData.tessellatedPoints.length / 3, vboId, color, pickColor, stride, nPts;
+    var gl = dc.currentGlContext,
+      program = dc.currentProgram,
+      currentData = this.currentData,
+      numPoints = currentData.tessellatedPoints.length / 3,
+      vboId,
+      color,
+      pickColor,
+      stride,
+      nPts;
 
     this.applyMvpMatrix(dc);
 
@@ -479,8 +516,10 @@ class Path extends AbstractShape{
     }
 
     if (this.activeAttributes.drawOutline) {
-      if ((this.mustDrawVerticals(dc) && this.mustDrawInterior(dc)) ||
-        this.altitudeMode === WorldWindConstants.CLAMP_TO_GROUND) {
+      if (
+        (this.mustDrawVerticals(dc) && this.mustDrawInterior(dc)) ||
+        this.altitudeMode === WorldWindConstants.CLAMP_TO_GROUND
+      ) {
         // Make the verticals stand out from the interior, or the outline stand out from the terrain.
         this.applyMvpMatrixForOutline(dc);
       }
@@ -711,17 +750,5 @@ Object.defineProperties(Path.prototype, {
     },
   },
 });
-
-
-
-
-
-
-
-
-
-
-
-
 
 export default Path;

@@ -25,11 +25,11 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
-import CustomMatchers from "./TileMatrixSet.test.js";
+
 import Sector from "../../src/geom/Sector.js";
 import TileMatrix from "../../src/geom/TileMatrix.js";
 
-import { beforeEach, describe,expect, it } from "vitest";
+import {  describe,expect, it } from "vitest";
 
 
     // beforeEach(function () {

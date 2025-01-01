@@ -29,7 +29,7 @@ import ArgumentError from "../error/ArgumentError";
 import Logger from "../util/Logger";
 import PickedObject from "../pick/PickedObject";
 import SurfaceTile from "../render/SurfaceTile";
-
+import WorldWindConstants from "../WorldWindConstants";
 /**
  * Constructs a surface image shape for a specified sector and image path.
  * @alias SurfaceImage

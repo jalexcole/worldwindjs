@@ -181,6 +181,7 @@ describe("BoundingBox Tests", function () {
 
     it("Should throw an exception because no sector is provided", function () {
       expect(function () {
+        var boundingBox = new BoundingBox();
         boundingBox.setToSector(null, globe, 10, 1000);
       }).toThrow();
     });

@@ -29,6 +29,7 @@ import ArgumentError from "../../error/ArgumentError";
 import KmlElementsFactoryCached from "./util/KmlElementsFactoryCached";
 import Logger from "../../util/Logger";
 import Renderable from "../../render/Renderable";
+import KmlAttribute from "./util/KmlAttribute";
 
 /**
  * Constructs an Kml object. Every node in the Kml document is either basic type or Kml object. Applications usually
@@ -103,7 +104,7 @@ Object.defineProperties(KmlObject.prototype, {
    */
   id: {
     get: function () {
-      return new Attribute(this.node, "id").value();
+      return new KmlAttribute(this.node, "id").value();
     },
   },
 

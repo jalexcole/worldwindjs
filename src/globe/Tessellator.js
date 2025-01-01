@@ -46,7 +46,7 @@ import TerrainTileList from "./TerrainTileList";
 import Tile from "../util/Tile";
 import WWMath from "../util/WWMath";
 import WWUtil from "../util/WWUtil";
-
+import WorldWindConstants from "../WorldWindConstants";
 /**
  * Constructs a Tessellator.
  * @alias Tessellator

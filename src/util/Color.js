@@ -26,6 +26,7 @@
  * PDF found in code  directory.
  */
 
+import ArgumentError from "../error/ArgumentError";
 import Logger from "./Logger";
 
 /**
@@ -172,7 +173,9 @@ class Color {
    * @returns {Color} This color, set to the next possible color.
    */
   nextColor() {
-    var rb = Math.round(this.red * 255), gb = Math.round(this.green * 255), bb = Math.round(this.blue * 255);
+    var rb = Math.round(this.red * 255),
+      gb = Math.round(this.green * 255),
+      bb = Math.round(this.blue * 255);
 
     if (rb < 255) {
       this.red = (rb + 1) / 255;
@@ -198,7 +201,14 @@ class Color {
    * @returns {Boolean} true if the colors are equal, otherwise false.
    */
   equals(color) {
-    var rbA = Math.round(this.red * 255), gbA = Math.round(this.green * 255), bbA = Math.round(this.blue * 255), abA = Math.round(this.alpha * 255), rbB = Math.round(color.red * 255), gbB = Math.round(color.green * 255), bbB = Math.round(color.blue * 255), abB = Math.round(color.alpha * 255);
+    var rbA = Math.round(this.red * 255),
+      gbA = Math.round(this.green * 255),
+      bbA = Math.round(this.blue * 255),
+      abA = Math.round(this.alpha * 255),
+      rbB = Math.round(color.red * 255),
+      gbB = Math.round(color.green * 255),
+      bbB = Math.round(color.blue * 255),
+      abB = Math.round(color.alpha * 255);
 
     return rbA === rbB && gbA === gbB && bbA === bbB && abA === abB;
   }
@@ -208,7 +218,10 @@ class Color {
    * @returns {Boolean} true if the colors are equal, otherwise false.
    */
   equalsBytes(bytes) {
-    var rb = Math.round(this.red * 255), gb = Math.round(this.green * 255), bb = Math.round(this.blue * 255), ab = Math.round(this.alpha * 255);
+    var rb = Math.round(this.red * 255),
+      gb = Math.round(this.green * 255),
+      bb = Math.round(this.blue * 255),
+      ab = Math.round(this.alpha * 255);
 
     return (
       rb === bytes[0] && gb === bytes[1] && bb === bytes[2] && ab === bytes[3]
@@ -220,7 +233,10 @@ class Color {
    * @returns {String}
    */
   toByteString() {
-    var rb = Math.round(this.red * 255), gb = Math.round(this.green * 255), bb = Math.round(this.blue * 255), ab = Math.round(this.alpha * 255);
+    var rb = Math.round(this.red * 255),
+      gb = Math.round(this.green * 255),
+      bb = Math.round(this.blue * 255),
+      ab = Math.round(this.alpha * 255);
 
     return "(" + rb + "," + gb + "," + bb + "," + ab + ")";
   }
@@ -233,7 +249,10 @@ class Color {
    */
   toHexString(isUsingAlpha) {
     // Use Math.ceil() to get 0.75 to map to 0xc0. This is important if the display is dithering.
-    var redHex = Math.ceil(this.red * 255).toString(16), greenHex = Math.ceil(this.green * 255).toString(16), blueHex = Math.ceil(this.blue * 255).toString(16), alphaHex = Math.ceil(this.alpha * 255).toString(16);
+    var redHex = Math.ceil(this.red * 255).toString(16),
+      greenHex = Math.ceil(this.green * 255).toString(16),
+      blueHex = Math.ceil(this.blue * 255).toString(16),
+      alphaHex = Math.ceil(this.alpha * 255).toString(16);
 
     var result = "#";
     result += redHex.length < 2 ? "0" + redHex : redHex;
@@ -250,7 +269,9 @@ class Color {
    * @returns {string} A color string suitable for CSS.
    */
   toCssColorString() {
-    var red = Math.round(this.red * 255), green = Math.round(this.green * 255), blue = Math.round(this.blue * 255);
+    var red = Math.round(this.red * 255),
+      green = Math.round(this.green * 255),
+      blue = Math.round(this.blue * 255);
 
     // Per the CSS Color Module Level 3 specification, alpha is expressed as floating point value between 0 - 1
     return "rgba(" + red + ", " + green + ", " + blue + ", " + this.alpha + ")";
@@ -336,21 +357,5 @@ Color.DARK_GRAY = new Color(0.25, 0.25, 0.25, 1);
  * @type {Color}
  */
 Color.TRANSPARENT = new Color(0, 0, 0, 0);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 export default Color;

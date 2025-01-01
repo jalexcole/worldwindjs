@@ -26,7 +26,7 @@
  * PDF found in code  directory.
  */
 import GestureRecognizer from "./GestureRecognizer";
-
+import WorldWindConstants from "../WorldWindConstants";
 /**
  * Constructs a tap gesture recognizer.
  * @alias TapRecognizer

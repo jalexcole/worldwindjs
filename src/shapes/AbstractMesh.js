@@ -34,9 +34,10 @@ import Line from "../geom/Line";
 import Logger from "../util/Logger";
 import PickedObject from "../pick/PickedObject";
 import Position from "../geom/Position";
+import UnsupportedOperationError from "../error/UnsupportedOperationError";
 import Vec3 from "../geom/Vec3";
 import WWMath from "../util/WWMath";
-
+import WorldWindConstants from "../WorldWindConstants";
 /**
  * Constructs an abstract mesh. Applications do not call this constructor. It is called only by subclasses of
  * this abstract class.

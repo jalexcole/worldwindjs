@@ -28,6 +28,7 @@
 import KmlElements from "../KmlElements";
 import KmlSubStyle from "./KmlSubStyle";
 import KmlNodeTransformers from "../util/KmlNodeTransformers";
+import KmlItemIcon from "../util/KmlItemIcon";
 
 /**
  * Constructs an KmlListStyle. Applications usually don't call this constructor. It is called by {@link KmlFile} as
@@ -110,7 +111,7 @@ Object.defineProperties(KmlListStyle.prototype, {
   kmlItemIcon: {
     get: function () {
       return this._factory.any(this, {
-        name: ItemIcon.prototype.getTagNames(),
+        name: KmlItemIcon.prototype.getTagNames(),
       });
     },
   },

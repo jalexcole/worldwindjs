@@ -38,6 +38,7 @@ import PolygonSplitter from "../util/PolygonSplitter";
 import Renderable from "../render/Renderable";
 import Sector from "../geom/Sector";
 import ShapeAttributes from "./ShapeAttributes";
+import Position from "../geom/Position";
 import UnsupportedOperationError from "../error/UnsupportedOperationError";
 import Vec3 from "../geom/Vec3";
 import WorldWindConstants from "../WorldWindConstants";
@@ -589,7 +590,7 @@ class SurfaceShape extends Renderable {
   computeShiftedLocations(globe, oldLocation, newLocation, locations) {
     var newLocations = [];
     var result = new Vec3(0, 0, 0);
-    var newPos = new WorldWind.Position(0, 0, 0);
+    var newPos = new Position(0, 0, 0);
 
     var oldPoint = globe.computePointFromLocation(
       oldLocation.latitude,

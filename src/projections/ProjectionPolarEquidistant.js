@@ -29,7 +29,7 @@ import Angle from "../geom/Angle";
 import ArgumentError from "../error/ArgumentError";
 import GeographicProjection from "./GeographicProjection";
 import Logger from "../util/Logger";
-
+import Vec3 from "../geom/Vec3";
 /**
  * Constructs a polar equidistant geographic projection.
  * @alias ProjectionPolarEquidistant

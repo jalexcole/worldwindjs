@@ -1,3 +1,12 @@
 {
-    "livePreview.defaultPreviewPath": "/apps/Offline.html"
+    "livePreview.defaultPreviewPath": "/apps/Offline.html",
+    "eslint.format.enable": true,
+    "eslint.workingDirectories": [
+        "src/","test/"
+    ],
+    "eslint.validate": [
+        "javascript"
+    ],
+    
+
 }

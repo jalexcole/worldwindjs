@@ -19,9 +19,8 @@ import LookAt from "../../src/geom/LookAt.js";
 import Matrix from "../../src/geom/Matrix.js";
 import Position from "../../src/geom/Position.js";
 
-
 import TestUtils from "../util/TestUtils.test.js";
-import { beforeEach, describe,expect, it } from "vitest";
+import { describe, expect, it } from "vitest";
 
 var mockGlobe = new Globe(new ElevationModel());
 var wwd = TestUtils.getMockWwd(mockGlobe);

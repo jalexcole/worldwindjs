@@ -25,8 +25,9 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
-import { KmlImagePyramid, KmlViewVolume, KmlPoint, KmlPhotoOverlay, XmlDocument } from "../../../../src/WorldWind";
-import { beforeAll, beforeEach, describe,expect, it } from "vitest";
+import {  KmlPoint, KmlPhotoOverlay, XmlDocument, KmlViewVolume } from "../../../../src/WorldWind";
+import KmlImagePyramid from "../../../../src/formats/kml/util/KmlImagePyramid.js";
+import { describe,expect, it } from "vitest";
     describe("KmlPhotoOverlayTest", function () {
             var validKml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
                 "<kml xmlns=\"http://www.opengis.net/kml/2.2\">" +
@@ -47,9 +48,9 @@ import { beforeAll, beforeEach, describe,expect, it } from "vitest";
                 expect(photoOverlay.kmlShape).toEqual('rectangle');
 
                 console.log(photoOverlay.kmlViewVolume);
-                expect(photoOverlay.kmlViewVolume instanceof ViewVolume).toBeTruthy();
+                expect(photoOverlay.kmlViewVolume instanceof KmlViewVolume).toBeTruthy();
                 console.log(photoOverlay.kmlImagePyramid);
-                expect(photoOverlay.kmlImagePyramid instanceof ImagePyramid).toBeTruthy();
+                expect(photoOverlay.kmlImagePyramid instanceof KmlImagePyramid).toBeTruthy();
                 expect(photoOverlay.kmlPoint instanceof KmlPoint).toBeTruthy();
 
             });

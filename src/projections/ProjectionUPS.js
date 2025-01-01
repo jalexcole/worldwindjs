@@ -43,13 +43,10 @@ import WWMath from "../util/WWMath";
  * for the south aspect.
  */
 class ProjectionUPS extends GeographicProjection {
-  /**
-   * {Sector}
-   * @private
-   */
-  limits = null;
+  
+  
   constructor(pole) {
-    super("Uniform Polar Stereographic", false, this.limits);
+    super("Uniform Polar Stereographic", false, limits(pole));
     // Internal. Intentionally not documented.
     this.north = !(pole === "South");
 
@@ -68,6 +65,10 @@ class ProjectionUPS extends GeographicProjection {
     // Internal. Intentionally not documented. See "stateKey" property accessor below for public interface.
     this._stateKey = "projection ups " + this._pole + " ";
   }
+  static limits(pole) { 
+    return new Sector(pole === "North" ? 0 : -90, pole === "North" ? 90 : 0, -180, 180);
+  }
+
   // Documented in base class.
   geographicToCartesian(globe,
     latitude,

@@ -41,11 +41,18 @@ import KmlNodeTransformers from "./KmlNodeTransformers";
  * @see https://developers.google.com/kml/documentation/kmlreference#viewvolume
  * @augments KmlObject
  */
-var KmlViewVolume = function (options) {
-  KmlObject.call(this, options);
-};
+class KmlViewVolume extends KmlObject{
+  constructor(options) {
+    super(options);
+  }
+  /**
+   * @inheritDoc
+   */
+  getTagNames() {
+    return ["ViewVolume"];
+  }
+}
 
-KmlViewVolume.prototype = Object.create(KmlObject.prototype);
 
 Object.defineProperties(KmlViewVolume.prototype, {
   /**
@@ -127,12 +134,6 @@ Object.defineProperties(KmlViewVolume.prototype, {
   },
 });
 
-/**
- * @inheritDoc
- */
-KmlViewVolume.prototype.getTagNames = function () {
-  return ["ViewVolume"];
-};
 
 KmlElements.addKey(KmlViewVolume.prototype.getTagNames()[0], KmlViewVolume);
 

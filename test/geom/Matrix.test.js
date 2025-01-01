@@ -35,7 +35,7 @@ import Vec3 from "../../src/geom/Vec3.js";
 
 
 
-import { beforeEach, describe, expect, it } from "vitest";
+import {  describe, expect, it } from "vitest";
 
 describe("Matrix Tests", function () {
   it("Should construct a matrix correctly", function () {

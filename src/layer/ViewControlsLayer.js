@@ -34,7 +34,8 @@ import LookAt from "../geom/LookAt";
 import Offset from "../util/Offset";
 import ScreenImage from "../shapes/ScreenImage";
 import Vec2 from "../geom/Vec2";
-
+import WorldWindConfiguration from "../WorldWindConfiguration";
+import WorldWindConstants from "../WorldWindConstants";
 /**
  * Constructs a view controls layer.
  * @alias ViewControlsLayer
@@ -188,7 +189,7 @@ class ViewControlsLayer extends Layer{
       0,
       WorldWindConstants.OFFSET_PIXELS,
       0
-    ), imagePath = WorldWind.configuration.baseUrl + "images/view/";
+    ), imagePath = WorldWindConfiguration.baseUrl + "images/view/";
 
     // These controls are all internal and intentionally not documented.
     this.panControl = new ScreenImage(

@@ -47,7 +47,7 @@ import { beforeAll, beforeEach, describe,expect, it } from "vitest";
                 expect(listStyle.kmlListItemType).toEqual('check');
                 expect(listStyle.kmlBgColor).toEqual('ffffffff');
                 console.log(listStyle.kmlItemIcon);
-                expect(listStyle.kmlItemIcon instanceof ItemIcon).toBeTruthy();
+                expect(listStyle.kmlItemIcon instanceof KmlItemIcon).toBeTruthy();
 
             });
 

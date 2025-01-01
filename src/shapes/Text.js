@@ -29,17 +29,16 @@
 import ArgumentError from "../error/ArgumentError";
 import BasicTextureProgram from "../shaders/BasicTextureProgram";
 import Color from "../util/Color";
-import Font from "../util/Font";
 import Logger from "../util/Logger";
 import Matrix from "../geom/Matrix";
 import PickedObject from "../pick/PickedObject";
 import Renderable from "../render/Renderable";
 import TextAttributes from "./TextAttributes";
 import UnsupportedOperationError from "../error/UnsupportedOperationError";
-import Vec2 from "../geom/Vec2";
 import Vec3 from "../geom/Vec3";
 import WWMath from "../util/WWMath";
-
+import WorldWindConfiguration from "../WorldWindConfiguration";
+import WorldWindConstants from "../WorldWindConstants";
 /**
  * Constructs a text shape. This constructor is intended to be called only by subclasses.
  * @alias Text
@@ -54,7 +53,7 @@ import WWMath from "../util/WWMath";
  */
 class Text extends Renderable {
   constructor(text) {
-    super()
+    super();
     if (!text) {
       throw new ArgumentError(
         Logger.logMessage(
@@ -166,7 +165,7 @@ class Text extends Renderable {
      * @default A round dot drawn in this shape's text color.
      */
     this.markerImageSource =
-      WorldWind.configuration.baseUrl + "images/white-dot.png";
+      WorldWindConfiguration.baseUrl + "images/white-dot.png";
 
     /**
      * The scale to apply to the [markerImageSource]{@link Text#markerImageSource}.
@@ -197,31 +196,30 @@ class Text extends Renderable {
     this.screenPoint = new Vec3(0, 0, 0);
 
     // Internal use only. Intentionally not documented.
-    matrix = Matrix.fromIdentity(); // scratch variable
-    glPickPoint = new Vec3(0, 0, 0); // scratch variable
+    this.matrix = Matrix.fromIdentity(); // scratch variable
+    let glPickPoint = new Vec3(0, 0, 0); // scratch variable
 
     // Text.prototype = Object.create(Renderable.prototype);
-    /**
-     * Copies the contents of a specified text object to this text object.
-     * @param {Text} that The text object to copy.
-     */
-    copy(that);
-    {
-      this.text = that.text;
-      this.attributes = that.attributes;
-      this.highlightAttributes = that.highlightAttributes;
-      this.highlighted = that.highlighted;
-      this.enabled = that.enabled;
-      this.altitudeMode = that.altitudeMode;
-      this.pickDelegate = that.pickDelegate;
-      this.alwaysOnTop = that.alwaysOnTop;
-      this.depthOffset = that.depthOffset;
-      this.declutterGroup = that.declutterGroup;
-      this.targetVisibility = that.targetVisibility;
-      this.currentVisibility = that.currentVisibility;
+  }
+  /**
+   * Copies the contents of a specified text object to this text object.
+   * @param {Text} that The text object to copy.
+   */
+  copy(that) {
+    this.text = that.text;
+    this.attributes = that.attributes;
+    this.highlightAttributes = that.highlightAttributes;
+    this.highlighted = that.highlighted;
+    this.enabled = that.enabled;
+    this.altitudeMode = that.altitudeMode;
+    this.pickDelegate = that.pickDelegate;
+    this.alwaysOnTop = that.alwaysOnTop;
+    this.depthOffset = that.depthOffset;
+    this.declutterGroup = that.declutterGroup;
+    this.targetVisibility = that.targetVisibility;
+    this.currentVisibility = that.currentVisibility;
 
-      return this;
-    }
+    return this;
   }
   /**
    * Renders this text. This method is typically not called by applications but is called by

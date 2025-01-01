@@ -28,7 +28,7 @@
 import ArgumentError from "../error/ArgumentError";
 import Logger from "../util/Logger";
 import Vec3 from "../geom/Vec3";
-
+import WorldWindConstants from "../WorldWindConstants";
 /**
  * Constructs a Terrain object.
  * @alias Terrain

@@ -30,18 +30,16 @@ import AnnotationAttributes from "./AnnotationAttributes";
 import ArgumentError from "../error/ArgumentError";
 import BasicTextureProgram from "../shaders/BasicTextureProgram";
 import Color from "../util/Color";
-import Font from "../util/Font";
-import Insets from "../util/Insets";
+
 import Logger from "../util/Logger";
 import Matrix from "../geom/Matrix";
-import Offset from "../util/Offset";
+
 import PickedObject from "../pick/PickedObject";
 import Renderable from "../render/Renderable";
-import TextAttributes from "./TextAttributes";
-import Vec2 from "../geom/Vec2";
+import Offset from "../util/Offset";
 import Vec3 from "../geom/Vec3";
 import WWMath from "../util/WWMath";
-
+import WorldWindConstants from "../WorldWindConstants";
 /**
  * Constructs an annotation.
  * @alias Annotation
@@ -71,8 +69,6 @@ class Annotation extends Renderable {
       );
     }
 
-    
-
     /**
      * This annotation's geographic position.
      * @type {Position}
@@ -89,9 +85,9 @@ class Annotation extends Renderable {
     /**
      * This annotation's altitude mode. May be one of
      * <ul>
-     *  <li>[WorldWindConstants.ABSOLUTE]{@link WorldWind#ABSOLUTE}</li>
-     *  <li>[WorldWindConstants.RELATIVE_TO_GROUND]{@link WorldWind#RELATIVE_TO_GROUND}</li>
-     *  <li>[WorldWindConstants.CLAMP_TO_GROUND]{@link WorldWind#CLAMP_TO_GROUND}</li>
+     *  <li>[WorldWindConstants.ABSOLUTE]{@link WorldWindConstants#ABSOLUTE}</li>
+     *  <li>[WorldWindConstants.RELATIVE_TO_GROUND]{@link WorldWindConstants#RELATIVE_TO_GROUND}</li>
+     *  <li>[WorldWindConstants.CLAMP_TO_GROUND]{@link WorldWindConstants#CLAMP_TO_GROUND}</li>
      * </ul>
      * @default WorldWindConstants.ABSOLUTE
      */
@@ -107,7 +103,7 @@ class Annotation extends Renderable {
     this.calloutTransform = Matrix.fromIdentity();
 
     // Internal use only. Intentionally not documented.
-    this.calloutOffset = new WorldWind.Offset(
+    this.calloutOffset = new Offset(
       WorldWindConstants.OFFSET_FRACTION,
       0.5,
       WorldWindConstants.OFFSET_FRACTION,

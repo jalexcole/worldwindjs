@@ -171,5 +171,5 @@ possibly extending the provided KmlLineString class, can be created and provided
 as follows:
 
 ```javascript
-WorldWind.KmlElements.addKey('LineString', NewKmlLineString);
+KmlElements.addKey('LineString', NewKmlLineString);
 ```

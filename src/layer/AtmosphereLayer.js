@@ -26,18 +26,16 @@
  * PDF found in code  directory.
  */
 
-import ArgumentError from "../error/ArgumentError";
+
 import GroundProgram from "../shaders/GroundProgram";
 import Layer from "../layer/Layer";
-import Logger from "../util/Logger";
-import Matrix from "../geom/Matrix";
 import Matrix3 from "../geom/Matrix3";
 import Sector from "../geom/Sector";
 import SkyProgram from "../shaders/SkyProgram";
 import SunPosition from "../util/SunPosition";
 import Vec3 from "../geom/Vec3";
 import WWUtil from "../util/WWUtil";
-
+import WorldWindConfiguration from "../WorldWindConfiguration";
 /**
  * Constructs a layer showing the Earth's atmosphere.
  * @alias AtmosphereLayer
@@ -56,7 +54,7 @@ class AtmosphereLayer extends Layer{
     //Documented in defineProperties below.
     this._nightImageSource =
       nightImageSource ||
-      WorldWind.configuration.baseUrl + "images/dnb_land_ocean_ice_2012.png";
+      WorldWindConfiguration.baseUrl + "images/dnb_land_ocean_ice_2012.png";
 
     //Internal use only.
     //The light direction in cartesian space, computed from the layer time or defaults to the eyePoint.

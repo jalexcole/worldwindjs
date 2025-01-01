@@ -36,7 +36,8 @@ import Texture from "../render/Texture";
 import WmtsLayerTile from "./WmtsLayerTile";
 import WWMath from "../util/WWMath";
 import WWUtil from "../util/WWUtil";
-
+import WorldWindConfiguration from "../WorldWindConfiguration";
+import WorldWindConstants from "../WorldWindConstants";
 // TODO: Test Mercator layers.
 // TODO: Support tile matrix limits.
 // TODO: Extensibility for other projections.
@@ -235,9 +236,9 @@ class WmtsLayer extends Layer{
     /**
      * Controls how many concurrent tile requests that are allowed for this layer.
      * @type {Number}
-     * @default WorldWind.configuration.layerRetrievalQueueSize;
+     * @default WorldWindConfiguration.layerRetrievalQueueSize;
      */
-    this.retrievalQueueSize = WorldWind.configuration.layerRetrievalQueueSize;
+    this.retrievalQueueSize = WorldWindConfiguration.layerRetrievalQueueSize;
   }
   /**
    * Determines if the tile subdivision of the provided TileMatrixSet is compatible with WebWorldWind.

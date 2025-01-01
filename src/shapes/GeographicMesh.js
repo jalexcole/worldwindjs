@@ -27,14 +27,9 @@
  */
 import AbstractMesh from "./AbstractMesh";
 import ArgumentError from "../error/ArgumentError";
-import BasicTextureProgram from "../shaders/BasicTextureProgram";
-import BoundingBox from "../geom/BoundingBox";
-import Color from "../util/Color";
-import ImageSource from "../util/ImageSource";
-import Location from "../geom/Location";
+
 import Logger from "../util/Logger";
-import Matrix from "../geom/Matrix";
-import PickedObject from "../pick/PickedObject";
+
 import ShapeAttributes from "./ShapeAttributes";
 import SurfacePolygon from "./SurfacePolygon";
 import Vec2 from "../geom/Vec2";
@@ -50,9 +45,9 @@ import Vec3 from "../geom/Vec3";
  *     Altitudes within the mesh's positions are interpreted according to the mesh's altitude mode, which
  *     can be one of the following:
  * <ul>
- *     <li>[WorldWindConstants.ABSOLUTE]{@link WorldWind#ABSOLUTE}</li>
- *     <li>[WorldWindConstants.RELATIVE_TO_GROUND]{@link WorldWind#RELATIVE_TO_GROUND}</li>
- *     <li>[WorldWindConstants.CLAMP_TO_GROUND]{@link WorldWind#CLAMP_TO_GROUND}</li>
+ *     <li>[WorldWindConstants.ABSOLUTE]{@link WorldWindConstants#ABSOLUTE}</li>
+ *     <li>[WorldWindConstants.RELATIVE_TO_GROUND]{@link WorldWindConstants#RELATIVE_TO_GROUND}</li>
+ *     <li>[WorldWindConstants.CLAMP_TO_GROUND]{@link WorldWindConstants#CLAMP_TO_GROUND}</li>
  * </ul>
  * If the latter, the mesh positions' altitudes are ignored. (If the mesh should be draped onto the
  * terrain, you might want to use {@link SurfacePolygon} instead.)
@@ -128,8 +123,6 @@ class GeographicMesh extends AbstractMesh {
 
     var numRows = positions.length,
       numCols = positions[0].length;
-
-    
 
     /**
      * Indicates whether this mesh is pickable when the pick point intersects transparent pixels of the

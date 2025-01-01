@@ -28,7 +28,7 @@
 import Matrix3 from "../../src/geom/Matrix3.js";
 import Sector from "../../src/geom/Sector.js";
 
-import { beforeEach, describe, expect, it } from "vitest";
+import {  describe, expect, it } from "vitest";
 
 
 

@@ -29,7 +29,7 @@
 // import { Vec2 } from "../../src/WorldWind.js";
 // import {Vec3} from "../../src/WorldWind.js";
 
-import  Vec2  from "../../src/geom/Vec2.js";
+import Vec2 from "../../src/geom/Vec2.js";
 import Vec3 from "../../src/geom/Vec3.js";
 import { describe, expect, it } from "vitest";
 

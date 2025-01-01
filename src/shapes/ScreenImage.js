@@ -35,7 +35,7 @@ import Offset from "../util/Offset";
 import PickedObject from "../pick/PickedObject";
 import Renderable from "../render/Renderable";
 import WWMath from "../util/WWMath";
-
+import WorldWindConstants from "../WorldWindConstants";
 /**
  * Constructs a screen image.
  * @alias ScreenImage

@@ -25,18 +25,18 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
-import ArgumentError from "../../error/ArgumentError";
+
 import HeatMapColoredTile from "./HeatMapColoredTile";
 import HeatMapIntervalType from "./HeatMapIntervalType";
 import HeatMapTile from "./HeatMapTile";
-import ImageSource from "../../util/ImageSource";
+
 import Location from "../../geom/Location";
-import Logger from "../../util/Logger";
+
 import MeasuredLocation from "../../geom/MeasuredLocation";
 import TiledImageLayer from "../TiledImageLayer";
 import Sector from "../../geom/Sector";
 import WWUtil from "../../util/WWUtil";
-
+import WorldWindConstants from "../../WorldWindConstants";
 /**
  * Constructs a HeatMap Layer.
  *
@@ -61,8 +61,8 @@ class HeatMapLayer extends TiledImageLayer{
       numLevels || 18,
       "image/png",
       "HeatMap" + WWUtil.guid(),
-      this.tileWidth,
-      this.tileHeight
+      256,
+      256
     );
 
     this.tileWidth = 256;

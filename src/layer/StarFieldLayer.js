@@ -30,7 +30,8 @@ import Logger from "../util/Logger";
 import Matrix from "../geom/Matrix";
 import StarFieldProgram from "../shaders/StarFieldProgram";
 import SunPosition from "../util/SunPosition";
-
+import WorldWindConfiguration from "../WorldWindConfiguration";
+import WorldWindConstants from "../WorldWindConstants";
 /**
  * Constructs a layer showing stars and the Sun around the Earth.
  * If used together with the AtmosphereLayer, the StarFieldLayer must be inserted before the AtmosphereLayer.
@@ -75,9 +76,9 @@ class StarFieldLayer extends Layer {
 
     //Documented in defineProperties below.
     this._starDataSource =
-      starDataSource || WorldWind.configuration.baseUrl + "images/stars.json";
+      starDataSource || WorldWindConfiguration.baseUrl + "images/stars.json";
     this._sunImageSource =
-      WorldWind.configuration.baseUrl + "images/sunTexture.png";
+      WorldWindConfiguration.baseUrl + "images/sunTexture.png";
 
     //Internal use only.
     //The MVP matrix of this layer.

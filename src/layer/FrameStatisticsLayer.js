@@ -34,7 +34,7 @@ import Logger from "../util/Logger";
 import Offset from "../util/Offset";
 import ScreenText from "../shapes/ScreenText";
 import TextAttributes from "../shapes/TextAttributes";
-
+import WorldWindConstants from "../WorldWindConstants";
 /**
  * Constructs a layer that displays the current performance statistics.
  * @alias FrameStatisticsLayer

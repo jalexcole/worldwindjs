@@ -28,8 +28,7 @@
 import RenderableLayer from "./RenderableLayer";
 import Sector from "../geom/Sector";
 import SurfaceImage from "../shapes/SurfaceImage";
-import WWUtil from "../util/WWUtil";
-
+import WorldWindConfiguration from "../WorldWindConfiguration";
 /**
  * Constructs a Blue Marble image layer that spans the entire globe.
  * @alias BMNGOneImageLayer
@@ -43,7 +42,7 @@ class BMNGOneImageLayer extends RenderableLayer {
 
     var surfaceImage = new SurfaceImage(
       Sector.FULL_SPHERE,
-      WorldWind.configuration.baseUrl +
+      WorldWindConfiguration.baseUrl +
       "images/BMNG_world.topo.bathy.200405.3.2048x1024.jpg"
     );
 

@@ -27,7 +27,6 @@
  */
 
 import ArgumentError from "../error/ArgumentError";
-import Color from "./Color";
 import Logger from "./Logger";
 
 /**

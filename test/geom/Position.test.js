@@ -29,7 +29,7 @@ import Angle from "../../src/geom/Angle.js";
 import Position from "../../src/geom/Position.js";
 
 
-import { beforeEach, describe,expect, it } from "vitest";
+import { describe,expect, it } from "vitest";
 
 describe("Position Tests", function () {
   it("Should construct a Position correctly", function () {

@@ -36,7 +36,8 @@ import MemoryCache from "../cache/MemoryCache";
 import Texture from "../render/Texture";
 import Tile from "../util/Tile";
 import WWUtil from "../util/WWUtil";
-
+import WorldWindConfiguration from "../WorldWindConfiguration";
+import WorldWindConstants from "../WorldWindConstants";
 /**
  * Constructs a tiled image layer.
  * @alias TiledImageLayer
@@ -158,7 +159,7 @@ class TiledImageLayer extends Layer {
      * @type {Number}
      * @default WorldWind.configuration.layerRetrievalQueueSize
      */
-    this.retrievalQueueSize = WorldWind.configuration.layerRetrievalQueueSize;
+    this.retrievalQueueSize = WorldWindConfiguration.layerRetrievalQueueSize;
 
     this.levels = new LevelSet(
       sector,

@@ -36,7 +36,8 @@ import TextAttributes from "../shapes/TextAttributes";
 import Vec2 from "../geom/Vec2";
 
 import WorldWindow from "../WorldWindow";
-
+import WorldWindConfiguration from "../WorldWindConfiguration";
+import WorldWindConstants from "../WorldWindConstants";
 /**
  * Constructs a layer that displays the current map coordinates.
  * @alias CoordinatesDisplayLayer
@@ -155,7 +156,7 @@ class CoordinatesDisplayLayer extends Layer {
       0.5,
       WorldWindConstants.OFFSET_FRACTION,
       0.5
-    ), imagePath = WorldWind.configuration.baseUrl + "images/crosshair.png";
+    ), imagePath = WorldWindConfiguration.baseUrl + "images/crosshair.png";
     this.crosshairImage = new ScreenImage(imageOffset, imagePath);
 
     // Register user input event listeners on the WorldWindow.

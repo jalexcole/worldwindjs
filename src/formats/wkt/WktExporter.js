@@ -64,23 +64,23 @@ class WktExporter {
       );
     }
 
-    if (renderable instanceof WorldWind.Placemark) {
+    if (renderable instanceof Placemark) {
       return this.exportPlacemark(renderable);
-    } else if (renderable instanceof WorldWind.Path) {
+    } else if (renderable instanceof Path) {
       return this.exportPath(renderable);
-    } else if (renderable instanceof WorldWind.Polygon) {
+    } else if (renderable instanceof Polygon) {
       return this.exportPolygon(renderable);
-    } else if (renderable instanceof WorldWind.SurfacePolyline) {
+    } else if (renderable instanceof SurfacePolyline) {
       return this.exportSurfacePolyline(renderable);
-    } else if (renderable instanceof WorldWind.SurfacePolygon) {
+    } else if (renderable instanceof SurfacePolygon) {
       return this.exportSurfacePolygon(renderable);
-    } else if (renderable instanceof WorldWind.SurfaceEllipse) {
+    } else if (renderable instanceof SurfaceEllipse) {
       return this.exportSurfaceEllipse(renderable);
-    } else if (renderable instanceof WorldWind.SurfaceCircle) {
+    } else if (renderable instanceof SurfaceCircle) {
       return this.exportSurfaceCircle(renderable);
-    } else if (renderable instanceof WorldWind.SurfaceRectangle) {
+    } else if (renderable instanceof SurfaceRectangle) {
       return this.exportSurfaceRectangle(renderable);
-    } else if (renderable instanceof WorldWind.SurfaceSector) {
+    } else if (renderable instanceof SurfaceSector) {
       return this.exportSurfaceSector(renderable);
     } else {
       Logger.log(

@@ -29,7 +29,7 @@ import ArgumentError from "../error/ArgumentError";
 import Logger from "../util/Logger";
 import Matrix from "../geom/Matrix";
 import Tile from "../util/Tile";
-
+import WorldWindConstants from "../WorldWindConstants";
 /**
  * Constructs a terrain tile.
  * @alias TerrainTile

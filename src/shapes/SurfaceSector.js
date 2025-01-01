@@ -28,9 +28,10 @@
 import ArgumentError from "../error/ArgumentError";
 import Location from "../geom/Location";
 import Logger from "../util/Logger";
+import Sector from "../geom/Sector";
 import ShapeAttributes from "./ShapeAttributes";
 import SurfaceShape from "./SurfaceShape";
-
+import WorldWindConstants from "../WorldWindConstants";
 /**
  * Constructs a surface sector.
  * @alias SurfaceSector
@@ -125,7 +126,7 @@ class SurfaceSector extends SurfaceShape{
       locations
     );
 
-    this.sector = new WorldWind.Sector(
+    this.sector = new Sector(
       locations[0].latitude,
       locations[1].latitude,
       locations[1].longitude,

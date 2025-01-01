@@ -27,7 +27,7 @@
  */
 
 import GestureRecognizer from "./GestureRecognizer";
-
+import WorldWindConstants from "../WorldWindConstants";
 /**
  * Constructs a pinch gesture recognizer.
  * @alias PinchRecognizer

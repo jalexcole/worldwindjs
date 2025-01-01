@@ -28,7 +28,7 @@
 import Color from "../util/Color";
 import ScreenImage from "../shapes/ScreenImage";
 import MercatorTiledImageLayer from "./MercatorTiledImageLayer";
-
+import WorldWindConfiguration from "../WorldWindConfiguration";
 /**
  * Constructs a base Bing layer. This constructor is meant to be called only by subclasses.
  * @alias BingTiledImageLayer
@@ -70,17 +70,17 @@ class BingTiledImageLayer extends MercatorTiledImageLayer{
   renderLogo(dc) {
     if (!BingTiledImageLayer.logoImage) {
       BingTiledImageLayer.logoImage = new ScreenImage(
-        WorldWind.configuration.bingLogoPlacement,
-        WorldWind.configuration.baseUrl + "images/powered-by-bing.png"
+        WorldWindConfiguration.bingLogoPlacement,
+        WorldWindConfiguration.baseUrl + "images/powered-by-bing.png"
       );
       BingTiledImageLayer.logoImage.imageColor = new Color(1, 1, 1, 0.5); // Make Bing logo semi transparent.
     }
 
     if (BingTiledImageLayer.logoLastFrameTime !== dc.timestamp) {
       BingTiledImageLayer.logoImage.screenOffset =
-        WorldWind.configuration.bingLogoPlacement;
+        WorldWindConfiguration.bingLogoPlacement;
       BingTiledImageLayer.logoImage.imageOffset =
-        WorldWind.configuration.bingLogoAlignment;
+        WorldWindConfiguration.bingLogoAlignment;
       BingTiledImageLayer.logoImage.render(dc);
       BingTiledImageLayer.logoLastFrameTime = dc.timestamp;
     }

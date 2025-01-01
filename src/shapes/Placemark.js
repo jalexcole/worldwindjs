@@ -37,7 +37,7 @@ import Renderable from "../render/Renderable";
 
 import Vec3 from "../geom/Vec3";
 import WWMath from "../util/WWMath";
-
+import WorldWindConstants from "../WorldWindConstants";
 /**
  * Constructs a placemark.
  * @alias Placemark
