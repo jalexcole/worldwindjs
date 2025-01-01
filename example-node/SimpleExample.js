@@ -1,4 +1,4 @@
-import * as WorldWind from "../src/WorldWind.js";
+import * as WorldWind from "../build/dist/worldwind.min.js";
 
 const { createCanvas } = require("canvas");
 const canvas = createCanvas(200, 200);
