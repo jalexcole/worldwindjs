@@ -27,6 +27,7 @@
  */
 import Location from "../../geom/Location";
 import Position from "../../geom/Position";
+import WorldWindConstants from "../../WorldWindConstants";
 
 /**
  * Provides utilities for Measurements.
@@ -176,9 +177,9 @@ var MeasurerUtils = {
           (p1.latitude <= location.latitude &&
             location.latitude < p2.latitude)) &&
         location.longitude <
-          ((p1.longitude - p2.longitude) * (location.latitude - p2.latitude)) /
-            (p1.latitude - p2.latitude) +
-            p2.longitude
+        ((p1.longitude - p2.longitude) * (location.latitude - p2.latitude)) /
+        (p1.latitude - p2.latitude) +
+        p2.longitude
       ) {
         result = !result;
       }

@@ -27,10 +27,11 @@
  */
 import ArgumentError from "../../error/ArgumentError";
 import Location from "../../geom/Location";
-import Logger from "../Logger";
-import MeasurerUtils from "./MeasurerUtils";
 import Position from "../../geom/Position";
 import Vec3 from "../../geom/Vec3";
+import WorldWindConstants from "../../WorldWindConstants";
+import Logger from "../Logger";
+import MeasurerUtils from "./MeasurerUtils";
 
 /**
  * Utility class to measure length along a path on a globe. <p/> <p>Segments which are longer then the current
