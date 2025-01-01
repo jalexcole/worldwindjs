@@ -25,37 +25,32 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
-import ArgumentError from "./error/ArgumentError";
 import BasicWorldWindowController from "./BasicWorldWindowController";
+import ArgumentError from "./error/ArgumentError";
 import Camera from "./geom/Camera";
-import LookAt from "./geom/LookAt";
-import DrawContext from "./render/DrawContext";
-import EarthElevationModel from "./globe/EarthElevationModel";
-import FrameStatistics from "./util/FrameStatistics";
 import Frustum from "./geom/Frustum";
-import Globe from "./globe/Globe";
-import Globe2D from "./globe/Globe2D";
-import GoToAnimator from "./util/GoToAnimator";
-import GpuResourceCache from "./cache/GpuResourceCache";
-import KeyboardControls from "./util/KeyboardControls";
 import Line from "./geom/Line";
-import Logger from "./util/Logger";
-import LookAtNavigator from "./navigate/LookAtNavigator";
+import LookAt from "./geom/LookAt";
 import Matrix from "./geom/Matrix";
-import PickedObjectList from "./pick/PickedObjectList";
 import Position from "./geom/Position";
 import Rectangle from "./geom/Rectangle";
-import Sector from "./geom/Sector";
-import SurfaceShape from "./shapes/SurfaceShape";
-import SurfaceShapeTileBuilder from "./shapes/SurfaceShapeTileBuilder";
-import Terrain from "./globe/Terrain";
 import Vec2 from "./geom/Vec2";
 import Vec3 from "./geom/Vec3";
-import WWMath from "./util/WWMath";
+import EarthElevationModel from "./globe/EarthElevationModel";
 import ElevationModel from "./globe/ElevationModel";
+import Globe from "./globe/Globe";
 import Layer from "./layer/Layer";
-import WorldWindowController from "./WorldWindowController";
+import LookAtNavigator from "./navigate/LookAtNavigator";
+import PickedObjectList from "./pick/PickedObjectList";
+import DrawContext from "./render/DrawContext";
+import SurfaceShape from "./shapes/SurfaceShape";
+import FrameStatistics from "./util/FrameStatistics";
+import GoToAnimator from "./util/GoToAnimator";
+import KeyboardControls from "./util/KeyboardControls";
+import Logger from "./util/Logger";
+import WWMath from "./util/WWMath";
 import WorldWindConstants from "./WorldWindConstants";
+import WorldWindowController from "./WorldWindowController";
 
 /**
  * Constructs a WorldWind window for an HTML canvas.
@@ -70,7 +65,7 @@ import WorldWindConstants from "./WorldWindConstants";
  * HTML canvas does not support WebGL.
  */
 class WorldWindow {
-  constructor(canvasElem, elevationModel = ElevationModel) {
+  constructor(canvasElem, elevationModel) {
     if (!window.WebGLRenderingContext) {
       throw new ArgumentError(
         Logger.logMessage(
@@ -938,7 +933,7 @@ class WorldWindow {
       var distanceToSurface =
         eyePos.altitude -
         this.globe.elevationAtLocation(eyePos.latitude, eyePos.longitude) *
-          this.verticalExaggeration;
+        this.verticalExaggeration;
       if (distanceToSurface > 0) {
         var maxNearDistance = WWMath.perspectiveNearDistance(
           fieldOfView,
@@ -1244,7 +1239,7 @@ class WorldWindow {
         // the fragments drawn by the ordered renderables.
         this.drawContext.currentGlContext.clear(
           this.drawContext.currentGlContext.DEPTH_BUFFER_BIT |
-            this.drawContext.currentGlContext.STENCIL_BUFFER_BIT
+          this.drawContext.currentGlContext.STENCIL_BUFFER_BIT
         );
         this.drawContext.currentGlContext.enable(
           this.drawContext.currentGlContext.STENCIL_TEST
@@ -1322,7 +1317,7 @@ class WorldWindow {
           // the fragments drawn by the ordered renderables.
           this.drawContext.currentGlContext.clear(
             this.drawContext.currentGlContext.DEPTH_BUFFER_BIT |
-              this.drawContext.currentGlContext.STENCIL_BUFFER_BIT
+            this.drawContext.currentGlContext.STENCIL_BUFFER_BIT
           );
           this.drawContext.currentGlContext.enable(
             this.drawContext.currentGlContext.STENCIL_TEST
@@ -1497,9 +1492,9 @@ class WorldWindow {
           Logger.log(
             Logger.LEVEL_SEVERE,
             "Error while rendering layer " +
-              layer.displayName +
-              ".\n" +
-              e.toString()
+            layer.displayName +
+            ".\n" +
+            e.toString()
           );
           // Keep going. Render the rest of the layers.
         }

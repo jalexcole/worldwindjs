@@ -26,19 +26,20 @@
  * PDF found in code  directory.
  */
 import Angle from "./geom/Angle";
-import DragRecognizer from "./gesture/DragRecognizer";
-import GestureRecognizer from "./gesture/GestureRecognizer";
 import LookAt from "./geom/LookAt";
 import Matrix from "./geom/Matrix";
+import Vec2 from "./geom/Vec2";
+import Vec3 from "./geom/Vec3";
+import DragRecognizer from "./gesture/DragRecognizer";
+import GestureRecognizer from "./gesture/GestureRecognizer";
 import PanRecognizer from "./gesture/PanRecognizer";
 import PinchRecognizer from "./gesture/PinchRecognizer";
 import RotationRecognizer from "./gesture/RotationRecognizer";
 import TiltRecognizer from "./gesture/TiltRecognizer";
-import Vec2 from "./geom/Vec2";
-import Vec3 from "./geom/Vec3";
-import WorldWindowController from "./WorldWindowController";
 import WWMath from "./util/WWMath";
+import WorldWindConstants from "./WorldWindConstants";
 import WorldWindow from "./WorldWindow";
+import WorldWindowController from "./WorldWindowController";
 
 class BasicWorldWindowController extends WorldWindowController {
   /**
