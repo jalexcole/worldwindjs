@@ -29,7 +29,7 @@
 import LevelSet from "../../../src/util/LevelSet";
 
 import Sector from "../../../src/geom/Sector";
-import { Tile } from "../../../src/WorldWind";
+import  Tile  from "../../../src/util/Tile";
 import WcsUrlBuilder from "../../../src/ogc/wcs/WcsUrlBuilder";
 import WcsCapabilities from "../../../src/ogc/wcs/WcsCapabilities";
 import WebCoverageService from "../../../src/ogc/wcs/WebCoverageService.js";

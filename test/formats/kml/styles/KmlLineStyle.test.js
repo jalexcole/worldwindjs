@@ -25,7 +25,9 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
-import { KmlLineStyle, XmlDocument } from "../../../../src/WorldWind";
+import KmlLineStyle from "../../../../src/formats/kml/styles/KmlLineStyle";
+import XmlDocument from "../../../../src/util/XmlDocument";
+
 import { describe,expect, it } from "vitest";
 
     describe("KmlLineStyle", function(){

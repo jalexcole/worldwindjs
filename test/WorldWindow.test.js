@@ -25,18 +25,18 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
+import ElevationModel from "../src/globe/ElevationModel.js";
+import Globe from "../src/globe/Globe.js";
 
-import {ElevationModel} from "../src/WorldWind.js";
-import {Globe} from "../src/WorldWind.js";
 
 import { describe, expect, it } from "vitest";
 import TestUtils from "./util/TestUtils.test.js";
-
+import DrawContext from "../src/render/DrawContext.js";
 
 var mockGlobe = new Globe(new ElevationModel() , null);
 var wwd = TestUtils.getMockWwd(mockGlobe);
 wwd.resetDrawContext();
-
+let dc = new DrawContext(null);
 describe("WorldWindow Tests", function () {
   describe("Correctly computes a ray originating at the cameras's point and extending through the specified point in window coordinates", function () {
     it("Should throw an exception on missing input parameter", function () {

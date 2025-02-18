@@ -26,10 +26,10 @@
  * PDF found in code  directory.
  */
 
-import { KmlIcon } from "../../../src/WorldWind.js";
-import { XmlDocument } from "../../../src/WorldWind.js";
+import KmlIcon from "../../../src/formats/kml/KmlIcon.js";
+import XmlDocument from "../../../src/util/XmlDocument.js";
 
-import {  describe, expect, it } from "vitest";
+import { describe, expect, it } from "vitest";
 import KmlFileCache from "../../../src/formats/kml/KmlFileCache.js";
 describe("KmlIconTest", function () {
   var validKml =
@@ -56,7 +56,7 @@ describe("KmlIconTest", function () {
   });
   it(
     "should have the X, Y, W, H, Href, RefreshMode, RefreshInterval, ViewRefreshMode, ViewRefreshTime, ViewBoundScale," +
-    "ViewFormat and ViewScale properties",
+      "ViewFormat and ViewScale properties",
     function () {
       expect(link.kmlX).toEqual(0);
       expect(link.kmlY).toEqual(0);

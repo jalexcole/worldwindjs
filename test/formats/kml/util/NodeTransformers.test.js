@@ -25,13 +25,13 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
-import {
-  KmlLinearRing,
-  KmlLineString,
-  XmlDocument,
-} from "../../../../src/WorldWind";
+import KmlLinearRing from "../../../../src/formats/kml/geom/KmlLinearRing";
+import KmlLineString from "../../../../src/formats/kml/geom/KmlLineString";
+import XmlDocument from "../../../../src/util/XmlDocument";
+
+
 import KmlNodeTransformers from "../../../../src/formats/kml/util/KmlNodeTransformers";
-import { afterEach, beforeEach,expect, describe, it } from "vitest";
+import { expect, describe, it } from "vitest";
 describe("NodeTransformersTest", function () {
   var exampleDocument =
     '<?xml version="1.0" encoding="UTF-8"?>' +

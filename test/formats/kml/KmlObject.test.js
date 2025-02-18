@@ -25,7 +25,7 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
-import { KmlObject } from "../../../src/WorldWind";
+import KmlObject  from "../../../src/formats/kml/KmlObject";
 import { describe, expect, it, fail } from "vitest";
 describe("KmlObjectTestCase", function () {
   describe("testUndefinedNode", function () {

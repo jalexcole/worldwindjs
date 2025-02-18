@@ -28,7 +28,6 @@
 import ArgumentError from "../error/ArgumentError";
 import Logger from "../util/Logger";
 import WWMath from "../util/WWMath";
-import DrawContext from "./DrawContext";
 
 /**
  * Constructs a texture for a specified image.

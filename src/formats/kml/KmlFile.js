@@ -26,22 +26,19 @@
  * PDF found in code  directory.
  */
 import ArgumentError from "../../error/ArgumentError";
-import KmlElements from "./KmlElements";
 import KmlFileCache from "./KmlFileCache";
 import KmlObject from "./KmlObject";
 import KmlStyle from "./styles/KmlStyle";
 import KmlStyleMap from "./styles/KmlStyleMap";
-import KmlTimeSpan from "./KmlTimeSpan";
-import KmlTimeStamp from "./KmlTimeStamp";
+
 import KmzFile from "./KmzFile";
 import Logger from "../../util/Logger";
-import { Promise } from "es6-promise";
+
 import KmlRefreshListener from "./util/KmlRefreshListener";
 import KmlRemoteFile from "./util/KmlRemoteFile";
 import XmlDocument from "../../util/XmlDocument";
 import WWUtil from "../../util/WWUtil";
 import KmlStyleResolver from "./util/KmlStyleResolver";
-import KmlControls from "./controls/KmlControls";
 
 // TODO: Make sure that the KmlFile is also rendered as a part of this hierarchy and not added to the layer.
 /**

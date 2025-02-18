@@ -26,7 +26,6 @@
  * PDF found in code  directory.
  */
 
-import { Promise } from "es6-promise";
 import WWUtil from "../../util/WWUtil";
 import KmlFile from "./KmlFile";
 /**

@@ -25,9 +25,7 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
-import { Promise } from "es6-promise";
 import WWUtil from "../../../util/WWUtil";
-import KmlFileCache from "../KmlFileCache";
 
 /**
  * It can handle the format in which is the URL present in the file and transform it to the URL available

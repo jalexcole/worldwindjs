@@ -25,12 +25,13 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
-
-import { Globe2D, LookAt, Vec2 } from "../src/WorldWind.js";
-import DrawContext from "../src/render/DrawContext.js";
+import Globe2D from "../src/globe/Globe2D.js";
+// import LookAt from "../src/globe/LookAt.js";
+// import Vec2 from "../src/geom/Vec2.js";
+// import DrawContext from "../src/render/DrawContext.js";
 
 import TestUtils from "./util/TestUtils.test.js";
-import { describe, expect, it } from "vitest";
+import { describe } from "vitest";
 
 
 // var mockGlobe = new Globe2D();

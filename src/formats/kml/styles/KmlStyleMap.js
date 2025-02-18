@@ -27,7 +27,6 @@
  */
 import KmlElements from "../KmlElements";
 import KmlSubStyle from "./KmlSubStyle";
-import { Promise } from "es6-promise";
 
 /**
  * Constructs an KmlStyleMap. Applications usually don't call this constructor. It is called by {@link KmlFile} as

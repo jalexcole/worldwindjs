@@ -25,8 +25,7 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
-
-import { GeoTiffReader } from "../../../src/WorldWind";
+import GeoTiffReader from "../../../src/formats/geotiff/GeoTiffReader.js";
 import { beforeEach, describe,expect, it } from "vitest";
 describe("GeoTiffReader RGB Parsing", function () {
   var geoTiff;

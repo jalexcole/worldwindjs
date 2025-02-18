@@ -25,11 +25,10 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
-import CustomMatchers from "../../CustomMatchers.test.js";
 import Sector from "../../../src/geom/Sector.js";
-import WcsCoverage from "../../../src/WorldWind.js";
+import WcsCoverage from "../../../src/ogc/wcs/WcsCoverage.js";
 
-import { beforeEach, describe, expect, it } from "vitest";
+import { describe, expect, it } from "vitest";
 
 // beforeEach(function () {
 //     jasmine.addMatchers(CustomMatchers);

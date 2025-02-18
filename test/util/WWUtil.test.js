@@ -26,8 +26,7 @@
  * PDF found in code  directory.
  */
 
-
-import { WWUtil } from "../../src/WorldWind.js";
+import WWUtil from "../../src/util/WWUtil.js";
 import { describe, expect, assertTrue, assertFalse, it } from "vitest";
 describe("WWUtil-arrayEquals", function () {
   if (

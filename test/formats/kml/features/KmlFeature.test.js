@@ -25,15 +25,15 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
-import {
-  KmlCamera,
-  KmlTimeSpan,
-  KmlStyle,
-  KmlRegion,
-  KmlFeature,
-  XmlDocument,
-} from "../../../../src/WorldWind";
-import { beforeAll, beforeEach, describe,expect, it } from "vitest";
+import KmlCamera from "../../../../src/formats/kml/KmlCamera.js";
+import KmlTimeSpan from "../../../../src/formats/kml/KmlTimeSpan.js";
+import KmlStyle from "../../../../src/formats/kml/styles/KmlStyle.js";
+import KmlRegion from "../../../../src/formats/kml/KmlRegion.js";
+import KmlFeature from "../../../../src/formats/kml/features/KmlFeature.js";
+import XmlDocument from "../../../../src/util/XmlDocument.js";
+
+
+import { describe,expect, it } from "vitest";
 describe("KmlFeatureTest", function () {
   var validKml =
     '<?xml version="1.0" encoding="UTF-8"?>' +

@@ -25,10 +25,10 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
+import KmlCamera from "../../../src/formats/kml/KmlCamera.js";
+import XmlDocument from "../../../src/util/XmlDocument.js";
 
-import KmlCamera from "../../../src/WorldWind.js";
-import { XmlDocument } from "../../../src/WorldWind.js";
-import { beforeAll, beforeEach, describe,expect, it } from "vitest";
+import { describe,expect, it } from "vitest";
 
 	describe("KmlCameraTest", function() {
 		var validKml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +

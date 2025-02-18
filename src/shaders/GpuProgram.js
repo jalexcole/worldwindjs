@@ -26,7 +26,7 @@
  * PDF found in code  directory.
  */
 import ArgumentError from "../error/ArgumentError";
-import Color from "../util/Color";
+
 import GpuShader from "./GpuShader";
 import Logger from "../util/Logger";
 

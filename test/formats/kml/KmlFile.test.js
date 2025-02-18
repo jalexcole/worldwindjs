@@ -25,11 +25,10 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
-var WorldWind = {};
-
-import { KmlFile } from "../../../src/WorldWind.js";
-import { beforeAll, beforeEach, describe, expect, it } from "vitest";
-WorldWind.KmlFile = KmlFile;
+// var WorldWind = {};
+import KmlFile from "../../../src/formats/kml/KmlFile.js";
+import {beforeEach, describe, expect, it } from "vitest";
+// WorldWind.KmlFile = KmlFile;
 
 describe("KmlFile", function () {
     describe("testLoadingKmlFromRelativeRemote", function () {

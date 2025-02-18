@@ -25,7 +25,9 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
-import { KmlImagePyramid, XmlDocument } from "../../../../src/WorldWind";
+import KmlImagePyramid from "../../../../src/formats/kml/util/KmlImagePyramid.js";
+import XmlDocument from "../../../../src/util/XmlDocument.js";
+
 import { afterEach, beforeEach, describe, it, expect } from "vitest";
 describe("KmlImagePyramidTest", function () {
   var index = 0;

@@ -25,9 +25,10 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
-import { KmlItemIcon, XmlDocument } from "../../../../src/WorldWind";
+import KmlItemIcon from "../../../../src/formats/kml/util/KmlItemIcon.js";
+import XmlDocument from "../../../../src/util/XmlDocument.js";
 import KmlFileCache from "../../../../src/formats/kml/KmlFileCache";
-import { afterEach, beforeEach, describe, it, expect } from "vitest";
+import { describe, it, expect } from "vitest";
     describe("ItemIconTest", function () {
             var validKml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
                 "<kml xmlns=\"http://www.opengis.net/kml/2.2\">" +

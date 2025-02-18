@@ -25,8 +25,7 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
-
-import { XmlDocument } from "../../src/WorldWind.js";
+import XmlDocument from "../../src/util/XmlDocument.js";
 import { describe, expect, it } from "vitest";
     describe("XmlDocument", function() {
         it("testGettingDomOfValidXml", function() {

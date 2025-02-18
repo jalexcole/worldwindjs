@@ -27,13 +27,11 @@
  */
 import KmlObject from "../KmlObject";
 import KmlAbstractView from "../KmlAbstractView";
-import KmlFile from "../KmlFile";
-import KmlStyleMap from "../styles/KmlStyleMap";
+
 import KmlStyleSelector from "../styles/KmlStyleSelector";
 import KmlRegion from "../KmlRegion";
 import KmlTimePrimitive from "../KmlTimePrimitive";
 import KmlNodeTransformers from "../util/KmlNodeTransformers";
-import { Promise } from "es6-promise";
 
 /**
  * Constructs an KmlFeature. Applications usually don't call this constructor. It is called by {@link KmlFile} as

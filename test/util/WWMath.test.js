@@ -25,7 +25,8 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
-import { Vec3, WWMath } from "../../src/WorldWind.js";
+import Vec3 from "../../src/geom/Vec3.js";
+import WWMath from "../../src/util/WWMath.js";
 import { describe, expect, it } from "vitest";
 
 describe("WWMath test", function () {

@@ -25,8 +25,11 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
-import {  KmlPoint, KmlPhotoOverlay, XmlDocument, KmlViewVolume } from "../../../../src/WorldWind";
-import KmlImagePyramid from "../../../../src/formats/kml/util/KmlImagePyramid.js";
+import KmlPoint         from "../../../../src/formats/kml/geom/KmlPoint";
+import KmlPhotoOverlay  from "../../../../src/formats/kml/features/KmlPhotoOverlay";
+import XmlDocument      from "../../../../src/util/XmlDocument"; 
+import KmlViewVolume    from "../../../../src/formats/kml/util/KmlViewVolume";
+import KmlImagePyramid  from "../../../../src/formats/kml/util/KmlImagePyramid.js";
 import { describe,expect, it } from "vitest";
     describe("KmlPhotoOverlayTest", function () {
             var validKml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +

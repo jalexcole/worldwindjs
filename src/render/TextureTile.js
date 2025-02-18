@@ -26,12 +26,12 @@
  * PDF found in code  directory.
  */
 
-import ArgumentError from "../error/ArgumentError";
-import Matrix from "../geom/Matrix";
-import Level from "../util/Level";
-import Logger from "../util/Logger";
+// import ArgumentError from "../error/ArgumentError";
+// import Matrix from "../geom/Matrix";
+// import Level from "../util/Level";
+// import Logger from "../util/Logger";
 import Tile from "../util/Tile";
-import DrawContext from "./DrawContext";
+// import DrawContext from "./DrawContext";
 
 /**
  * Constructs a texture tile.

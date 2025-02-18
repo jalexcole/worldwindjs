@@ -26,7 +26,8 @@
  * PDF found in code  directory.
  */
 
-import { KmlViewVolume, XmlDocument } from "../../../../src/WorldWind.js";
+// import KmlViewVolume from "../../../../src/formats/kml/util/KmlViewVolume.js";
+import XmlDocument from "../../../../src/util/XmlDocument.js";
 import { describe, beforeEach, afterEach, expect, it } from "vitest";
 
 describe("KmlViewVolumeTest", function () {
@@ -38,13 +39,13 @@ describe("KmlViewVolumeTest", function () {
 
   afterEach(function () {
     if (this.index > 0) {
-      var failed = jsApiReporter.specResults(this.index - 1, 1)[0]
-        .failedExpectations;
-      console.log("failed: ", failed);
-      if (failed.length > 0) {
-        console.log("After: ", this, failed[0].message);
-        alert("ha");
-      }
+      // var failed = jsApiReporter.specResults(this.index - 1, 1)[0]
+      //   .failedExpectations;
+      // console.log("failed: ", failed);
+      // if (failed.length > 0) {
+      //   console.log("After: ", this, failed[0].message);
+      //   alert("ha");
+      // }
     }
   });
   var validKml =
@@ -59,7 +60,7 @@ describe("KmlViewVolumeTest", function () {
     "</ViewVolume>" +
     "</kml>";
   var kmlRepresentation = new XmlDocument(validKml).dom();
-  var viewVolume = new KmlViewVolume({
+  var viewVolume = new ({
     objectNode: kmlRepresentation.getElementsByTagName("ViewVolume")[0],
   });
   it("should have the LeftFov, RightFov, BottomFov, TopFov and Near properties", function () {

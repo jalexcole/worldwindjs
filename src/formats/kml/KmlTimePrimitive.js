@@ -73,7 +73,7 @@ class KmlTimePrimitive extends KmlObject{
   /**
    * @inheritDoc
    */
-  getTagNames() {
+  static getTagNames() {
     return ["TimeSpan", "TimeStamp"];
   }
 }

@@ -25,13 +25,13 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
-import {
-  KmlRegion,
-  KmlLatLonAltBox,
-  KmlLod,
-  XmlDocument,
-} from "../../../src/WorldWind";
-import { beforeAll, beforeEach, describe,expect, it } from "vitest";
+import KmlRegion from       "../../../src/formats/kml/KmlRegion.js";
+import KmlLatLonAltBox from "../../../src/formats/kml/KmlLatLonAltBox.js";
+import KmlLod from          "../../../src/formats/kml/KmlLod.js";
+import XmlDocument from     "../../../src/util/XmlDocument.js";
+
+
+import { describe,expect, it } from "vitest";
 describe("KmlRegionTest", function () {
   var validKml =
     '<?xml version="1.0" encoding="UTF-8"?>' +

@@ -35,7 +35,7 @@ import Vec3 from "../geom/Vec3";
 
 import ProjectionWgs84 from "../projections/ProjectionWgs84";
 import Logger from "../util/Logger";
-
+import ElevationModel from "./ElevationModel";
 import Tessellator from "./Tessellator";
 import WorldWindConstants from "../WorldWindConstants";
 /**

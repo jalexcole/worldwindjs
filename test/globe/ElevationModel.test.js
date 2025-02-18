@@ -96,7 +96,7 @@ describe("ElevationModel tests", function () {
 
   describe("Missing parameter tests", function () {
     it("Correctly rejects calls with missing or invalid parameters", function () {
-      var elevationModel = new ElevationModel();
+      let elevationModel = new ElevationModel();
       expect(function () {
         elevationModel.addCoverage();
       }).toThrow();

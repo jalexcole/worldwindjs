@@ -36,7 +36,7 @@ import KmlLineStyle from "./KmlLineStyle.js";
 import KmlListStyle from "./KmlListStyle.js";
 import KmlBalloonStyle from "./KmlBalloonStyle.js";
 import Offset from "../../../util/Offset";
-import { Promise } from "es6-promise";
+
 import ShapeAttributes from "../../../shapes/ShapeAttributes";
 import TextAttributes from "../../../shapes/TextAttributes";
 import WorldWindConstants from "../../../WorldWindConstants";

@@ -25,8 +25,7 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
-
-import { AAIGridReader } from "../../../src/WorldWind";
+import AAIGridReader from "../../../src/formats/aaigrid/AAIGridReader";
 import {describe,expect, it } from "vitest";
 
 describe("AAIGridReader parsing", function () {

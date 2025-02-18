@@ -38,7 +38,7 @@ import RotationRecognizer from "./gesture/RotationRecognizer";
 import TiltRecognizer from "./gesture/TiltRecognizer";
 import WWMath from "./util/WWMath";
 import WorldWindConstants from "./WorldWindConstants";
-import WorldWindow from "./WorldWindow";
+
 import WorldWindowController from "./WorldWindowController";
 
 class BasicWorldWindowController extends WorldWindowController {

@@ -25,16 +25,14 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
-import {
-  KmlElementsFactory,
-  KmlGeometry,
-  KmlLineString,
-  KmlMultiGeometry,
-  KmlPoint,
-  XmlDocument,
-} from "../../../../src/WorldWind.js";
+import KmlElementsFactory from "../../../../src/formats/kml/util/KmlElementsFactory.js";
+import KmlGeometry from "../../../../src/formats/kml/geom/KmlGeometry.js";
+import KmlLineString from "../../../../src/formats/kml/geom/KmlLineString.js";
+import KmlMultiGeometry from "../../../../src/formats/kml/geom/KmlMultiGeometry.js";
+import KmlPoint from "../../../../src/formats/kml/geom/KmlPoint.js";
+import XmlDocument from "../../../../src/util/XmlDocument.js";
 import KmlNodeTransformers from "../../../../src/formats/kml/util/KmlNodeTransformers";
-import { afterEach, beforeEach, describe, it, expect } from "vitest";
+import { describe, it, expect } from "vitest";
 describe("KmlElementsFactoryTest", function () {
   var factory = new KmlElementsFactory();
   var exampleDocument =

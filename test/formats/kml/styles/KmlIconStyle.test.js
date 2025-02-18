@@ -26,35 +26,35 @@
  * PDF found in code  directory.
  */
 import KmlFileCache from "../../../../src/formats/kml/KmlFileCache";
-import { KmlIconStyle,XmlDocument } from "../../../../src/WorldWind.js";
-import { beforeAll, beforeEach, describe,expect, it } from "vitest";
+import XmlDocument from "../../../../src/util/XmlDocument";
+import KmlIconStyle from "../../../../src/formats/kml/styles/KmlIconStyle";
+import { describe, expect, it } from "vitest";
 
-    describe ("KmlIconStyle", function (){
+describe("KmlIconStyle", function () {
+  var validKml =
+    '<?xml version="1.0" encoding="UTF-8"?>' +
+    '<kml xmlns="http://www.opengis.net/kml/2.2">' +
+    '<IconStyle id="1">' +
+    "   <color>ffffffff</color>" +
+    "   <colorMode>normal</colorMode>" +
+    "   " +
+    "   <scale>1</scale>" +
+    "   <heading>0</heading>" +
+    "   <Icon>" +
+    "       <href>test</href>" +
+    "   </Icon>" +
+    "</IconStyle>" +
+    "</kml>";
 
-    var validKml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
-        "<kml xmlns=\"http://www.opengis.net/kml/2.2\">" +
-        "<IconStyle id=\"1\">" +
-        "   <color>ffffffff</color>" +
-        "   <colorMode>normal</colorMode>" +
-        "   " +
-        "   <scale>1</scale>" +
-        "   <heading>0</heading>" +
-        "   <Icon>" +
-        "       <href>test</href>" +
-        "   </Icon>" +
-        "</IconStyle>" +
-        "</kml>";
-
-            var kmlRepresentation = new XmlDocument(validKml).dom();
-            var iconStyle = new KmlIconStyle({objectNode:
-                kmlRepresentation.getElementsByTagName("IconStyle")[0]});
-            it("should have the Color, ColorMode, Scale, Heading and Href properties", function(){
-
-                expect(iconStyle.kmlColor).toEqual('ffffffff');
-                expect(iconStyle.kmlColorMode).toEqual('normal');
-                expect(iconStyle.kmlScale).toEqual(1);
-                expect(iconStyle.kmlHeading).toEqual(0);
-                expect(iconStyle.kmlIcon.kmlHref(new KmlFileCache())).toEqual('test');
-
-        });
-    });
+  var kmlRepresentation = new XmlDocument(validKml).dom();
+  var iconStyle = new KmlIconStyle({
+    objectNode: kmlRepresentation.getElementsByTagName("IconStyle")[0],
+  });
+  it("should have the Color, ColorMode, Scale, Heading and Href properties",  () => {
+    expect(iconStyle.kmlColor).toEqual("ffffffff");
+    expect(iconStyle.kmlColorMode).toEqual("normal");
+    expect(iconStyle.kmlScale).toEqual(1);
+    expect(iconStyle.kmlHeading).toEqual(0);
+    expect(iconStyle.kmlIcon.kmlHref(new KmlFileCache())).toEqual("test");
+  });
+});

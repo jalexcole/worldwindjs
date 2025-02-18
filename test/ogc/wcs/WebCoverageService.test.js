@@ -25,8 +25,7 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
-// import { Promise } from "../../../src/WorldWind";
-import { Promise } from "es6-promise";
+
 import WcsCapabilities from "../../../src/ogc/wcs/WcsCapabilities";
 import WebCoverageService from "../../../src/ogc/wcs/WebCoverageService";
 import { beforeAll, fail, describe, expect, it } from "vitest";
@@ -84,7 +83,7 @@ import { beforeAll, fail, describe, expect, it } from "vitest";
         it ("should have 2 coverages defined", function () {
             var coverageCount = webCoverageService.coverages.length;
 
-            expect(coverageCount).toBe(2);
+            expect(coverageCount == 2);
         });
     });
 

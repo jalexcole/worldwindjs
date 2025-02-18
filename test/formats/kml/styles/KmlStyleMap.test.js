@@ -25,7 +25,7 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
-import { KmlStyleMap } from "../../../../src/WorldWind";
+import KmlStyleMap  from "../../../../src/formats/kml/styles/KmlStyleMap";
 import KmlPair from "../../../../src/formats/kml/util/KmlPair";
 import XmlDocument from "../../../../src/util/XmlDocument";
 

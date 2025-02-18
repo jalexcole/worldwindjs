@@ -40,33 +40,35 @@ import Logger from "./Logger";
  * @param {Image} image The image for this image source.
  * @throws {ArgumentError} If the specified image is null or undefined.
  */
-var ImageSource = function (image) {
-  if (!image) {
-    throw new ArgumentError(
-      Logger.logMessage(
-        Logger.LEVEL_SEVERE,
-        "ImageSource",
-        "constructor",
-        "missingImage"
-      )
-    );
+class ImageSource {
+  constructor(image) {
+    if (!image) {
+      throw new ArgumentError(
+        Logger.logMessage(
+          Logger.LEVEL_SEVERE,
+          "ImageSource",
+          "constructor",
+          "missingImage"
+        )
+      );
+    }
+
+    /**
+     * This image source's image
+     * @type {Image}
+     * @readonly
+     */
+    this.image = image;
+
+    /**
+     * This image source's key. A unique key is automatically generated and assigned during construction.
+     * Applications may assign a different key after construction.
+     * @type {String}
+     * @default A unique string for this image source.
+     */
+    this.key = "ImageSource " + ++ImageSource.keyPool;
   }
-
-  /**
-   * This image source's image
-   * @type {Image}
-   * @readonly
-   */
-  this.image = image;
-
-  /**
-   * This image source's key. A unique key is automatically generated and assigned during construction.
-   * Applications may assign a different key after construction.
-   * @type {String}
-   * @default A unique string for this image source.
-   */
-  this.key = "ImageSource " + ++ImageSource.keyPool;
-};
+}
 
 // Internal. Intentionally not documented.
 ImageSource.keyPool = 0; // source of unique ids

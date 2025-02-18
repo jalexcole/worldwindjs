@@ -15,15 +15,13 @@
  */
 
 import BasicWorldWindowController from "../../src/BasicWorldWindowController.js";
-import {
-  BasicWorldWindController,
-  Camera,
-  Globe,
-  DrawContext,
-  Matrix,
-  Rectangle,
-  WorldWindow,
-} from "../../src/WorldWind.js";
+import Camera from "../../src/geom/Camera.js";
+import Globe from "../../src/globe/Globe.js";
+import DrawContext from "../../src/render/DrawContext.js";
+import Matrix from "../../src/geom/Matrix.js";
+import Rectangle from "../../src/geom/Rectangle.js";
+import WorldWindow from "../../src/WorldWindow.js";
+
 
 import {expect} from "vitest";
 
