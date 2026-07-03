@@ -35,22 +35,23 @@ import KmlNodeTransformers from "./KmlNodeTransformers";
  * @params options {Object}
  * @params options.controls {Control[]} Defaults to empty array
  */
-var KmlElementsFactory = function (options) {
-  this.options = options || {};
-  this.options.controls = this.options.controls || [];
-};
+class KmlElementsFactory {
+  constructor(options) {
+    this.options = options || {};
+    this.options.controls = this.options.controls || [];
+  }
 
-/**
- * It retrieves specific child of the element. This one can retrieve primitive as well as KmlObject. Transformer
- * is used to get relevant value from the node.
- * @param element {KmlObject} Element whose children are considered.
- * @param options {Object}
- * @param options.name {String} Name of the element to retrieve from the element
- * @param options.transformer {Function} Function returning correct value. It accepts the node and returns value.
- *  This mechanism can be used for the attributes as well.
- * @return Relevant value.
- */
-KmlElementsFactory.prototype.specific = function (element, options) {
+  /**
+   * It retrieves specific child of the element. This one can retrieve primitive as well as KmlObject. Transformer
+   * is used to get relevant value from the node.
+   * @param element {KmlObject} Element whose children are considered.
+   * @param options {Object}
+   * @param options.name {String} Name of the element to retrieve from the element
+   * @param options.transformer {Function} Function returning correct value. It accepts the node and returns value.
+   *  This mechanism can be used for the attributes as well.
+   * @return Relevant value.
+   */
+  specific(element, options) {
   var parentNode = element.node;
   var result = null;
   var self = this;
@@ -70,7 +71,7 @@ KmlElementsFactory.prototype.specific = function (element, options) {
  * @param options.name {String[]} All names which are accepted to return.
  * @return {KmlObject} Kml representation of given node
  */
-KmlElementsFactory.prototype.any = function (element, options) {
+  any(element, options) {
   var parentNode = element.node;
 
   var result = null;
@@ -88,7 +89,7 @@ KmlElementsFactory.prototype.any = function (element, options) {
  * @param element {KmlObject} Element whose children we want to retrieve.
  * @return {KmlObject[]} All KmlObjects present in given node.
  */
-KmlElementsFactory.prototype.all = function (element) {
+  all(element) {
   var parentNode = element.node;
 
   var results = [];
@@ -104,15 +105,14 @@ KmlElementsFactory.prototype.all = function (element) {
     }
   });
   return results;
-};
+  }
 
-var applicationWide = new KmlElementsFactory();
-/**
- * It returns application wide instance of the factory.
- * @returns {KmlElementsFactory} Singleton instance of factory for Application.
- */
-KmlElementsFactory.applicationWide = function () {
-  return applicationWide;
-};
+  static applicationWide() {
+    if (!this._applicationWide) {
+      this._applicationWide = new KmlElementsFactory();
+    }
+    return this._applicationWide;
+  }
+}
 
 export default KmlElementsFactory;

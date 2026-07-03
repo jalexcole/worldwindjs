@@ -37,53 +37,54 @@ import Logger from "../../../util/Logger";
  * @constructor
  * @alias KmlRemoteFile
  */
-var KmlRemoteFile = function (options) {
-  if (!options.ajax && !options.zip) {
-    throw new ArgumentError(
-      Logger.logMessage(
-        Logger.LEVEL_SEVERE,
-        "RemoteDocument",
-        "constructor",
-        "Invalid option for retrieval specified. Use either ajax or zip option."
-      )
-    );
-  }
+class KmlRemoteFile {
+  constructor(options) {
+    if (!options.ajax && !options.zip) {
+      throw new ArgumentError(
+        Logger.logMessage(
+          Logger.LEVEL_SEVERE,
+          "RemoteDocument",
+          "constructor",
+          "Invalid option for retrieval specified. Use either ajax or zip option."
+        )
+      );
+    }
 
   this.options = options;
-};
-
-/**
- * It retrieves the current file. Usually it is used only once, but it can be used multiple times.
- * @returns {Promise}
- */
-KmlRemoteFile.prototype.get = function () {
-  var options = this.options;
-  if (options.ajax) {
-    return this.ajax(options.url, options);
-  } else if (options.zip) {
-    options.responseType = options.responseType || "arraybuffer";
-    return this.ajax(options.url, options);
-  } else {
-    // This branch should never happen.
-    throw new ArgumentError(
-      Logger.logMessage(
-        Logger.LEVEL_SEVERE,
-        "RemoteDocument",
-        "constructor",
-        "Invalid option for retrieval specified. Use either ajax or zip option."
-      )
-    );
   }
-};
 
-/**
- * Retrieves the data from remote server.
- * @param url {String} Url to query for data
- * @param options {Object}
- * @param options.responseType {String} If set, rewrites default responseType.
- * @returns {Promise} Promise of the data.
- */
-KmlRemoteFile.prototype.ajax = function (url, options) {
+  /**
+   * It retrieves the current file. Usually it is used only once, but it can be used multiple times.
+   * @returns {Promise}
+   */
+  get() {
+    var options = this.options;
+    if (options.ajax) {
+      return this.ajax(options.url, options);
+    } else if (options.zip) {
+      options.responseType = options.responseType || "arraybuffer";
+      return this.ajax(options.url, options);
+    } else {
+      // This branch should never happen.
+      throw new ArgumentError(
+        Logger.logMessage(
+          Logger.LEVEL_SEVERE,
+          "RemoteDocument",
+          "constructor",
+          "Invalid option for retrieval specified. Use either ajax or zip option."
+        )
+      );
+    }
+  }
+
+  /**
+   * Retrieves the data from remote server.
+   * @param url {String} Url to query for data
+   * @param options {Object}
+   * @param options.responseType {String} If set, rewrites default responseType.
+   * @returns {Promise} Promise of the data.
+   */
+  ajax(url, options) {
   // Return promise.
   return new Promise(function (resolve, reject) {
     var xhr = new XMLHttpRequest();
@@ -128,6 +129,7 @@ KmlRemoteFile.prototype.ajax = function (url, options) {
 
     xhr.send(null);
   });
-};
+  }
+}
 
 export default KmlRemoteFile;

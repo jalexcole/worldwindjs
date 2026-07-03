@@ -34,33 +34,28 @@ import KmlObject from "../KmlObject";
  * @constructor
  * @alias KmlChange
  */
-var KmlChange = function (options) {
-  KmlObject.call(this, options);
-};
-
-KmlChange.prototype = Object.create(KmlObject.prototype);
-
-Object.defineProperties(KmlChange.prototype, {
+class KmlChange extends KmlObject {
+  constructor(options) {
+    super(options);
+  }
   /**
    * All shapes which should be changed with the location where they should be changed.
    * @memberof KmlChange.prototype
    * @readonly
    * @type {KmlObject[]}
    */
-  shapes: {
-    get: function () {
-      return this._factory.all(this);
-    },
-  },
-});
+  get shapes() {
+    return this._factory.all(this);
+  }
 
-/**
- * @inheritDoc
- */
-KmlChange.prototype.getTagNames = function () {
-  return ["Change"];
-};
+  /**
+   * @inheritDoc
+   */
+  getTagNames() {
+    return ["Change"];
+  }
+}
 
-KmlElements.addKey(KmlChange.prototype.getTagNames()[0], KmlChange);
+KmlElements.addKey(new KmlChange().getTagNames()[0], KmlChange);
 
 export default KmlChange;

@@ -34,33 +34,28 @@ import KmlObject from "../KmlObject";
  * @constructor
  * @alias KmlDelete
  */
-var KmlDelete = function (options) {
-  KmlObject.call(this, options);
-};
-
-KmlDelete.prototype = Object.create(KmlObject.prototype);
-
-Object.defineProperties(KmlDelete.prototype, {
+class KmlDelete extends KmlObject {
+  constructor(options) {
+    super(options);
+  }
   /**
    * All shapes which should be deleted
    * @memberof KmlDelete.prototype
    * @readonly
    * @type {KmlObject[]}
    */
-  shapes: {
-    get: function () {
-      return this._factory.all(this);
-    },
-  },
-});
+  get shapes() {
+    return this._factory.all(this);
+  }
 
-/**
- * @inheritDoc
- */
-KmlDelete.prototype.getTagNames = function () {
-  return ["Delete"];
-};
+  /**
+   * @inheritDoc
+   */
+  getTagNames() {
+    return ["Delete"];
+  }
+}
 
-KmlElements.addKey(KmlDelete.prototype.getTagNames()[0], KmlDelete);
+KmlElements.addKey(new KmlDelete().getTagNames()[0], KmlDelete);
 
 export default KmlDelete;

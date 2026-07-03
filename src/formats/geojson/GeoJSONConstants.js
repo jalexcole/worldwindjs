@@ -32,7 +32,7 @@
  * @constructor
  * @classdesc Contains some GeoJSON string constants.
  */
-var GeoJSONConstants = function () {};
+class GeoJSONConstants {}
 
 GeoJSONConstants.FIELD_TYPE = "type";
 GeoJSONConstants.FIELD_CRS = "crs";

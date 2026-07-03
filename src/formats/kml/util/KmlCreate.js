@@ -35,11 +35,11 @@ import KmlObject from "../KmlObject";
  * @constructor
  * @alias KmlCreate
  */
-var KmlCreate = function (options) {
-  KmlObject.call(this, options);
-};
-
-KmlCreate.prototype = Object.create(KmlObject.prototype);
+class KmlCreate extends KmlObject {
+  constructor(options) {
+    super(options);
+  }
+}
 
 Object.defineProperties(KmlCreate.prototype, {
   /**

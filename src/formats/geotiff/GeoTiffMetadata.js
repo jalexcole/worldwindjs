@@ -32,141 +32,143 @@
  * @constructor
  * @classdesc Contains all of the TIFF and GeoTIFF metadata for a geotiff file.
  */
-var GeoTiffMetadata = function () {
-  // Documented in defineProperties below.
-  this._bitsPerSample = null;
+class GeoTiffMetadata {
+  constructor() {
+    // Documented in defineProperties below.
+    this._bitsPerSample = null;
 
-  // Documented in defineProperties below.
-  this._colorMap = null;
+    // Documented in defineProperties below.
+    this._colorMap = null;
 
-  // Documented in defineProperties below.
-  this._compression = null;
+    // Documented in defineProperties below.
+    this._compression = null;
 
-  // Documented in defineProperties below.
-  this._extraSamples = null;
+    // Documented in defineProperties below.
+    this._extraSamples = null;
 
-  // Documented in defineProperties below.
-  this._imageDescription = null;
+    // Documented in defineProperties below.
+    this._imageDescription = null;
 
-  // Documented in defineProperties below.
-  this._imageLength = null;
+    // Documented in defineProperties below.
+    this._imageLength = null;
 
-  // Documented in defineProperties below.
-  this._imageWidth = null;
+    // Documented in defineProperties below.
+    this._imageWidth = null;
 
-  // Documented in defineProperties below.
-  this._maxSampleValue = null;
+    // Documented in defineProperties below.
+    this._maxSampleValue = null;
 
-  // Documented in defineProperties below.
-  this._minSampleValue = null;
+    // Documented in defineProperties below.
+    this._minSampleValue = null;
 
-  // Documented in defineProperties below.
-  this._orientation = 0;
+    // Documented in defineProperties below.
+    this._orientation = 0;
 
-  // Documented in defineProperties below.
-  this._photometricInterpretation = null;
+    // Documented in defineProperties below.
+    this._photometricInterpretation = null;
 
-  // Documented in defineProperties below.
-  this._planarConfiguration = null;
+    // Documented in defineProperties below.
+    this._planarConfiguration = null;
 
-  // Documented in defineProperties below.
-  this._resolutionUnit = null;
+    // Documented in defineProperties below.
+    this._resolutionUnit = null;
 
-  // Documented in defineProperties below.
-  this._rowsPerStrip = null;
+    // Documented in defineProperties below.
+    this._rowsPerStrip = null;
 
-  // Documented in defineProperties below.
-  this._samplesPerPixel = null;
+    // Documented in defineProperties below.
+    this._samplesPerPixel = null;
 
-  // Documented in defineProperties below.
-  this._sampleFormat = null;
+    // Documented in defineProperties below.
+    this._sampleFormat = null;
 
-  // Documented in defineProperties below.
-  this._software = null;
+    // Documented in defineProperties below.
+    this._software = null;
 
-  // Documented in defineProperties below.
-  this._stripByteCounts = null;
+    // Documented in defineProperties below.
+    this._stripByteCounts = null;
 
-  // Documented in defineProperties below.
-  this._stripOffsets = null;
+    // Documented in defineProperties below.
+    this._stripOffsets = null;
 
-  // Documented in defineProperties below.
-  this._tileByteCounts = null;
+    // Documented in defineProperties below.
+    this._tileByteCounts = null;
 
-  // Documented in defineProperties below.
-  this._tileOffsets = null;
+    // Documented in defineProperties below.
+    this._tileOffsets = null;
 
-  // Documented in defineProperties below.
-  this._tileLength = null;
+    // Documented in defineProperties below.
+    this._tileLength = null;
 
-  // Documented in defineProperties below.
-  this._tileWidth = null;
+    // Documented in defineProperties below.
+    this._tileWidth = null;
 
-  // Documented in defineProperties below.
-  this._xResolution = null;
+    // Documented in defineProperties below.
+    this._xResolution = null;
 
-  // Documented in defineProperties below.
-  this._yResolution = null;
+    // Documented in defineProperties below.
+    this._yResolution = null;
 
-  // Documented in defineProperties below.
-  this._geoAsciiParams = null;
+    // Documented in defineProperties below.
+    this._geoAsciiParams = null;
 
-  // Documented in defineProperties below.
-  this._geoDoubleParams = null;
+    // Documented in defineProperties below.
+    this._geoDoubleParams = null;
 
-  // Documented in defineProperties below.
-  this._geoKeyDirectory = null;
+    // Documented in defineProperties below.
+    this._geoKeyDirectory = null;
 
-  // Documented in defineProperties below.
-  this._modelPixelScale = null;
+    // Documented in defineProperties below.
+    this._modelPixelScale = null;
 
-  // Documented in defineProperties below.
-  this._modelTiepoint = null;
+    // Documented in defineProperties below.
+    this._modelTiepoint = null;
 
-  // Documented in defineProperties below.
-  this._modelTransformation = null;
+    // Documented in defineProperties below.
+    this._modelTransformation = null;
 
-  // Documented in defineProperties below.
-  this._noData = null;
+    // Documented in defineProperties below.
+    this._noData = null;
 
-  // Documented in defineProperties below.
-  this._metaData = null;
+    // Documented in defineProperties below.
+    this._metaData = null;
 
-  // Documented in defineProperties below.
-  this._bbox = null;
+    // Documented in defineProperties below.
+    this._bbox = null;
 
-  // Documented in defineProperties below.
-  this._gtModelTypeGeoKey = null;
+    // Documented in defineProperties below.
+    this._gtModelTypeGeoKey = null;
 
-  // Documented in defineProperties below.
-  this._gtRasterTypeGeoKey = null;
+    // Documented in defineProperties below.
+    this._gtRasterTypeGeoKey = null;
 
-  // Documented in defineProperties below.
-  this._gtCitationGeoKey = null;
+    // Documented in defineProperties below.
+    this._gtCitationGeoKey = null;
 
-  // Documented in defineProperties below.
-  this._geographicTypeGeoKey = null;
+    // Documented in defineProperties below.
+    this._geographicTypeGeoKey = null;
 
-  // Documented in defineProperties below.
-  this._geogCitationGeoKey = null;
+    // Documented in defineProperties below.
+    this._geogCitationGeoKey = null;
 
-  // Documented in defineProperties below.
-  this._geogAngularUnitsGeoKey = null;
+    // Documented in defineProperties below.
+    this._geogAngularUnitsGeoKey = null;
 
-  // Documented in defineProperties below.
-  this._geogAngularUnitSizeGeoKey = null;
+    // Documented in defineProperties below.
+    this._geogAngularUnitSizeGeoKey = null;
 
-  // Documented in defineProperties below.
-  this._geogSemiMajorAxisGeoKey = null;
+    // Documented in defineProperties below.
+    this._geogSemiMajorAxisGeoKey = null;
 
-  // Documented in defineProperties below.
-  this._geogInvFlatteningGeoKey = null;
+    // Documented in defineProperties below.
+    this._geogInvFlatteningGeoKey = null;
 
-  // Documented in defineProperties below.
-  this._projectedCSType = null;
+    // Documented in defineProperties below.
+    this._projectedCSType = null;
 
-  // Documented in defineProperties below.
-  this._projLinearUnits = null;
+    // Documented in defineProperties below.
+    this._projLinearUnits = null;
+  }
 };
 
 Object.defineProperties(GeoTiffMetadata.prototype, {

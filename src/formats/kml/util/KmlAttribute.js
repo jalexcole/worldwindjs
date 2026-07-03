@@ -34,38 +34,36 @@
  * @param name {String} Name of the attribute
  * @constructor
  */
-var KmlAttribute = function (node, name) {
-  this.node = node;
-  this.name = name;
-};
+class KmlAttribute {
+  constructor(node, name) {
+    this.node = node;
+    this.name = name;
+  }
 
-/**
- * It returns value of the attribute. If the attribute doesn't exists it returns null.
- * @returns {String|null}
- */
-KmlAttribute.prototype.value = function () {
-  return (
-    (this.node.attributes &&
-      this.node.attributes.getNamedItem(this.name) &&
-      this.node.attributes.getNamedItem(this.name).value) ||
-    null
-  );
-};
+  /**
+   * It returns value of the attribute. If the attribute doesn't exists it returns null.
+   * @returns {String|null}
+   */
+  value() {
+    var attr = this.node.attributes && this.node.attributes.getNamedItem(this.name);
+    return attr ? attr.value : null;
+  }
 
-/**
- * It returns true if there exists attribute with given name.
- * @returns {boolean}
- */
-KmlAttribute.prototype.exists = function () {
-  return this.value() != null;
-};
+  /**
+   * It returns true if there exists attribute with given name.
+   * @returns {boolean}
+   */
+  exists() {
+    return this.value() != null;
+  }
 
-/**
- * Value which should be set to the attribute.
- * @param value {String}
- */
-KmlAttribute.prototype.save = function (value) {
-  this.node.setAttribute(this.name, value);
-};
+  /**
+   * Value which should be set to the attribute.
+   * @param value {String}
+   */
+  save(value) {
+    this.node.setAttribute(this.name, value);
+  }
+}
 
 export default KmlAttribute;

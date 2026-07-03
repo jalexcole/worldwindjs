@@ -40,11 +40,11 @@ import KmlObject from "../KmlObject";
  * @see https://developers.google.com/kml/documentation/kmlreference#itemicon
  * @augments KmlObject
  */
-var KmlSchema = function (options) {
-  KmlObject.call(this, options);
-};
-
-KmlSchema.prototype = Object.create(KmlObject.prototype);
+class KmlSchema extends KmlObject {
+  constructor(options) {
+    super(options);
+  }
+}
 
 /**
  * @inheritDoc

@@ -38,18 +38,19 @@ import KmlObject from "../KmlObject";
  * @constructor
  * @alias KmlElementsFactoryCached
  */
-var KmlElementsFactoryCached = function (options) {
-  this.internalFactory = new KmlElementsFactory(options);
-  this.cache = KmlTreeKeyValueCache.applicationLevelCache();
-};
+class KmlElementsFactoryCached {
+  constructor(options) {
+    this.internalFactory = new KmlElementsFactory(options);
+    this.cache = KmlTreeKeyValueCache.applicationLevelCache();
+  }
 
-/**
- * It adds caching functionality on top of the KmlElementsFactory all method.
- * @param element {KmlObject} Element whose children are considered
- * @returns {KmlObject[]} All objects among the elements children
- * @see KmlElementsFactory.prototype.all
- */
-KmlElementsFactoryCached.prototype.all = function (element) {
+  /**
+   * It adds caching functionality on top of the KmlElementsFactory all method.
+   * @param element {KmlObject} Element whose children are considered
+   * @returns {KmlObject[]} All objects among the elements children
+   * @see KmlElementsFactory.prototype.all
+   */
+  all(element) {
   var parentNode = element.node;
   var children = this.cache.level(this.cacheKey(element.node, "All"));
   if (children) {
@@ -87,7 +88,7 @@ KmlElementsFactoryCached.prototype.all = function (element) {
  * @returns Relevant value.
  * @see KmlElementsFactory.prototype.specific
  */
-KmlElementsFactoryCached.prototype.specific = function (element, options) {
+  specific(element, options) {
   var parentNode = element.node;
   var name = options.name;
   if (options.attribute) {
@@ -119,7 +120,7 @@ KmlElementsFactoryCached.prototype.specific = function (element, options) {
  * @returns {KmlObject|null} KmlObject if there is one with the passed in name.
  * @see KmlElementsFactory.prototype.any
  */
-KmlElementsFactoryCached.prototype.any = function (element, options) {
+  any(element, options) {
   var parentNode = element.node;
 
   var self = this;
@@ -154,25 +155,24 @@ KmlElementsFactoryCached.prototype.any = function (element, options) {
  * @param prefix {String|undefined} Prefix for the level
  * @returns {String} Value representing the key.
  */
-KmlElementsFactoryCached.prototype.cacheKey = function (node, prefix) {
-  var idAttribute = new Attribute(node, "id");
-  if (!idAttribute.exists()) {
-    idAttribute.save(WWUtil.guid());
+  cacheKey(node, prefix) {
+    var idAttribute = new Attribute(node, "id");
+    if (!idAttribute.exists()) {
+      idAttribute.save(WWUtil.guid());
+    }
+    var result = node.nodeName + "#" + idAttribute.value();
+    if (prefix) {
+      result = prefix + result;
+    }
+    return result;
   }
-  var result = node.nodeName + "#" + idAttribute.value();
-  if (prefix) {
-    result = prefix + result;
-  }
-  return result;
-};
 
-var applicationWide = new KmlElementsFactoryCached();
-/**
- * It returns application wide instance of the factory.
- * @returns {KmlElementsFactoryCached} Singleton instance of factory for Application.
- */
-KmlElementsFactoryCached.applicationWide = function () {
-  return applicationWide;
-};
+  static applicationWide() {
+    if (!this._applicationWide) {
+      this._applicationWide = new KmlElementsFactoryCached();
+    }
+    return this._applicationWide;
+  }
+}
 
 export default KmlElementsFactoryCached;

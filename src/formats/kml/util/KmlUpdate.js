@@ -32,11 +32,11 @@ import KmlElements from "../KmlElements";
 import KmlObject from "../KmlObject";
 import KmlNodeTransformers from "./KmlNodeTransformers";
 
-var KmlUpdate = function (options) {
-  KmlObject.call(this, options);
-};
-
-KmlUpdate.prototype = Object.create(KmlObject.prototype);
+class KmlUpdate extends KmlObject {
+  constructor(options) {
+    super(options);
+  }
+}
 
 Object.defineProperties(KmlUpdate.prototype, {
   /**

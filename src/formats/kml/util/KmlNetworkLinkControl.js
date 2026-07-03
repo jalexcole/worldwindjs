@@ -38,11 +38,11 @@ import KmlUpdate from "./KmlUpdate";
  * @constructor
  * @augments KmlObject
  */
-var KmlNetworkLinkControl = function (options) {
-  KmlObject.call(this, options);
-};
-
-KmlNetworkLinkControl.prototype = Object.create(KmlObject.prototype);
+class KmlNetworkLinkControl extends KmlObject {
+  constructor(options) {
+    super(options);
+  }
+}
 
 Object.defineProperties(KmlNetworkLinkControl.prototype, {
   /**
