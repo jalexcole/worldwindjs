@@ -54,9 +54,12 @@ import KmlStyleResolver from "./util/KmlStyleResolver";
  */
 class KmlFile extends KmlObject {
   constructor(url, controls) {
+    // The real document node isn't available until it's fetched below, but a
+    // derived class's super() must run synchronously with a valid objectNode.
+    // Construct with a placeholder and re-hook once the real document loads.
     super({
-      objectNode: self._document.documentElement,
-      controls: controls,
+      objectNode: document.createElement("kml"),
+      controls: [],
     });
     var self = this;
     if (!url) {
@@ -91,7 +94,11 @@ class KmlFile extends KmlObject {
       })
       .then(function (rootDocument) {
         self._document = new XmlDocument(rootDocument).dom();
-        this;
+        self._node = self._document.documentElement;
+        self.hook(self._controls || [], {
+          objectNode: self._node,
+          controls: self._controls,
+        });
 
         self._fileCache.add(url, self, true);
 

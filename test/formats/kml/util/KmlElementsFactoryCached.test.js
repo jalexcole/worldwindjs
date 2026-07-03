@@ -77,10 +77,10 @@ describe("KmlElementsFactoryCachedTest", function () {
       objectNode: document.getElementById("11"),
     });
     var createdElement = factory.any(currentMultiGeometry, {
-      name: KmlGeometry.getTagNames(),
+      name: KmlGeometry.prototype.getTagNames(),
     });
     var createdElementFromCache = factory.any(currentMultiGeometry, {
-      name: KmlGeometry.getTagNames(),
+      name: KmlGeometry.prototype.getTagNames(),
     });
 
     expect(createdElement === createdElementFromCache).toBeTruthy();

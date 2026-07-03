@@ -26,6 +26,7 @@
  * PDF found in code  directory.
  */
 import WcsCapabilities from "../../../src/ogc/wcs/WcsCapabilities.js";
+import TestUtils from "../../util/TestUtils.test.js";
 import { beforeAll, describe, expect, it } from "vitest";
 
 describe("Constructor testing", function () {
@@ -39,20 +40,23 @@ describe("Constructor testing", function () {
 describe("WCS 2.0.1 Capabilities Parsing", function () {
   var xmlDom;
 
-  beforeAll(function (done) {
-    var xhr = new XMLHttpRequest();
-    xhr.open("GET", "../base/test/ogc/wcs/wcs201GetCapabilities.xml", true);
-    xhr.addEventListener("load", function () {
-      if (xhr.readyState === 4) {
-        if (xhr.status === 200) {
-          xmlDom = xhr.responseXML;
-          done();
-        } else {
-          done("Test WCS Capabilities Retrieval Error: " + xhr.statusText);
+  beforeAll(function () {
+    return new Promise(function (resolve, reject) {
+      var xhr = new XMLHttpRequest();
+      xhr.responseType = "document";
+      xhr.open("GET", TestUtils.fixtureUrl("test/ogc/wcs/wcs201GetCapabilities.xml"), true);
+      xhr.addEventListener("load", function () {
+        if (xhr.readyState === 4) {
+          if (xhr.status === 200) {
+            xmlDom = xhr.responseXML;
+            resolve();
+          } else {
+            reject(new Error("Test WCS Capabilities Retrieval Error: " + xhr.statusText));
+          }
         }
-      }
+      });
+      xhr.send(null);
     });
-    xhr.send(null);
   });
 
   it("should have a 2.0.1 version", function () {
@@ -156,20 +160,23 @@ describe("WCS 2.0.1 Capabilities Parsing", function () {
 describe("WCS 1.0.0 Capabilities Parsing", function () {
   var xmlDom;
 
-  beforeAll(function (done) {
-    var xhr = new XMLHttpRequest();
-    xhr.open("GET", "../base/test/ogc/wcs/wcs100GetCapabilities.xml", true);
-    xhr.addEventListener("load", function () {
-      if (xhr.readyState === 4) {
-        if (xhr.status === 200) {
-          xmlDom = xhr.responseXML;
-          done();
-        } else {
-          done("Test WCS Capabilities Retrieval Error: " + xhr.statusText);
+  beforeAll(function () {
+    return new Promise(function (resolve, reject) {
+      var xhr = new XMLHttpRequest();
+      xhr.responseType = "document";
+      xhr.open("GET", TestUtils.fixtureUrl("test/ogc/wcs/wcs100GetCapabilities.xml"), true);
+      xhr.addEventListener("load", function () {
+        if (xhr.readyState === 4) {
+          if (xhr.status === 200) {
+            xmlDom = xhr.responseXML;
+            resolve();
+          } else {
+            reject(new Error("Test WCS Capabilities Retrieval Error: " + xhr.statusText));
+          }
         }
-      }
+      });
+      xhr.send(null);
     });
-    xhr.send(null);
   });
 
   it("should have a 1.0.0 version", function () {

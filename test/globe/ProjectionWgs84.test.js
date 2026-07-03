@@ -29,7 +29,7 @@ import Angle from "../../src/geom/Angle";
 import ElevationModel from "../../src/globe/ElevationModel";
 import Globe from "../../src/globe/Globe";
 import Position from "../../src/geom/Position";
-import ProjectionWgs84 from "../../src/globe/ProjectionWgs84";
+import ProjectionWgs84 from "../../src/projections/ProjectionWgs84";
 
 
 import Vec3 from "../../src/geom/Vec3";
@@ -40,7 +40,6 @@ describe("ProjectionWgs84 tests", function () {
   var WGS84_IERS_REFERENCE_MERIDIAN = vec3FromEcef(6378137.0, 0, 0);
   var WGS84_IERS_REFERENCE_MERIDIAN_NORMAL = vec3FromEcef(1, 0, 0);
   var WGS84_IERS_REFERENCE_MERIDIAN_TANGENT = vec3FromEcef(0, 0, 1);
-  var WGS84_IERS_REFERENCE_POLE = vec3FromEcef(0, 0, 6356752.3142);
   var WGS84_IERS_REFERENCE_POLE_NORMAL = vec3FromEcef(0, 0, 1);
   var WGS84_IERS_REFERENCE_POLE_TANGENT = vec3FromEcef(-1, 0, 0);
 
@@ -157,7 +156,7 @@ describe("ProjectionWgs84 tests", function () {
     var globe = new Globe(new ElevationModel(), wgs84);
 
     for (var name in wgs84ReferenceStations) {
-      if (wgs84ReferenceStations.hasOwnProperty(name)) {
+      if (Object.prototype.hasOwnProperty.call(wgs84ReferenceStations, name)) {
         var pos = wgs84ReferenceStations[name].geographic;
         var point = wgs84ReferenceStations[name].cartesian;
 
@@ -181,7 +180,7 @@ describe("ProjectionWgs84 tests", function () {
     var globe = new Globe(new ElevationModel(), wgs84);
 
     for (var name in wgs84ReferenceStations) {
-      if (wgs84ReferenceStations.hasOwnProperty(name)) {
+      if (Object.prototype.hasOwnProperty.call(wgs84ReferenceStations, name)) {
         var pos = wgs84ReferenceStations[name].geographic;
         var point = wgs84ReferenceStations[name].cartesian;
 
@@ -207,7 +206,7 @@ describe("ProjectionWgs84 tests", function () {
     var globe = new Globe(new ElevationModel(), wgs84);
 
     for (var name in wgs84ReferenceStations) {
-      if (wgs84ReferenceStations.hasOwnProperty(name)) {
+      if (Object.prototype.hasOwnProperty.call(wgs84ReferenceStations, name)) {
         var pos = wgs84ReferenceStations[name].geographic;
 
         var resultPoint = wgs84.geographicToCartesian(
@@ -240,7 +239,7 @@ describe("ProjectionWgs84 tests", function () {
     var globe = new Globe(new ElevationModel(), wgs84);
 
     for (var name in wgs84ReferenceStations) {
-      if (wgs84ReferenceStations.hasOwnProperty(name)) {
+      if (Object.prototype.hasOwnProperty.call(wgs84ReferenceStations, name)) {
         var point = wgs84ReferenceStations[name].cartesian;
 
         var resultPos = wgs84.cartesianToGeographic(
@@ -291,7 +290,7 @@ describe("ProjectionWgs84 tests", function () {
     var globe = new Globe(new ElevationModel(), wgs84);
 
     for (var name in wgs84ReferenceStations) {
-      if (wgs84ReferenceStations.hasOwnProperty(name)) {
+      if (Object.prototype.hasOwnProperty.call(wgs84ReferenceStations, name)) {
         var pos = wgs84ReferenceStations[name].geographic;
         var normal = wgs84EllipsoidNormal(pos.latitude, pos.longitude);
 
@@ -313,7 +312,7 @@ describe("ProjectionWgs84 tests", function () {
     var globe = new Globe(new ElevationModel(), wgs84);
 
     for (var name in wgs84ReferenceStations) {
-      if (wgs84ReferenceStations.hasOwnProperty(name)) {
+      if (Object.prototype.hasOwnProperty.call(wgs84ReferenceStations, name)) {
         var pos = wgs84ReferenceStations[name].geographic;
         var point = wgs84ReferenceStations[name].cartesian;
         var normal = wgs84EllipsoidNormal(pos.latitude, pos.longitude);
@@ -357,7 +356,7 @@ describe("ProjectionWgs84 tests", function () {
     var globe = new Globe(new ElevationModel(), wgs84);
 
     for (var name in wgs84ReferenceStations) {
-      if (wgs84ReferenceStations.hasOwnProperty(name)) {
+      if (Object.prototype.hasOwnProperty.call(wgs84ReferenceStations, name)) {
         var pos = wgs84ReferenceStations[name].geographic;
         var tangent = wgs84GeodeticNorth(pos.latitude, pos.longitude);
 
@@ -379,7 +378,7 @@ describe("ProjectionWgs84 tests", function () {
     var globe = new Globe(new ElevationModel(), wgs84);
 
     for (var name in wgs84ReferenceStations) {
-      if (wgs84ReferenceStations.hasOwnProperty(name)) {
+      if (Object.prototype.hasOwnProperty.call(wgs84ReferenceStations, name)) {
         var pos = wgs84ReferenceStations[name].geographic;
         var point = wgs84ReferenceStations[name].cartesian;
         var tangent = wgs84GeodeticNorth(pos.latitude, pos.longitude);
@@ -404,7 +403,7 @@ describe("ProjectionWgs84 tests", function () {
     var globe = new Globe(new ElevationModel(), wgs84);
 
     for (var name in wgs84ReferenceStations) {
-      if (wgs84ReferenceStations.hasOwnProperty(name)) {
+      if (Object.prototype.hasOwnProperty.call(wgs84ReferenceStations, name)) {
         var pos = wgs84ReferenceStations[name].geographic;
 
         var normalResult = wgs84.surfaceNormalAtLocation(
@@ -432,7 +431,7 @@ describe("ProjectionWgs84 tests", function () {
     var globe = new Globe(new ElevationModel(), wgs84);
 
     for (var name in wgs84ReferenceStations) {
-      if (wgs84ReferenceStations.hasOwnProperty(name)) {
+      if (Object.prototype.hasOwnProperty.call(wgs84ReferenceStations, name)) {
         var pos = wgs84ReferenceStations[name].geographic;
 
         var normalResult = wgs84.surfaceNormalAtLocation(

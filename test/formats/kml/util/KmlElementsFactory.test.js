@@ -86,7 +86,7 @@ describe("KmlElementsFactoryTest", function () {
       objectNode: document.getElementById("11"),
     });
     var createdElement = factory.any(currentMultiGeometry, {
-      name: KmlGeometry.getTagNames(),
+      name: KmlGeometry.prototype.getTagNames(),
     });
 
     expect(createdElement instanceof KmlPoint).toEqual(true);

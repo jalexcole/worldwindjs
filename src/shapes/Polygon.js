@@ -43,7 +43,7 @@ import Vec2 from "../geom/Vec2";
 import Vec3 from "../geom/Vec3";
 import WorldWindConstants from "../WorldWindConstants";
 
-import * as libtess from "../util/libtess";
+import libtess from "../util/libtess";
 /**
  * Constructs a Polygon.
  * @alias Polygon
@@ -139,7 +139,7 @@ class Polygon extends AbstractShape {
       : null;
   }
   // Internal. Determines whether this shape's geometry must be re-computed.
-  mustGenerateGeometry(dc) {
+  mustGenerateGeometry() {
     if (!this.currentData.boundaryPoints) {
       return true;
     }
@@ -218,7 +218,7 @@ class Polygon extends AbstractShape {
     }
 
     // See if the current shape data can be re-used.
-    if (!this.mustGenerateGeometry(dc)) {
+    if (!this.mustGenerateGeometry()) {
       return this;
     }
 
@@ -455,7 +455,7 @@ class Polygon extends AbstractShape {
     return error === 0 ? triangles : null;
   }
   // Private. Intentionally not documented.
-  mustDrawVerticals(dc) {
+  mustDrawVerticals() {
     return (
       this._extrude &&
       this.activeAttributes.drawOutline &&
@@ -643,7 +643,6 @@ class Polygon extends AbstractShape {
         3 + (hasSideTextures ? 2 : 0) + (applyLighting ? 3 : 0),
       numBytesPerVertex = 4 * numFloatsPerVertex,
       vboId,
-      opacity,
       color,
       textureBound,
       sidesBuffer,
@@ -925,11 +924,9 @@ class Polygon extends AbstractShape {
       refreshBuffers = currentData.refreshBuffers,
       numBoundaryPoints,
       vboId,
-      opacity,
       color,
       stride,
-      nPts,
-      textureBound;
+      nPts;
 
     program.loadTextureEnabled(gl, false);
     program.loadApplyLighting(gl, false);
@@ -1010,7 +1007,7 @@ class Polygon extends AbstractShape {
       );
       gl.drawArrays(gl.LINE_STRIP, 0, nPts);
 
-      if (this.mustDrawVerticals(dc)) {
+      if (this.mustDrawVerticals()) {
         gl.vertexAttribPointer(
           program.vertexPointLocation,
           3,

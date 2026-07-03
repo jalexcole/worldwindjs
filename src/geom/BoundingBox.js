@@ -265,7 +265,7 @@ class BoundingBox {
    * @throws {ArgumentError} If the specified list of points is null, undefined or empty.
    */
   setToVec3Points(points) {
-    if (!points || points.size() === 0) {
+    if (!points || points.length === 0) {
       throw new ArgumentError(
         Logger.logMessage(
           Logger.LEVEL_SEVERE,
@@ -276,8 +276,8 @@ class BoundingBox {
       );
     }
 
-    var pointList = new Float32Array(points.size() * 3);
-    for (var i = 0; i < points.size(); i++) {
+    var pointList = new Float32Array(points.length * 3);
+    for (var i = 0; i < points.length; i++) {
       var point = points[i];
       for (var j = 0; j < 3; j++) {
         pointList[i * 3 + j] = point[j];

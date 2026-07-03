@@ -49,7 +49,7 @@ class KmlGeometry extends KmlObject {
 
         this._renderable = null;
     }
-    static getTagNames() {
+    getTagNames() {
         return ["Point", "LinearRing", "LineString", "MultiGeometry", "Polygon"];
     }
     /**

@@ -27,10 +27,8 @@
  */
 import Sector from "../../../src/geom/Sector.js";
 import WcsCoverageDescriptions from "../../../src/ogc/wcs/WcsCoverageDescriptions.js";
+import TestUtils from "../../util/TestUtils.test.js";
 import { beforeAll ,describe,expect, it } from "vitest";
-// beforeEach(function () {
-//   jasmine.addMatchers(CustomMatchers);
-// });
 
 describe("Constructor testing", function () {
   it("should throw an exception when nothing is provided as an argument", function () {
@@ -43,20 +41,23 @@ describe("Constructor testing", function () {
 describe("WSC 1.0.0 Describe Coverage", function () {
   var xmlDom;
 
-  beforeAll(function (done) {
-    var xhr = new XMLHttpRequest();
-    xhr.open("GET", "../base/test/ogc/wcs/wcs100DescribeCoverage.xml", true);
-    xhr.addEventListener("load", function () {
-      if (xhr.readyState === 4) {
-        if (xhr.status === 200) {
-          xmlDom = xhr.responseXML;
-          done();
-        } else {
-          done("Test WCS Capabilities Retrieval Error: " + xhr.statusText);
+  beforeAll(function () {
+    return new Promise(function (resolve, reject) {
+      var xhr = new XMLHttpRequest();
+      xhr.responseType = "document";
+      xhr.open("GET", TestUtils.fixtureUrl("test/ogc/wcs/wcs100DescribeCoverage.xml"), true);
+      xhr.addEventListener("load", function () {
+        if (xhr.readyState === 4) {
+          if (xhr.status === 200) {
+            xmlDom = xhr.responseXML;
+            resolve();
+          } else {
+            reject(new Error("Test WCS Capabilities Retrieval Error: " + xhr.statusText));
+          }
         }
-      }
+      });
+      xhr.send(null);
     });
-    xhr.send(null);
   });
 
   describe("Utility Methods", function () {
@@ -349,20 +350,23 @@ describe("WSC 1.0.0 Describe Coverage", function () {
 describe("WSC 2.0.1 Describe Coverage", function () {
   var xmlDom;
 
-  beforeAll(function (done) {
-    var xhr = new XMLHttpRequest();
-    xhr.open("GET", "../base/test/ogc/wcs/wcs201DescribeCoverage.xml", true);
-    xhr.addEventListener("load", function () {
-      if (xhr.readyState === 4) {
-        if (xhr.status === 200) {
-          xmlDom = xhr.responseXML;
-          done();
-        } else {
-          done("Test WCS Capabilities Retrieval Error: " + xhr.statusText);
+  beforeAll(function () {
+    return new Promise(function (resolve, reject) {
+      var xhr = new XMLHttpRequest();
+      xhr.responseType = "document";
+      xhr.open("GET", TestUtils.fixtureUrl("test/ogc/wcs/wcs201DescribeCoverage.xml"), true);
+      xhr.addEventListener("load", function () {
+        if (xhr.readyState === 4) {
+          if (xhr.status === 200) {
+            xmlDom = xhr.responseXML;
+            resolve();
+          } else {
+            reject(new Error("Test WCS Capabilities Retrieval Error: " + xhr.statusText));
+          }
         }
-      }
+      });
+      xhr.send(null);
     });
-    xhr.send(null);
   });
 
   describe("Utility Methods", function () {

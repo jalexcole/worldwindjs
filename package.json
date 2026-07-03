@@ -4,6 +4,7 @@
   "description": "WorldWindJS is an interactive 3D globe library featuring imagery, maps, terrain and 2D projections from the Web WorldWind virtual globe SDK from NASA and ESA plus several community contributions.",
   "main": "build/dist/worldwind.min.js",
   "homepage": "https://emxsys.github.io/worldwindjs/",
+  "type": "module",
   "bugs": {
     "url": "https://github.com/emxsys/worldwindjs/issues"
   },
@@ -30,11 +31,12 @@
     "build/dist/worldwind.min.js"
   ],
   "devDependencies": {
-    "canvas": "^3.0.1",
     "@eslint/js": "9.17.0",
+    "canvas": "^3.0.1",
     "eslint": "^9.17.0",
     "globals": "15.14.0",
     "happy-dom": "16.2.9",
+    "jsdom": "29.1.1",
     "vite": "5.4.11",
     "vitest": "2.1.8"
   },

@@ -31,12 +31,11 @@ import Globe from "../src/globe/Globe.js";
 
 import { describe, expect, it } from "vitest";
 import TestUtils from "./util/TestUtils.test.js";
-import DrawContext from "../src/render/DrawContext.js";
 
 var mockGlobe = new Globe(new ElevationModel() , null);
 var wwd = TestUtils.getMockWwd(mockGlobe);
 wwd.resetDrawContext();
-let dc = new DrawContext(null);
+let dc = wwd.drawContext;
 describe("WorldWindow Tests", function () {
   describe("Correctly computes a ray originating at the cameras's point and extending through the specified point in window coordinates", function () {
     it("Should throw an exception on missing input parameter", function () {

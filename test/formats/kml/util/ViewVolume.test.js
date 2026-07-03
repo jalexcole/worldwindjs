@@ -26,28 +26,11 @@
  * PDF found in code  directory.
  */
 
-// import KmlViewVolume from "../../../../src/formats/kml/util/KmlViewVolume.js";
+import KmlViewVolume from "../../../../src/formats/kml/util/KmlViewVolume.js";
 import XmlDocument from "../../../../src/util/XmlDocument.js";
-import { describe, beforeEach, afterEach, expect, it } from "vitest";
+import { describe, expect, it } from "vitest";
 
 describe("KmlViewVolumeTest", function () {
-  var index = 0;
-
-  beforeEach(function () {
-    this.index = index++;
-  });
-
-  afterEach(function () {
-    if (this.index > 0) {
-      // var failed = jsApiReporter.specResults(this.index - 1, 1)[0]
-      //   .failedExpectations;
-      // console.log("failed: ", failed);
-      // if (failed.length > 0) {
-      //   console.log("After: ", this, failed[0].message);
-      //   alert("ha");
-      // }
-    }
-  });
   var validKml =
     '<?xml version="1.0" encoding="UTF-8"?>' +
     '<kml xmlns="http://www.opengis.net/kml/2.2">' +
@@ -60,7 +43,7 @@ describe("KmlViewVolumeTest", function () {
     "</ViewVolume>" +
     "</kml>";
   var kmlRepresentation = new XmlDocument(validKml).dom();
-  var viewVolume = new ({
+  var viewVolume = new KmlViewVolume({
     objectNode: kmlRepresentation.getElementsByTagName("ViewVolume")[0],
   });
   it("should have the LeftFov, RightFov, BottomFov, TopFov and Near properties", function () {

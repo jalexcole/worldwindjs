@@ -54,6 +54,13 @@ TestUtils.expectMatrixCloseTo = function (matrix1, matrix2, precision) {
   }
 };
 
+// Returns a URL served by the static fixture server started in test/setup.js,
+// standing in for Karma's "../base/<path>" convention used by the original
+// Jasmine/Karma test suite to fetch fixture files over XHR.
+TestUtils.fixtureUrl = function (relativePath) {
+  return globalThis.__TEST_FIXTURE_BASE_URL__ + "/" + relativePath;
+};
+
 TestUtils.getMockWwd = function (mockGlobe) {
   var MockGlContext = function () {
     this.drawingBufferWidth = 800;
@@ -68,7 +75,7 @@ TestUtils.getMockWwd = function (mockGlobe) {
 
   // create a globe that returns mock elevations for a given sector so we don't have to rely on
   // asynchronous tile calls to finish.
-  Globe.prototype.minAndMaxElevationsForSector = function (sector) {
+  Globe.prototype.minAndMaxElevationsForSector = function () {
     return [125.0, 350.0];
   };
 

@@ -28,12 +28,12 @@
 import ArgumentError from "../../error/ArgumentError";
 import ColladaAsset from "./ColladaAsset";
 import ColladaImage from "./ColladaImage";
+import ColladaMaterial from "./ColladaMaterial";
 import ColladaMesh from "./ColladaMesh";
 import ColladaNode from "./ColladaNode";
 import ColladaScene from "./ColladaScene";
 import ColladaUtils from "./ColladaUtils";
 import Logger from "../../util/Logger";
-import Position from "../../geom/Position";
 
 /**
  * Constructs a ColladaLoader

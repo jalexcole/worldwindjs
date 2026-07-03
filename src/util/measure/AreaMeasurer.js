@@ -33,8 +33,7 @@ import Logger from "../Logger";
 import MeasurerUtils from "./MeasurerUtils";
 import Sector from "../../geom/Sector";
 import Vec3 from "../../geom/Vec3";
-import * as libtess from "../libtess";
-import WorldWindConstants from "../../WorldWindConstants";
+import libtess from "../libtess";
 /**
  * Utility class to compute approximations of projected and surface (terrain following) area on a globe.
  *

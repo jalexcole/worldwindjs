@@ -27,7 +27,6 @@
  */
 import Location from "../../../geom/Location";
 import Position from "../../../geom/Position";
-import Renderable from "../../../render/Renderable";
 import WktElements from "../WktElements";
 import WktType from "../WktType";
 
@@ -176,13 +175,13 @@ class WktObject {
       // Handle the GeometryCollection.
       var currentObject = WktElements[value] && new WktElements[value]();
       if (!currentObject) {
-        currentObject = new WktObject(currentObject.name);
+        currentObject = new WktObject(value);
       }
 
       if (founded && founded.length > 0 && founded[0] != "") {
         currentObject.setOptions(founded[0], currentObject);
       }
-      //FIXME - ALEX: this.add(currentObject);
+      this.add(currentObject);
     }
   };
 
@@ -245,7 +244,15 @@ class WktObject {
    * @param options.rightParenthesis {Number} Amount of the right parenthesis
    * @param options.tokens {Object[]} Processed tokens.
    */
-   commaWithoutCoordinates(options) { };
+   commaWithoutCoordinates() { };
+
+  /**
+   * Used by GeometryCollection to track nested objects encountered while parsing. This is the default
+   * implementation doing nothing; only GeometryCollection has objects to track.
+   * @protected
+   * @param object {WktObject} Nested object encountered while parsing.
+   */
+  add() { };
 
   /**
    * Handle Number by adding it among coordinates in the current object.

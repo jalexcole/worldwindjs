@@ -26,6 +26,7 @@
  * PDF found in code  directory.
  */
 import AAIGridReader from "../../../src/formats/aaigrid/AAIGridReader";
+import TestUtils from "../../util/TestUtils.test.js";
 import {describe,expect, it } from "vitest";
 
 describe("AAIGridReader parsing", function () {
@@ -91,54 +92,67 @@ describe("AAIGridReader parsing", function () {
     expect(reader.getImageData()).toEqual(expectedValues);
   });
 
-  it("should parse an array buffer data source", function (done) {
-    var xhr = new XMLHttpRequest();
+  it("should parse an array buffer data source", function () {
+    return new Promise(function (resolve, reject) {
+      var xhr = new XMLHttpRequest();
 
-    xhr.onload = function () {
-      var reader = new AAIGridReader(this.response);
-      var imageData = reader.getImageData();
+      xhr.onload = function () {
+        try {
+          var reader = new AAIGridReader(this.response);
+          var imageData = reader.getImageData();
 
-      expect(reader.metadata.ncols).toBe(33);
-      expect(reader.metadata.nrows).toBe(33);
-      expect(reader.metadata.xllcorner).toBe(10);
-      expect(reader.metadata.yllcorner).toBe(10);
-      expect(reader.metadata.cellsize).toBe(1.090909090909);
-      expect(reader.metadata.NODATA_value).toBe(undefined);
-      expect("NODATA_value" in reader.metadata).toBe(true);
-      expect(imageData instanceof Int16Array).toBe(true);
-      expect(imageData.length).toBe(33 * 33);
-      expect(imageData[0]).toBe(30);
-      expect(imageData[33 * 33 - 1]).toBe(-500);
+          expect(reader.metadata.ncols).toBe(33);
+          expect(reader.metadata.nrows).toBe(33);
+          expect(reader.metadata.xllcorner).toBe(10);
+          expect(reader.metadata.yllcorner).toBe(10);
+          expect(reader.metadata.cellsize).toBe(1.090909090909);
+          expect(reader.metadata.NODATA_value).toBe(undefined);
+          expect("NODATA_value" in reader.metadata).toBe(true);
+          expect(imageData instanceof Int16Array).toBe(true);
+          expect(imageData.length).toBe(33 * 33);
+          expect(imageData[0]).toBe(30);
+          expect(imageData[33 * 33 - 1]).toBe(-500);
 
-      done();
-    };
+          resolve();
+        } catch (e) {
+          reject(e);
+        }
+      };
+      xhr.onerror = reject;
 
-    xhr.open("GET", "../base/test/formats/aaigrid/aaigrid-tile.asc", true);
-    xhr.responseType = "arraybuffer";
+      xhr.open("GET", TestUtils.fixtureUrl("test/formats/aaigrid/aaigrid-tile.asc"), true);
+      xhr.responseType = "arraybuffer";
 
-    xhr.send();
+      xhr.send();
+    });
   });
 });
 
 describe("AAIGridReader retrieve from url", function () {
-  it("should fetch and parse a file", function (done) {
-    var url = "../base/test/formats/aaigrid/aaigrid-tile.asc";
-    AAIGridReader.retrieveFromUrl(url, function (reader) {
-      var imageData = reader.getImageData();
+  it("should fetch and parse a file", function () {
+    return new Promise(function (resolve, reject) {
+      var url = TestUtils.fixtureUrl("test/formats/aaigrid/aaigrid-tile.asc");
+      AAIGridReader.retrieveFromUrl(url, function (reader) {
+        try {
+          var imageData = reader.getImageData();
 
-      expect(reader.metadata.ncols).toBe(33);
-      expect(reader.metadata.nrows).toBe(33);
-      expect(reader.metadata.xllcorner).toBe(10);
-      expect(reader.metadata.yllcorner).toBe(10);
-      expect(reader.metadata.cellsize).toBe(1.090909090909);
-      expect(reader.metadata.NODATA_value).toBe(undefined);
-      expect("NODATA_value" in reader.metadata).toBe(true);
-      expect(imageData instanceof Int16Array).toBe(true);
-      expect(imageData.length).toBe(33 * 33);
-      expect(imageData[0]).toBe(30);
-      expect(imageData[33 * 33 - 1]).toBe(-500);
+          expect(reader.metadata.ncols).toBe(33);
+          expect(reader.metadata.nrows).toBe(33);
+          expect(reader.metadata.xllcorner).toBe(10);
+          expect(reader.metadata.yllcorner).toBe(10);
+          expect(reader.metadata.cellsize).toBe(1.090909090909);
+          expect(reader.metadata.NODATA_value).toBe(undefined);
+          expect("NODATA_value" in reader.metadata).toBe(true);
+          expect(imageData instanceof Int16Array).toBe(true);
+          expect(imageData.length).toBe(33 * 33);
+          expect(imageData[0]).toBe(30);
+          expect(imageData[33 * 33 - 1]).toBe(-500);
 
-      done();
+          resolve();
+        } catch (e) {
+          reject(e);
+        }
+      });
     });
   });
 });

@@ -27,6 +27,9 @@
  */
 
 import KmlMultiGeometry from "../../../../src/formats/kml/geom/KmlMultiGeometry";
+// Registers "LineString" with KmlElements as a side effect; needed so the
+// MultiGeometry factory below can resolve the child <LineString> nodes.
+import "../../../../src/formats/kml/geom/KmlLineString";
 import XmlDocument from "../../../../src/util/XmlDocument";
 import { describe,expect, it } from "vitest";
 describe("KmlMultiGeometryTest", function () {

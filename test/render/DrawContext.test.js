@@ -164,7 +164,7 @@ describe("DrawContext Tests", function () {
       var result = new Vec2(0, 0);
       var expectedResult = new Vec2(2.5, 779);
       dc.convertPointToViewport(windowPoint, result);
-      expect(result).toBeCloseTo(expectedResult, 2);
+      expect(result).toBeCloseToVec2(expectedResult, 2);
     });
   });
 

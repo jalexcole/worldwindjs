@@ -25,6 +25,7 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
+import Proj4 from "proj4";
 import AbstractError from "../../error/AbstractError";
 import ArgumentError from "../../error/ArgumentError";
 import GeoTiffConstants from "./GeoTiffConstants";
@@ -260,10 +261,11 @@ class GeoTiffReader {
 
     if (this.metadata.stripOffsets) {
       var strips = this.parseStrips(false);
+      var rowsPerStrip;
       if (this.metadata.rowsPerStrip) {
-        var rowsPerStrip = this.metadata.rowsPerStrip;
+        rowsPerStrip = this.metadata.rowsPerStrip;
       } else {
-        var rowsPerStrip = imageLength;
+        rowsPerStrip = imageLength;
       }
       var numOfStrips = strips.length;
       var numRowsInPreviousStrip = 0;
@@ -304,15 +306,15 @@ class GeoTiffReader {
       var tileLength = this.metadata.tileLength;
       var tilesAcross = Math.ceil(imageWidth / tileWidth);
 
-      for (var y = 0; y < imageLength; y++) {
-        for (var x = 0; x < imageWidth; x++) {
+      for (y = 0; y < imageLength; y++) {
+        for (x = 0; x < imageWidth; x++) {
           var tileAcross = Math.floor(x / tileWidth);
           var tileDown = Math.floor(y / tileLength);
           var tileIndex = tileDown * tilesAcross + tileAcross;
           var xInTile = x % tileWidth;
           var yInTile = y % tileLength;
           var sampleIndex = yInTile * tileWidth + xInTile;
-          var pixelSamples = tiles[tileIndex][sampleIndex];
+          pixelSamples = tiles[tileIndex][sampleIndex];
           ctx.fillStyle = this.getFillStyle(
             pixelSamples,
             photometricInterpretation,
@@ -350,6 +352,7 @@ class GeoTiffReader {
       case TiffConstants.PhotometricInterpretation.WHITE_IS_ZERO:
         var invertValue = Math.pow(2, bitsPerSample) - 1;
         pixelSamples[0] = invertValue - pixelSamples[0];
+      // falls through
       case TiffConstants.PhotometricInterpretation.BLACK_IS_ZERO:
         red =
           green =
@@ -451,10 +454,11 @@ class GeoTiffReader {
       }
     }
 
+    var sampleFormat;
     if (this.metadata.sampleFormat) {
-      var sampleFormat = this.metadata.sampleFormat[0];
+      sampleFormat = this.metadata.sampleFormat[0];
     } else {
-      var sampleFormat = TiffConstants.SampleFormat.UNSIGNED;
+      sampleFormat = TiffConstants.SampleFormat.UNSIGNED;
     }
 
     switch (bitsPerSample) {
@@ -497,10 +501,11 @@ class GeoTiffReader {
     var stripOffsets = this.metadata.stripOffsets;
     var stripByteCounts = this.metadata.stripByteCounts;
     var compression = this.metadata.compression;
+    var sampleFormat;
     if (this.metadata.sampleFormat) {
-      var sampleFormat = this.metadata.sampleFormat;
+      sampleFormat = this.metadata.sampleFormat;
     } else {
-      var sampleFormat = TiffConstants.SampleFormat.UNSIGNED;
+      sampleFormat = TiffConstants.SampleFormat.UNSIGNED;
     }
 
     var bitsPerPixel = samplesPerPixel * bitsPerSample[0];
@@ -596,16 +601,17 @@ class GeoTiffReader {
         );
         break;
       case TiffConstants.Compression.PACK_BITS:
+        var arrayBuffer;
         if (this.metadata.tileOffsets) {
           var tileWidth = this.metadata.tileWidth;
           var tileLength = this.metadata.tileWidth;
-          var arrayBuffer = new ArrayBuffer(
+          arrayBuffer = new ArrayBuffer(
             tileWidth * tileLength * bytesPerPixel
           );
         } else {
           var rowsPerStrip = this.metadata.rowsPerStrip;
           var imageWidth = this.metadata.imageWidth;
-          var arrayBuffer = new ArrayBuffer(
+          arrayBuffer = new ArrayBuffer(
             rowsPerStrip * imageWidth * bytesPerPixel
           );
         }
@@ -613,12 +619,11 @@ class GeoTiffReader {
         var uncompressedDataView = new DataView(arrayBuffer);
 
         var newBlock = true;
-        var pixel = [];
         var blockLength = 0;
         var numOfIterations = 0;
         var uncompressedOffset = 0;
 
-        for (var byteOffset = 0; byteOffset < blockByteCount; byteOffset += 1) {
+        for (byteOffset = 0; byteOffset < blockByteCount; byteOffset += 1) {
           if (newBlock) {
             blockLength = 1;
             numOfIterations = 1;
@@ -657,11 +662,11 @@ class GeoTiffReader {
           }
         }
 
-        for (var byteOffset = 0, increment = bytesPerPixel; byteOffset < arrayBuffer.byteLength; byteOffset += increment) {
+        for (byteOffset = 0, increment = bytesPerPixel; byteOffset < arrayBuffer.byteLength; byteOffset += increment) {
           // Loop through samples (sub-pixels).
-          for (var m = 0, pixel = []; m < bitsPerSample.length; m++) {
-            var bytesPerSample = bitsPerSample[m] / 8;
-            var sampleOffset = m * bytesPerSample;
+          for (m = 0, pixel = []; m < bitsPerSample.length; m++) {
+            bytesPerSample = bitsPerSample[m] / 8;
+            sampleOffset = m * bytesPerSample;
 
             pixel.push(
               GeoTiffUtil.getSampleBytes(
@@ -689,10 +694,11 @@ class GeoTiffReader {
     var samplesPerPixel = this.metadata.samplesPerPixel;
     var bitsPerSample = this.metadata.bitsPerSample;
     var compression = this.metadata.compression;
+    var sampleFormat;
     if (this.metadata.sampleFormat) {
-      var sampleFormat = this.metadata.sampleFormat;
+      sampleFormat = this.metadata.sampleFormat;
     } else {
-      var sampleFormat = new Array(samplesPerPixel);
+      sampleFormat = new Array(samplesPerPixel);
       WWUtil.fillArray(sampleFormat, TiffConstants.SampleFormat.UNSIGNED);
     }
     var bitsPerPixel = samplesPerPixel * bitsPerSample[0];
@@ -816,10 +822,6 @@ class GeoTiffReader {
     var upperLeft = this.geoTiffImageToPCS(0, 0);
     var upperRight = this.geoTiffImageToPCS(this.metadata.imageWidth, 0);
     var lowerLeft = this.geoTiffImageToPCS(0, this.metadata.imageLength);
-    var lowerRight = this.geoTiffImageToPCS(
-      this.metadata.imageWidth,
-      this.metadata.imageLength
-    );
 
     this.metadata.bbox = new Sector(
       lowerLeft.latitude,
@@ -985,9 +987,6 @@ class GeoTiffReader {
 
     var geoKeyDirectory = this.metadata.geoKeyDirectory;
     if (geoKeyDirectory) {
-      var keyDirectoryVersion = geoKeyDirectory[0];
-      var keyRevision = geoKeyDirectory[1];
-      var minorRevision = geoKeyDirectory[2];
       var numberOfKeys = geoKeyDirectory[3];
 
       for (var i = 0; i < numberOfKeys; i++) {

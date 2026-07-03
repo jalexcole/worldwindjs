@@ -34,8 +34,7 @@ import TestUtils from "./util/TestUtils.test.js";
 import { describe } from "vitest";
 
 
-// var mockGlobe = new Globe2D();
-var wwd = TestUtils.getMockWwd(Globe2D.default);
+var wwd = TestUtils.getMockWwd(new Globe2D());
 wwd.resetDrawContext();
 
 describe("BasicWorldWindowController tests", function () {

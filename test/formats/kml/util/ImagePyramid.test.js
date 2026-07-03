@@ -28,25 +28,8 @@
 import KmlImagePyramid from "../../../../src/formats/kml/util/KmlImagePyramid.js";
 import XmlDocument from "../../../../src/util/XmlDocument.js";
 
-import { afterEach, beforeEach, describe, it, expect } from "vitest";
+import { describe, it, expect } from "vitest";
 describe("KmlImagePyramidTest", function () {
-  var index = 0;
-
-  beforeEach(function () {
-    this.index = index++;
-  });
-
-  afterEach(function () {
-    if (this.index > 0) {
-      var failed = jsApiReporter.specResults(this.index - 1, 1)[0]
-        .failedExpectations;
-      console.log("failed: ", failed);
-      if (failed.length > 0) {
-        console.log("After: ", this, failed[0].message);
-        alert("ha");
-      }
-    }
-  });
   var validKml =
     '<?xml version="1.0" encoding="UTF-8"?>' +
     '<kml xmlns="http://www.opengis.net/kml/2.2">' +

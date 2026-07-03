@@ -25,9 +25,9 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
-import KmlListStyle from "../../../src/formats/kml/styles/KmlListStyle.js";
-import KmlItemIcon from "../../../src/formats/kml/util/KmlItemIcon.js";
-import XmlDocument from "../../../src/util/XmlDocument.js";
+import KmlListStyle from "../../../../src/formats/kml/styles/KmlListStyle.js";
+import KmlItemIcon from "../../../../src/formats/kml/util/KmlItemIcon.js";
+import XmlDocument from "../../../../src/util/XmlDocument.js";
 import { describe,expect, it } from "vitest";
     describe ("KmlListStyleTest", function(){
 

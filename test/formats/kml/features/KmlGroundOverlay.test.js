@@ -26,8 +26,8 @@
  * PDF found in code  directory.
  */
 import KmlGroundOverlay from "../../../../src/formats/kml/features/KmlGroundOverlay";
-import KmlLatLonBox from "../../../../src/formats/kml/geom/KmlLatLonBox";
-import KmlLatLonQuad from "../../../../src/formats/kml/geom/KmlLatLonQuad";
+import KmlLatLonBox from "../../../../src/formats/kml/KmlLatLonBox";
+import KmlLatLonQuad from "../../../../src/formats/kml/KmlLatLonQuad";
 import XmlDocument from "../../../../src/util/XmlDocument";
 import { describe,expect, it } from "vitest";
     describe("KmlGroundOverlayTest", function() {

@@ -35,6 +35,7 @@ import Line from "../../../src/geom/Line";
 import Globe from "../../../src/globe/Globe";
 import ProjectionWgs84 from "../../../src/projections/ProjectionWgs84";
 import ElevationModel from "../../../src/globe/ElevationModel";
+import TestUtils from "../../util/TestUtils.test.js";
 
 describe("ColladaScene calculation and data manipulation testing", function () {
   it("Should properly calculate new normals and create proper vertex order", function () {
@@ -85,7 +86,10 @@ describe("ColladaScene calculation and data manipulation testing", function () {
 
     expect(mesh.normals.length).toBe(expectedNormals.length);
     for (i = 0, len = mesh.normals.length; i < len; i++) {
-      expect(mesh.normals[i]).toBe(expectedNormals[i]);
+      // "+ 0" normalizes -0 to 0: the cross-product math legitimately produces
+      // -0 for some zero components, which Jasmine's == -based toBe() treated
+      // as equal to 0 but Vitest's Object.is-based toBe() does not.
+      expect(mesh.normals[i] + 0).toBe(expectedNormals[i]);
     }
 
     var uvs = [
@@ -118,9 +122,11 @@ describe("ColladaScene calculation and data manipulation testing", function () {
   });
 
   it("Should properly compute intersection points with a ray", function () {
+    return new Promise(function (resolve, reject) {
     var colladaLoader = new ColladaLoader(new Position(44, -96, 10000));
-    colladaLoader.init({ dirPath: "../base/test/formats/collada/" });
+    colladaLoader.init({ dirPath: TestUtils.fixtureUrl("test/formats/collada/") });
     colladaLoader.load("bad_normals.dae", function (scene) {
+     try {
       scene.scale = 5000;
       var transformation = new Matrix(
         -522.6423163382683,
@@ -207,6 +213,11 @@ describe("ColladaScene calculation and data manipulation testing", function () {
       expect(function () {
         scene.computePointIntersections(globe, pointRay, null);
       }).toThrow();
+      resolve();
+     } catch (e) {
+       reject(e);
+     }
+    });
     });
   });
 });

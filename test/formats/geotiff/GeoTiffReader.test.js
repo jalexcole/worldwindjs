@@ -26,25 +26,28 @@
  * PDF found in code  directory.
  */
 import GeoTiffReader from "../../../src/formats/geotiff/GeoTiffReader.js";
+import TestUtils from "../../util/TestUtils.test.js";
 import { beforeEach, describe,expect, it } from "vitest";
 describe("GeoTiffReader RGB Parsing", function () {
   var geoTiff;
 
-  beforeEach(function (done) {
-    var xhr = new XMLHttpRequest();
-    xhr.open("GET", "../base/test/formats/geotiff/rgb-test.tif", true);
-    xhr.responseType = "arraybuffer";
-    xhr.addEventListener("load", function () {
-      if (xhr.readyState === 4) {
-        if (xhr.status === 200) {
-          geoTiff = new GeoTiffReader(xhr.response);
-          done();
-        } else {
-          done("Test GeoTiff Retrieval Error: " + xhr.statusText);
+  beforeEach(function () {
+    return new Promise(function (resolve, reject) {
+      var xhr = new XMLHttpRequest();
+      xhr.open("GET", TestUtils.fixtureUrl("test/formats/geotiff/rgb-test.tif"), true);
+      xhr.responseType = "arraybuffer";
+      xhr.addEventListener("load", function () {
+        if (xhr.readyState === 4) {
+          if (xhr.status === 200) {
+            geoTiff = new GeoTiffReader(xhr.response);
+            resolve();
+          } else {
+            reject(new Error("Test GeoTiff Retrieval Error: " + xhr.statusText));
+          }
         }
-      }
+      });
+      xhr.send(null);
     });
-    xhr.send(null);
   });
 
   it("Should retrieve the expected rgb values from the center of the image", function () {
@@ -81,21 +84,23 @@ describe("GeoTiffReader RGB Parsing", function () {
 describe("GeoTiffReader Grayscale Parsing", function () {
   var geoTiff;
 
-  beforeEach(function (done) {
-    var xhr = new XMLHttpRequest();
-    xhr.open("GET", "../base/test/formats/geotiff/grayscale-test.tif", true);
-    xhr.responseType = "arraybuffer";
-    xhr.addEventListener("load", function () {
-      if (xhr.readyState === 4) {
-        if (xhr.status === 200) {
-          geoTiff = new GeoTiffReader(xhr.response);
-          done();
-        } else {
-          done("Test GeoTiff Retrieval Error: " + xhr.statusText);
+  beforeEach(function () {
+    return new Promise(function (resolve, reject) {
+      var xhr = new XMLHttpRequest();
+      xhr.open("GET", TestUtils.fixtureUrl("test/formats/geotiff/grayscale-test.tif"), true);
+      xhr.responseType = "arraybuffer";
+      xhr.addEventListener("load", function () {
+        if (xhr.readyState === 4) {
+          if (xhr.status === 200) {
+            geoTiff = new GeoTiffReader(xhr.response);
+            resolve();
+          } else {
+            reject(new Error("Test GeoTiff Retrieval Error: " + xhr.statusText));
+          }
         }
-      }
+      });
+      xhr.send(null);
     });
-    xhr.send(null);
   });
 
   it("Should retrieve the expected elevation/single-band value from the center", function () {

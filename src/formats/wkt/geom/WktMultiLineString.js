@@ -28,12 +28,11 @@
 import Path from "../../../shapes/Path";
 import ShapeAttributes from "../../../shapes/ShapeAttributes";
 import SurfacePolyline from "../../../shapes/SurfacePolyline";
+import WktElements from "../WktElements.js";
 import WktObject from "./WktObject.js";
 import WktType from "../WktType";
 
 class WktMultiLineString extends WktObject {
-  // WktElements["MULTILINESTRING"] = WktMultiLineString;
-
   /**
    * It represents multiple line string as one object.
    * @alias WktMultiLineString
@@ -41,7 +40,7 @@ class WktMultiLineString extends WktObject {
    * @constructor
    */
   constructor() {
-    super(WktType.SupportedGeometries.LINE_STRING);
+    super(WktType.SupportedGeometries.MULTI_LINE_STRING);
     this.objectBoundaries = [];
   }
   /**
@@ -60,14 +59,17 @@ class WktMultiLineString extends WktObject {
     this.commaWithoutCoordinates(); // This needs to be more careful and probably move to the stuff
     return this.objectBoundaries.map(
       function (boundaries) {
-        return new Path(boundaries, new ShapeAttributes(null));
+        if (this._is3d) {
+          return new Path(boundaries, new ShapeAttributes(null));
+        } else {
+          return new SurfacePolyline(boundaries, new ShapeAttributes(null));
+        }
       }.bind(this)
     );
   }
 }
 
-
-
+WktElements["MULTILINESTRING"] = WktMultiLineString;
 
 
 
