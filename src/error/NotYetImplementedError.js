@@ -25,35 +25,28 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
+import AbstractError from "./AbstractError";
+
 /**
- * @exports NotYetImplementedError
+ * Constructs a not-yet-implemented error with a specified message.
+ * @alias NotYetImplementedError
+ * @constructor
+ * @classdesc Represents an error associated with an operation that is not yet implemented.
+ * @param {String} message The message.
  */
-define(['../error/AbstractError'],
-    function (AbstractError) {
-        "use strict";
+class NotYetImplementedError extends AbstractError {
+    constructor(message) {
+        super("NotYetImplementedError", message);
 
-        /**
-         * Constructs a not-yet-implemented error with a specified message.
-         * @alias NotYetImplementedError
-         * @constructor
-         * @classdesc Represents an error associated with an operation that is not yet implemented.
-         * @augments AbstractError
-         * @param {String} message The message.
-         */
-        var NotYetImplementedError = function (message) {
-            AbstractError.call(this, "NotYetImplementedError", message);
+        let stack;
+        try {
+            //noinspection ExceptionCaughtLocallyJS
+            throw new Error();
+        } catch (e) {
+            stack = e.stack;
+        }
+        this.stack = stack;
+    }
+}
 
-            var stack;
-            try {
-                //noinspection ExceptionCaughtLocallyJS
-                throw new Error();
-            } catch (e) {
-                stack = e.stack;
-            }
-            this.stack = stack;
-        };
-
-        NotYetImplementedError.prototype = Object.create(AbstractError.prototype);
-
-        return NotYetImplementedError;
-    });
+export default NotYetImplementedError;

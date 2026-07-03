@@ -25,45 +25,42 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
-define([
-	'../KmlElements',
-	'../KmlObject'
-], function(KmlElements,
-			KmlObject){
-	/**
-	 * @augments KmlObject
-	 * @param options
-	 * @constructor
-	 * @alias KmlDelete
-	 */
-	var KmlDelete = function(options) {
-		KmlObject.call(this, options);
-	};
+import KmlElements from "../KmlElements";
+import KmlObject from "../KmlObject";
 
-	KmlDelete.prototype = Object.create(KmlObject.prototype);
+/**
+ * @augments KmlObject
+ * @param options
+ * @constructor
+ * @alias KmlDelete
+ */
+var KmlDelete = function (options) {
+  KmlObject.call(this, options);
+};
 
-	Object.defineProperties(KmlDelete.prototype, {
-		/**
-		 * All shapes which should be deleted
-		 * @memberof KmlDelete.prototype
-		 * @readonly
-		 * @type {KmlObject[]}
-		 */
-		shapes: {
-			get: function(){
-				return this._factory.all(this);
-			}
-		}
-	});
+KmlDelete.prototype = Object.create(KmlObject.prototype);
 
-	/**
-	 * @inheritDoc
-	 */
-	KmlDelete.prototype.getTagNames = function() {
-		return ['Delete'];
-	};
-
-	KmlElements.addKey(KmlDelete.prototype.getTagNames()[0], KmlDelete);
-
-	return KmlDelete;
+Object.defineProperties(KmlDelete.prototype, {
+  /**
+   * All shapes which should be deleted
+   * @memberof KmlDelete.prototype
+   * @readonly
+   * @type {KmlObject[]}
+   */
+  shapes: {
+    get: function () {
+      return this._factory.all(this);
+    },
+  },
 });
+
+/**
+ * @inheritDoc
+ */
+KmlDelete.prototype.getTagNames = function () {
+  return ["Delete"];
+};
+
+KmlElements.addKey(KmlDelete.prototype.getTagNames()[0], KmlDelete);
+
+export default KmlDelete;

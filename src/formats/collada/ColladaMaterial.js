@@ -25,237 +25,219 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
+import ColladaUtils from "./ColladaUtils";
+
 /**
- * @exports ColladaMaterial
+ * Constructs a ColladaMaterial
+ * @alias ColladaMaterial
+ * @constructor
+ * @classdesc Represents a collada material and it's effects.
+ * @param {String} materialId The id of a material node
  */
+class ColladaMaterial {
+  constructor(materialId) {
+    this.id = materialId;
+    this.newParams = [];
+  }
+  /**
+   * Parses an effect node.
+   * Internal. Applications should not call this function.
+   * @param {Node} element An effect node.
+   */
+  parse(element) {
+    for (var i = 0; i < element.childNodes.length; i++) {
+      var child = element.childNodes[i];
 
-define(['./ColladaUtils'], function (ColladaUtils) {
-    "use strict";
+      if (child.nodeType !== 1) {
+        continue;
+      }
 
-    /**
-     * Constructs a ColladaMaterial
-     * @alias ColladaMaterial
-     * @constructor
-     * @classdesc Represents a collada material and it's effects.
-     * @param {String} materialId The id of a material node
-     */
-    var ColladaMaterial = function (materialId) {
-        this.id = materialId;
-        this.newParams = [];
-    };
+      switch (child.nodeName) {
+        case "profile_COMMON":
+          this.parseProfileCommon(child);
+          break;
 
-    /**
-     * Parses an effect node.
-     * Internal. Applications should not call this function.
-     * @param {Node} element An effect node.
-     */
-    ColladaMaterial.prototype.parse = function (element) {
+        default:
+          break;
+      }
+    }
 
-        for (var i = 0; i < element.childNodes.length; i++) {
+    return this;
+  }
+  /**
+   * Parses the profile_COMMON node.
+   * Internal. Applications should not call this function.
+   * @param {Node} element The profile_COMMON node.
+   */
+  parseProfileCommon(element) {
+    for (var i = 0; i < element.childNodes.length; i++) {
+      var child = element.childNodes[i];
 
-            var child = element.childNodes[i];
+      if (child.nodeType !== 1) {
+        continue;
+      }
 
-            if (child.nodeType !== 1) {
-                continue;
-            }
+      switch (child.nodeName) {
+        case "newparam":
+          this.parseNewparam(child);
+          break;
 
-            switch (child.nodeName) {
+        case "image":
+          break;
 
-                case 'profile_COMMON':
-                    this.parseProfileCommon(child);
-                    break;
+        case "technique":
+          this.parseTechnique(child);
+          break;
 
-                default:
-                    break;
-            }
-        }
+        default:
+          break;
+      }
+    }
+  }
+  /**
+   * Parses the newparam node.
+   * Internal. Applications should not call this function.
+   * @param {Node} element The newparam node.
+   */
+  parseNewparam(element) {
+    var sid = element.getAttribute("sid");
 
-        return this;
-    };
+    for (var i = 0; i < element.childNodes.length; i++) {
+      var child = element.childNodes[i];
 
-    /**
-     * Parses the profile_COMMON node.
-     * Internal. Applications should not call this function.
-     * @param {Node} element The profile_COMMON node.
-     */
-    ColladaMaterial.prototype.parseProfileCommon = function (element) {
+      if (child.nodeType !== 1) {
+        continue;
+      }
 
-        for (var i = 0; i < element.childNodes.length; i++) {
+      switch (child.nodeName) {
+        case "surface":
+          var initFrom = child.querySelector("init_from");
+          if (initFrom) {
+            this.newParams.push({
+              sid: sid,
+              type: "surface",
+              initFrom: initFrom.textContent,
+            });
+          }
+          break;
 
-            var child = element.childNodes[i];
+        case "sampler2D":
+          var source = child.querySelector("source");
+          this.newParams.push({
+            sid: sid,
+            type: "sampler2D",
+            source: source.textContent,
+          });
+          break;
 
-            if (child.nodeType !== 1) {
-                continue;
-            }
+        case "extra":
+          break;
 
-            switch (child.nodeName) {
+        default:
+          break;
+      }
+    }
+  }
+  /**
+   * Parses the technique node.
+   * Internal. Applications should not call this function.
+   * @param {Node} element The technique node.
+   */
+  parseTechnique(element) {
+    for (var i = 0; i < element.childNodes.length; i++) {
+      var child = element.childNodes[i];
 
-                case 'newparam':
-                    this.parseNewparam(child);
-                    break;
+      if (child.nodeType !== 1) {
+        continue;
+      }
 
-                case 'image':
-                    break;
+      switch (child.nodeName) {
+        case "constant":
+        case "lambert":
+        case "blinn":
+        case "phong":
+          this.techniqueType = child.nodeName;
+          this.parseTechniqueType(child);
+          break;
 
-                case 'technique':
-                    this.parseTechnique(child);
-                    break;
+        case "extra":
+          break;
 
-                default:
-                    break;
-            }
-        }
+        default:
+          break;
+      }
+    }
+  }
+  /**
+   * Parses the technique type for this effect.
+   * Internal. Applications should not call this function.
+   * @param {Node} element The technique type node.
+   */
+  parseTechniqueType(element) {
+    for (var i = 0; i < element.childNodes.length; i++) {
+      var child = element.childNodes[i];
 
-    };
+      if (child.nodeType !== 1 || !child.nodeName) {
+        continue;
+      }
 
-    /**
-     * Parses the newparam node.
-     * Internal. Applications should not call this function.
-     * @param {Node} element The newparam node.
-     */
-    ColladaMaterial.prototype.parseNewparam = function (element) {
-        var sid = element.getAttribute('sid');
+      var nodeName = child.nodeName;
 
-        for (var i = 0; i < element.childNodes.length; i++) {
+      var nodeValue = ColladaUtils.getFirstChildElement(child);
 
-            var child = element.childNodes[i];
+      if (!nodeValue) {
+        continue;
+      }
 
-            if (child.nodeType !== 1) {
-                continue;
-            }
+      switch (nodeValue.nodeName) {
+        case "color":
+          this[nodeName] = ColladaUtils.bufferDataFloat32(nodeValue).subarray(
+            0,
+            4
+          );
+          break;
 
-            switch (child.nodeName) {
+        case "float":
+          this[nodeName] = ColladaUtils.bufferDataFloat32(nodeValue)[0];
+          break;
 
-                case 'surface':
-                    var initFrom = child.querySelector("init_from");
-                    if (initFrom) {
-                        this.newParams.push({
-                            sid: sid,
-                            type: 'surface',
-                            initFrom: initFrom.textContent
-                        });
-                    }
-                    break;
+        case "texture":
+          var texture = nodeValue.getAttribute("texture");
 
-                case 'sampler2D':
-                    var source = child.querySelector("source");
-                    this.newParams.push({
-                        sid: sid,
-                        type: 'sampler2D',
-                        source: source.textContent
-                    });
-                    break;
+          var pos = this.newParams
+            .map(function (newParam) {
+              return newParam.sid;
+            })
+            .indexOf(texture);
 
-                case 'extra':
-                    break;
+          var source = this.newParams[pos].source;
 
-                default:
-                    break;
+          pos = this.newParams
+            .map(function (newParam) {
+              return newParam.sid;
+            })
+            .indexOf(source);
 
-            }
+          var initFrom = this.newParams[pos].initFrom;
 
-        }
-    };
+          if (!this.textures) {
+            this.textures = {};
+          }
 
-    /**
-     * Parses the technique node.
-     * Internal. Applications should not call this function.
-     * @param {Node} element The technique node.
-     */
-    ColladaMaterial.prototype.parseTechnique = function (element) {
+          this.textures[nodeName] = { mapId: initFrom };
 
-        for (var i = 0; i < element.childNodes.length; i++) {
+          break;
 
-            var child = element.childNodes[i];
+        default:
+          break;
+      }
+    }
+  }
+}
 
-            if (child.nodeType !== 1) {
-                continue;
-            }
 
-            switch (child.nodeName) {
 
-                case 'constant':
-                case 'lambert':
-                case 'blinn':
-                case 'phong':
-                    this.techniqueType = child.nodeName;
-                    this.parseTechniqueType(child);
-                    break;
 
-                case 'extra':
-                    break;
 
-                default:
-                    break;
 
-            }
-
-        }
-    };
-
-    /**
-     * Parses the technique type for this effect.
-     * Internal. Applications should not call this function.
-     * @param {Node} element The technique type node.
-     */
-    ColladaMaterial.prototype.parseTechniqueType = function (element) {
-
-        for (var i = 0; i < element.childNodes.length; i++) {
-
-            var child = element.childNodes[i];
-
-            if (child.nodeType !== 1 || !child.nodeName) {
-                continue;
-            }
-
-            var nodeName = child.nodeName;
-
-            var nodeValue = ColladaUtils.getFirstChildElement(child);
-
-            if (!nodeValue) {
-                continue;
-            }
-
-            switch (nodeValue.nodeName) {
-
-                case 'color':
-                    this[nodeName] = ColladaUtils.bufferDataFloat32(nodeValue).subarray(0, 4);
-                    break;
-
-                case 'float':
-                    this[nodeName] = ColladaUtils.bufferDataFloat32(nodeValue)[0];
-                    break;
-
-                case 'texture':
-                    var texture = nodeValue.getAttribute("texture");
-
-                    var pos = this.newParams.map(function (newParam) {
-                        return newParam.sid;
-                    }).indexOf(texture);
-
-                    var source = this.newParams[pos].source;
-
-                    pos = this.newParams.map(function (newParam) {
-                        return newParam.sid;
-                    }).indexOf(source);
-
-                    var initFrom = this.newParams[pos].initFrom;
-
-                    if (!this.textures) {
-                        this.textures = {};
-                    }
-
-                    this.textures[nodeName] = {mapId: initFrom};
-
-                    break;
-
-                default:
-                    break;
-
-            }
-
-        }
-    };
-
-    return ColladaMaterial;
-});
+export default ColladaMaterial;

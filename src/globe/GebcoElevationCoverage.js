@@ -25,42 +25,37 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
+
+
+import Sector from "../geom/Sector";
+import TiledElevationCoverage from "./TiledElevationCoverage";
+import WmsUrlBuilder from "../util/WmsUrlBuilder";
+
 /**
- * @exports GebcoElevationCoverage
+ * Constructs an Earth elevation coverage using GEBCO data.
+ * @alias GebcoElevationCoverage
+ * @constructor
+ * @augments TiledElevationCoverage
+ * @classdesc Provides elevations for Earth. Elevations are drawn from the NASA WorldWind elevation service.
  */
-define([
-        '../geom/Location',
-        '../geom/Sector',
-        '../globe/TiledElevationCoverage',
-        '../util/WmsUrlBuilder'
-    ],
-    function (Location,
-              Sector,
-              TiledElevationCoverage,
-              WmsUrlBuilder) {
-        "use strict";
-
-        /**
-         * Constructs an Earth elevation coverage using GEBCO data.
-         * @alias GebcoElevationCoverage
-         * @constructor
-         * @augments TiledElevationCoverage
-         * @classdesc Provides elevations for Earth. Elevations are drawn from the NASA WorldWind elevation service.
-         */
-        var GebcoElevationCoverage = function () {
-            TiledElevationCoverage.call(this, {
-                coverageSector: Sector.FULL_SPHERE,
-                resolution: 0.008333333333333,
-                retrievalImageFormat: "application/bil16",
-                minElevation: -11000,
-                maxElevation: 8850,
-                urlBuilder: new WmsUrlBuilder("https://worldwind26.arc.nasa.gov/elev", "GEBCO", "", "1.3.0")
-            });
-
-            this.displayName = "GEBCO Earth Elevation Coverage";
-        };
-
-        GebcoElevationCoverage.prototype = Object.create(TiledElevationCoverage.prototype);
-
-        return GebcoElevationCoverage;
+class GebcoElevationCoverage extends TiledElevationCoverage{
+  constructor() {
+    super({
+      coverageSector: Sector.FULL_SPHERE,
+      resolution: 0.008333333333333,
+      retrievalImageFormat: "application/bil16",
+      minElevation: -11000,
+      maxElevation: 8850,
+      urlBuilder: new WmsUrlBuilder(
+        "https://worldwind26.arc.nasa.gov/elev",
+        "GEBCO",
+        "",
+        "1.3.0"
+      ),
     });
+
+    this.displayName = "GEBCO Earth Elevation Coverage";
+  }
+}
+
+export default GebcoElevationCoverage;

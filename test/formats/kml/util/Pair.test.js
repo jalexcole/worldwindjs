@@ -25,16 +25,11 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
-define([
-    'src/formats/kml/util/KmlPair',
-    'src/formats/kml/styles/KmlStyle',
-    'src/util/XmlDocument'
-], function (
-    Pair,
-    KmlStyle,
-    XmlDocument
-) {
-    "use strict";
+import KmlPair from "../../../../src/formats/kml/util/KmlPair.js";
+import KmlStyle from "../../../../src/formats/kml/styles/KmlStyle.js";
+import XmlDocument from "../../../../src/util/XmlDocument.js";
+
+import { describe, expect, it } from "vitest";
     describe ("KmlPairTest", function () {
             var validKml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
                 "<kml xmlns=\"http://www.opengis.net/kml/2.2\">" +
@@ -45,7 +40,7 @@ define([
                 "</Pair>" +
                 "</kml>";
             var kmlRepresentation = new XmlDocument(validKml).dom();
-            var scale = new Pair({objectNode:
+            var scale = new KmlPair({objectNode:
                 kmlRepresentation.getElementsByTagName("Pair")[0]});
         it('should have the Key, StyleUrl properties and the prototype property of KmlStyle', function(){
             expect(scale.kmlKey).toBe('normal');
@@ -55,4 +50,4 @@ define([
 
 
         });
-    });
+

@@ -25,30 +25,31 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
-var WorldWind = {};
-define([
-    'src/formats/kml/KmlFile'
-], function (KmlFile) {
-    "use strict";
-    WorldWind.KmlFile = KmlFile;
 
-    describe("KmlFile", function () {
-        describe("testLoadingKmlFromRelativeRemote", function () {
-            var kmlLocation = "../base/examples/data/KML_Samples.kml";
-            var loadedFile = false;
+// happy-dom's DOMParser (as of 16.2.9) fails to parse XML containing CDATA
+// sections ("StartTag: invalid element name"), and KML_Samples.kml below
+// relies on CDATA in a BalloonStyle. jsdom handles it correctly, so this
+// file opts into jsdom instead of the project-wide happy-dom default.
+// @vitest-environment jsdom
 
-            beforeEach(function (done) {
-                new KmlFile(kmlLocation).then(function () {
-                    loadedFile = true;
-                    done();
-                }).catch(function (err) {
-                    done(err);
-                });
+import KmlFile from "../../../src/formats/kml/KmlFile.js";
+import TestUtils from "../../util/TestUtils.test.js";
+import {beforeEach, describe, expect, it } from "vitest";
+
+describe("KmlFile", function () {
+    describe("testLoadingKmlFromRelativeRemote", function () {
+        var kmlLocation = TestUtils.fixtureUrl("examples/data/KML_Samples.kml");
+        var loadedFile = false;
+
+        beforeEach(function () {
+            return new KmlFile(kmlLocation, []).then(function () {
+                loadedFile = true;
             });
+        });
 
-            it('should be loaded from a remote document', function () {
-                expect(loadedFile).toEqual(true);
-            });
+        it('should be loaded from a remote document', function () {
+            expect(loadedFile).toEqual(true);
         });
     });
 });
+

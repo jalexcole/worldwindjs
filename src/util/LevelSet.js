@@ -25,20 +25,11 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
-/**
- * @exports LevelSet
- */
-define([
-        '../error/ArgumentError',
-        '../util/Level',
-        '../geom/Location',
-        '../util/Logger'
-    ],
-    function (ArgumentError,
-              Level,
-              Location,
-              Logger) {
-        "use strict";
+import ArgumentError from "../error/ArgumentError";
+import Level from "./Level";
+import Location from "../geom/Location";
+import Logger from "./Logger";
+
 
         /**
          * Constructs a level set.
@@ -224,5 +215,4 @@ define([
             return this.levels[this.levels.length - 1];
         };
 
-        return LevelSet;
-    });
+        export default LevelSet;

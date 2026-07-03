@@ -25,31 +25,29 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
-define([
-    'src/util/Promise',
-    'src/ogc/wcs/WcsCapabilities',
-    'src/ogc/wcs/WebCoverageService'
-], function (Promise,
-             WcsCapabilities,
-             WebCoverageService) {
-    "use strict";
+
+import WcsCapabilities from "../../../src/ogc/wcs/WcsCapabilities";
+import WebCoverageService from "../../../src/ogc/wcs/WebCoverageService";
+import TestUtils from "../../util/TestUtils.test.js";
+import { beforeAll, describe, expect, it } from "vitest";
 
     describe("1.0.0 WebCoverageService", function () {
 
-        var webCoverageService;
+        var webCoverageService = new WebCoverageService();
 
-        beforeAll(function (done) {
+        beforeAll(function () {
 
             WebCoverageService.prototype.retrieveCapabilities = function () {
                 return new Promise(function (resolve, reject) {
                     var xhr = new XMLHttpRequest();
-                    xhr.open("GET", "../base/test/ogc/wcs/wcs100GetCapabilities.xml", true);
+                    xhr.responseType = "document";
+                    xhr.open("GET", TestUtils.fixtureUrl("test/ogc/wcs/wcs100GetCapabilities.xml"), true);
                     xhr.addEventListener('load', function () {
                         if (xhr.readyState === 4) {
                             if (xhr.status === 200) {
                                 resolve(new WcsCapabilities(xhr.responseXML));
                             } else {
-                                reject("failure");
+                                reject(new Error("failure"));
                             }
                         }
                     });
@@ -60,13 +58,14 @@ define([
             WebCoverageService.prototype.retrieveCoverageDescriptions = function () {
                 return new Promise(function (resolve, reject) {
                     var xhr = new XMLHttpRequest();
-                    xhr.open("GET", "../base/test/ogc/wcs/wcs100DescribeCoverage.xml", true);
+                    xhr.responseType = "document";
+                    xhr.open("GET", TestUtils.fixtureUrl("test/ogc/wcs/wcs100DescribeCoverage.xml"), true);
                     xhr.addEventListener('load', function () {
                         if (xhr.readyState === 4) {
                             if (xhr.status === 200) {
                                 resolve(xhr.responseXML);
                             } else {
-                                reject("failure");
+                                reject(new Error("failure"));
                             }
                         }
                     });
@@ -74,13 +73,9 @@ define([
                 });
             };
 
-            WebCoverageService.create("not real")
+            return WebCoverageService.create("not real")
                 .then(function (wcs) {
                     webCoverageService = wcs;
-                    done();
-                })
-                .catch(function (e) {
-                    fail(e);
                 });
         });
 
@@ -95,18 +90,19 @@ define([
 
         var webCoverageService;
 
-        beforeAll(function (done) {
+        beforeAll(function () {
 
             WebCoverageService.prototype.retrieveCapabilities = function () {
                 return new Promise(function (resolve, reject) {
                     var xhr = new XMLHttpRequest();
-                    xhr.open("GET", "../base/test/ogc/wcs/wcs201GetCapabilities.xml", true);
+                    xhr.responseType = "document";
+                    xhr.open("GET", TestUtils.fixtureUrl("test/ogc/wcs/wcs201GetCapabilities.xml"), true);
                     xhr.addEventListener('load', function () {
                         if (xhr.readyState === 4) {
                             if (xhr.status === 200) {
                                 resolve(new WcsCapabilities(xhr.responseXML));
                             } else {
-                                reject("failure");
+                                reject(new Error("failure"));
                             }
                         }
                     });
@@ -117,13 +113,14 @@ define([
             WebCoverageService.prototype.retrieveCoverageDescriptions = function () {
                 return new Promise(function (resolve, reject) {
                     var xhr = new XMLHttpRequest();
-                    xhr.open("GET", "../base/test/ogc/wcs/wcs201DescribeCoverage.xml", true);
+                    xhr.responseType = "document";
+                    xhr.open("GET", TestUtils.fixtureUrl("test/ogc/wcs/wcs201DescribeCoverage.xml"), true);
                     xhr.addEventListener('load', function () {
                         if (xhr.readyState === 4) {
                             if (xhr.status === 200) {
                                 resolve(xhr.responseXML);
                             } else {
-                                reject("failure");
+                                reject(new Error("failure"));
                             }
                         }
                     });
@@ -131,13 +128,9 @@ define([
                 });
             };
 
-            WebCoverageService.create("not real")
+            return WebCoverageService.create("not real")
                 .then(function (wcs) {
                     webCoverageService = wcs;
-                    done();
-                })
-                .catch(function (e) {
-                    fail(e);
                 });
         });
 
@@ -147,4 +140,4 @@ define([
             expect(coverageCount).toBe(2);
         });
     });
-});
+

@@ -25,63 +25,76 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
+
+import ArgumentError from "../../error/ArgumentError";
+import GeoJSONGeometry from "./GeoJSONGeometry";
+import Logger from "../../util/Logger";
+
 /**
- * @exports GeoJSONGeometryPoint
+ * Constructs a GeoJSON geometry for a Point. Applications typically do not call this constructor.
+ * It is called by {@link GeoJSON} as GeoJSON geometries are read.
+ * @alias GeoJSONGeometryPoint
+ * @constructor
+ * @classdesc Contains the data associated with a GeoJSON Point geometry.
+ * @augments GeoJSONGeometry
+ * @param {Number[]} coordinates The array containing Point coordinates.
+ * @param {String} type A string containing type of geometry.
+ * @param {Object} bbox An object containing GeoJSON bbox information.
+ * @throws {ArgumentError} If the specified coordinates or type are null or undefined or if the coordinates
+ * parameter is not a single position.
  */
-define(['../../error/ArgumentError',
-        './GeoJSONGeometry',
-        '../../util/Logger'
-    ],
-    function (ArgumentError,
-              GeoJSONGeometry,
-              Logger) {
-        "use strict";
-
-        /**
-         * Constructs a GeoJSON geometry for a Point. Applications typically do not call this constructor.
-         * It is called by {@link GeoJSON} as GeoJSON geometries are read.
-         * @alias GeoJSONGeometryPoint
-         * @constructor
-         * @classdesc Contains the data associated with a GeoJSON Point geometry.
-         * @augments GeoJSONGeometry
-         * @param {Number[]} coordinates The array containing Point coordinates.
-         * @param {String} type A string containing type of geometry.
-         * @param {Object} bbox An object containing GeoJSON bbox information.
-         * @throws {ArgumentError} If the specified coordinates or type are null or undefined or if the coordinates
-         * parameter is not a single position.
-         */
-        var GeoJSONGeometryPoint = function (coordinates, type, bbox) {
-
-            if (!coordinates) {
-                throw new ArgumentError(
-                    Logger.logMessage(Logger.LEVEL_SEVERE, "GeoJSONGeometryPoint", "constructor",
-                        "missingCoordinates"));
-            }
-
-            if (coordinates.length < 2) {
-                throw new ArgumentError(
-                    Logger.logMessage(Logger.LEVEL_SEVERE, "GeoJSONGeometryPoint", "constructor",
-                        "invalidNumberOfCoordinates"));
-            }
-
-            if (Object.prototype.toString.call(coordinates) !== '[object Array]' ||
-                Object.prototype.toString.call(coordinates[0]) !== '[object Number]') {
-                throw new ArgumentError(
-                    Logger.logMessage(Logger.LEVEL_SEVERE, "GeoJSONGeometryPoint", "constructor",
-                        "invalidCoordinatesType"));
-            }
-
-            if (!type) {
-                throw new ArgumentError(
-                    Logger.logMessage(Logger.LEVEL_SEVERE, "GeoJSONGeometryPoint", "constructor",
-                        "missingType"));
-            }
-
-            GeoJSONGeometry.call(this, coordinates, type, bbox);
-        };
-
-        GeoJSONGeometryPoint.prototype = Object.create(GeoJSONGeometry.prototype);
-
-        return GeoJSONGeometryPoint;
+class GeoJSONGeometryPoint extends GeoJSONGeometry {
+  constructor(coordinates, type, bbox) {
+    super(coordinates, type, bbox);
+    if (!coordinates) {
+      throw new ArgumentError(
+        Logger.logMessage(
+          Logger.LEVEL_SEVERE,
+          "GeoJSONGeometryPoint",
+          "constructor",
+          "missingCoordinates"
+        )
+      );
     }
-);
+
+    if (coordinates.length < 2) {
+      throw new ArgumentError(
+        Logger.logMessage(
+          Logger.LEVEL_SEVERE,
+          "GeoJSONGeometryPoint",
+          "constructor",
+          "invalidNumberOfCoordinates"
+        )
+      );
+    }
+
+    if (Object.prototype.toString.call(coordinates) !== "[object Array]" ||
+      Object.prototype.toString.call(coordinates[0]) !== "[object Number]") {
+      throw new ArgumentError(
+        Logger.logMessage(
+          Logger.LEVEL_SEVERE,
+          "GeoJSONGeometryPoint",
+          "constructor",
+          "invalidCoordinatesType"
+        )
+      );
+    }
+
+    if (!type) {
+      throw new ArgumentError(
+        Logger.logMessage(
+          Logger.LEVEL_SEVERE,
+          "GeoJSONGeometryPoint",
+          "constructor",
+          "missingType"
+        )
+      );
+    }
+
+    
+  }
+}
+
+GeoJSONGeometryPoint.prototype = Object.create(GeoJSONGeometry.prototype);
+
+export default GeoJSONGeometryPoint;

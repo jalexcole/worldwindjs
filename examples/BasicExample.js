@@ -28,12 +28,8 @@
 /**
  * Illustrates how to build a basic WorldWind globe.
  */
-requirejs(['./WorldWindShim',
-        './LayerManager'],
-    function (WorldWind,
-              LayerManager) {
-        "use strict";
-
+import * as WorldWind from "../src/WorldWind.js";
+import LayerManager from "./LayerManager.js";
         // Tell WorldWind to log only warnings and errors.
         WorldWind.Logger.setLoggingLevel(WorldWind.Logger.LEVEL_WARNING);
 
@@ -63,5 +59,6 @@ requirejs(['./WorldWindShim',
         }
 
         // Create a layer manager for controlling layer visibility.
-        var layerManager = new LayerManager(wwd);
-    });
+var layerManager = new LayerManager(wwd);
+        
+

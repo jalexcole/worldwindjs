@@ -25,16 +25,10 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
-define([
-    'src/util/XmlDocument',
-    'src/formats/kml/styles/KmlListStyle',
-    'src/formats/kml/util/KmlItemIcon'
-], function (
-    XmlDocument,
-    KmlListStyle,
-    ItemIcon
-) {
-    "use strict";
+import KmlListStyle from "../../../../src/formats/kml/styles/KmlListStyle.js";
+import KmlItemIcon from "../../../../src/formats/kml/util/KmlItemIcon.js";
+import XmlDocument from "../../../../src/util/XmlDocument.js";
+import { describe,expect, it } from "vitest";
     describe ("KmlListStyleTest", function(){
 
     var validKml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
@@ -54,9 +48,8 @@ define([
                 expect(listStyle.kmlListItemType).toEqual('check');
                 expect(listStyle.kmlBgColor).toEqual('ffffffff');
                 console.log(listStyle.kmlItemIcon);
-                expect(listStyle.kmlItemIcon instanceof ItemIcon).toBeTruthy();
+                expect(listStyle.kmlItemIcon instanceof KmlItemIcon).toBeTruthy();
 
             });
 
     });
-});

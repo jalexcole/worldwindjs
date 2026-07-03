@@ -25,234 +25,237 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
-define([
-    '../../../util/Color',
-    '../KmlElements',
-    './KmlGeometry',
-    './KmlLinearRing',
-    '../styles/KmlStyle',
-    '../../../geom/Location',
-    '../util/KmlNodeTransformers',
-    '../../../shapes/Polygon',
-    '../../../shapes/ShapeAttributes',
-    '../../../shapes/SurfacePolygon'
-], function (Color,
-             KmlElements,
-             KmlGeometry,
-             KmlLinearRing,
-             KmlStyle,
-             Location,
-             NodeTransformers,
-             Polygon,
-             ShapeAttributes,
-             SurfacePolygon) {
-    "use strict";
-    /**
-     * Constructs an KmlPolygon. Application usually don't call this constructor. It is called by {@link KmlFile} as
-     * Objects from KmlFile are read. It is concrete implementation.
-     * It is Polygon and KmlGeometry.
-     * @alias KmlPolygon
-     * @constructor
-     * @classdesc Contains the data associated with Kml polygon
-     * @param options {Object}
-     * @param options.objectNode {Node} Node representing Polygon
-     * @param options.style {Promise} Promise of styles to be applied to this Polygon.
-     * @throws {ArgumentError} If either the node is null or undefined.
-     * @see https://developers.google.com/kml/documentation/kmlreference#polygon
-     */
-    var KmlPolygon = function (options) {
-        KmlGeometry.call(this, options);
+import Polygon from "../../../shapes/Polygon.js";
+import ShapeAttributes from "../../../shapes/ShapeAttributes";
+import SurfacePolygon from "../../../shapes/SurfacePolygon";
+import WorldWindConstants from "../../../WorldWindConstants.js";
+import KmlElements from "../KmlElements";
+import KmlStyle from "../styles/KmlStyle";
+import KmlGeometry from "./KmlGeometry.js";
+import KmlLinearRing from "./KmlLinearRing";
 
-        this.initialized = false;
-    };
+/**
+ * Constructs an KmlPolygon. Application usually don't call this constructor. It is called by {@link KmlFile} as
+ * Objects from KmlFile are read. It is concrete implementation.
+ * It is Polygon and KmlGeometry.
+ * @alias KmlPolygon
+ * @constructor
+ * @classdesc Contains the data associated with Kml polygon
+ * @param options {Object}
+ * @param options.objectNode {Node} Node representing Polygon
+ * @param options.style {Promise} Promise of styles to be applied to this Polygon.
+ * @throws {ArgumentError} If either the node is null or undefined.
+ * @see https://developers.google.com/kml/documentation/kmlreference#polygon
+ */
+class KmlPolygon extends KmlGeometry {
+  constructor(options) {
+    super(options);
 
-    KmlPolygon.prototype = Object.create(KmlGeometry.prototype);
+    this.initialized = false;
+  }
+  /**
+   * Internal use only. Once create the instance of actual polygon.
+   * @param styles {Object|null}
+   * @param styles.normal {KmlStyle} Style to apply when not highlighted
+   * @param styles.highlight {KmlStyle} Style to apply when item is highlighted. Currently ignored.
+   */
+  createPolygon(styles, fileCache) {
+    console.log(
+      this.kmlInnerBoundary &&
+        this.kmlInnerBoundary.kmlAltitudeMode === WorldWindConstants.CLAMP_TO_GROUND
+    );
+    // TODO: KML boundaries are displaying graphic glitches when the camera is zoomed out
+    if (
+      !this.isValidAltitudeMode(this.kmlAltitudeMode) ||
+      this.kmlAltitudeMode === WorldWindConstants.CLAMP_TO_GROUND ||
+      (this.kmlInnerBoundary &&
+        this.kmlInnerBoundary.kmlAltitudeMode === WorldWindConstants.CLAMP_TO_GROUND) ||
+      (this.kmlOuterBoundary &&
+        this.kmlOuterBoundary.kmlAltitudeMode === WorldWindConstants.CLAMP_TO_GROUND)
+    ) {
+      this._renderable = new SurfacePolygon(
+        this.prepareLocations(),
+        this.prepareAttributes(styles.normal, fileCache)
+      );
+    } else {
+      this._renderable = new Polygon(
+        this.prepareLocations(),
+        this.prepareAttributes(styles.normal, fileCache)
+      );
+    }
+    if (styles.highlight) {
+      this._renderable.highlightAttributes = this.prepareAttributes(
+        styles.highlight,
+        fileCache
+      );
+    }
+    this.moveValidProperties();
+  }
+  /**
+   * @inheritDoc
+   */
+  render(dc, kmlOptions) {
+    KmlGeometry.prototype.render.call(this, dc, kmlOptions);
 
-    Object.defineProperties(KmlPolygon.prototype, {
-        /**
-         * In case that the polygon is above ground, this property decides whether there is going to be a line to
-         * the ground.
-         * @memberof KmlPolygon.prototype
-         * @type {Boolean}
-         * @readonly
-         */
-        kmlExtrude: {
-            get: function () {
-                return this._factory.specific(this, {name: 'extrude', transformer: NodeTransformers.boolean});
-            }
-        },
+    if (kmlOptions.lastStyle && !this._renderable) {
+      this.createPolygon(kmlOptions.lastStyle, kmlOptions.fileCache);
+      dc.redrawRequested = true;
+    }
 
-        /**
-         * Whether tessellation should be used for current node.
-         * @memberof KmlPolygon.prototype
-         * @readonly
-         * @type {Boolean}
-         */
-        kmlTessellate: {
-            get: function () {
-                return this._factory.specific(this, {name: 'tessellate', transformer: NodeTransformers.boolean});
-            }
-        },
+    if (this._renderable) {
+      this._renderable.enabled = this.enabled;
+      this._renderable.render(dc);
+    }
+  }
+  // For internal use only. Intentionally left undocumented.
+  moveValidProperties() {
+    this._renderable.extrude = this.kmlExtrude || true;
+    this._renderable.altitudeMode =
+      this.kmlAltitudeMode || WorldWindConstants.CLAMP_TO_GROUND;
+  }
+  /**
+   * @inheritDoc
+   */
+  prepareAttributes(style, fileCache) {
+    var shapeOptions = (style && style.generate(fileCache)) || {};
 
-        /**
-         * It explains how we should treat the altitude of the polygon. Possible choices are explained in:
-         * https://developers.google.com/kml/documentation/kmlreference#point
-         * @memberof KmlPolygon.prototype
-         * @type {String}
-         * @readonly
-         */
-        kmlAltitudeMode: {
-            get: function () {
-                return this._factory.specific(this, {name: 'altitudeMode', transformer: NodeTransformers.string});
-            }
-        },
+    shapeOptions._drawVerticals = this.kmlExtrude || false;
+    shapeOptions._applyLighting = true;
+    shapeOptions._depthTest = true;
+    shapeOptions._outlineStippleFactor = 0;
+    shapeOptions._outlineStipplePattern = 61680;
+    shapeOptions._enableLighting = true;
 
-        /**
-         * Outer boundary of this polygon represented as a LinearRing.
-         * @memberof KmlPolygon.prototype
-         * @type {KmlLinearRing}
-         * @readonly
-         */
-        kmlOuterBoundary: {
-            get: function () {
-                return this._factory.specific(this, {
-                    name: 'outerBoundaryIs',
-                    transformer: NodeTransformers.linearRing
-                });
-            }
-        },
+    return new ShapeAttributes(KmlStyle.shapeAttributes(shapeOptions));
+  }
+  /**
+   * @inheritDoc
+   */
+  prepareLocations() {
+    var locations = [];
+    if (this.kmlInnerBoundary != null) {
+      locations[0] = this.kmlInnerBoundary.kmlPositions;
+      locations[1] = this.kmlOuterBoundary.kmlPositions;
+    } else {
+      locations = this.kmlOuterBoundary.kmlPositions;
+    }
+    return locations;
+  }
+  /**
+   * @inheritDoc
+   */
+  isValidAltitudeMode(altMode) {
+    return (
+      WorldWindConstants.CLAMP_TO_GROUND === altMode ||
+      WorldWindConstants.RELATIVE_TO_GROUND === altMode ||
+      WorldWindConstants.ABSOLUTE === altMode
+    );
+  }
+  /**
+   * @inheritDoc
+   */
+  getStyle() {
+    return this._style;
+  }
+  /**
+   * @inheritDoc
+   */
+  getTagNames() {
+    return ["Polygon"];
+  }
+}
 
-        /**
-         * Inner boundary of this polygon represented as a LinearRing. Optional property
-         * @memberof KmlPolygon.prototype.
-         * @type {KmlLinearRing}
-         * @readonly
-         */
-        kmlInnerBoundary: {
-            get: function () {
-                return this._factory.specific(this, {
-                    name: 'innerBoundaryIs',
-                    transformer: NodeTransformers.linearRing
-                });
-            }
-        },
+Object.defineProperties(KmlPolygon.prototype, {
+  /**
+   * In case that the polygon is above ground, this property decides whether there is going to be a line to
+   * the ground.
+   * @memberof KmlPolygon.prototype
+   * @type {Boolean}
+   * @readonly
+   */
+  kmlExtrude: {
+    get: function () {
+      return this._factory.specific(this, {
+        name: "extrude",
+        transformer: KmlNodeTransformers.boolean,
+      });
+    },
+  },
 
-        /**
-         * It returns center of outer boundaries of the polygon.
-         * @memberof KmlPolygon.prototype
-         * @readonly
-         * @type {Position}
-         */
-        kmlCenter: {
-            get: function () {
-                return this.kmlOuterBoundary.kmlCenter;
-            }
-        }
-    });
+  /**
+   * Whether tessellation should be used for current node.
+   * @memberof KmlPolygon.prototype
+   * @readonly
+   * @type {Boolean}
+   */
+  kmlTessellate: {
+    get: function () {
+      return this._factory.specific(this, {
+        name: "tessellate",
+        transformer: KmlNodeTransformers.boolean,
+      });
+    },
+  },
 
-    /**
-     * Internal use only. Once create the instance of actual polygon.
-     * @param styles {Object|null}
-     * @param styles.normal {KmlStyle} Style to apply when not highlighted
-     * @param styles.highlight {KmlStyle} Style to apply when item is highlighted. Currently ignored.
-     */
-    KmlPolygon.prototype.createPolygon = function (styles, fileCache) {
-        console.log(this.kmlInnerBoundary && this.kmlInnerBoundary.kmlAltitudeMode === WorldWind.CLAMP_TO_GROUND);
-        // TODO: KML boundaries are displaying graphic glitches when the camera is zoomed out
-        if (
-            !this.isValidAltitudeMode(this.kmlAltitudeMode) ||
-            this.kmlAltitudeMode === WorldWind.CLAMP_TO_GROUND ||
-            (this.kmlInnerBoundary && this.kmlInnerBoundary.kmlAltitudeMode === WorldWind.CLAMP_TO_GROUND) ||
-            (this.kmlOuterBoundary && this.kmlOuterBoundary.kmlAltitudeMode === WorldWind.CLAMP_TO_GROUND)
-        ) {
-            this._renderable = new SurfacePolygon(this.prepareLocations(), this.prepareAttributes(styles.normal, fileCache));
-        } else {
-            this._renderable = new Polygon(this.prepareLocations(), this.prepareAttributes(styles.normal, fileCache));
-        }
-        if (styles.highlight) {
-            this._renderable.highlightAttributes = this.prepareAttributes(styles.highlight, fileCache);
-        }
-        this.moveValidProperties();
-    };
+  /**
+   * It explains how we should treat the altitude of the polygon. Possible choices are explained in:
+   * https://developers.google.com/kml/documentation/kmlreference#point
+   * @memberof KmlPolygon.prototype
+   * @type {String}
+   * @readonly
+   */
+  kmlAltitudeMode: {
+    get: function () {
+      return this._factory.specific(this, {
+        name: "altitudeMode",
+        transformer: KmlNodeTransformers.string,
+      });
+    },
+  },
 
-    /**
-     * @inheritDoc
-     */
-    KmlPolygon.prototype.render = function (dc, kmlOptions) {
-        KmlGeometry.prototype.render.call(this, dc, kmlOptions);
+  /**
+   * Outer boundary of this polygon represented as a LinearRing.
+   * @memberof KmlPolygon.prototype
+   * @type {KmlLinearRing}
+   * @readonly
+   */
+  kmlOuterBoundary: {
+    get: function () {
+      return this._factory.specific(this, {
+        name: "outerBoundaryIs",
+        transformer: KmlNodeTransformers.linearRing,
+      });
+    },
+  },
 
-        if (kmlOptions.lastStyle && !this._renderable) {
-            this.createPolygon(kmlOptions.lastStyle, kmlOptions.fileCache);
-            dc.redrawRequested = true;
-        }
+  /**
+   * Inner boundary of this polygon represented as a LinearRing. Optional property
+   * @memberof KmlPolygon.prototype.
+   * @type {KmlLinearRing}
+   * @readonly
+   */
+  kmlInnerBoundary: {
+    get: function () {
+      return this._factory.specific(this, {
+        name: "innerBoundaryIs",
+        transformer: KmlNodeTransformers.linearRing,
+      });
+    },
+  },
 
-        if (this._renderable) {
-            this._renderable.enabled = this.enabled;
-            this._renderable.render(dc);
-        }
-    };
-
-    // For internal use only. Intentionally left undocumented.
-    KmlPolygon.prototype.moveValidProperties = function () {
-        this._renderable.extrude = this.kmlExtrude || true;
-        this._renderable.altitudeMode = this.kmlAltitudeMode || WorldWind.CLAMP_TO_GROUND;
-    };
-
-    /**
-     * @inheritDoc
-     */
-    KmlPolygon.prototype.prepareAttributes = function (style, fileCache) {
-        var shapeOptions = style && style.generate(fileCache) || {};
-
-        shapeOptions._drawVerticals = this.kmlExtrude || false;
-        shapeOptions._applyLighting = true;
-        shapeOptions._depthTest = true;
-        shapeOptions._outlineStippleFactor = 0;
-        shapeOptions._outlineStipplePattern = 61680;
-        shapeOptions._enableLighting = true;
-
-        return new ShapeAttributes(KmlStyle.shapeAttributes(shapeOptions));
-    };
-
-    /**
-     * @inheritDoc
-     */
-    KmlPolygon.prototype.prepareLocations = function () {
-        var locations = [];
-        if (this.kmlInnerBoundary != null) {
-            locations[0] = this.kmlInnerBoundary.kmlPositions;
-            locations[1] = this.kmlOuterBoundary.kmlPositions;
-        } else {
-            locations = this.kmlOuterBoundary.kmlPositions;
-        }
-        return locations;
-    };
-
-    /**
-     * @inheritDoc
-     */
-    KmlPolygon.prototype.isValidAltitudeMode = function (altMode) {
-        return WorldWind.CLAMP_TO_GROUND === altMode
-            || WorldWind.RELATIVE_TO_GROUND === altMode
-            || WorldWind.ABSOLUTE === altMode;
-
-    };
-
-    /**
-     * @inheritDoc
-     */
-    KmlPolygon.prototype.getStyle = function () {
-        return this._style;
-    };
-
-    /**
-     * @inheritDoc
-     */
-    KmlPolygon.prototype.getTagNames = function () {
-        return ['Polygon'];
-    };
-
-    KmlElements.addKey(KmlPolygon.prototype.getTagNames()[0], KmlPolygon);
-
-    return KmlPolygon;
+  /**
+   * It returns center of outer boundaries of the polygon.
+   * @memberof KmlPolygon.prototype
+   * @readonly
+   * @type {Position}
+   */
+  kmlCenter: {
+    get: function () {
+      return this.kmlOuterBoundary.kmlCenter;
+    },
+  },
 });
+
+KmlElements.addKey(KmlPolygon.prototype.getTagNames()[0], KmlPolygon);
+
+export default KmlPolygon;

@@ -25,14 +25,14 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
-define([
-    'src/geom/Location',
-    'src/geom/Angle',
-    'src/globe/EarthElevationModel',
-    'src/globe/ElevationModel',
-    'src/globe/Globe'
-], function (Location, Angle, EarthElevationModel, ElevationModel, Globe) {
-    "use strict";
+import Location from "../../src/geom/Location.js";
+import Angle from "../../src/geom/Angle.js";
+import Globe from "../../src/globe/Globe.js";
+import EarthElevationModel from "../../src/globe/ElevationModel.js";
+import { beforeEach, describe,expect, it } from "vitest";
+import WorldWindConstants from "../../src/WorldWindConstants.js";
+
+
 
     describe("Location Tests", function () {
 
@@ -105,7 +105,7 @@ define([
 
             it('Compute with Great Circle', function () {
                 var resultLocation = Location.interpolateAlongPath(
-                    WorldWind.GREAT_CIRCLE,
+                    WorldWindConstants.GREAT_CIRCLE,
                     0.5,
                     locationA,
                     locationB,
@@ -116,7 +116,7 @@ define([
 
             it('Compute with Rhumb Line', function () {
                 var resultLocation = Location.interpolateAlongPath(
-                    WorldWind.RHUMB_LINE,
+                    WorldWindConstants.RHUMB_LINE,
                     0.5,
                     locationA,
                     locationB,
@@ -127,7 +127,7 @@ define([
 
             it('Compute with Linear', function () {
                 var resultLocation = Location.interpolateAlongPath(
-                    WorldWind.LINEAR,
+                    WorldWindConstants.LINEAR,
                     0.5,
                     locationA,
                     locationB,
@@ -138,7 +138,7 @@ define([
 
             it('Compute with Linear with fraction greater than 1', function () {
                 var resultLocation = Location.interpolateAlongPath(
-                    WorldWind.LINEAR,
+                    WorldWindConstants.LINEAR,
                     4.5,
                     locationA,
                     locationB,
@@ -161,7 +161,7 @@ define([
             it('Store result in the provided variable', function () {
                 var resultLocation = new Location(0, 0);
                 Location.interpolateAlongPath(
-                    WorldWind.LINEAR,
+                    WorldWindConstants.LINEAR,
                     0.5,
                     locationA,
                     locationB,
@@ -175,7 +175,7 @@ define([
                 it('Location A not provided', function () {
                     expect(function () {
                         Location.interpolateAlongPath(
-                            WorldWind.LINEAR,
+                            WorldWindConstants.LINEAR,
                             0.5,
                             null,
                             locationB,
@@ -186,7 +186,7 @@ define([
                 it('Location B not provided', function () {
                     expect(function () {
                         Location.interpolateAlongPath(
-                            WorldWind.LINEAR,
+                            WorldWindConstants.LINEAR,
                             0.5,
                             locationA,
                             null,
@@ -197,7 +197,7 @@ define([
                 it('Result storage not provided', function () {
                     expect(function () {
                         Location.interpolateAlongPath(
-                            WorldWind.LINEAR,
+                            WorldWindConstants.LINEAR,
                             0.5,
                             locationA,
                             locationB,
@@ -699,4 +699,3 @@ define([
         });
 
     });
-});

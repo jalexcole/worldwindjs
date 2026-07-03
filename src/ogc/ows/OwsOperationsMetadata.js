@@ -25,146 +25,148 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
+import ArgumentError from "../../error/ArgumentError";
+import Logger from "../../util/Logger";
+import OwsConstraint from "./OwsConstraint";
+
 /**
- * @exports OwsOperationsMetadata
+ * Constructs an OWS Operations Metadata instance from an XML DOM.
+ * @alias OwsOperationsMetadata
+ * @constructor
+ * @classdesc Represents an OWS Operations Metadata section of an OGC capabilities document.
+ * This object holds as properties all the fields specified in the OWS Operations Metadata section.
+ * Most fields can be accessed as properties named according to their document names converted to camel case.
+ * For example, "operations".
+ * @param {Element} element An XML DOM element representing the OWS Service Provider section.
+ * @throws {ArgumentError} If the specified XML DOM element is null or undefined.
  */
-define([
-        '../../error/ArgumentError',
-        '../../util/Logger',
-        '../../ogc/ows/OwsConstraint'
-    ],
-    function (ArgumentError,
-              Logger,
-              OwsConstraint) {
-        "use strict";
+class OwsOperationsMetadata {
+  constructor(element) {
+    if (!element) {
+      throw new ArgumentError(
+        Logger.logMessage(
+          Logger.LEVEL_SEVERE,
+          "OwsOperationsMetadata",
+          "constructor",
+          "missingDomElement"
+        )
+      );
+    }
 
-        /**
-         * Constructs an OWS Operations Metadata instance from an XML DOM.
-         * @alias OwsOperationsMetadata
-         * @constructor
-         * @classdesc Represents an OWS Operations Metadata section of an OGC capabilities document.
-         * This object holds as properties all the fields specified in the OWS Operations Metadata section.
-         * Most fields can be accessed as properties named according to their document names converted to camel case.
-         * For example, "operations".
-         * @param {Element} element An XML DOM element representing the OWS Service Provider section.
-         * @throws {ArgumentError} If the specified XML DOM element is null or undefined.
-         */
-        var OwsOperationsMetadata = function (element) {
-            if (!element) {
-                throw new ArgumentError(
-                    Logger.logMessage(Logger.LEVEL_SEVERE, "OwsOperationsMetadata", "constructor", "missingDomElement"));
-            }
+    var children = element.children || element.childNodes;
+    for (var c = 0; c < children.length; c++) {
+      var child = children[c];
 
-            var children = element.children || element.childNodes;
-            for (var c = 0; c < children.length; c++) {
-                var child = children[c];
+      if (child.localName === "Operation") {
+        this.operation = this.operation || [];
+        this.operation.push(OwsOperationsMetadata.assembleOperation(child));
+      }
+      // TODO: Parameter, Constraint, ExtendedCapabilities
+    }
+  }
+  static assembleOperation(element) {
+    var operation = {};
 
-                if (child.localName === "Operation") {
-                    this.operation = this.operation || [];
-                    this.operation.push(OwsOperationsMetadata.assembleOperation(child));
-                }
-                // TODO: Parameter, Constraint, ExtendedCapabilities
-            }
-        };
+    operation.name = element.getAttribute("name");
 
-        /**
-         * Attempts to find the first OwsOperationsMetadata object named GetCapabilities.
-         * @returns {OwsOperationsMetadata} if a matching OwsOperationsMetadata object is found, otherwise null.
-         */
-        OwsOperationsMetadata.prototype.getGetCapabilities = function () {
-            return this.getOperationMetadataByName("GetCapabilities");
-        };
+    var children = element.children || element.childNodes;
+    for (var c = 0; c < children.length; c++) {
+      var child = children[c];
 
-        /**
-         * Attempts to find the first OwsOperationsMetadata object named GetTile.
-         * @returns {OwsOperationsMetadata} if a matching OwsOperationsMetadata object is found, otherwise null.
-         */
-        OwsOperationsMetadata.prototype.getGetTile = function () {
-            return this.getOperationMetadataByName("GetTile");
-        };
+      if (child.localName === "DCP") {
+        operation.dcp = operation.dcp || [];
+        operation.dcp.push(OwsOperationsMetadata.assembleDcp(child));
+      }
+      // TODO: Parameter, Constraint, Metadata
+    }
 
-        /**
-         * Searches for the OWS Operations Metadata objects for the operation with a name matching the  provided name.
-         * Returns the first successful match.
-         * @returns {OwsOperationsMetadata} of a matching name or null if none was found
-         */
-        OwsOperationsMetadata.prototype.getOperationMetadataByName = function (name) {
-            if (!name) {
-                throw new ArgumentError(
-                    Logger.logMessage(Logger.LEVEL_SEVERE, "OwsOperationsMetadata", "getOperationsMetadataByName", "missingName"));
-            }
+    return operation;
+  }
+  static assembleDcp(element) {
+    var dcp = {};
 
-            for (var i = 0; i < this.operation.length; i++) {
-                if (this.operation[i].name === name) {
-                    return this.operation[i];
-                }
-            }
+    var children = element.children || element.childNodes;
+    for (var c = 0; c < children.length; c++) {
+      var child = children[c];
 
-            return null;
-        };
+      if (child.localName === "HTTP") {
+        var httpMethods = child.children || child.childNodes;
+        for (var c2 = 0; c2 < httpMethods.length; c2++) {
+          var httpMethod = httpMethods[c2];
 
-        OwsOperationsMetadata.assembleOperation = function (element) {
-            var operation = {};
+          if (httpMethod.localName === "Get") {
+            dcp.getMethods = dcp.getMethods || [];
+            dcp.getMethods.push(
+              OwsOperationsMetadata.assembleMethod(httpMethod)
+            );
+          } else if (httpMethod.localName === "Post") {
+            dcp.postMethods = dcp.postMethods || [];
+            dcp.postMethods.push(
+              OwsOperationsMetadata.assembleMethod(httpMethod)
+            );
+          }
+        }
+      }
+    }
 
-            operation.name = element.getAttribute("name");
+    return dcp;
+  }
+  static assembleMethod(element) {
+    var result = {};
 
-            var children = element.children || element.childNodes;
-            for (var c = 0; c < children.length; c++) {
-                var child = children[c];
+    result.url = element.getAttribute("xlink:href");
 
-                if (child.localName === "DCP") {
-                    operation.dcp = operation.dcp || [];
-                    operation.dcp.push(OwsOperationsMetadata.assembleDcp(child));
-                }
-                // TODO: Parameter, Constraint, Metadata
-            }
+    var children = element.children || element.childNodes;
+    for (var c = 0; c < children.length; c++) {
+      var child = children[c];
 
-            return operation;
-        };
+      if (child.localName === "Constraint") {
+        result.constraint = result.constraint || [];
+        result.constraint.push(new OwsConstraint(child));
+      }
+    }
 
-        OwsOperationsMetadata.assembleDcp = function (element) {
-            var dcp = {};
+    return result;
+  }
+  /**
+   * Attempts to find the first OwsOperationsMetadata object named GetCapabilities.
+   * @returns {OwsOperationsMetadata} if a matching OwsOperationsMetadata object is found, otherwise null.
+   */
+  getGetCapabilities() {
+    return this.getOperationMetadataByName("GetCapabilities");
+  }
+  /**
+   * Attempts to find the first OwsOperationsMetadata object named GetTile.
+   * @returns {OwsOperationsMetadata} if a matching OwsOperationsMetadata object is found, otherwise null.
+   */
+  getGetTile() {
+    return this.getOperationMetadataByName("GetTile");
+  }
+  /**
+   * Searches for the OWS Operations Metadata objects for the operation with a name matching the  provided name.
+   * Returns the first successful match.
+   * @returns {OwsOperationsMetadata} of a matching name or null if none was found
+   */
+  getOperationMetadataByName(name) {
+    if (!name) {
+      throw new ArgumentError(
+        Logger.logMessage(
+          Logger.LEVEL_SEVERE,
+          "OwsOperationsMetadata",
+          "getOperationsMetadataByName",
+          "missingName"
+        )
+      );
+    }
 
-            var children = element.children || element.childNodes;
-            for (var c = 0; c < children.length; c++) {
-                var child = children[c];
+    for (var i = 0; i < this.operation.length; i++) {
+      if (this.operation[i].name === name) {
+        return this.operation[i];
+      }
+    }
 
-                if (child.localName === "HTTP") {
-                    var httpMethods = child.children || child.childNodes;
-                    for (var c2 = 0; c2 < httpMethods.length; c2++) {
-                        var httpMethod = httpMethods[c2];
+    return null;
+  }
+}
 
-                        if (httpMethod.localName === "Get") {
-                            dcp.getMethods = dcp.getMethods || [];
-                            dcp.getMethods.push(OwsOperationsMetadata.assembleMethod(httpMethod));
-                        } else if (httpMethod.localName === "Post") {
-                            dcp.postMethods = dcp.postMethods || [];
-                            dcp.postMethods.push(OwsOperationsMetadata.assembleMethod(httpMethod));
-                        }
-                    }
-                }
-            }
-
-            return dcp;
-        };
-
-        OwsOperationsMetadata.assembleMethod = function (element) {
-            var result = {};
-
-            result.url = element.getAttribute("xlink:href");
-
-            var children = element.children || element.childNodes;
-            for (var c = 0; c < children.length; c++) {
-                var child = children[c];
-
-                if (child.localName === "Constraint") {
-                    result.constraint = result.constraint || [];
-                    result.constraint.push(new OwsConstraint(child));
-                }
-            }
-
-            return result;
-        };
-
-        return OwsOperationsMetadata;
-    });
+export default OwsOperationsMetadata;

@@ -25,18 +25,11 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
-define([
-    'src/formats/kml/features/KmlGroundOverlay',
-    'src/formats/kml/KmlLatLonBox',
-    'src/formats/kml/KmlLatLonQuad',
-    'src/util/XmlDocument'
-], function (
-    KmlGroundOverlay,
-    KmlLatLonBox,
-    KmlLatLonQuad,
-    XmlDocument
-) {
-    "use strict";
+import KmlGroundOverlay from "../../../../src/formats/kml/features/KmlGroundOverlay";
+import KmlLatLonBox from "../../../../src/formats/kml/KmlLatLonBox";
+import KmlLatLonQuad from "../../../../src/formats/kml/KmlLatLonQuad";
+import XmlDocument from "../../../../src/util/XmlDocument";
+import { describe,expect, it } from "vitest";
     describe("KmlGroundOverlayTest", function() {
 
             var validKml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
@@ -63,4 +56,3 @@ define([
 
 
         });
-    });

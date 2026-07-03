@@ -4,6 +4,7 @@
   "description": "WorldWindJS is an interactive 3D globe library featuring imagery, maps, terrain and 2D projections from the Web WorldWind virtual globe SDK from NASA and ESA plus several community contributions.",
   "main": "build/dist/worldwind.min.js",
   "homepage": "https://emxsys.github.io/worldwindjs/",
+  "type": "module",
   "bugs": {
     "url": "https://github.com/emxsys/worldwindjs/issues"
   },
@@ -19,12 +20,10 @@
     "url": "https://github.com/emxsys/worldwindjs.git"
   },
   "scripts": {
-    "build": "grunt",
-    "clean": "grunt clean",
-    "doc": "grunt jsdoc",
-    "prepare": "npm run build",
-    "test": "grunt karma",
-    "test:watch": "karma start karma.conf.js"
+    "build": "vite --config vite.config.js build",
+    "dev": "vite --config vite.config.js examples",
+    "test": "vitest --config vitest.config.js",
+    "lint": "eslint"
   },
   "files": [
     "build/dist/images/",
@@ -32,22 +31,14 @@
     "build/dist/worldwind.min.js"
   ],
   "devDependencies": {
-    "grunt": "^1.5.3",
-    "grunt-contrib-clean": "^2.0.0",
-    "grunt-contrib-copy": "^1.0.0",
-    "grunt-contrib-requirejs": "^1.0.0",
-    "grunt-jsdoc": "^2.4.1",
-    "grunt-karma": "^4.0.0",
-    "grunt-zip": "^0.14.0",
-    "jasmine-core": "^3.6.0",
-    "karma": "^6.3.2",
-    "karma-chrome-launcher": "^3.1.0",
-    "karma-firefox-launcher": "^2.1.0",
-    "karma-htmlfile-reporter": "^0.3.8",
-    "karma-jasmine": "^2.0.1",
-    "karma-junit-reporter": "^1.2.0",
-    "karma-requirejs": "^1.1.0",
-    "recursive-readdir": "^2.2.2"
+    "@eslint/js": "9.17.0",
+    "canvas": "^3.0.1",
+    "eslint": "^9.17.0",
+    "globals": "15.14.0",
+    "happy-dom": "16.2.9",
+    "jsdom": "29.1.1",
+    "vite": "5.4.11",
+    "vitest": "2.1.8"
   },
   "keywords": [
     "sdk",
@@ -72,5 +63,9 @@
   ],
   "publishConfig": {
     "access": "public"
+  },
+  "dependencies": {
+    "es6-promise": "^4.2.8",
+    "proj4": "2.15.0"
   }
 }

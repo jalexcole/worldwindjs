@@ -26,60 +26,71 @@
  * PDF found in code  directory.
  */
 // It simply adds XmlParser, which encapsulates the fact that, there are different implementations
-define([
-        '../error/ArgumentError',
-        '../util/Logger'
-    ],
-    function(
-        ArgumentError,
-        Logger
-    ){
+
+import ArgumentError from "../error/ArgumentError";
+import Logger from "./Logger";
+
+/**
+ * Constructor function responsible for abstracting away the complexities in parsing XmlDocuments.
+ * @param document String representation of the xml document.
+ * @constructor
+ */
+ export class XmlDocument {
+    constructor(document) {
         /**
-         * Constructor function responsible for abstracting away the complexities in parsing XmlDocuments.
-         * @param document String representation of the xml document.
-         * @constructor
+         * Retrieved textual representation of the document.
          */
-        var XmlDocument = function(document) {
-            /**
-             * Retrieved textual representation of the document.
-             */
-            this._document = document;
-        };
-
-        /**
-         * This method abstracts parsing of XmlDocument away form users of this class. It should work in all browsers
-         * since IE5
-         * @returns {Document} Parsed dom.
-         */
-        XmlDocument.prototype.dom = function() {
-            if(DOMParser) {
-                var parser = new DOMParser();
-                var parsedDocument = parser.parseFromString(this._document, "text/xml");
-                if(parsedDocument.getElementsByTagName("parsererror").length || !parsedDocument) {
-                    throw new ArgumentError(
-                        Logger.logMessage(Logger.LEVEL_SEVERE, "XmlDocument", "dom", "Invalid XML document. " +
-                            parsedDocument.getElementsByTagName("parsererror")[0].innerHTML)
-                    );
-                }
-                return parsedDocument;
-            } else {
-                // Support for IE6
-                var xmlDoc=new ActiveXObject("Microsoft.XMLDOM");
-                xmlDoc.async=false;
-                xmlDoc.loadXML(text);
-                return xmlDoc;
+        this._document = document;
+    }
+    static isValid(document) {
+        // TODO refactor.
+        try {
+            new XmlDocument(document).dom();
+            return true;
+        } catch (e) {
+            return false;
+        }
+    }
+    /**
+     * This method abstracts parsing of XmlDocument away form users of this class. It should work in all browsers
+     * since IE5
+     * @returns {Document} Parsed dom.
+     */
+    dom() {
+        if (DOMParser) {
+            var parser = new DOMParser();
+            var parsedDocument = parser.parseFromString(this._document, "text/xml");
+            if (parsedDocument.getElementsByTagName("parsererror").length ||
+                !parsedDocument) {
+                throw new ArgumentError(
+                    Logger.logMessage(
+                        Logger.LEVEL_SEVERE,
+                        "XmlDocument",
+                        "dom",
+                        "Invalid XML document. " +
+                        parsedDocument.getElementsByTagName("parsererror")[0].innerHTML
+                    )
+                );
             }
-        };
+            return parsedDocument;
+        } else {
+            throw new ArgumentError(
+                Logger.logMessage(
+                    Logger.LEVEL_SEVERE,
+                    "XmlDocument",
+                    "dom",
+                    "DOMParser is not supported in this browser. Will not support IE6"
+                )
+            );
+            // Support for IE6
+            // var xmlDoc = new ActiveXObject("Microsoft.XMLDOM");
+            // xmlDoc.async = false;
+            // xmlDoc.loadXML(text);
+            // return xmlDoc;
+        }
+    }
+}
 
-        XmlDocument.isValid = function(document) {
-            // TODO refactor.
-            try {
-                new XmlDocument(document).dom();
-                return true;
-            } catch(e) {
-                return false;
-            }
-        };
 
-        return XmlDocument;
-});
+
+export default XmlDocument;

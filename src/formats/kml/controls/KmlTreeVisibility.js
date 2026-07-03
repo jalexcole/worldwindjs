@@ -25,92 +25,85 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
-define([
-    '../../../util/WWUtil',
-    './KmlControls'
-], function (WWUtil,
-             KmlControls
-    ) {
-    "use strict";
+import KmlControls from "./KmlControls";
+import WWUtil from "../../../util/WWUtil";
 
-    /**
-     * This class represents the structure of Documents, Folders and Features in the document. It renders them into
-     * some of the outside area with defined classes, so that user can specify the look and feel.
-     * Important part of this effort is to allow user show/hide subset of the Features present in the document.
-     * Implementing this functionality also simplifies the manual testing.
-     * @param visualElementId {String} Id of the element into which this will be rendered.
-     * @param wwd {WorldWindow} WorldWindow instance necessary to control the redraw in the framework.
-     * @constructor
-     * @augments KmlControls
-     * @alias KmlTreeVisibility
-     * @classdesc Class for controlling the visibility of features.
-     */
-    var KmlTreeVisibility = function (visualElementId, wwd) {
-        KmlControls.apply(this);
+/**
+ * This class represents the structure of Documents, Folders and Features in the document. It renders them into
+ * some of the outside area with defined classes, so that user can specify the look and feel.
+ * Important part of this effort is to allow user show/hide subset of the Features present in the document.
+ * Implementing this functionality also simplifies the manual testing.
+ * @param visualElementId {String} Id of the element into which this will be rendered.
+ * @param wwd {WorldWindow} WorldWindow instance necessary to control the redraw in the framework.
+ * @constructor
+ * @augments KmlControls
+ * @alias KmlTreeVisibility
+ * @classdesc Class for controlling the visibility of features.
+ */
+class KmlTreeVisibility extends KmlControls {
+  constructor(visualElementId, wwd) {
+    super();
 
-        this._visualElementId = visualElementId;
-        this._wwd = wwd;
-    };
+    this._visualElementId = visualElementId;
+    this._wwd = wwd;
+  }
+  /**
+   * @inheritDoc
+   */
+  hook(node, options) {
+    if (options.isFeature) {
+      this.createControls(node);
+    }
+  }
+  // For internal use only.
+  createControls(node) {
+    var name = node.kmlName || node.id || WWUtil.guid();
+    var enabled = node.enabled && node.kmlVisibility === true;
 
-    KmlTreeVisibility.prototype = Object.create(KmlControls.prototype);
+    var controlsForSingleElement = document.createElement("div");
 
-    /**
-     * @inheritDoc
-     */
-    KmlTreeVisibility.prototype.hook = function (node, options) {
-        if(options.isFeature) {
-            this.createControls(node);
-        }
-    };
+    var toggleVisibility = document.createElement("input");
+    toggleVisibility.setAttribute("type", "checkbox");
+    if (enabled) {
+      toggleVisibility.setAttribute("checked", "checked");
+    }
+    toggleVisibility.addEventListener("click", toggleVisibilityOfElement, true);
 
-    // For internal use only.
-    KmlTreeVisibility.prototype.createControls = function (node) {
-        var name = node.kmlName || node.id || WWUtil.guid();
-        var enabled = node.enabled && node.kmlVisibility === true;
+    controlsForSingleElement.appendChild(toggleVisibility);
 
-        var controlsForSingleElement = document.createElement("div");
+    var lookAtName;
+    if (node.kmlAbstractView) {
+      lookAtName = document.createElement("a");
+    } else {
+      lookAtName = document.createElement("span");
+    }
+    lookAtName.appendChild(document.createTextNode(name));
+    lookAtName.addEventListener("click", lookAt, true);
 
-        var toggleVisibility = document.createElement("input");
-        toggleVisibility.setAttribute("type", "checkbox");
-        if (enabled) {
-            toggleVisibility.setAttribute("checked", "checked");
-        }
-        toggleVisibility.addEventListener("click", toggleVisibilityOfElement, true);
+    controlsForSingleElement.appendChild(lookAtName);
 
-        controlsForSingleElement.appendChild(toggleVisibility);
+    document
+      .getElementById(this._visualElementId)
+      .appendChild(controlsForSingleElement);
 
-        var lookAtName;
-        if (node.kmlAbstractView) {
-            lookAtName = document.createElement("a");
-        } else {
-            lookAtName = document.createElement("span");
-        }
-        lookAtName.appendChild(document.createTextNode(name));
-        lookAtName.addEventListener("click", lookAt, true);
+    var self = this;
 
-        controlsForSingleElement.appendChild(lookAtName);
+    function toggleVisibilityOfElement() {
+      enabled = !enabled;
+      self.updateDescendants(node, enabled);
+    }
 
-        document.getElementById(this._visualElementId).appendChild(controlsForSingleElement);
+    function lookAt() {
+      if (node.kmlAbstractView) {
+        node.kmlAbstractView.update({ wwd: self._wwd });
+      }
+    }
+  }
+  // Internal use only. Updates all descendants of given Feature.
+  updateDescendants(node, enabled) {
+    node.controlledVisibility = enabled;
+    this._wwd.redraw();
+  }
+}
 
-        var self = this;
-
-        function toggleVisibilityOfElement() {
-            enabled = !enabled;
-            self.updateDescendants(node, enabled);
-        }
-
-        function lookAt() {
-            if (node.kmlAbstractView) {
-                node.kmlAbstractView.update({wwd: self._wwd});
-            }
-        }
-    };
-
-    // Internal use only. Updates all descendants of given Feature.
-    KmlTreeVisibility.prototype.updateDescendants = function (node, enabled) {
-        node.controlledVisibility = enabled;
-        this._wwd.redraw();
-    };
-
-    return KmlTreeVisibility;
-});
+export default KmlTreeVisibility;

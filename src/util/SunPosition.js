@@ -25,18 +25,12 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
+import Angle from "../geom/Angle";
+import ArgumentError from "../error/ArgumentError";
+import Logger from "./Logger";
+import WWMath from "./WWMath";
 
-define([
-        '../geom/Angle',
-        '../error/ArgumentError',
-        './Logger',
-        './WWMath'
-    ],
-    function (Angle,
-              ArgumentError,
-              Logger,
-              WWMath) {
-        'use strict';
+
 
         /**
          * Provides utilities for determining the Sun geographic and celestial location.
@@ -179,6 +173,5 @@ define([
 
         };
 
-        return SunPosition;
+        export default SunPosition;
 
-    });

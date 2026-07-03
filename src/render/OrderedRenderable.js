@@ -25,67 +25,73 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
+import Logger from "../util/Logger";
+import UnsupportedOperationError from "../error/UnsupportedOperationError";
+import DrawContext from "./DrawContext";
+
 /**
- * @exports OrderedRenderable
+ * Applications must not call this constructor. It is an interface class and is not meant to be instantiated
+ * directly.
+ * @abstract
+ * @alias OrderedRenderable
+ * @constructor
+ * @classdesc Represents an ordered renderable.
+ * This is an interface class and is not meant to be instantiated directly.
  */
-define(['../util/Logger',
-        '../error/UnsupportedOperationError'
-    ],
-    function (Logger,
-              UnsupportedOperationError) {
-        "use strict";
+class OrderedRenderable {
+  constructor() {
+    /**
+     * This ordered renderable's display name.
+     * @type {String}
+     * @default Renderable
+     */
+    this.displayName = "Renderable";
 
-        /**
-         * Applications must not call this constructor. It is an interface class and is not meant to be instantiated
-         * directly.
-         * @alias OrderedRenderable
-         * @constructor
-         * @classdesc Represents an ordered renderable.
-         * This is an interface class and is not meant to be instantiated directly.
-         */
-        var OrderedRenderable = function () {
+    /**
+     * Indicates whether this ordered renderable is enabled.
+     * @type {Boolean}
+     * @default true
+     */
+    this.enabled = true;
 
-            /**
-             * This ordered renderable's display name.
-             * @type {String}
-             * @default Renderable
-             */
-            this.displayName = "Renderable";
+    /**
+     * This ordered renderable's distance from the eye point in meters.
+     * @type {Number}
+     * @default Number.MAX_VALUE
+     */
+    this.eyeDistance = Number.MAX_VALUE;
 
-            /**
-             * Indicates whether this ordered renderable is enabled.
-             * @type {Boolean}
-             * @default true
-             */
-            this.enabled = true;
+    /**
+     * The time at which this ordered renderable was inserted into the ordered rendering list.
+     * @type {Number}
+     * @default 0
+     */
+    this.insertionTime = 0;
 
-            /**
-             * This ordered renderable's distance from the eye point in meters.
-             * @type {Number}
-             * @default Number.MAX_VALUE
-             */
-            this.eyeDistance = Number.MAX_VALUE;
+    throw new UnsupportedOperationError(
+      Logger.logMessage(
+        Logger.LEVEL_SEVERE,
+        "OrderedRenderable",
+        "constructor",
+        "abstractInvocation"
+      )
+    );
+  }
+  /**
+   * Renders this ordered renderable.
+   * @param {DrawContext} dc The current draw context.
+   */
+  renderOrdered(dc) {
+    throw new UnsupportedOperationError(
+      Logger.logMessage(
+        Logger.LEVEL_SEVERE,
+        "OrderedRenderable",
+        "renderOrdered",
+        "abstractInvocation"
+      )
+    );
+  }
+}
 
-            /**
-             * The time at which this ordered renderable was inserted into the ordered rendering list.
-             * @type {Number}
-             * @default 0
-             */
-            this.insertionTime = 0;
 
-            throw new UnsupportedOperationError(
-                Logger.logMessage(Logger.LEVEL_SEVERE, "OrderedRenderable", "constructor", "abstractInvocation"));
-        };
-
-        /**
-         * Renders this ordered renderable.
-         * @param {DrawContext} dc The current draw context.
-         */
-        OrderedRenderable.prototype.renderOrdered = function (dc) {
-            throw new UnsupportedOperationError(
-                Logger.logMessage(Logger.LEVEL_SEVERE, "OrderedRenderable", "renderOrdered", "abstractInvocation"));
-        };
-
-        return OrderedRenderable;
-    })
-;
+export default OrderedRenderable;

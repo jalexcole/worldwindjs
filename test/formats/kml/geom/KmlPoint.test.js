@@ -25,11 +25,9 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
-define([
-    'src/util/XmlDocument',
-    'src/formats/kml/geom/KmlPoint'
-], function (XmlDocument,
-             KmlPoint) {
+import KmlPoint from "../../../../src/formats/kml/geom/KmlPoint";
+import XmlDocument from "../../../../src/util/XmlDocument";
+import {  describe,expect, it } from "vitest";
     describe("KmlPointTest",function() {
             var kmlFile = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
                 "<kml xmlns=\"http://www.opengis.net/kml/2.2\">" +
@@ -55,5 +53,5 @@ define([
 
 
         });
-    });
+
 

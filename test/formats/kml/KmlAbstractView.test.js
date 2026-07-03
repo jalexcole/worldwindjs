@@ -25,15 +25,12 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
-define([
-    'src/formats/kml/KmlAbstractView',
-    'src/formats/kml/KmlTimeSpan',
-    'src/util/XmlDocument'
-], function ( KmlAbstractView,
-              KmlTimeSpan,
-              XmlDocument){
-    "use strict";
+import KmlAbstractView from "../../../src/formats/kml/KmlAbstractView.js";
+import KmlTimeSpan from "../../../src/formats/kml/KmlTimeSpan.js";
+import XmlDocument from "../../../src/util/XmlDocument.js";
 
+
+import {  describe,expect, it } from "vitest";
     describe("KmlAbstractViewTest", function () {
         var validKml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
             "<kml xmlns=\"http://www.opengis.net/kml/2.2\">" +
@@ -50,5 +47,5 @@ define([
             expect(overlay.kmlTimePrimitive instanceof KmlTimeSpan).toBeTruthy();
         })
     });
-});
+
 

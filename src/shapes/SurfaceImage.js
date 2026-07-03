@@ -25,173 +25,195 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
+import ArgumentError from "../error/ArgumentError";
+import Logger from "../util/Logger";
+import PickedObject from "../pick/PickedObject";
+import SurfaceTile from "../render/SurfaceTile";
+import WorldWindConstants from "../WorldWindConstants";
 /**
- * @exports SurfaceImage
+ * Constructs a surface image shape for a specified sector and image path.
+ * @alias SurfaceImage
+ * @constructor
+ * @augments SurfaceTile
+ * @classdesc Represents an image drawn on the terrain.
+ * @param {Sector} sector The sector spanned by this surface image.
+ * @param {String|ImageSource} imageSource The image source of the image to draw on the terrain.
+ * May be either a string identifying the URL of the image, or an {@link ImageSource} object identifying a
+ * dynamically created image.
+ * @throws {ArgumentError} If either the specified sector or image source is null or undefined.
  */
-define([
-        '../error/ArgumentError',
-        '../util/Logger',
-        '../pick/PickedObject',
-        '../render/SurfaceTile'
-    ],
-    function (ArgumentError,
-              Logger,
-              PickedObject,
-              SurfaceTile) {
-        "use strict";
+class SurfaceImage extends SurfaceTile{
+  constructor(sector, imageSource) {
+    super(sector);
+    if (!sector) {
+      throw new ArgumentError(
+        Logger.logMessage(
+          Logger.LEVEL_SEVERE,
+          "SurfaceImage",
+          "constructor",
+          "missingSector"
+        )
+      );
+    }
 
-        /**
-         * Constructs a surface image shape for a specified sector and image path.
-         * @alias SurfaceImage
-         * @constructor
-         * @augments SurfaceTile
-         * @classdesc Represents an image drawn on the terrain.
-         * @param {Sector} sector The sector spanned by this surface image.
-         * @param {String|ImageSource} imageSource The image source of the image to draw on the terrain.
-         * May be either a string identifying the URL of the image, or an {@link ImageSource} object identifying a
-         * dynamically created image.
-         * @throws {ArgumentError} If either the specified sector or image source is null or undefined.
-         */
-        var SurfaceImage = function (sector, imageSource) {
-            if (!sector) {
-                throw new ArgumentError(Logger.logMessage(Logger.LEVEL_SEVERE, "SurfaceImage", "constructor",
-                    "missingSector"));
-            }
+    if (!imageSource) {
+      throw new ArgumentError(
+        Logger.logMessage(
+          Logger.LEVEL_SEVERE,
+          "SurfaceImage",
+          "constructor",
+          "missingImage"
+        )
+      );
+    }
 
-            if (!imageSource) {
-                throw new ArgumentError(Logger.logMessage(Logger.LEVEL_SEVERE, "SurfaceImage", "constructor",
-                    "missingImage"));
-            }
+    
 
-            SurfaceTile.call(this, sector);
+    /**
+     * Indicates whether this surface image is drawn.
+     * @type {boolean}
+     * @default true
+     */
+    this.enabled = true;
 
-            /**
-             * Indicates whether this surface image is drawn.
-             * @type {boolean}
-             * @default true
-             */
-            this.enabled = true;
+    /**
+     * The path to the image.
+     * @type {String}
+     */
+    this._imageSource = imageSource;
 
-            /**
-             * The path to the image.
-             * @type {String}
-             */
-            this._imageSource = imageSource;
+    /**
+     * This surface image's resampling mode. Indicates the sampling algorithm used to display this image when it
+     * is larger on screen than its native resolution. May be one of:
+     * <ul>
+     *  <li>WorldWindConstants.FILTER_LINEAR</li>
+     *  <li>WorldWindConstants.FILTER_NEAREST</li>
+     * </ul>
+     * @default WorldWindConstants.FILTER_LINEAR
+     */
+    this.resamplingMode = WorldWindConstants.FILTER_LINEAR;
 
-            /**
-             * This surface image's resampling mode. Indicates the sampling algorithm used to display this image when it
-             * is larger on screen than its native resolution. May be one of:
-             * <ul>
-             *  <li>WorldWind.FILTER_LINEAR</li>
-             *  <li>WorldWind.FILTER_NEAREST</li>
-             * </ul>
-             * @default WorldWind.FILTER_LINEAR
-             */
-            this.resamplingMode = WorldWind.FILTER_LINEAR;
+    /**
+     * This surface image's opacity. When this surface image is drawn, the actual opacity is the product of
+     * this opacity and the opacity of the layer containing this surface image.
+     * @type {number}
+     */
+    this.opacity = 1;
 
-            /**
-             * This surface image's opacity. When this surface image is drawn, the actual opacity is the product of
-             * this opacity and the opacity of the layer containing this surface image.
-             * @type {number}
-             */
-            this.opacity = 1;
+    /**
+     * This surface image's display name;
+     * @type {string}
+     */
+    this.displayName = "Surface Image";
 
-            /**
-             * This surface image's display name;
-             * @type {string}
-             */
-            this.displayName = "Surface Image";
+    // Internal. Indicates whether the image needs to be updated in the GPU resource cache.
+    this.imageSourceWasUpdated = true;
+  }
+  bind(dc) {
+    var texture = dc.gpuResourceCache.resourceForKey(this._imageSource);
+    if (texture && !this.imageSourceWasUpdated) {
+      return this.bindTexture(dc, texture);
+    } else {
+      texture = dc.gpuResourceCache.retrieveTexture(
+        dc.currentGlContext,
+        this._imageSource
+      );
+      this.imageSourceWasUpdated = false;
+      if (texture) {
+        return this.bindTexture(dc, texture);
+      }
+    }
+  }
+  bindTexture(dc, texture) {
+    var gl = dc.currentGlContext;
 
-            // Internal. Indicates whether the image needs to be updated in the GPU resource cache.
-            this.imageSourceWasUpdated = true;
-        };
+    texture.setTexParameter(
+      gl.TEXTURE_MAG_FILTER,
+      this.resamplingMode === WorldWindConstants.FILTER_NEAREST
+        ? gl.NEAREST
+        : gl.LINEAR
+    );
 
-        SurfaceImage.prototype = Object.create(SurfaceTile.prototype);
+    return texture.bind(dc);
+  }
+  applyInternalTransform(dc, matrix) {
+    // No need to apply the transform.
+  }
+  /**
+   * Displays this surface image. Called by the layer containing this surface image.
+   * @param {DrawContext} dc The current draw context.
+   */
+  render(dc) {
+    if (!this.enabled) {
+      return;
+    }
 
-        Object.defineProperties(SurfaceImage.prototype, {
-            /**
-             * The source of the image to display.
-             * May be either a string identifying the URL of the image, or an {@link ImageSource} object identifying a
-             * dynamically created image.
-             * @type {String|ImageSource}
-             * @default null
-             * @memberof SurfaceImage.prototype
-             */
-            imageSource: {
-                get: function () {
-                    return this._imageSource;
-                },
-                set: function (imageSource) {
-                    if (!imageSource) {
-                        throw new ArgumentError(Logger.logMessage(Logger.LEVEL_SEVERE, "SurfaceImage", "imageSource",
-                            "missingImage"));
-                    }
+    if (!dc.terrain) {
+      return;
+    }
 
-                    this._imageSource = imageSource;
-                    this.imageSourceWasUpdated = true;
-                }
-            }
-        });
+    if (!this.sector.overlaps(dc.terrain.sector)) {
+      return;
+    }
 
-        SurfaceImage.prototype.bind = function (dc) {
-            var texture = dc.gpuResourceCache.resourceForKey(this._imageSource);
-            if (texture && !this.imageSourceWasUpdated) {
-                return this.bindTexture(dc, texture);
-            } else {
-                texture = dc.gpuResourceCache.retrieveTexture(dc.currentGlContext, this._imageSource);
-                this.imageSourceWasUpdated = false;
-                if (texture) {
-                    return this.bindTexture(dc, texture);
-                }
-            }
-        };
+    if (dc.pickingMode) {
+      this.pickColor = dc.uniquePickColor();
+    }
 
-        SurfaceImage.prototype.bindTexture = function (dc, texture) {
-            var gl = dc.currentGlContext;
+    dc.surfaceTileRenderer.renderTiles(
+      dc,
+      [this],
+      this.opacity * dc.currentLayer.opacity
+    );
 
-            texture.setTexParameter(
-                gl.TEXTURE_MAG_FILTER,
-                this.resamplingMode === WorldWind.FILTER_NEAREST ? gl.NEAREST : gl.LINEAR
-            );
+    if (dc.pickingMode) {
+      var po = new PickedObject(
+        this.pickColor.clone(),
+        this.pickDelegate ? this.pickDelegate : this,
+        null,
+        this.layer,
+        false
+      );
+      dc.resolvePick(po);
+    }
 
-            return texture.bind(dc);
-        };
+    dc.currentLayer.inCurrentFrame = true;
+  }
+}
 
-        SurfaceImage.prototype.applyInternalTransform = function (dc, matrix) {
-            // No need to apply the transform.
-        };
+Object.defineProperties(SurfaceImage.prototype, {
+  /**
+   * The source of the image to display.
+   * May be either a string identifying the URL of the image, or an {@link ImageSource} object identifying a
+   * dynamically created image.
+   * @type {String|ImageSource}
+   * @default null
+   * @memberof SurfaceImage.prototype
+   */
+  imageSource: {
+    get: function () {
+      return this._imageSource;
+    },
+    set: function (imageSource) {
+      if (!imageSource) {
+        throw new ArgumentError(
+          Logger.logMessage(
+            Logger.LEVEL_SEVERE,
+            "SurfaceImage",
+            "imageSource",
+            "missingImage"
+          )
+        );
+      }
 
-        /**
-         * Displays this surface image. Called by the layer containing this surface image.
-         * @param {DrawContext} dc The current draw context.
-         */
-        SurfaceImage.prototype.render = function (dc) {
-            if (!this.enabled) {
-                return;
-            }
+      this._imageSource = imageSource;
+      this.imageSourceWasUpdated = true;
+    },
+  },
+});
 
-            if (!dc.terrain) {
-                return;
-            }
 
-            if (!this.sector.overlaps(dc.terrain.sector)) {
-                return;
-            }
 
-            if (dc.pickingMode) {
-                this.pickColor = dc.uniquePickColor();
-            }
 
-            dc.surfaceTileRenderer.renderTiles(dc, [this], this.opacity * dc.currentLayer.opacity);
 
-            if (dc.pickingMode) {
-                var po = new PickedObject(this.pickColor.clone(), this.pickDelegate ? this.pickDelegate : this,
-                    null, this.layer, false);
-                dc.resolvePick(po);
-            }
-
-            dc.currentLayer.inCurrentFrame = true;
-        };
-
-        return SurfaceImage;
-    });
+export default SurfaceImage;

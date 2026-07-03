@@ -25,38 +25,34 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
-define([
-    './../KmlElements',
-    '../KmlObject'
-], function (KmlElements,
-             KmlObject) {
-    "use strict";
-    /**
-     * Constructs an KmlSchema. Application usually don't call this constructor. It is called by {@link KmlFile} as
-     * Objects from KmlFile are read. It is concrete implementation.
-     * @alias KmlSchema
-     * @constructor
-     * @classdesc Contains the data associated with Kml KmlSchema
-     * @param options {Object}
-     * @param options.objectNode {Node} Node representing the Kml KmlSchema.
-     * @throws {ArgumentError} If either the node is null or undefined.
-     * @see https://developers.google.com/kml/documentation/kmlreference#itemicon
-     * @augments KmlObject
-     */
-    var KmlSchema = function (options) {
-        KmlObject.call(this, options);
-    };
+import KmlElements from "../KmlElements";
+import KmlObject from "../KmlObject";
 
-    KmlSchema.prototype = Object.create(KmlObject.prototype);
+/**
+ * Constructs an KmlSchema. Application usually don't call this constructor. It is called by {@link KmlFile} as
+ * Objects from KmlFile are read. It is concrete implementation.
+ * @alias KmlSchema
+ * @constructor
+ * @classdesc Contains the data associated with Kml KmlSchema
+ * @param options {Object}
+ * @param options.objectNode {Node} Node representing the Kml KmlSchema.
+ * @throws {ArgumentError} If either the node is null or undefined.
+ * @see https://developers.google.com/kml/documentation/kmlreference#itemicon
+ * @augments KmlObject
+ */
+var KmlSchema = function (options) {
+  KmlObject.call(this, options);
+};
 
-    /**
-     * @inheritDoc
-     */
-    KmlSchema.prototype.getTagNames = function () {
-        return ['Schema'];
-    };
+KmlSchema.prototype = Object.create(KmlObject.prototype);
 
-    KmlElements.addKey(KmlSchema.prototype.getTagNames()[0], KmlSchema);
+/**
+ * @inheritDoc
+ */
+KmlSchema.prototype.getTagNames = function () {
+  return ["Schema"];
+};
 
-    return KmlSchema;
-});
+KmlElements.addKey(KmlSchema.prototype.getTagNames()[0], KmlSchema);
+
+export default KmlSchema;

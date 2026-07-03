@@ -25,164 +25,171 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
+
 /**
- * @exports LayersPanel
+ * Constructs a layers panel to manage the app's layer list.
+ * @alias LayersPanel
+ * @constructor
+ * @classdesc Provides a list of buttons that control layer visibility.
+ * @param {WorldWindow} worldWindow The WorldWindow to associate this layers panel with.
  */
-define(function () {
-    "use strict";
+var LayersPanel = function (worldWindow) {
+  this.wwd = worldWindow;
+  //
+  //$("#layerList").sortable({
+  //    handle: '.list-group-item',
+  //    update: function () {
+  //        console.log("GOT HERE");
+  //    },
+  //    axis: 'y',
+  //    containment: 'parent',
+  //    cursor: 'move'
+  //});
 
-    /**
-     * Constructs a layers panel to manage the app's layer list.
-     * @alias LayersPanel
-     * @constructor
-     * @classdesc Provides a list of buttons that control layer visibility.
-     * @param {WorldWindow} worldWindow The WorldWindow to associate this layers panel with.
-     */
-    var LayersPanel = function (worldWindow) {
-        this.wwd = worldWindow;
-        //
-        //$("#layerList").sortable({
-        //    handle: '.list-group-item',
-        //    update: function () {
-        //        console.log("GOT HERE");
-        //    },
-        //    axis: 'y',
-        //    containment: 'parent',
-        //    cursor: 'move'
-        //});
+  this.synchronizeLayerList();
+};
 
-        this.synchronizeLayerList();
-    };
+LayersPanel.prototype.onLayerClick = function (layerButton) {
+  var layerName = layerButton.text();
 
-    LayersPanel.prototype.onLayerClick = function (layerButton) {
-        var layerName = layerButton.text();
+  // Update the layer state for the selected layer.
+  for (var i = 0, len = this.wwd.layers.length; i < len; i++) {
+    var layer = this.wwd.layers[i];
+    if (layer.hide) {
+      continue;
+    }
 
-        // Update the layer state for the selected layer.
-        for (var i = 0, len = this.wwd.layers.length; i < len; i++) {
-            var layer = this.wwd.layers[i];
-            if (layer.hide) {
-                continue;
-            }
+    if (layer.displayName === layerName) {
+      layer.enabled = !layer.enabled;
+      this.synchronizeLayerList();
 
-            if (layer.displayName === layerName) {
-                layer.enabled = !layer.enabled;
-                this.synchronizeLayerList();
-
-                if (layer.companionLayer) {
-                    if (layer.enabled) {
-                        ++layer.companionLayer.refCount;
-                    } else {
-                        --layer.companionLayer.refCount;
-                    }
-
-                    layer.companionLayer.enabled = layer.companionLayer.refCount > 0;
-                }
-
-                this.wwd.redraw();
-            }
+      if (layer.companionLayer) {
+        if (layer.enabled) {
+          ++layer.companionLayer.refCount;
+        } else {
+          --layer.companionLayer.refCount;
         }
-    };
 
-    LayersPanel.prototype.onTimeButtonClick = function (timeButton) {
-        var isOn = timeButton.hasClass("btn-primary");
+        layer.companionLayer.enabled = layer.companionLayer.refCount > 0;
+      }
 
-        if (this.timeSeriesPlayer) {
-            var layer = null;
+      this.wwd.redraw();
+    }
+  }
+};
 
-            for (var i = 0, len = this.wwd.layers.length; i < len; i++) {
-                var layer = this.wwd.layers[i];
+LayersPanel.prototype.onTimeButtonClick = function (timeButton) {
+  var isOn = timeButton.hasClass("btn-primary");
 
-                if (timeButton.hasClass(layer.displayName)) {
-                    break;
-                }
-            }
+  if (this.timeSeriesPlayer) {
+    var layer = null;
 
-            if (isOn) {
-                this.timeSeriesPlayer.layer = null;
-                this.timeSeriesPlayer.timeSequence = null;
-            } else {
-                layer.enabled = true;
-                this.timeSeriesPlayer.layer = layer;
-                this.timeSeriesPlayer.timeSequence = layer.timeSequence;
-            }
+    for (var i = 0, len = this.wwd.layers.length; i < len; i++) {
+      var layer = this.wwd.layers[i];
 
-            this.synchronizeLayerList();
-        }
-    };
+      if (timeButton.hasClass(layer.displayName)) {
+        break;
+      }
+    }
 
-    LayersPanel.prototype.onLayerDropdownClicked = function (dropButton) {
-    };
+    if (isOn) {
+      this.timeSeriesPlayer.layer = null;
+      this.timeSeriesPlayer.timeSequence = null;
+    } else {
+      layer.enabled = true;
+      this.timeSeriesPlayer.layer = layer;
+      this.timeSeriesPlayer.timeSequence = layer.timeSequence;
+    }
 
-    LayersPanel.prototype.synchronizeLayerList = function () {
-        var thisLayersPanel = this,
-            layerListItem = $("#layerList");
+    this.synchronizeLayerList();
+  }
+};
 
-        layerListItem.find("button").off("click");
-        layerListItem.empty();
+LayersPanel.prototype.onLayerDropdownClicked = function (dropButton) {};
 
-        // Synchronize the displayed layer list with the WorldWindow's layer list.
-        for (var i = 0, len = this.wwd.layers.length; i < len; i++) {
-            var layer = this.wwd.layers[i];
-            if (layer.hide) {
-                continue;
-            }
+LayersPanel.prototype.synchronizeLayerList = function () {
+  var thisLayersPanel = this,
+    layerListItem = $("#layerList");
 
-            var btnGroup = $('<div class="btn-group btn-block" style="display: flex; display: -webkit-flex"></div>'),
-                layerButton, dropButton = null, timeButton = null;
+  layerListItem.find("button").off("click");
+  layerListItem.empty();
 
-            if (!layer.timeSequence) {
-                layerButton = $('<button type="button" class="btn wrap-panel-heading" style="display: block; width: 100%">' + layer.displayName + '</button>');
-                btnGroup.append(layerButton);
-            } else {
-                //var caretSpan = $('<span class="caret"></span><span class="sr-only"></span>');
-                var timeSpan = $('<span class="glyphicon glyphicon-time"></span>');
+  // Synchronize the displayed layer list with the WorldWindow's layer list.
+  for (var i = 0, len = this.wwd.layers.length; i < len; i++) {
+    var layer = this.wwd.layers[i];
+    if (layer.hide) {
+      continue;
+    }
 
-                layerButton = $('<button type="button" class="btn wrap-panel-heading" style="display: block; width: 85%">' + layer.displayName + '</button>');
-                //dropButton = $('<button type=button class="btn dropdown-toggle" data-toggle="dropdown" style="width: 10%"></button>');
-                timeButton = $('<button type=button class="btn timeButton" style="width: 15%"></button>');
-                timeButton.addClass(layer.displayName);
+    var btnGroup = $(
+        '<div class="btn-group btn-block" style="display: flex; display: -webkit-flex"></div>'
+      ),
+      layerButton,
+      dropButton = null,
+      timeButton = null;
 
-                timeButton.append(timeSpan);
-                //dropButton.append(caretSpan);
-                btnGroup.append(layerButton);
-                btnGroup.append(timeButton);
-            }
+    if (!layer.timeSequence) {
+      layerButton = $(
+        '<button type="button" class="btn wrap-panel-heading" style="display: block; width: 100%">' +
+          layer.displayName +
+          "</button>"
+      );
+      btnGroup.append(layerButton);
+    } else {
+      //var caretSpan = $('<span class="caret"></span><span class="sr-only"></span>');
+      var timeSpan = $('<span class="glyphicon glyphicon-time"></span>');
 
-            layerListItem.append(btnGroup);
+      layerButton = $(
+        '<button type="button" class="btn wrap-panel-heading" style="display: block; width: 85%">' +
+          layer.displayName +
+          "</button>"
+      );
+      //dropButton = $('<button type=button class="btn dropdown-toggle" data-toggle="dropdown" style="width: 10%"></button>');
+      timeButton = $(
+        '<button type=button class="btn timeButton" style="width: 15%"></button>'
+      );
+      timeButton.addClass(layer.displayName);
 
-            if (layer.enabled) {
-                layerButton.addClass("btn-primary");
-                if (dropButton) {
-                    dropButton.addClass("btn-primary");
-                }
-            } else {
-                layerButton.removeClass("btn-primary");
-                if (dropButton) {
-                    dropButton.removeClass("btn-primary");
-                }
-            }
+      timeButton.append(timeSpan);
+      //dropButton.append(caretSpan);
+      btnGroup.append(layerButton);
+      btnGroup.append(timeButton);
+    }
 
-            layerButton.on("click", function (e) {
-                thisLayersPanel.onLayerClick($(this));
-            });
+    layerListItem.append(btnGroup);
 
-            if (timeButton) {
-                if (this.timeSeriesPlayer && this.timeSeriesPlayer.layer === layer) {
-                    timeButton.addClass("btn-primary");
-                }
+    if (layer.enabled) {
+      layerButton.addClass("btn-primary");
+      if (dropButton) {
+        dropButton.addClass("btn-primary");
+      }
+    } else {
+      layerButton.removeClass("btn-primary");
+      if (dropButton) {
+        dropButton.removeClass("btn-primary");
+      }
+    }
 
-                timeButton.on("click", function(e) {
-                    thisLayersPanel.onTimeButtonClick($(this));
-                })
-            }
+    layerButton.on("click", function (e) {
+      thisLayersPanel.onLayerClick($(this));
+    });
 
-            if (dropButton) {
-                dropButton.on("click", function (e) {
-                    thisLayersPanel.onLayerDropdownClicked($(this));
-                });
-            }
-        }
-    };
+    if (timeButton) {
+      if (this.timeSeriesPlayer && this.timeSeriesPlayer.layer === layer) {
+        timeButton.addClass("btn-primary");
+      }
 
-    return LayersPanel;
-});
+      timeButton.on("click", function (e) {
+        thisLayersPanel.onTimeButtonClick($(this));
+      });
+    }
+
+    if (dropButton) {
+      dropButton.on("click", function (e) {
+        thisLayersPanel.onLayerDropdownClicked($(this));
+      });
+    }
+  }
+};
+
+export default LayersPanel;

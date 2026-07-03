@@ -25,207 +25,199 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
+import Logger from "../../util/Logger";
 
-define(['../../util/Logger'], function (Logger) {
-    "use strict";
+/**
+ * Provides utilities for the ColladaLoader.
+ * @exports ColladaUtils
+ */
+var ColladaUtils = {
+  /**
+   * Packs data from a node in an array.
+   * Internal. Applications should not call this function.
+   * @param {Node} xmlNode A node from which to extract values.
+   */
+  getRawValues: function (xmlNode) {
+    if (!xmlNode) {
+      return null;
+    }
 
-    /**
-     * Provides utilities for the ColladaLoader.
-     * @exports ColladaUtils
-     */
-    var ColladaUtils = {
+    var text = xmlNode.textContent;
+    text = text.replace(/\n/gi, " ");
+    text = text.replace(/\s+/gi, " ");
+    text = text.trim();
 
-        /**
-         * Packs data from a node in an array.
-         * Internal. Applications should not call this function.
-         * @param {Node} xmlNode A node from which to extract values.
-         */
-        getRawValues: function (xmlNode) {
-            if (!xmlNode) {
-                return null;
-            }
+    if (text.length === 0) {
+      return null;
+    }
 
-            var text = xmlNode.textContent;
-            text = text.replace(/\n/gi, " ");
-            text = text.replace(/\s+/gi, " ");
-            text = text.trim();
+    return text.split(" ");
+  },
 
-            if (text.length === 0) {
-                return null;
-            }
+  /**
+   * Packs data from a node as a Float32Array.
+   * Internal. Applications should not call this function.
+   * @param {Node} xmlNode A node from which to extract values.
+   */
+  bufferDataFloat32: function (xmlNode) {
+    var rawValues = this.getRawValues(xmlNode);
+    if (!rawValues) {
+      return null;
+    }
 
-            return text.split(" ");
-        },
+    var len = rawValues.length;
 
-        /**
-         * Packs data from a node as a Float32Array.
-         * Internal. Applications should not call this function.
-         * @param {Node} xmlNode A node from which to extract values.
-         */
-        bufferDataFloat32: function (xmlNode) {
+    var bufferData = new Float32Array(len);
+    for (var i = 0; i < len; i++) {
+      bufferData[i] = parseFloat(rawValues[i]);
+    }
 
-            var rawValues = this.getRawValues(xmlNode);
-            if (!rawValues) {
-                return null;
-            }
+    return bufferData;
+  },
 
-            var len = rawValues.length;
+  /**
+   * Packs data from a node as a UInt32Array.
+   * Internal. Applications should not call this function.
+   * @param {Node} xmlNode A node from which to extract values.
+   */
+  bufferDataUInt32: function (xmlNode) {
+    var rawValues = this.getRawValues(xmlNode);
+    if (!rawValues) {
+      return null;
+    }
 
-            var bufferData = new Float32Array(len);
-            for (var i = 0; i < len; i++) {
-                bufferData[i] = parseFloat(rawValues[i]);
-            }
+    var len = rawValues.length;
 
-            return bufferData;
-        },
+    var bufferData = new Uint32Array(len);
+    for (var i = 0; i < len; i++) {
+      bufferData[i] = parseInt(rawValues[i]);
+    }
 
-        /**
-         * Packs data from a node as a UInt32Array.
-         * Internal. Applications should not call this function.
-         * @param {Node} xmlNode A node from which to extract values.
-         */
-        bufferDataUInt32: function (xmlNode) {
+    return bufferData;
+  },
 
-            var rawValues = this.getRawValues(xmlNode);
-            if (!rawValues) {
-                return null;
-            }
+  /**
+   * Returns the first child of a node.
+   * Internal. Applications should not call this function.
+   * @param {Node} xmlNode The tag to look in.
+   * @param {String} nodeName Optional parameter, the name of the child.
+   */
+  getFirstChildElement: function (xmlNode, nodeName) {
+    var childs = xmlNode.childNodes;
 
-            var len = rawValues.length;
+    for (var i = 0; i < childs.length; ++i) {
+      var item = childs.item(i);
 
-            var bufferData = new Uint32Array(len);
-            for (var i = 0; i < len; i++) {
-                bufferData[i] = parseInt(rawValues[i]);
-            }
+      if (item.nodeType !== 1) {
+        continue;
+      }
 
-            return bufferData;
-        },
+      if (
+        (item.nodeName && !nodeName) ||
+        (nodeName && nodeName === item.nodeName)
+      ) {
+        return item;
+      }
+    }
 
-        /**
-         * Returns the first child of a node.
-         * Internal. Applications should not call this function.
-         * @param {Node} xmlNode The tag to look in.
-         * @param {String} nodeName Optional parameter, the name of the child.
-         */
-        getFirstChildElement: function (xmlNode, nodeName) {
+    return null;
+  },
 
-            var childs = xmlNode.childNodes;
+  /**
+   * Returns the filename without slashes.
+   * Internal. Applications should not call this function.
+   * @param {String} filePath
+   */
+  getFilename: function (filePath) {
+    var pos = filePath.lastIndexOf("\\");
+    if (pos !== -1) {
+      filePath = filePath.substr(pos + 1);
+    }
 
-            for (var i = 0; i < childs.length; ++i) {
+    pos = filePath.lastIndexOf("/");
+    if (pos !== -1) {
+      filePath = filePath.substr(pos + 1);
+    }
 
-                var item = childs.item(i);
+    return filePath;
+  },
 
-                if (item.nodeType !== 1) {
-                    continue;
-                }
+  /**
+   * Replaces the spaces in a string with an "_".
+   * Internal. Applications should not call this function.
+   * @param {String} str
+   */
+  replaceSpace: function (str) {
+    if (!str) {
+      return "";
+    }
+    return str.replace(/ /g, "_");
+  },
 
-                if ((item.nodeName && !nodeName) || (nodeName && nodeName === item.nodeName)) {
-                    return item;
-                }
-            }
+  /**
+   * Finds a node by id.
+   * Internal. Applications should not call this function.
+   * @param {NodeList} nodes A list of nodes to look in.
+   * @param {String} id The id of the node to search for.
+   */
+  querySelectorById: function (nodes, id) {
+    for (var i = 0; i < nodes.length; i++) {
+      var attrId = nodes.item(i).getAttribute("id");
+      if (!attrId) {
+        continue;
+      }
+      if (attrId.toString() === id) {
+        return nodes.item(i);
+      }
+    }
+    return null;
+  },
 
-            return null;
-        },
+  /**
+   * Determines the rendering method for a texture.
+   * The method can be CLAMP or REPEAT.
+   * Internal. Applications should not call this function.
+   * @param {Number[]} uvs The uvs array.
+   */
+  getTextureType: function (uvs) {
+    var clamp = true;
 
-        /**
-         * Returns the filename without slashes.
-         * Internal. Applications should not call this function.
-         * @param {String} filePath
-         */
-        getFilename: function (filePath) {
+    for (var i = 0, len = uvs.length; i < len; i++) {
+      if (uvs[i] < 0 || uvs[i] > 1) {
+        clamp = false;
+        break;
+      }
+    }
 
-            var pos = filePath.lastIndexOf("\\");
-            if (pos !== -1) {
-                filePath = filePath.substr(pos + 1);
-            }
+    return clamp;
+  },
 
-            pos = filePath.lastIndexOf("/");
-            if (pos !== -1) {
-                filePath = filePath.substr(pos + 1);
-            }
+  /**
+   * Fetches a file.
+   * @param {String} url The path to the collada file.
+   * @param {Function} cb A callback function to call when the collada file loaded.
+   */
+  fetchFile: function (url, cb) {
+    var request = new XMLHttpRequest();
 
-            return filePath;
-        },
-
-        /**
-         * Replaces the spaces in a string with an "_".
-         * Internal. Applications should not call this function.
-         * @param {String} str
-         */
-        replaceSpace: function (str) {
-            if (!str) {
-                return "";
-            }
-            return str.replace(/ /g, "_");
-        },
-
-        /**
-         * Finds a node by id.
-         * Internal. Applications should not call this function.
-         * @param {NodeList} nodes A list of nodes to look in.
-         * @param {String} id The id of the node to search for.
-         */
-        querySelectorById: function (nodes, id) {
-            for (var i = 0; i < nodes.length; i++) {
-                var attrId = nodes.item(i).getAttribute("id");
-                if (!attrId) {
-                    continue;
-                }
-                if (attrId.toString() === id) {
-                    return nodes.item(i);
-                }
-            }
-            return null;
-        },
-
-        /**
-         * Determines the rendering method for a texture.
-         * The method can be CLAMP or REPEAT.
-         * Internal. Applications should not call this function.
-         * @param {Number[]} uvs The uvs array.
-         */
-        getTextureType: function (uvs) {
-            var clamp = true;
-
-            for (var i = 0, len = uvs.length; i < len; i++) {
-                if (uvs[i] < 0 || uvs[i] > 1) {
-                    clamp = false;
-                    break;
-                }
-            }
-
-            return clamp;
-        },
-
-        /**
-         * Fetches a file.
-         * @param {String} url The path to the collada file.
-         * @param {Function} cb A callback function to call when the collada file loaded.
-         */
-        fetchFile: function (url, cb) {
-
-            var request = new XMLHttpRequest();
-
-            request.onload = function () {
-                if (this.status >= 200 && this.status < 400) {
-                    cb(this.response);
-                }
-                else {
-                    Logger.log(Logger.LEVEL_SEVERE, "sever error: " + this.status);
-                    cb(null);
-                }
-            };
-
-            request.onerror = function (e) {
-                Logger.log(Logger.LEVEL_SEVERE, "connection error: " + e);
-                cb(null);
-            };
-
-            request.open("get", url, true);
-
-            request.send();
-        }
+    request.onload = function () {
+      if (this.status >= 200 && this.status < 400) {
+        cb(this.response);
+      } else {
+        Logger.log(Logger.LEVEL_SEVERE, "sever error: " + this.status);
+        cb(null);
+      }
     };
 
-    return ColladaUtils;
-});
+    request.onerror = function (e) {
+      Logger.log(Logger.LEVEL_SEVERE, "connection error: " + e);
+      cb(null);
+    };
+
+    request.open("get", url, true);
+
+    request.send();
+  },
+};
+
+export default ColladaUtils;

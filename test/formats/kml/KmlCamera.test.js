@@ -25,12 +25,10 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
-define([
-    'src/formats/kml/KmlCamera',
-    'src/util/XmlDocument'
-], function (KmlCamera,
-    		 XmlDocument) {
-	"use strict";
+import KmlCamera from "../../../src/formats/kml/KmlCamera.js";
+import XmlDocument from "../../../src/util/XmlDocument.js";
+
+import { describe,expect, it } from "vitest";
 
 	describe("KmlCameraTest", function() {
 		var validKml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
@@ -59,4 +57,3 @@ define([
 			expect(camera.kmlAltitudeMode).toEqual("clampToGround");
 		})	
 	});
-});

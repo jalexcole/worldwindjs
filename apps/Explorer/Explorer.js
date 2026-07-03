@@ -25,62 +25,65 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
-define(['../../src/WorldWind',
-        '../util/GoToBox',
-        '../util/LayersPanel',
-        '../util/ProjectionMenu',
-        '../util/ServersPanel',
-        '../util/TimeSeriesPlayer'],
-    function (ww,
-              GoToBox,
-              LayersPanel,
-              ProjectionMenu,
-              ServersPanel,
-              TimeSeriesPlayer) {
-        "use strict";
+import WorldWind from "../../src/WorldWind";
+import GoToBox from "../util/GoToBox.js";
+import LayersPanel from "../util/LayersPanel.js";
+import ProjecionMenu from "../util/ProjectionMenu.js";
+import ServersPanel from "../util/ServersPanel.js";
+import TimeSeriesPlayer from "../util/TimeSeriesPlayer.js";
 
-        var Explorer = function () {
-            WorldWind.Logger.setLoggingLevel(WorldWind.Logger.LEVEL_WARNING);
+var Explorer = function () {
+  WorldWind.Logger.setLoggingLevel(WorldWind.Logger.LEVEL_WARNING);
 
-            // Create the WorldWindow.
-            this.wwd = new WorldWind.WorldWindow("canvasOne");
+  // Create the WorldWindow.
+  this.wwd = new WorldWind.WorldWindow("canvasOne");
 
-            /**
-             * Added imagery layers.
-             */
-            var layers = [
-                {layer: new WorldWind.BMNGLayer(), enabled: true, hide: true},
-                {layer: new WorldWind.BingAerialWithLabelsLayer(null), enabled: true},
-                {layer: new WorldWind.OpenStreetMapImageLayer(null), enabled: false},
-                {layer: new WorldWind.CompassLayer(), enabled: true, hide: true},
-                {layer: new WorldWind.CoordinatesDisplayLayer(this.wwd), enabled: true, hide: true},
-                {layer: new WorldWind.ViewControlsLayer(this.wwd), enabled: true, hide: true}
-            ];
+  /**
+   * Added imagery layers.
+   */
+  var layers = [
+    { layer: new WorldWind.BMNGLayer(), enabled: true, hide: true },
+    { layer: new WorldWind.BingAerialWithLabelsLayer(null), enabled: true },
+    { layer: new WorldWind.OpenStreetMapImageLayer(null), enabled: false },
+    { layer: new WorldWind.CompassLayer(), enabled: true, hide: true },
+    {
+      layer: new WorldWind.CoordinatesDisplayLayer(this.wwd),
+      enabled: true,
+      hide: true,
+    },
+    {
+      layer: new WorldWind.ViewControlsLayer(this.wwd),
+      enabled: true,
+      hide: true,
+    },
+  ];
 
-            for (var l = 0; l < layers.length; l++) {
-                layers[l].layer.enabled = layers[l].enabled;
-                layers[l].layer.hide = layers[l].hide;
-                this.wwd.addLayer(layers[l].layer);
-            }
+  for (var l = 0; l < layers.length; l++) {
+    layers[l].layer.enabled = layers[l].enabled;
+    layers[l].layer.hide = layers[l].hide;
+    this.wwd.addLayer(layers[l].layer);
+  }
 
-            // Start the view pointing to a longitude within the current time zone.
-            var lookAt = new WorldWind.LookAt();
-            lookAt.position.latitude = 30;
-            lookAt.position.longitude = -(180 / 12) * ((new Date()).getTimezoneOffset() / 60);
-            this.wwd.cameraFromLookAt(lookAt);
+  // Start the view pointing to a longitude within the current time zone.
+  var lookAt = new WorldWind.LookAt();
+  lookAt.position.latitude = 30;
+  lookAt.position.longitude =
+    -(180 / 12) * (new Date().getTimezoneOffset() / 60);
+  this.wwd.cameraFromLookAt(lookAt);
 
-            this.goToBox = new GoToBox(this.wwd);
-            this.layersPanel = new LayersPanel(this.wwd);
-            this.timeSeriesPlayer = new TimeSeriesPlayer(this.wwd);
-            this.serversPanel = new ServersPanel(this.wwd, this.layersPanel, this.timeSeriesPlayer);
-            this.projectionMenu = new ProjectionMenu(this.wwd);
+  this.goToBox = new GoToBox(this.wwd);
+  this.layersPanel = new LayersPanel(this.wwd);
+  this.timeSeriesPlayer = new TimeSeriesPlayer(this.wwd);
+  this.serversPanel = new ServersPanel(
+    this.wwd,
+    this.layersPanel,
+    this.timeSeriesPlayer
+  );
+  this.projectionMenu = new ProjectionMenu(this.wwd);
 
-            this.layersPanel.timeSeriesPlayer = this.timeSeriesPlayer;
+  this.layersPanel.timeSeriesPlayer = this.timeSeriesPlayer;
 
-            this.serversPanel.attachServer("https://neo.sci.gsfc.nasa.gov/wms/wms");
-        };
+  this.serversPanel.attachServer("https://neo.sci.gsfc.nasa.gov/wms/wms");
+};
 
-        return Explorer;
-    }
-)
-;
+export default Explorer;

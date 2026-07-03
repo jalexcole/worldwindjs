@@ -25,12 +25,12 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
-define([
-    'src/geom/Plane',
-    'src/geom/Line',
-    'src/geom/Vec3'
-], function (Plane, Line, Vec3) {
-    "use strict";
+import Line from "../../src/geom/Line.js";
+import Plane from "../../src/geom/Plane.js";
+import Vec3 from "../../src/geom/Vec3.js";
+
+import { beforeEach, describe,expect, it } from "vitest";
+
 
     describe("Plane Tests", function () {
 
@@ -340,5 +340,3 @@ define([
             });
         });
     });
-
-});

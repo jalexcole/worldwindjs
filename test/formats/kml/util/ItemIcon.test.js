@@ -25,16 +25,10 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
-define([
-    'src/formats/kml/util/KmlItemIcon',
-    'src/formats/kml/KmlFileCache',
-    'src/util/XmlDocument'
-], function (
-    ItemIcon,
-    KmlFileCache,
-    XmlDocument
-) {
-    "use strict";
+import KmlItemIcon from "../../../../src/formats/kml/util/KmlItemIcon.js";
+import XmlDocument from "../../../../src/util/XmlDocument.js";
+import KmlFileCache from "../../../../src/formats/kml/KmlFileCache";
+import { describe, it, expect } from "vitest";
     describe("ItemIconTest", function () {
             var validKml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
                 "<kml xmlns=\"http://www.opengis.net/kml/2.2\">" +
@@ -44,7 +38,7 @@ define([
                 "</ItemIcon>" +
                 "</kml>";
             var kmlRepresentation = new XmlDocument(validKml).dom();
-            var scale = new ItemIcon({objectNode:
+            var scale = new KmlItemIcon({objectNode:
                 kmlRepresentation.getElementsByTagName("ItemIcon")[0]});
         it ('should have the State and Href properties', function(){
             expect(scale.kmlState).toEqual("open");
@@ -53,4 +47,4 @@ define([
 
 
         });
-    });
+

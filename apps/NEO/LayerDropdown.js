@@ -25,37 +25,35 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
-define(function () {
-    "use strict";
 
-    var LayerDropdown = function (controller) {
-        this.controller = controller;
-    };
+var LayerDropdown = function (controller) {
+  this.controller = controller;
+};
 
-    LayerDropdown.prototype.setLayers = function (datasetCaps) {
-        this.fillDropdownList(datasetCaps);
+LayerDropdown.prototype.setLayers = function (datasetCaps) {
+  this.fillDropdownList(datasetCaps);
 
-        $("#layerDropdownTitle").html(datasetCaps.layers[0].title + "<span class='caret'></span>");
-    };
+  $("#layerDropdownTitle").html(
+    datasetCaps.layers[0].title + "<span class='caret'></span>"
+  );
+};
 
-    LayerDropdown.prototype.fillDropdownList = function (datasetCaps) {
+LayerDropdown.prototype.fillDropdownList = function (datasetCaps) {
+  var dropdownList = $("#layerDropdownList");
 
-        var dropdownList = $('#layerDropdownList');
+  dropdownList.empty();
 
-        dropdownList.empty();
+  for (var i = 0; i < datasetCaps.layers.length; i++) {
+    var layer = datasetCaps.layers[i];
 
-        for (var i = 0; i < datasetCaps.layers.length; i++) {
-            var layer = datasetCaps.layers[i];
+    var menuItem = $("<li><a>" + layer.title + "</a></li>");
+    dropdownList.append(menuItem);
+  }
 
-            var menuItem = $('<li><a>' + layer.title + '</a></li>');
-            dropdownList.append(menuItem);
-        }
+  var controller = this.controller;
+  dropdownList.find(" li").on("click", function (e) {
+    controller.onLayerClick(e);
+  });
+};
 
-        var controller = this.controller;
-        dropdownList.find(" li").on("click", function (e) {
-            controller.onLayerClick(e);
-        });
-    };
-
-    return LayerDropdown;
-});
+export default LayerDropdown;

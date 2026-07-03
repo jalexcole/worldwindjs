@@ -25,119 +25,126 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
-define([
-    '../../../util/Color',
-    './KmlColorStyle',
-    './../KmlElements',
-    '../util/KmlNodeTransformers'
-], function (
-    Color,
-    KmlColorStyle,
-    KmlElements,
-    NodeTransformers
-) {
-    "use strict";
+import Color from "../../../util/Color";
+import KmlColorStyle from "./KmlColorStyle";
+import KmlElements from "../KmlElements";
+import KmlNodeTransformers from "../util/KmlNodeTransformers";
 
-    /**
-     * Constructs an KmlLineStyle object.  Applications shouldn't use this constructor. It is used by
-     * {@link KmlFile}. KmlLineStyle represents one line style.
-     * @param options {Object}
-     * @param options.objectNode {Node} Node representing this line style.
-     * @constructor
-     * @alias KmlLineStyle
-     * @classdesc Class representing LineStyle element of KmlFile
-     * @see https://developers.google.com/kml/documentation/kmlreference#linestyle
-     * @augments KmlColorStyle
-     */
-    var KmlLineStyle = function (options) {
-        KmlColorStyle.call(this, options);
-    };
+/**
+ * Constructs an KmlLineStyle object.  Applications shouldn't use this constructor. It is used by
+ * {@link KmlFile}. KmlLineStyle represents one line style.
+ * @param options {Object}
+ * @param options.objectNode {Node} Node representing this line style.
+ * @constructor
+ * @alias KmlLineStyle
+ * @classdesc Class representing LineStyle element of KmlFile
+ * @see https://developers.google.com/kml/documentation/kmlreference#linestyle
+ * @augments KmlColorStyle
+ */
+class KmlLineStyle extends KmlColorStyle {
+  constructor(options) {
+    super(options);
+  }
+  static update(style, options) {
+    var shapeOptions = options || {};
+    style = style || {};
 
-    KmlLineStyle.prototype = Object.create(KmlColorStyle.prototype);
+    shapeOptions._outlineColor =
+      (style.kmlColor && Color.colorFromKmlHex(style.kmlColor)) || Color.WHITE;
+    shapeOptions._outlineWidth = style.kmlWidth || 10.0;
 
-    Object.defineProperties(KmlLineStyle.prototype, {
-        /**
-         * Width of the line in pixels.
-         * @memberof KmlLineStyle.prototype
-         * @readonly
-         * @type {Number}
-         */
-        kmlWidth: {
-            get: function() {
-                return this._factory.specific(this, {name: 'width', transformer: NodeTransformers.number});
-            }
-        },
+    return shapeOptions;
+  }
+  /**
+   * @inheritDoc
+   */
+  getTagNames() {
+    return ["LineStyle"];
+  }
+}
 
-        /**
-         * Color applied to outer width. Ignored by Polygon and LinearRing.
-         * @memberof KmlLineStyle.prototype
-         * @readonly
-         * @type {String}
-         */
-        kmlOuterColor: {
-            get: function() {
-                return this._factory.specific(this, {name: 'gx:outerColor', transformer: NodeTransformers.string});
-            }
-        },
+Object.defineProperties(KmlLineStyle.prototype, {
+  /**
+   * Width of the line in pixels.
+   * @memberof KmlLineStyle.prototype
+   * @readonly
+   * @type {Number}
+   */
+  kmlWidth: {
+    get: function () {
+      return this._factory.specific(this, {
+        name: "width",
+        transformer: KmlNodeTransformers.number,
+      });
+    },
+  },
 
-        /**
-         * Value between 0.0 and 1.0 specifies the proportion of the line used by outerColor. Only applies to line
-         * setting width with physical width.
-         * @memberof KmlLineStyle.prototype
-         * @readonly
-         * @type {Number}
-         */
-        kmlOuterWidth: {
-            get: function() {
-                return this._factory.specific(this, {name: 'gx:outerWidth', transformer: NodeTransformers.number});
-            }
-        },
+  /**
+   * Color applied to outer width. Ignored by Polygon and LinearRing.
+   * @memberof KmlLineStyle.prototype
+   * @readonly
+   * @type {String}
+   */
+  kmlOuterColor: {
+    get: function () {
+      return this._factory.specific(this, {
+        name: "gx:outerColor",
+        transformer: KmlNodeTransformers.string,
+      });
+    },
+  },
 
-        /**
-         * Physical width of the line in meters.
-         * @memberof KmlLineStyle.prototype
-         * @readonly
-         * @type {Number}
-         */
-        kmlPhysicalWidth: {
-            get: function() {
-                return this._factory.specific(this, {name: 'gx:physicalWidth', transformer: NodeTransformers.number});
-            }
-        },
+  /**
+   * Value between 0.0 and 1.0 specifies the proportion of the line used by outerColor. Only applies to line
+   * setting width with physical width.
+   * @memberof KmlLineStyle.prototype
+   * @readonly
+   * @type {Number}
+   */
+  kmlOuterWidth: {
+    get: function () {
+      return this._factory.specific(this, {
+        name: "gx:outerWidth",
+        transformer: KmlNodeTransformers.number,
+      });
+    },
+  },
 
-        /**
-         * A boolean defining whether or not to display a text label on a LineString. A LineString's label is
-         * contained in the &lt;name&gt; element that is a sibling of &lt;LineString&gt; (i.e. contained within the same
-         * &lt;Placemark&gt; element).
-         * @memberof KmlLineStyle.prototype
-         * @readonly
-         * @type {Boolean}
-         */
-        kmlLabelVisibility: {
-            get: function() {
-                return this._factory.specific(this, {name: 'gx:labelVisibility', transformer: NodeTransformers.boolean});
-            }
-        }
-    });
+  /**
+   * Physical width of the line in meters.
+   * @memberof KmlLineStyle.prototype
+   * @readonly
+   * @type {Number}
+   */
+  kmlPhysicalWidth: {
+    get: function () {
+      return this._factory.specific(this, {
+        name: "gx:physicalWidth",
+        transformer: KmlNodeTransformers.number,
+      });
+    },
+  },
 
-    KmlLineStyle.update = function (style, options) {
-        var shapeOptions = options || {};
-        style = style || {};
-
-        shapeOptions._outlineColor = style.kmlColor && Color.colorFromKmlHex(style.kmlColor) || Color.WHITE;
-        shapeOptions._outlineWidth = style.kmlWidth || 10.0;
-
-        return shapeOptions;
-    };
-
-    /**
-     * @inheritDoc
-     */
-    KmlLineStyle.prototype.getTagNames = function () {
-        return ['LineStyle'];
-    };
-
-    KmlElements.addKey(KmlLineStyle.prototype.getTagNames()[0], KmlLineStyle);
-
-    return KmlLineStyle;
+  /**
+   * A boolean defining whether or not to display a text label on a LineString. A LineString's label is
+   * contained in the &lt;name&gt; element that is a sibling of &lt;LineString&gt; (i.e. contained within the same
+   * &lt;Placemark&gt; element).
+   * @memberof KmlLineStyle.prototype
+   * @readonly
+   * @type {Boolean}
+   */
+  kmlLabelVisibility: {
+    get: function () {
+      return this._factory.specific(this, {
+        name: "gx:labelVisibility",
+        transformer: KmlNodeTransformers.boolean,
+      });
+    },
+  },
 });
+
+
+
+KmlElements.addKey(KmlLineStyle.prototype.getTagNames()[0], KmlLineStyle);
+
+export default KmlLineStyle;

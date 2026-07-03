@@ -25,14 +25,9 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
-define([
-    'src/formats/kml/KmlLookAt',
-    'src/util/XmlDocument'
-], function (
-    KmlLookAt,
-    XmlDocument
-) {
-    "use strict";
+import KmlLookAt from "../../../src/formats/kml/KmlLookAt";
+import XmlDocument from "../../../src/util/XmlDocument";
+import { describe,expect, it } from "vitest";
     describe ("KmlLookAtTest", function () {
             var validKml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
                 "<kml xmlns=\"http://www.opengis.net/kml/2.2\">" +
@@ -60,4 +55,3 @@ define([
             expect(lookAt.kmlAltitudeMode).toBe("clampToGround");
         });
     });
-});

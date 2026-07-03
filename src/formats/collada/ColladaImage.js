@@ -25,47 +25,38 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
+import ColladaUtils from "./ColladaUtils";
+
 /**
- * @exports ColladaImage
+ * Constructs a ColladaImage
+ * @alias ColladaImage
+ * @constructor
+ * @classdesc Represents a collada image tag.
+ * @param {String} imageId The id of an image node
+ * @param {String} imageName The name of an image node
  */
-
-define(['./ColladaUtils'],function(ColladaUtils){
-    "use strict";
-
-    /**
-     * Constructs a ColladaImage
-     * @alias ColladaImage
-     * @constructor
-     * @classdesc Represents a collada image tag.
-     * @param {String} imageId The id of an image node
-     * @param {String} imageName The name of an image node
-     */
-    var ColladaImage = function (imageId, imageName) {
-        this.filename = '';
+class ColladaImage {
+    constructor(imageId, imageName) {
+        this.filename = "";
         this.map = imageId;
         this.name = imageName;
-        this.path = '';
-    };
-
+        this.path = "";
+    }
     /**
      * Parses the images of a collada file.
      * Internal. Applications should not call this function.
      * @param {Node} element An image node
      */
-    ColladaImage.prototype.parse = function (element) {
-
+    parse(element) {
         for (var i = 0; i < element.childNodes.length; i++) {
-
             var child = element.childNodes[i];
 
             if (child.nodeType !== 1) {
                 continue;
             }
 
-            switch (child.nodeName){
-
-                case 'init_from':
-
+            switch (child.nodeName) {
+                case "init_from":
                     this.filename = ColladaUtils.getFilename(child.textContent);
                     this.path = child.textContent;
 
@@ -77,8 +68,8 @@ define(['./ColladaUtils'],function(ColladaUtils){
         }
 
         return this;
+    }
+}
 
-    };
 
-    return ColladaImage;
-});
+export default ColladaImage;

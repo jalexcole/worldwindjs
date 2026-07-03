@@ -25,61 +25,53 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
+import KmlElements from "./KmlElements";
+import KmlTimePrimitive from "./KmlTimePrimitive";
+import KmlNodeTransformers from "./util/KmlNodeTransformers";
+
 /**
- * @exports KmlTimeStamp
+ * Constructs an KmlTimeStamp. Applications usually don't call this constructor. It is called by {@link KmlFile} as
+ * objects from KmlFile are read.
+ * @alias KmlTimeStamp
+ * @classdesc Contains the data associated with Kml TimeStamp
+ * @param options {Object}
+ * @param options.objectNode {Node} Node representing the Kml TimeStamp
+ * @constructor
+ * @throws {ArgumentError} If the content of the node contains invalid elements.
+ * @see https://developers.google.com/kml/documentation/kmlreference#timestamp
+ * @augments KmlTimePrimitive
  */
-define([
-    './KmlElements',
-    './KmlTimePrimitive',
-    './util/KmlNodeTransformers'
-], function (KmlElements,
-             KmlTimePrimitive,
-             NodeTransformers) {
-    "use strict";
+class KmlTimeStamp extends KmlTimePrimitive {
+  constructor(options) {
+    //noinspection JSUndefinedPropertyAssignment
+    super(options);
+    options.isTimeStamp = true;
+  }
+  /**
+   * @inheritDoc
+   */
+  getTagNames() {
+    return ["TimeStamp"];
+  }
+}
 
-    /**
-     * Constructs an KmlTimeStamp. Applications usually don't call this constructor. It is called by {@link KmlFile} as
-     * objects from KmlFile are read.
-     * @alias KmlTimeStamp
-     * @classdesc Contains the data associated with Kml TimeStamp
-     * @param options {Object}
-     * @param options.objectNode {Node} Node representing the Kml TimeStamp
-     * @constructor
-     * @throws {ArgumentError} If the content of the node contains invalid elements.
-     * @see https://developers.google.com/kml/documentation/kmlreference#timestamp
-     * @augments KmlTimePrimitive
-     */
-    var KmlTimeStamp = function (options) {
-        //noinspection JSUndefinedPropertyAssignment
-        options.isTimeStamp = true;
-        KmlTimePrimitive.call(this, options);
-    };
-
-    KmlTimeStamp.prototype = Object.create(KmlTimePrimitive.prototype);
-
-    Object.defineProperties(KmlTimeStamp.prototype, {
-        /**
-         * This property specifies when exactly the event happen.
-         * @memberof KmlTimeStamp.prototype
-         * @type {Date}
-         * @readonly
-         */
-        kmlWhen: {
-            get: function () {
-                return this._factory.specific(this, {name: 'when', transformer: NodeTransformers.date});
-            }
-        }
-    });
-
-
-    /**
-     * @inheritDoc
-     */
-    KmlTimeStamp.prototype.getTagNames = function () {
-        return ['TimeStamp'];
-    };
-
-    KmlElements.addKey(KmlTimeStamp.prototype.getTagNames()[0], KmlTimeStamp);
-
-    return KmlTimeStamp;
+Object.defineProperties(KmlTimeStamp.prototype, {
+  /**
+   * This property specifies when exactly the event happen.
+   * @memberof KmlTimeStamp.prototype
+   * @type {Date}
+   * @readonly
+   */
+  kmlWhen: {
+    get: function () {
+      return this._factory.specific(this, {
+        name: "when",
+        transformer: KmlNodeTransformers.date,
+      });
+    },
+  },
 });
+
+KmlElements.addKey(KmlTimeStamp.prototype.getTagNames()[0], KmlTimeStamp);
+
+export default KmlTimeStamp;

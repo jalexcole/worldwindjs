@@ -25,22 +25,18 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
-define([],
-    function () {
-        'use strict';
 
-        /**
-         * Provides constants for the AAIGridReader.
-         * @exports AAIGridConstants
-         */
-        var AAIGridConstants = {
-            N_COLS: 'ncols',
-            N_ROWS:'nrows',
-            X_LL_CORNER: 'xllcorner',
-            Y_LL_CORNER: 'yllcorner',
-            CELL_SIZE: 'cellsize',
-            NO_DATA_VALUE: 'NODATA_value'
-        };
+/**
+ * Provides constants for the AAIGridReader.
+ * @exports AAIGridConstants
+ */
+var AAIGridConstants = {
+  N_COLS: "ncols",
+  N_ROWS: "nrows",
+  X_LL_CORNER: "xllcorner",
+  Y_LL_CORNER: "yllcorner",
+  CELL_SIZE: "cellsize",
+  NO_DATA_VALUE: "NODATA_value",
+};
 
-        return AAIGridConstants;
-    });
+export default AAIGridConstants;

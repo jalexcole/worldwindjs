@@ -25,20 +25,12 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
-define( [
-    'src/formats/kml/util/KmlImagePyramid',
-    'src/formats/kml/util/KmlViewVolume',
-    'src/formats/kml/geom/KmlPoint',
-    'src/formats/kml/features/KmlPhotoOverlay',
-    'src/util/XmlDocument'
-], function (
-    ImagePyramid,
-    ViewVolume,
-    KmlPoint,
-    KmlPhotoOverlay,
-    XmlDocument
-) {
-    "use strict";
+import KmlPoint         from "../../../../src/formats/kml/geom/KmlPoint";
+import KmlPhotoOverlay  from "../../../../src/formats/kml/features/KmlPhotoOverlay";
+import XmlDocument      from "../../../../src/util/XmlDocument"; 
+import KmlViewVolume    from "../../../../src/formats/kml/util/KmlViewVolume";
+import KmlImagePyramid  from "../../../../src/formats/kml/util/KmlImagePyramid.js";
+import { describe,expect, it } from "vitest";
     describe("KmlPhotoOverlayTest", function () {
             var validKml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
                 "<kml xmlns=\"http://www.opengis.net/kml/2.2\">" +
@@ -59,9 +51,9 @@ define( [
                 expect(photoOverlay.kmlShape).toEqual('rectangle');
 
                 console.log(photoOverlay.kmlViewVolume);
-                expect(photoOverlay.kmlViewVolume instanceof ViewVolume).toBeTruthy();
+                expect(photoOverlay.kmlViewVolume instanceof KmlViewVolume).toBeTruthy();
                 console.log(photoOverlay.kmlImagePyramid);
-                expect(photoOverlay.kmlImagePyramid instanceof ImagePyramid).toBeTruthy();
+                expect(photoOverlay.kmlImagePyramid instanceof KmlImagePyramid).toBeTruthy();
                 expect(photoOverlay.kmlPoint instanceof KmlPoint).toBeTruthy();
 
             });
@@ -69,4 +61,4 @@ define( [
 
 
         });
-    });
+

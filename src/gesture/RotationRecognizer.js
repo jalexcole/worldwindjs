@@ -25,163 +25,153 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
+
+import Angle from "../geom/Angle";
+import GestureRecognizer from "./GestureRecognizer";
+import WorldWindConstants from "../WorldWindConstants";
 /**
- * @exports RotationRecognizer
+ * Constructs a rotation gesture recognizer.
+ * @alias RotationRecognizer
+ * @constructor
+ * @augments GestureRecognizer
+ * @classdesc A concrete gesture recognizer subclass that looks for two finger rotation gestures.
+ * @param {EventTarget} target The document element this gesture recognizer observes for mouse and touch events.
+ * @param {Function} callback An optional function to call when this gesture is recognized. If non-null, the
+ * function is called when this gesture is recognized, and is passed a single argument: this gesture recognizer,
+ * e.g., <code>gestureCallback(recognizer)</code>.
+ * @throws {ArgumentError} If the specified target is null or undefined.
  */
-define([
-        '../geom/Angle',
-        '../gesture/GestureRecognizer'
-    ],
-    function (Angle,
-              GestureRecognizer) {
-        "use strict";
+class RotationRecognizer extends GestureRecognizer{
+  constructor(target, callback) {
+    super(target, callback);
 
-        /**
-         * Constructs a rotation gesture recognizer.
-         * @alias RotationRecognizer
-         * @constructor
-         * @augments GestureRecognizer
-         * @classdesc A concrete gesture recognizer subclass that looks for two finger rotation gestures.
-         * @param {EventTarget} target The document element this gesture recognizer observes for mouse and touch events.
-         * @param {Function} callback An optional function to call when this gesture is recognized. If non-null, the
-         * function is called when this gesture is recognized, and is passed a single argument: this gesture recognizer,
-         * e.g., <code>gestureCallback(recognizer)</code>.
-         * @throws {ArgumentError} If the specified target is null or undefined.
-         */
-        var RotationRecognizer = function (target, callback) {
-            GestureRecognizer.call(this, target, callback);
+    // Intentionally not documented.
+    this._rotation = 0;
 
-            // Intentionally not documented.
-            this._rotation = 0;
+    // Intentionally not documented.
+    this._offsetRotation = 0;
 
-            // Intentionally not documented.
-            this._offsetRotation = 0;
+    // Intentionally not documented.
+    this.referenceAngle = 0;
 
-            // Intentionally not documented.
-            this.referenceAngle = 0;
+    // Intentionally not documented.
+    this.interpretThreshold = 20;
 
-            // Intentionally not documented.
-            this.interpretThreshold = 20;
+    // Intentionally not documented.
+    this.weight = 0.4;
 
-            // Intentionally not documented.
-            this.weight = 0.4;
+    // Intentionally not documented.
+    this.rotationTouches = [];
+  }
+  // Documented in superclass.
+  reset() {
+    GestureRecognizer.prototype.reset.call(this);
 
-            // Intentionally not documented.
-            this.rotationTouches = [];
-        };
+    this._rotation = 0;
+    this._offsetRotation = 0;
+    this.referenceAngle = 0;
+    this.rotationTouches = [];
+  }
+  // Documented in superclass.
+  mouseDown(event) {
+    if (this.state == WorldWindConstants.POSSIBLE) {
+      this.state = WorldWindConstants.FAILED; // touch gestures fail upon receiving a mouse event
+    }
+  }
+  // Documented in superclass.
+  touchStart(touch) {
+    if (this.rotationTouches.length < 2) {
+      if (this.rotationTouches.push(touch) == 2) {
+        this.referenceAngle = this.currentTouchAngle();
+        this._offsetRotation += this._rotation;
+        this._rotation = 0;
+      }
+    }
+  }
+  // Documented in superclass.
+  touchMove(touch) {
+    if (this.rotationTouches.length == 2) {
+      if (this.state == WorldWindConstants.POSSIBLE) {
+        if (this.shouldRecognize()) {
+          this.state = WorldWindConstants.BEGAN;
+        }
+      } else if (this.state == WorldWindConstants.BEGAN ||
+        this.state == WorldWindConstants.CHANGED) {
+        var angle = this.currentTouchAngle(), newRotation = Angle.normalizedDegrees(angle - this.referenceAngle), w = this.weight;
+        this._rotation = this._rotation * (1 - w) + newRotation * w;
+        this.state = WorldWindConstants.CHANGED;
+      }
+    }
+  }
+  // Documented in superclass.
+  touchEnd(touch) {
+    var index = this.rotationTouches.indexOf(touch);
+    if (index != -1) {
+      this.rotationTouches.splice(index, 1);
+    }
 
-        RotationRecognizer.prototype = Object.create(GestureRecognizer.prototype);
+    // Transition to the ended state if this was the last touch.
+    if (this.touchCount == 0) {
+      // last touch ended
+      if (this.state == WorldWindConstants.POSSIBLE) {
+        this.state = WorldWindConstants.FAILED;
+      } else if (this.state == WorldWindConstants.BEGAN ||
+        this.state == WorldWindConstants.CHANGED) {
+        this.state = WorldWindConstants.ENDED;
+      }
+    }
+  }
+  // Documented in superclass.
+  touchCancel(touch) {
+    var index = this.rotationTouches.indexOf(touch);
+    if (index != -1) {
+      this.rotationTouches.splice(index, 1);
 
-        Object.defineProperties(RotationRecognizer.prototype, {
-            rotation: {
-                get: function () {
-                    return this._rotation + this._offsetRotation;
-                }
-            }
-        });
+      // Transition to the cancelled state if this was the last touch.
+      if (this.touchCount == 0) {
+        if (this.state == WorldWindConstants.POSSIBLE) {
+          this.state = WorldWindConstants.FAILED;
+        } else if (this.state == WorldWindConstants.BEGAN ||
+          this.state == WorldWindConstants.CHANGED) {
+          this.state = WorldWindConstants.CANCELLED;
+        }
+      }
+    }
+  }
+  // Documented in superclass.
+  prepareToRecognize() {
+    this.referenceAngle = this.currentTouchAngle();
+    this._rotation = 0;
+  }
+  // Intentionally not documented.
+  shouldRecognize() {
+    var angle = this.currentTouchAngle(), rotation = Angle.normalizedDegrees(angle - this.referenceAngle);
 
-        // Documented in superclass.
-        RotationRecognizer.prototype.reset = function () {
-            GestureRecognizer.prototype.reset.call(this);
+    return Math.abs(rotation) > this.interpretThreshold;
+  }
+  // Intentionally not documented.
+  currentTouchAngle() {
+    var touch0 = this.rotationTouches[0], touch1 = this.rotationTouches[1], dx = touch0.clientX - touch1.clientX, dy = touch0.clientY - touch1.clientY;
 
-            this._rotation = 0;
-            this._offsetRotation = 0;
-            this.referenceAngle = 0;
-            this.rotationTouches = [];
-        };
+    return Math.atan2(dy, dx) * Angle.RADIANS_TO_DEGREES;
+  }
+}
 
-        // Documented in superclass.
-        RotationRecognizer.prototype.mouseDown = function (event) {
-            if (this.state == WorldWind.POSSIBLE) {
-                this.state = WorldWind.FAILED; // touch gestures fail upon receiving a mouse event
-            }
-        };
+Object.defineProperties(RotationRecognizer.prototype, {
+  rotation: {
+    get: function () {
+      return this._rotation + this._offsetRotation;
+    },
+  },
+});
 
-        // Documented in superclass.
-        RotationRecognizer.prototype.touchStart = function (touch) {
-            if (this.rotationTouches.length < 2) {
-                if (this.rotationTouches.push(touch) == 2) {
-                    this.referenceAngle = this.currentTouchAngle();
-                    this._offsetRotation += this._rotation;
-                    this._rotation = 0;
-                }
-            }
-        };
 
-        // Documented in superclass.
-        RotationRecognizer.prototype.touchMove = function (touch) {
-            if (this.rotationTouches.length == 2) {
-                if (this.state == WorldWind.POSSIBLE) {
-                    if (this.shouldRecognize()) {
-                        this.state = WorldWind.BEGAN;
-                    }
-                } else if (this.state == WorldWind.BEGAN || this.state == WorldWind.CHANGED) {
-                    var angle = this.currentTouchAngle(),
-                        newRotation = Angle.normalizedDegrees(angle - this.referenceAngle),
-                        w = this.weight;
-                    this._rotation = this._rotation * (1 - w) + newRotation * w;
-                    this.state = WorldWind.CHANGED;
-                }
-            }
-        };
 
-        // Documented in superclass.
-        RotationRecognizer.prototype.touchEnd = function (touch) {
-            var index = this.rotationTouches.indexOf(touch);
-            if (index != -1) {
-                this.rotationTouches.splice(index, 1);
-            }
 
-            // Transition to the ended state if this was the last touch.
-            if (this.touchCount == 0) { // last touch ended
-                if (this.state == WorldWind.POSSIBLE) {
-                    this.state = WorldWind.FAILED;
-                } else if (this.state == WorldWind.BEGAN || this.state == WorldWind.CHANGED) {
-                    this.state = WorldWind.ENDED;
-                }
-            }
-        };
 
-        // Documented in superclass.
-        RotationRecognizer.prototype.touchCancel = function (touch) {
-            var index = this.rotationTouches.indexOf(touch);
-            if (index != -1) {
-                this.rotationTouches.splice(index, 1);
 
-                // Transition to the cancelled state if this was the last touch.
-                if (this.touchCount == 0) {
-                    if (this.state == WorldWind.POSSIBLE) {
-                        this.state = WorldWind.FAILED;
-                    } else if (this.state == WorldWind.BEGAN || this.state == WorldWind.CHANGED) {
-                        this.state = WorldWind.CANCELLED;
-                    }
-                }
-            }
-        };
 
-        // Documented in superclass.
-        RotationRecognizer.prototype.prepareToRecognize = function () {
-            this.referenceAngle = this.currentTouchAngle();
-            this._rotation = 0;
-        };
 
-        // Intentionally not documented.
-        RotationRecognizer.prototype.shouldRecognize = function () {
-            var angle = this.currentTouchAngle(),
-                rotation = Angle.normalizedDegrees(angle - this.referenceAngle);
 
-            return Math.abs(rotation) > this.interpretThreshold;
-        };
 
-        // Intentionally not documented.
-        RotationRecognizer.prototype.currentTouchAngle = function () {
-            var touch0 = this.rotationTouches[0],
-                touch1 = this.rotationTouches[1],
-                dx = touch0.clientX - touch1.clientX,
-                dy = touch0.clientY - touch1.clientY;
-
-            return Math.atan2(dy, dx) * Angle.RADIANS_TO_DEGREES;
-        };
-
-        return RotationRecognizer;
-    });
+export default RotationRecognizer;

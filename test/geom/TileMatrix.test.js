@@ -25,19 +25,16 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
-define([
-    'test/CustomMatchers.test',
-    'src/geom/Sector',
-    'src/geom/TileMatrix'
-], function (
-    CustomMatchers,
-    Sector,
-    TileMatrix) {
-    "use strict";
 
-    beforeEach(function () {
-        jasmine.addMatchers(CustomMatchers);
-    });
+import Sector from "../../src/geom/Sector.js";
+import TileMatrix from "../../src/geom/TileMatrix.js";
+
+import {  describe,expect, it } from "vitest";
+
+
+    // beforeEach(function () {
+    //     jasmine.addMatchers(CustomMatchers);
+    // });
 
     describe("TileMatrix tileSector", function () {
         it("should produce the appropriate sectors matching the row/column index for a global coverage", function () {
@@ -119,4 +116,4 @@ define([
             expect(actualResolution).toBe(expectedResolution);
         });
     });
-});
+

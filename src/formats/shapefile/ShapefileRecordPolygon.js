@@ -25,37 +25,27 @@
  * WebWorldWind can be found in the WebWorldWind 3rd-party notices and licenses
  * PDF found in code  directory.
  */
+import Shapefile from "./Shapefile";
+import ShapefileRecord from "./ShapefileRecord";
+
 /**
- * @exports ShapefileRecordPolygon
+ * Constructs a shapefile record for a polygon. Applications typically do not call this constructor. It is called by
+ * {@link Shapefile} as shapefile records are read.
+ * @alias ShapefileRecordPolygon
+ * @constructor
+ * @classdesc Contains the data associated with a shapefile record.
+ * @augments ShapefileRecord
+ * @param {Shapefile} shapefile The shapefile containing this record.
+ * @param {ByteBuffer} buffer A buffer descriptor to read data from.
+ * @throws {ArgumentError} If either the specified shapefile or buffer are null or undefined.
  */
-define(['../../formats/shapefile/Shapefile',
-        '../../formats/shapefile/ShapefileRecord'
-    ],
-    function (Shapefile,
-              ShapefileRecord) {
-        "use strict";
+class ShapefileRecordPolygon extends ShapefileRecord {
+  constructor(shapefile, buffer) {
+    super(shapefile, buffer);
+  }
+  readContents() {
+    this.readPolylineContents();
+  }
+}
 
-        /**
-         * Constructs a shapefile record for a polygon. Applications typically do not call this constructor. It is called by
-         * {@link Shapefile} as shapefile records are read.
-         * @alias ShapefileRecordPolygon
-         * @constructor
-         * @classdesc Contains the data associated with a shapefile record.
-         * @augments ShapefileRecord
-         * @param {Shapefile} shapefile The shapefile containing this record.
-         * @param {ByteBuffer} buffer A buffer descriptor to read data from.
-         * @throws {ArgumentError} If either the specified shapefile or buffer are null or undefined.
-         */
-        var ShapefileRecordPolygon = function (shapefile, buffer) {
-            ShapefileRecord.call(this, shapefile, buffer);
-        };
-
-        ShapefileRecordPolygon.prototype = Object.create(ShapefileRecord.prototype);
-
-        ShapefileRecordPolygon.prototype.readContents = function() {
-            this.readPolylineContents();
-        };
-
-        return ShapefileRecordPolygon;
-    }
-);
+export default ShapefileRecordPolygon;
